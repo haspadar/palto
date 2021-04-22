@@ -1,0 +1,18 @@
+{
+    "name": "haspadar/palto",
+    "type": "project",
+    "description": "A new face for any sites",
+    "keywords": ["palto"],
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.0",
+        "haspadar/pylesos": "9999999-dev",
+        "robmorgan/phinx": "9999999-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Palto\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

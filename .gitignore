@@ -1,0 +1,4 @@
+/.env
+/phinx.php
+/vendor/
+/.idea/

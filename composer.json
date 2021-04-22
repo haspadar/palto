@@ -1,6 +1,6 @@
 {
     "name": "haspadar/palto",
-    "type": "project",
+    "type": "library",
     "description": "A new face for any sites",
     "keywords": ["palto"],
     "license": "proprietary",

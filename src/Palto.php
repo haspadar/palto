@@ -124,7 +124,7 @@ class Palto
         return $this->getDb()->query($query, $values);
     }
 
-    public function getCurrentAd(): array
+    public function getCurrentAd(): ?array
     {
         return $this->ad;
     }
@@ -163,6 +163,24 @@ class Palto
     public function loadLayout(string $layout)
     {
         require_once $this->layoutDirectory . $layout;
+    }
+
+    public function showInfo()
+    {
+        if (!$this->isCli()) {
+            echo '<pre>';
+        }
+
+        echo 'Info:' . PHP_EOL;
+        print_r([
+            'layout' => $this->getLayout(),
+            'region_url' => $this->getRegionUrl(),
+            'category_url' => $this->getCategoryUrl(),
+            'ad_id' => $this->getAdId(),
+            'region' => $this->getCurrentRegion(),
+            'category' => $this->getCurrentCategory(),
+            'ad' => $this->getCurrentAd()
+        ]);
     }
 
     public function getCurrentRegion(): ?array
@@ -286,7 +304,7 @@ class Palto
 
     private function initRootDirectory()
     {
-        if (php_sapi_name() === 'cli') {
+        if ($this->isCli()) {
             $this->rootDirectory = $_SERVER['PWD'] ?? '';
         } else {
             $this->rootDirectory = dirname($_SERVER['DOCUMENT_ROOT']);
@@ -431,5 +449,13 @@ class Palto
         }
 
         return [$query, $values];
+    }
+
+    /**
+     * @return bool
+     */
+    private function isCli(): bool
+    {
+        return php_sapi_name() === 'cli';
     }
 }

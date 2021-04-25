@@ -129,7 +129,7 @@ class Palto
         return $this->ad;
     }
 
-    public function getAd(int $adId): array
+    public function getAd(int $adId): ?array
     {
         $query = $this->getAdsQuery();
         $ad = $this->getDb()->queryFirstRow($query . ' WHERE a.id = %d', $adId);
@@ -345,7 +345,7 @@ class Palto
     private function initAd()
     {
         if ($this->adId) {
-            $this->ad = $this->db->queryFirstRow('SELECT * FROM ads WHERE id = %s', $this->adId);
+            $this->ad = $this->getAd($this->adId);
         }
     }
 
@@ -410,16 +410,18 @@ class Palto
         return $ads;
     }
 
-    private function addAdData(array $ad): array
+    private function addAdData(?array $ad): ?array
     {
-        $ad['images'] = $this->getAdImages($ad['id']);
+        if ($ad) {
+            $ad['images'] = $this->getAdImages($ad['id']);
+        }
 
         return $ad;
     }
 
     private function getAdImages(int $adId): array
     {
-        return $this->getDb()->query('SELECT big, small FROM images WHERE ad_id = %d', $adId);
+        return $this->getDb()->query('SELECT big, small FROM ads_images WHERE ad_id = %d', $adId);
     }
 
     /**

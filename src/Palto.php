@@ -126,7 +126,7 @@ class Palto
 
     public function getCurrentAd(): ?array
     {
-        return $this->ad;
+        return $this->ad ?? null;
     }
 
     public function getAd(int $adId): ?array
@@ -135,6 +135,37 @@ class Palto
         $ad = $this->getDb()->queryFirstRow($query . ' WHERE a.id = %d', $adId);
 
         return $this->addAdData($ad);
+    }
+
+    public function getPaginationUrls(int $pagesCount): array
+    {
+        $urls = [];
+        if ($this->getPageNumber() > 2) {
+            $urls[1] = $this->getPageUrl(1);
+        }
+
+        if ($this->getPageNumber() > 3) {
+            $urls[2] = '';
+        }
+
+        if ($this->getPageNumber() > 1) {
+            $urls[$this->getPageNumber() - 1] = $this->getPageUrl($this->getPageNumber() - 1);
+        }
+
+        $urls[$this->getPageNumber()] = $this->getPageUrl($this->getPageNumber());
+        if ($pagesCount > $this->getPageNumber()) {
+            $urls[$this->getPageNumber() + 1] = $this->getPageUrl($this->getPageNumber() + 1);
+        }
+
+        if ($pagesCount - $this->getPageNumber() > 2) {
+            $urls[$pagesCount - 1] = '';
+        }
+
+        if ($pagesCount - $this->getPageNumber() > 1) {
+            $urls[$pagesCount] = $this->getPageUrl($pagesCount);
+        }
+
+        return $urls;
     }
 
     public function getAdsCount(int|array $categoryId, int|array $regionId): count

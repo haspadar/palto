@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a54095daca395e5aefdc341442a662f5",
+    "content-hash": "fa2343c6d65013ea081e30384bbb1ce8",
     "packages": [
         {
             "name": "apix/log",
@@ -537,12 +537,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/haspadar/pylesos.git",
-                "reference": "9c93d2ec8b6aa0daf6f90ce83aae279ee5d7bf8a"
+                "reference": "5ee8c4ffee09c34ce83eaa67a99f588668dd7ce9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/9c93d2ec8b6aa0daf6f90ce83aae279ee5d7bf8a",
-                "reference": "9c93d2ec8b6aa0daf6f90ce83aae279ee5d7bf8a",
+                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/5ee8c4ffee09c34ce83eaa67a99f588668dd7ce9",
+                "reference": "5ee8c4ffee09c34ce83eaa67a99f588668dd7ce9",
                 "shasum": ""
             },
             "require": {
@@ -552,10 +552,10 @@
                 "ext-posix": "*",
                 "ext-zip": "*",
                 "league/climate": "^3.5",
+                "monolog/monolog": "2.x-dev",
                 "nesk/puphpeteer": "dev-master",
                 "php": ">=7.4",
                 "php-webdriver/webdriver": "1.8.x-dev",
-                "sergeytsalkov/meekrodb": "9999999-dev",
                 "simplehtmldom/simplehtmldom": "9999999-dev",
                 "vlucas/phpdotenv": "^5.1"
             },
@@ -584,7 +584,7 @@
                 "issues": "https://github.com/haspadar/pylesos/issues",
                 "source": "https://github.com/haspadar/pylesos/tree/master"
             },
-            "time": "2021-04-17T10:06:16+00:00"
+            "time": "2021-04-25T18:38:42+00:00"
         },
         {
             "name": "league/climate",
@@ -650,6 +650,103 @@
                 "source": "https://github.com/thephpleague/climate/tree/3.7.0"
             },
             "time": "2021-01-10T20:18:52+00:00"
+        },
+        {
+            "name": "monolog/monolog",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "bac1ddd01913a073f236b5d0aa27cb2ef3b37b6a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bac1ddd01913a073f236b5d0aa27cb2ef3b37b6a",
+                "reference": "bac1ddd01913a073f236b5d0aa27cb2ef3b37b6a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "psr/log": "^1.0.1"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^2.4.9 || ^3.0",
+                "doctrine/couchdb": "~1.0@dev",
+                "elasticsearch/elasticsearch": "^7",
+                "graylog2/gelf-php": "^1.4.2",
+                "mongodb/mongodb": "^1.8",
+                "php-amqplib/php-amqplib": "~2.4",
+                "php-console/php-console": "^3.1.3",
+                "phpspec/prophecy": "^1.6.1",
+                "phpstan/phpstan": "^0.12.59",
+                "phpunit/phpunit": "^8.5",
+                "predis/predis": "^1.1",
+                "rollbar/rollbar": "^1.3",
+                "ruflin/elastica": ">=0.90 <7.0.1",
+                "swiftmailer/swiftmailer": "^5.3|^6.0"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "php-console/php-console": "Allow sending log messages to Google Chrome",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Monolog\\": "src/Monolog"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https://seld.be"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "https://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "support": {
+                "issues": "https://github.com/Seldaek/monolog/issues",
+                "source": "https://github.com/Seldaek/monolog/tree/main"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-04-18T20:27:02+00:00"
         },
         {
             "name": "nesk/puphpeteer",
@@ -787,12 +884,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-webdriver/php-webdriver.git",
-                "reference": "c5617221f9d2fb23de1bcb6c55d41223f0bc6a3c"
+                "reference": "a4ce082dfa86627fb46eb20f6f01491e561d4eb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/c5617221f9d2fb23de1bcb6c55d41223f0bc6a3c",
-                "reference": "c5617221f9d2fb23de1bcb6c55d41223f0bc6a3c",
+                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/a4ce082dfa86627fb46eb20f6f01491e561d4eb5",
+                "reference": "a4ce082dfa86627fb46eb20f6f01491e561d4eb5",
                 "shasum": ""
             },
             "require": {
@@ -851,7 +948,7 @@
                 "issues": "https://github.com/php-webdriver/php-webdriver/issues",
                 "source": "https://github.com/php-webdriver/php-webdriver/tree/main"
             },
-            "time": "2021-04-22T10:18:53+00:00"
+            "time": "2021-04-24T20:32:01+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -1215,55 +1312,6 @@
                 "source": "https://github.com/Seldaek/cli-prompt/tree/1.0.4"
             },
             "time": "2020-12-15T21:32:01+00:00"
-        },
-        {
-            "name": "sergeytsalkov/meekrodb",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SergeyTsalkov/meekrodb.git",
-                "reference": "03ff51a997d68ca308b7f9538a17b3fa5cd92686"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SergeyTsalkov/meekrodb/zipball/03ff51a997d68ca308b7f9538a17b3fa5cd92686",
-                "reference": "03ff51a997d68ca308b7f9538a17b3fa5cd92686",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "db.class.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Sergey Tsalkov",
-                    "email": "stsalkov@gmail.com"
-                }
-            ],
-            "description": "The Simple PHP/MySQL Library",
-            "homepage": "http://www.meekro.com",
-            "keywords": [
-                "database",
-                "mysql",
-                "mysqli",
-                "pdo"
-            ],
-            "support": {
-                "email": "support@meekro.com",
-                "issues": "https://github.com/SergeyTsalkov/meekrodb/issues",
-                "source": "https://github.com/SergeyTsalkov/meekrodb/tree/master"
-            },
-            "time": "2021-01-24T04:27:10+00:00"
         },
         {
             "name": "simplehtmldom/simplehtmldom",
@@ -1903,12 +1951,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "298b87cbbe99cb2c9f88fb1d1de78833b64b483e"
+                "reference": "9ad2f3c9de0273812c616fdf96070a129c3defcb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/298b87cbbe99cb2c9f88fb1d1de78833b64b483e",
-                "reference": "298b87cbbe99cb2c9f88fb1d1de78833b64b483e",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/9ad2f3c9de0273812c616fdf96070a129c3defcb",
+                "reference": "9ad2f3c9de0273812c616fdf96070a129c3defcb",
                 "shasum": ""
             },
             "require": {
@@ -1976,7 +2024,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-04-19T09:32:22+00:00"
+            "time": "2021-04-23T08:04:02+00:00"
         },
         {
             "name": "symfony/polyfill-php73",
@@ -2579,7 +2627,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "haspadar/pylesos": 20,
-        "robmorgan/phinx": 20
+        "robmorgan/phinx": 20,
+        "monolog/monolog": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

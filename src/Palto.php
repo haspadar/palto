@@ -163,6 +163,9 @@ class Palto
     public function loadLayout(string $layout)
     {
         require_once $this->layoutDirectory . $layout;
+        if ($this->isDebug()) {
+            $this->showInfo();
+        }
     }
 
     public function showInfo()
@@ -177,6 +180,7 @@ class Palto
             'region_url' => $this->getRegionUrl(),
             'category_url' => $this->getCategoryUrl(),
             'ad_id' => $this->getAdId(),
+            'page_number' => $this->getPageNumber(),
             'region' => $this->getCurrentRegion(),
             'category' => $this->getCurrentCategory(),
             'ad' => $this->getCurrentAd()
@@ -217,6 +221,9 @@ class Palto
             $this->env['DB_PASSWORD'],
             $this->env['DB_NAME']
         );
+        if ($this->isDebug()) {
+            $this->getDb()->debugMode();
+        }
     }
 
     public function getPreviousPageUrl(): string
@@ -345,7 +352,7 @@ class Palto
     private function initRegionUrl()
     {
         $parts = $this->getUrlParts();
-        $this->regionUrl = $parts[1] ?? '';
+        $this->regionUrl = $parts[0] ?? '';
     }
 
     private function initRegion()
@@ -457,5 +464,10 @@ class Palto
     private function isCli(): bool
     {
         return php_sapi_name() === 'cli';
+    }
+
+    private function isDebug(): bool
+    {
+        return $this->getEnv()['DEBUG'] ? true : false;
     }
 }

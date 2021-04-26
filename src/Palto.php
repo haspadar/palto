@@ -26,16 +26,10 @@ class Palto
     private array $env;
     private Logger $logger;
 
-    public function __construct(private string $rootDirectory = '', private string $url = '')
+    public function __construct($rootDirectory = '', string $url = '')
     {
-        if (!$rootDirectory) {
-            $this->initRootDirectory();
-        }
-
-        if (!$this->url) {
-            $this->initUrl();
-        }
-
+        $this->initRootDirectory($rootDirectory);
+        $this->initUrl($url);
         $dotenv = Dotenv::createImmutable($this->rootDirectory);
         $this->env = $dotenv->load();
         $this->initLogger();
@@ -340,18 +334,24 @@ class Palto
         return array_values(array_filter(explode('/', $this->url)));
     }
 
-    private function initRootDirectory()
+    private function initRootDirectory(string $rootDirectory)
     {
-        if ($this->isCli()) {
+        if ($rootDirectory) {
+            $this->rootDirectory = $rootDirectory;
+        } elseif ($this->isCli()) {
             $this->rootDirectory = $_SERVER['PWD'] ?? '';
         } else {
             $this->rootDirectory = dirname($_SERVER['DOCUMENT_ROOT']);
         }
     }
 
-    private function initUrl()
+    private function initUrl(string $url)
     {
-        $this->url = $_SERVER['REQUEST_URI'] ?? '/';
+        if ($url) {
+            $this->url = $url;
+        } else {
+            $this->url = $_SERVER['REQUEST_URI'] ?? '/';
+        }
     }
 
     private function isPageUrlPart(string $urlPart): bool

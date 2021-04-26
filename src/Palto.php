@@ -48,6 +48,9 @@ class Palto
         $this->initPageNumbers();
         $this->initAd();
         self::$instance = $this;
+        if ($this->isDebug()) {
+            $this->showInfo();
+        }
     }
 
     public static function getInstance(): Palto
@@ -194,9 +197,6 @@ class Palto
     public function loadLayout(string $layout)
     {
         require_once $this->layoutDirectory . $layout;
-        if ($this->isDebug()) {
-            $this->showInfo();
-        }
     }
 
     public function showInfo()

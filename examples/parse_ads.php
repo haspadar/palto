@@ -28,29 +28,34 @@ $scheduler->run(
     }
 );
 
-function parseAd($palto, $adUrl, $level2) {
+function parseAd(Palto $palto, $adUrl, $level2) {
     $adResponse = PylesosService::download($adUrl, $palto->getEnv());
     $adDocument = new HtmlDocument($adResponse->getResponse());
     $regionId = getRegionId($adDocument, $palto);
-    $ad = [
-        'title' => $adDocument->find('#titletextonly', 0)->innertext,
-        'url' => $adUrl,
-        'category_id' => $level2['id'],
-        'text' => trim(explode(
-            '</div></div>',
-            $adDocument->find('#postingbody', 0)->innertext)[1]
-        ),
-        'address' => $adDocument->find('#titletextonly small', 0)
-            ? strtr(trim($adDocument->find('#titletextonly small', 0)->innertext), [
-                '(' => '',
-                ')' => '',
-            ]) : '',
-        'coordinates' => getCoordinates($adDocument),
-        'post_time' => (new DateTime($adDocument->find('.postinginfos .postinginfo time', 0)->datetime))
-            ->format('Y-m-d H:i:s'),
-        'region_id' => $regionId,
-    ];
-    addAd($ad, getImages($adDocument), $palto);
+    $titleElement = $adDocument->find('#titletextonly', 0);
+    if ($titleElement) {
+        $ad = [
+            'title' => $titleElement->innertext,
+            'url' => $adUrl,
+            'category_id' => $level2['id'],
+            'text' => trim(explode(
+                               '</div></div>',
+                               $adDocument->find('#postingbody', 0)->innertext)[1]
+            ),
+            'address' => $adDocument->find('#titletextonly small', 0)
+                ? strtr(trim($adDocument->find('#titletextonly small', 0)->innertext), [
+                    '(' => '',
+                    ')' => '',
+                ]) : '',
+            'coordinates' => getCoordinates($adDocument),
+            'post_time' => (new DateTime($adDocument->find('.postinginfos .postinginfo time', 0)->datetime))
+                ->format('Y-m-d H:i:s'),
+            'region_id' => $regionId,
+        ];
+        addAd($ad, getImages($adDocument), $palto);
+    } else {
+        $palto->getLogger()->debug('Ignored ad ' . $adUrl . ': empty title');
+    }
 }
 
 function getImages($adDocument) {

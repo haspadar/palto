@@ -9,9 +9,12 @@ class Install
     private string $databaseName;
     private string $databasePassword;
 
+    private string $paltoPath;
+
     public function __construct()
     {
         $this->projectPath = trim(`pwd`);
+        $this->paltoPath = $this->projectPath . '/vendor/haspadar/palto';
         $pathParts = explode('/', $this->projectPath);
         $this->projectName = $pathParts[count($pathParts) - 1];
         $this->databaseName = str_replace('.', '_', $this->projectName);
@@ -22,18 +25,20 @@ class Install
     {
         $osCommands = $this->getOSCommands();
         if ($osCommands) {
-            $path = $this->projectPath;
-            $envConfig = $this->getEnvConfig();
+            $projectPath = $this->projectPath;
+            $paltoPath = $this->paltoPath;
+            $databaseName = $this->databaseName;
             $this->runCommands(
                 array_merge([
-                    "cp -R $path/vendor/haspadar/palto/examples/* ./",
-                    "wget -O $path/public/adminer.php https://www.adminer.org/latest-mysql-en.php"
+                    "cp -R $paltoPath/examples/* $projectPath/",
+                    "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php"
                 ], $osCommands, [
-                    'mysql -e "' . $this->getMySqlTablesQuery() . '"',
-                    'mysql < ' . $this->projectPath . '/db/palto.sql',
-                    "cat $envConfig > $path/.env"
+                    'mysql -e "' . $this->getMySqlSystemQuery() . '"',
+                    "mysql $databaseName < $paltoPath" . '/db/palto.sql',
+                    "cp $paltoPath/.env.example $projectPath/.env"
                 ])
             );
+            $this->updateEnvOptions();
             $this->showWelcome();
         }
     }
@@ -172,20 +177,13 @@ class Install
 
         return implode(
             '',[
+                  "DROP DATABASE IF EXISTS $name;",
                   "CREATE DATABASE $name CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;",
+                  "DROP USER IF EXISTS '$name'@'localhost';",
                   "CREATE USER '$name'@'localhost' IDENTIFIED BY '$password';",
                   "GRANT ALL PRIVILEGES ON *.* TO '$name'@'localhost';"
               ]
         );
-    }
-
-    private function getMySqlTablesQuery(): string
-    {
-
-    }
-
-    private function getMySqlQuery(): string
-    {
     }
 
     private function generatePassword(int $length): string
@@ -195,14 +193,16 @@ class Install
         return substr(str_shuffle($chars),0, $length);
     }
 
-    private function getEnvConfig(): string
+    private function updateEnvOptions()
     {
-        $config = file_get_contents($this->projectPath . '/vendor/haspadar/palto/.env.example');
-
-        return strtr($config, [
-            'DB_USER=' => 'DB_USER=' . $this->databaseName,
-            'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->databasePassword,
-            'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
-        ]);
+        $this->log('Updating env options');
+        file_put_contents(
+            $this->projectPath . '/.env',
+            strtr(file_get_contents($this->projectPath . '/.env'), [
+                'DB_USER=' => 'DB_USER=' . $this->databaseName,
+                'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->databasePassword,
+                'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
+            ])
+        );
     }
 }

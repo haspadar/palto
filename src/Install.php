@@ -31,7 +31,7 @@ class Install
                     "cat $envConfig > $path/.env"
                 ])
             );
-            $this->log('Done! Open http://' . $this->projectName . '/adminer.php');
+            $this->showWelcome();
         }
     }
 
@@ -121,6 +121,15 @@ class Install
            "$projectName *.$projectName",
            $phpMajorVersion
         );
+    }
+
+    private function showWelcome()
+    {
+        if ($this->isMac()) {
+            $this->log('Run command "php -S localhost:8000 -t public/" and open http://localhost:8000/adminer.php');
+        } elseif ($this->isLinux()) {
+            $this->log('Open http://' . $this->projectName . '/adminer.php');
+        }
     }
 
     private function getOSCommands(): array

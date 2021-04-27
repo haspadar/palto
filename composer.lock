@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "22a8539fca911d13ec0724d1d2c87fb9",
+    "content-hash": "4b2c2573463bf1885e387843c765a012",
     "packages": [
         {
             "name": "apix/log",
@@ -902,6 +902,55 @@
             "time": "2020-12-15T21:32:01+00:00"
         },
         {
+            "name": "sergeytsalkov/meekrodb",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SergeyTsalkov/meekrodb.git",
+                "reference": "03ff51a997d68ca308b7f9538a17b3fa5cd92686"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SergeyTsalkov/meekrodb/zipball/03ff51a997d68ca308b7f9538a17b3fa5cd92686",
+                "reference": "03ff51a997d68ca308b7f9538a17b3fa5cd92686",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "db.class.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sergey Tsalkov",
+                    "email": "stsalkov@gmail.com"
+                }
+            ],
+            "description": "The Simple PHP/MySQL Library",
+            "homepage": "http://www.meekro.com",
+            "keywords": [
+                "database",
+                "mysql",
+                "mysqli",
+                "pdo"
+            ],
+            "support": {
+                "email": "support@meekro.com",
+                "issues": "https://github.com/SergeyTsalkov/meekrodb/issues",
+                "source": "https://github.com/SergeyTsalkov/meekrodb/tree/master"
+            },
+            "time": "2021-01-24T04:27:10+00:00"
+        },
+        {
             "name": "simplehtmldom/simplehtmldom",
             "version": "dev-master",
             "source": {
@@ -1558,7 +1607,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "haspadar/pylesos": 20,
-        "monolog/monolog": 20
+        "monolog/monolog": 20,
+        "sergeytsalkov/meekrodb": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

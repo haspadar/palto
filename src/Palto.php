@@ -25,6 +25,8 @@ class Palto
     private int $pageNumber = 1;
     private array $env;
     private Logger $logger;
+    private string $rootDirectory;
+    private string $url;
 
     public function __construct($rootDirectory = '', string $url = '')
     {

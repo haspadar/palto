@@ -6,13 +6,16 @@ class Install
     private string $projectPath;
 
     private string $projectName;
+    private string $databaseName;
+    private string $databasePassword;
 
     public function __construct()
     {
         $this->projectPath = trim(`pwd`);
         $pathParts = explode('/', $this->projectPath);
         $this->projectName = $pathParts[count($pathParts) - 1];
-        $this->mysqlPassword = $this->generatePassword(12);
+        $this->databaseName = str_replace('.', '_', $this->projectName);
+        $this->databasePassword = $this->generatePassword(12);
     }
 
     public function run()
@@ -163,15 +166,15 @@ class Install
 
     private function getMySqlQuery(): string
     {
-        $projectName = $this->projectName;
-        $password = $this->mysqlPassword;
+        $name = $this->databaseName;
+        $password = $this->databasePassword;
 
         return implode(
             '',[
-                "CREATE DATABASE $projectName CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;",
-                "CREATE USER '$projectName'@'localhost' IDENTIFIED BY '$password';",
-                "GRANT ALL PRIVILEGES ON *.* TO '$projectName'@'localhost';",
-                "USE $projectName;",
+                "CREATE DATABASE $name CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;",
+                "CREATE USER '$name'@'localhost' IDENTIFIED BY '$password';",
+                "GRANT ALL PRIVILEGES ON *.* TO '$name'@'localhost';",
+                "USE $name;",
                 "CREATE TABLE `regions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(200) NOT NULL DEFAULT '',
@@ -244,9 +247,9 @@ class Install
         $config = file_get_contents($this->projectPath . '/vendor/haspadar/palto/.env.example');
 
         return strtr($config, [
-            'DB_USER=' => 'DB_USER=' . $this->projectName,
-            'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->mysqlPassword,
-            'DB_NAME=' => 'DB_NAME=' . $this->projectName,
+            'DB_USER=' => 'DB_USER=' . $this->databaseName,
+            'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->databasePassword,
+            'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
         ]);
     }
 }

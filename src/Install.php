@@ -13,7 +13,6 @@ class Install
         $pathParts = explode('/', $this->projectPath);
         $this->projectName = $pathParts[count($pathParts) - 1];
         $this->mysqlPassword = $this->generatePassword(12);
-        var_dump($this->mysqlPassword);exit;
     }
 
     public function run()

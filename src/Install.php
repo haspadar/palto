@@ -247,7 +247,6 @@ class Install
             'DB_USER=' => 'DB_USER=' . $this->projectName,
             'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->mysqlPassword,
             'DB_NAME=' => 'DB_NAME=' . $this->projectName,
-            'DEBUG=0' => 'DEBUG=1'
         ]);
     }
 }

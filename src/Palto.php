@@ -18,9 +18,9 @@ class Palto
     private string $regionUrl = '';
     private string $categoryUrl = '';
     private int $adId = 0;
-    private ?array $region;
-    private ?array $category;
-    private ?array $ad;
+    private ?array $region = null;
+    private ?array $category = null;
+    private ?array $ad = null;
     private string $layoutDirectory = '../layouts/';
     private int $pageNumber = 1;
     private array $env;
@@ -164,7 +164,7 @@ class Palto
         return $urls;
     }
 
-    public function getAdsCount(int|array $categoryId, int|array $regionId): count
+    public function getAdsCount($categoryId, $regionId): count
     {
         $query = 'SELECT COUNT(*) FROM ads AS a LEFT JOIN categories AS c ON a.category_id = c.id'
             . ' LEFT JOIN regions AS r ON a.region_id = r.id';
@@ -174,7 +174,7 @@ class Palto
         return $this->getDb()->queryFirstField($query, $values);
     }
 
-    public function getAds(int|array $categoryId, int|array $regionId, int $limit, int $offset = 0): array
+    public function getAds($categoryId, $regionId, int $limit, int $offset = 0): array
     {
         $query = $this->getAdsQuery();
         [$where, $values] = $this->getAdsWhere($categoryId, $regionId);
@@ -190,7 +190,7 @@ class Palto
     public function loadLayout(string $layout)
     {
         require_once $this->layoutDirectory . $layout;
-        if ($this->isDebug()) {
+        if ($this->isDebug() && !$this->isCli()) {
             $this->showInfo();
         }
     }
@@ -248,7 +248,7 @@ class Palto
             $this->env['DB_PASSWORD'],
             $this->env['DB_NAME']
         );
-        if ($this->isDebug()) {
+        if ($this->isDebug() && !$this->isCli()) {
             $this->getDb()->debugMode();
         }
     }

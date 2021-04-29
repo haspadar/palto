@@ -106,7 +106,7 @@ class Install
 	listen [::]:80;
 	root %s;
 	index index.php index.html;
-	server_name %s;
+	server_name %s/public;
 	location ~ \.php$ {
           try_files $uri = 404;
           include fastcgi_params;

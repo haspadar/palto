@@ -116,13 +116,14 @@ class Install
           fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         }
  
-	location / {
+    location / {
           try_files $uri $uri/ @rewrite;
           expires max;
-	}
-      location @rewrite {
+    }
+    
+    location @rewrite {
           rewrite ^/(.*)$ /index.php;
-      }
+    }
 }
 ',
         $path,

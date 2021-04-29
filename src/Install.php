@@ -157,9 +157,9 @@ class Install
                 'apt-get install mariadb-server',
                 'apt-get install nginx',
                 "apt install $phpFullVersion-fpm $phpFullVersion-cli $phpFullVersion-mysql $phpFullVersion-xml $phpFullVersion-curl $phpFullVersion-zip $phpFullVersion-iconv",
-                "echo \"$nginxConfig\" > /etc/nginx/sites-available/$projectName",
+                "echo '$nginxConfig' > /etc/nginx/sites-available/$projectName",
                 "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName",
-                "echo \"$nginxPhpConfig\" > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf",
+                "echo '$nginxPhpConfig' > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf",
                 'service nginx reload'
             ];
         } else {

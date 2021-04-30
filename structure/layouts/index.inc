@@ -23,8 +23,8 @@ $palto->setDescription('Page Example Description');
             </p>
             <?php if ($level2Categories = $palto->getCategories($level1Category['id'])) :?>
                 <ul>
-                    <?php foreach ($level2Categories as $level2Category) :?>
-                        <li><a href="<?=$palto->generateCategoryUrl($level2Category, 2)?>">
+                    <?php foreach ($level2Categories as  $level2Category) :?>
+                        <li><a href="<?=$palto->generateCategoryUrl($level2Category)?>">
                                 <?=$level2Category['title']?>
                             </a>
                         </li>

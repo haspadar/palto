@@ -4,11 +4,9 @@ namespace Palto;
 class Install
 {
     private string $projectPath;
-
     private string $projectName;
     private string $databaseName;
     private string $databasePassword;
-
     private string $paltoPath;
 
     public function __construct()
@@ -34,27 +32,14 @@ class Install
         $projectPath = $this->projectPath;
         $paltoPath = $this->paltoPath;
         $databaseName = $this->databaseName;
-        $isDevelopment = $this->isDevelopment();
-        if ($isDevelopment) {
-            return [
-                "ln -s $paltoPath/structure/* $projectPath/",
-                "cp -Rf $paltoPath/structure/public $projectPath/",
-                'mysql -e "' . $this->getMySqlSystemQuery() . '"',
-                "mysql $databaseName < $paltoPath" . '/db/palto.sql',
-                "cp $paltoPath/.env.example $projectPath/.env",
-                "rm $projectPath/composer.json",
-                "ln -s $paltoPath/configs/composer.json $projectPath/",
-                "composer update"
-            ];
-        } else {
-            return [
-                "cp -R $paltoPath/structure/* $projectPath/",
-                "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
-                'mysql -e "' . $this->getMySqlSystemQuery() . '"',
-                "mysql $databaseName < $paltoPath" . '/db/palto.sql',
-                "cp $paltoPath/.env.example $projectPath/.env",
-            ];
-        }
+
+        return [
+            "cp -R $paltoPath/structure/* $projectPath/",
+            "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
+            'mysql -e "' . $this->getMySqlSystemQuery() . '"',
+            "mysql $databaseName < $paltoPath" . '/db/palto.sql',
+            "cp $paltoPath/.env.example $projectPath/.env",
+        ];
     }
 
     private function isLinux(): bool
@@ -136,9 +121,7 @@ class Install
 
     private function getOSCommands(): array
     {
-        if ($this->isDevelopment()) {
-            $commands = [];
-        } elseif ($this->isMac()) {
+        if ($this->isMac()) {
             $commands = [
                 'brew install mariadb',
             ];
@@ -200,10 +183,5 @@ class Install
                 'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
             ])
         );
-    }
-
-    private function isDevelopment(): bool
-    {
-        return file_exists($this->projectPath . '/../palto');
     }
 }

@@ -224,11 +224,12 @@ class Palto
 
     public function getPaginationUrls(): array
     {
+        $urls = [];
         $sliderPages = array_values(array_filter([
-                                                     $this->pageNumber - 1,
-                                                     $this->pageNumber,
-                                                     $this->pageNumber + 1
-                                                 ], function ($pageNumber) {
+             $this->pageNumber - 1,
+             $this->pageNumber,
+             $this->pageNumber + 1
+         ], function ($pageNumber) {
             return $pageNumber >= 1 && $pageNumber <= $this->pagesCount;
         }));
         $hasLeftDots = $this->pageNumber >= 4;

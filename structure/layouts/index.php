@@ -1,18 +1,19 @@
 <?php
 
-use Palto\Palto;
-
-$palto = Palto::getInstance();
-$palto->setTitle('Page Example Title');
-$palto->setDescription('Page Example Description');
+/**
+ * @var $this \Palto\Palto
+ */
+$this->partial('header.inc', [
+    'title' => 'Page Example Title',
+    'description' => 'Page Example Description',
+]);
 ?>
-<?php require_once 'header.inc'?>
     <br/>
     <!--3rows-->
-    <?php foreach ($palto->getCategories(0, 1) as $level1Category) :?>
+    <?php foreach ($this->getCategories(0, 1) as $level1Category) :?>
         <div class="span-d">
             <p>
-                <a href="<?=$palto->generateCategoryUrl($level1Category)?>">
+                <a href="<?=$this->generateCategoryUrl($level1Category)?>">
                     <?php if ($level1Category['icon_url']) :?>
                         <img src="<?=$level1Category['icon_url']?>"
                              title="<?=$level1Category['icon_text']?>"
@@ -21,10 +22,10 @@ $palto->setDescription('Page Example Description');
                     <strong> <?=$level1Category['title']?></strong>
                 </a>
             </p>
-            <?php if ($level2Categories = $palto->getCategories($level1Category['id'])) :?>
+            <?php if ($level2Categories = $this->getCategories($level1Category['id'])) :?>
                 <ul>
                     <?php foreach ($level2Categories as  $level2Category) :?>
-                        <li><a href="<?=$palto->generateCategoryUrl($level2Category)?>">
+                        <li><a href="<?=$this->generateCategoryUrl($level2Category)?>">
                                 <?=$level2Category['title']?>
                             </a>
                         </li>
@@ -34,4 +35,4 @@ $palto->setDescription('Page Example Description');
         </div>
     <?php endforeach;?>
 
-<?php require_once 'footer.inc';
+<?php $this->partial('footer.inc', []);

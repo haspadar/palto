@@ -17,6 +17,7 @@
 	</tr>
 </table>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="/js/scripts.js?t=<?=time()?>"></script>
+<script src="/js/slider.js?t=<?=time()?>"></script>
+<script src="/js/script.js?t=<?=time()?>"></script>
 </body>
 </html>

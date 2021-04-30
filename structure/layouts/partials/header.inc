@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="ru-RU">
-<?php use Palto\Palto;
-
-$palto = Palto::getInstance();?>
+<?php 
+/**
+ * @var $this \Palto\Palto
+ */
+$title = $this->getPartialVariable('title');
+$description = $this->getPartialVariable('description');
+?>
 <head>
     <meta charset="utf-8">
-    <title><?=$palto->getTitle();?></title>
-    <meta name="description" content="<?=$palto->getDescription()?>">
+    <title><?=$this->getPartialVariable('title')?></title>
+    <meta name="description" content="<?=$this->getPartialVariable('description')?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.ico?1">
+    <link rel="stylesheet" href="/css/slider.css?v=<?=time()?>">
     <link rel="stylesheet" href="/css/styles.css?v=<?=time()?>">
-    <?php if ($palto->getPreviousPageUrl()) :?>
+    <link rel="stylesheet" href="/css/styles_ali.css?v=<?=time()?>">
+    <?php if ($this->getPartialVariable('previousPageUrl')) :?>
         <meta name="robots" content="noindex, follow" />
-        <link rel="prev" href="<?=$palto->getPreviousPageUrl()?>">
+        <link rel="prev" href="<?=$this->getPartialVariable('previousPageUrl')?>">
     <?php endif;?>
 
-    <?php if ($palto->getNextPageUrl()) :?>
-        <link rel="next" href="<?=$palto->getNextPageUrl()?>">
+    <?php if ($this->getPartialVariable('nextPageUrl')) :?>
+        <link rel="next" href="<?=$this->getPartialVariable('nextPageUrl')?>">
     <?php endif;?>
 <!--    <script data-ad-client="ca-pub-4251434934288140" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
 </head>
@@ -28,15 +34,15 @@ $palto = Palto::getInstance();?>
                 <table class="top_tbl">
                     <tr>
                         <td>
-                            <?php if (file_exists($palto->getPublicDirectory() . '/images/logo.png')) :?>
+                            <?php if (file_exists($this->getPublicDirectory() . '/images/logo.png')) :?>
                                 <a href="/"><img src="/images/logo.png" alt="My Logo" class="mylogo"/></a>
                             <?php endif;?>
                             <div class="main_menu">
                                 <table class="tbl_menu">
                                     <tr>
                                         <td>
-                                            <?php foreach ($palto->getCategories(0, 1, 5) as $popularLevel1Category) :?>
-                                                <a class="menu" href="<?=$palto->generateCategoryUrl($popularLevel1Category)?>" rel="nofollow"><?=$popularLevel1Category['title']?></a> <span class="whitem">|</span>
+                                            <?php foreach ($this->getCategories(0, 1, 5) as $popularLevel1Category) :?>
+                                                <a class="menu" href="<?=$this->generateCategoryUrl($popularLevel1Category)?>" rel="nofollow"><?=$popularLevel1Category['title']?></a> <span class="whitem">|</span>
                                             <?php endforeach;?>
 
                                         </td>

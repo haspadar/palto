@@ -8,14 +8,15 @@ use Monolog\Logger;
 
 class Palto
 {
-    private static Palto $instance;
-    private string $title;
-    private string $h1;
-    private string $description;
+//    private string $title;
+//    private string $h1;
+//    private string $description;
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private \MeekroDB $db;
-    private string $regionUrl = 'default';
+    private string $defaultRegionUrl = 'default';
+    private string $defaultRegionTitle = 'Default';
+    private string $regionUrl = '';
     private string $categoryUrl = '';
     private int $adId = 0;
     private ?array $region = null;
@@ -31,6 +32,8 @@ class Palto
 
     private int $pagesCount;
 
+    private array $partialVariables = [];
+
     public function __construct($rootDirectory = '', string $url = '')
     {
         $this->initRootDirectory($rootDirectory);
@@ -44,19 +47,17 @@ class Palto
         $this->initAdId();
         $this->initRegion();
         $this->initCategory();
-//        $this->initPageNumbers();
         $this->initAd();
-        self::$instance = $this;
     }
 
-    public static function getInstance(): Palto
+    public function setDefaultRegionTitle(string $regionTitle)
     {
-        return self::$instance;
+        $this->defaultRegionTitle = $regionTitle;
     }
 
     public function setDefaultRegionUrl(string $regionUrl)
     {
-        $this->regionUrl = $regionUrl;
+        $this->defaultRegionUrl = $regionUrl;
     }
 
     public function setAdsLimit(int $limit)
@@ -64,39 +65,19 @@ class Palto
         $this->adsLimit = $limit;
     }
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title)
-    {
-        $this->title = $title;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-    }
-
     public function getLayout(): string
     {
         $parts = $this->getUrlParts();
+        $isRegionPage = !$this->categoryUrl && $this->regionUrl && $this->region;
+        $isCategoryPage = !$this->adId && $this->categoryUrl && $this->category;
         if (!$parts) {
-            $layout = 'index.inc';
-        } elseif (!$this->categoryUrl && $this->regionUrl && $this->region) {
-            $layout = 'region.inc';
-        } elseif (!$this->adId && $this->categoryUrl && $this->category) {
-            $layout = 'category.inc';
+            $layout = 'index.php';
+        } elseif ($isRegionPage || $isCategoryPage) {
+            $layout = 'list.php';
         } elseif ($this->adId && $this->ad) {
-            $layout = 'ad.inc';
+            $layout = 'ad.php';
         } else {
-            $layout = '404.inc';
+            $layout = '404.php';
         }
 
         return $layout;
@@ -179,100 +160,56 @@ class Palto
         return $this->addAdData($ad);
     }
 
-    public function getPaginationPages(): array
-    {
-        $sliderPages = array_values(array_filter([
-                                                     $this->pageNumber - 1,
-                                                     $this->pageNumber,
-                                                     $this->pageNumber + 1
-                                                 ], function ($pageNumber) {
-            return $pageNumber >= 1 && $pageNumber <= $this->pagesCount;
-        }));
-        $hasLeftDots = $this->pageNumber >= 4;
-        $hasRightDots = $this->pagesCount >= 5 && $this->pagesCount - $this->getPageNumber() >= 3;
-        if ($hasLeftDots) {
-            $urls[] = [
-                'title' => 1,
-                'url' => $this->getPageUrl(1),
-            ];
-            $urls[] = [
-                'title' => '...',
-                'url' => ''
-            ];
-        }
-
-        foreach ($sliderPages as $sliderPage) {
-            $urls[] = [
-                'title' => $sliderPage,
-                'url' => $this->getPageUrl($sliderPage)
-            ];
-        }
-
-        if ($hasRightDots) {
-            $urls[] = [
-                'title' => '...',
-                'url' => ''
-            ];
-            $urls[] = [
-                'title' => $this->pagesCount,
-                'url' => $this->getPageUrl($this->pagesCount)
-            ];
-        }
-
-        return $urls;
-    }
-
     public function getPaginationUrls(): array
     {
         $urls = [];
-        $sliderPages = array_values(array_filter([
-             $this->pageNumber - 1,
-             $this->pageNumber,
-             $this->pageNumber + 1
-         ], function ($pageNumber) {
-            return $pageNumber >= 1 && $pageNumber <= $this->pagesCount;
-        }));
-        $hasLeftDots = $this->pageNumber >= 4;
-        $hasRightDots = $this->pagesCount >= 5 && $this->pagesCount - $this->getPageNumber() >= 3;
-        if ($hasLeftDots) {
-            $urls[] = [
-                'title' => 1,
-                'url' => $this->getPageUrl(1),
-            ];
-            $urls[] = [
-                'title' => '...',
-                'url' => ''
-            ];
-        } elseif ($this->pageNumber == 3) {
-            $urls[] = [
-                'title' => 1,
-                'url' => $this->getPageUrl(1)
-            ];
-        }
+        if ($this->pagesCount <= 5) {
+            for ($pageNumber = 1; $pageNumber <= $this->pagesCount; $pageNumber++) {
+                $urls[] = [
+                    'title' => $pageNumber,
+                    'url' => $this->pageNumber == $pageNumber
+                        ? ''
+                        : $this->getPageUrl($pageNumber),
+                ];
+            }
+        } else {
+            $sliderPages = array_values(array_filter([
+                 $this->pageNumber - 1,
+                 $this->pageNumber,
+                 $this->pageNumber + 1
+             ], function ($pageNumber) {
+                return $pageNumber >= 1 && $pageNumber <= $this->pagesCount;
+            }));
+            $hasLeftDots = $this->pageNumber >= 4;
+            $hasRightDots = $this->pagesCount - $this->getPageNumber() >= 3;
+            if ($hasLeftDots) {
+                $urls[] = [
+                    'title' => 1,
+                    'url' => $this->getPageUrl(1),
+                ];
+                $urls[] = [
+                    'title' => '...',
+                    'url' => ''
+                ];
+            }
 
-        foreach ($sliderPages as $sliderPage) {
-            $urls[] = [
-                'title' => $sliderPage,
-                'url' => $this->pageNumber == $sliderPage
-                    ? ''
-                    : $this->getPageUrl($sliderPage)
-            ];
-        }
+            foreach ($sliderPages as $sliderPage) {
+                $urls[] = [
+                    'title' => $sliderPage,
+                    'url' => $this->getPageUrl($sliderPage)
+                ];
+            }
 
-        if ($hasRightDots) {
-            $urls[] = [
-                'title' => '...',
-                'url' => ''
-            ];
-            $urls[] = [
-                'title' => $this->pagesCount,
-                'url' => $this->getPageUrl($this->pagesCount)
-            ];
-        } elseif ($this->pageNumber == 3) {
-            $urls[] = [
-                'title' => $this->pagesCount,
-                'url' => $this->getPageUrl($this->pagesCount)
-            ];
+            if ($hasRightDots) {
+                $urls[] = [
+                    'title' => '...',
+                    'url' => ''
+                ];
+                $urls[] = [
+                    'title' => $this->pagesCount,
+                    'url' => $this->getPageUrl($this->pagesCount)
+                ];
+            }
         }
 
         return $urls;
@@ -317,15 +254,15 @@ class Palto
 
         echo 'Info:' . PHP_EOL;
         print_r([
-                    'layout' => $this->getLayout(),
-                    'region_url' => $this->getRegionUrl(),
-                    'category_url' => $this->getCategoryUrl(),
-                    'ad_id' => $this->getAdId(),
-                    'page_number' => $this->getPageNumber(),
-                    'region' => $this->getCurrentRegion(),
-                    'category' => $this->getCurrentCategory(),
-                    'ad' => $this->getCurrentAd()
-                ]);
+            'layout' => $this->getLayout(),
+            'region_url' => $this->getRegionUrl(),
+            'category_url' => $this->getCategoryUrl(),
+            'ad_id' => $this->getAdId(),
+            'page_number' => $this->getPageNumber(),
+            'region' => $this->getCurrentRegion(),
+            'category' => $this->getCurrentCategory(),
+            'ad' => $this->getCurrentAd()
+        ]);
     }
 
     public function getAdsLimit(): int
@@ -340,16 +277,17 @@ class Palto
 
     public function getCurrentRegion(): ?array
     {
-        return $this->region ?: [
-            'id' => 0,
-            'title' => $this->regionUrl,
-            'url' => $this->regionUrl,
-        ];
+        return $this->region;
     }
 
     public function getCurrentCategory(): ?array
     {
-        return $this->category;
+        return $this->category ?: [
+            'id' => 0,
+            'title' => '',
+            'children' => [],
+            'parents' => []
+        ];
     }
 
     /**
@@ -438,7 +376,18 @@ class Palto
 
     public function generateRegionUrl(?array $region): string
     {
-        return '/' . ($this->region['url'] ?? '');
+        return '/' . ($region['url'] ?? $this->region['url']);
+    }
+
+    public function partial(string $file, array $variables = [])
+    {
+        $this->partialVariables = $variables;
+        require $this->getLayoutDirectory() . '/partials/' . $file;
+    }
+
+    public function getPartialVariable(string $name)
+    {
+        return $this->partialVariables[$name];
     }
 
     public function generateCategoryUrl(array $category, ?array $region = null): string
@@ -565,7 +514,10 @@ class Palto
 
     public function getCurrentCategoryBreadcrumbUrls(): array
     {
-        return $this->getCategoryBreadcrumbUrls($this->category['parents'], $this->region);
+        return array_merge([[
+            'title' => $this->getCurrentRegion()['title'] ?? $this->getCurrentRegion()['title'],
+            'url' => $this->generateRegionUrl($this->getCurrentRegion()),
+        ]], $this->getCategoryBreadcrumbUrls($this->getCurrentCategory()['parents'], $this->getCurrentRegion()));
     }
 
     public function getCategoryBreadcrumbUrls(array $parentCategories, ?array $region = null): array
@@ -653,7 +605,13 @@ class Palto
 
     private function initRegion()
     {
-        if ($this->regionUrl) {
+        if ($this->regionUrl == $this->defaultRegionUrl || !$this->regionUrl) {
+            $this->region = [
+                'id' => 0,
+                'title' => $this->defaultRegionTitle,
+                'url' => $this->defaultRegionUrl,
+            ];
+        } else {
             $this->region = $this->db->queryFirstRow('SELECT * FROM regions WHERE url = %s', $this->regionUrl);
             if ($this->region) {
                 $this->region['parents'] = $this->getParentRegions($this->region);
@@ -667,9 +625,12 @@ class Palto
         if (count($parts) >= 2) {
             $lastPart = $parts[count($parts) - 1] ?? '';
             if ($this->isPageUrlPart($lastPart) || $this->isAdUrlPart($lastPart)) {
-                $this->categoryUrl = $parts[count($parts) - 2] ?? '';
-            } else {
-                $this->categoryUrl = $lastPart;
+                unset($parts[count($parts) - 1]);
+            }
+
+            unset($parts[0]);
+            if ($parts) {
+                $this->categoryUrl = $parts[count($parts) - 1];
             }
         }
     }
@@ -733,18 +694,21 @@ class Palto
         if ($categoryId || $regionId) {
             $query .= ' WHERE ';
             $values['category'] = $categoryId;
+            $where = [];
             if ($categoryId && is_array($categoryId)) {
-                $query .= 'a.category_id IN %ld_category';
+                $where[] = 'a.category_id IN %ld_category';
             } elseif ($categoryId) {
-                $query .= 'a.category_id = %d_category';
+                $where[] =  'a.category_id = %d_category';
             }
 
             $values['region'] = $regionId;
             if ($regionId && is_array($regionId)) {
-                $query .= ' AND a.region_id IN %ld_region';
+                $where[] = 'a.region_id IN %ld_region';
             } elseif ($regionId) {
-                $query .= ' AND a.region_id = %d_region';
+                $where[] = 'a.region_id = %d_region';
             }
+
+            $query .= implode(' AND ', $where);
         }
 
         return [$query, $values];

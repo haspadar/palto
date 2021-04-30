@@ -2,3 +2,4 @@
 /phinx.php
 /vendor/
 /.idea/
+/public/index.php

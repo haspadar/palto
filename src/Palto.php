@@ -512,12 +512,15 @@ class Palto
         return $short;
     }
 
-    public function getCurrentCategoryBreadcrumbUrls(): array
+    public function getListBreadcrumbUrls(): array
     {
-        return array_merge([[
-            'title' => $this->getCurrentRegion()['title'] ?? $this->getCurrentRegion()['title'],
-            'url' => $this->generateRegionUrl($this->getCurrentRegion()),
-        ]], $this->getCategoryBreadcrumbUrls($this->getCurrentCategory()['parents'], $this->getCurrentRegion()));
+        return array_merge(
+            [[
+                'title' => $this->getCurrentRegion()['title'] ?? $this->getCurrentRegion()['title'],
+                'url' => $this->generateRegionUrl($this->getCurrentRegion()),
+            ]],
+            $this->getCategoryBreadcrumbUrls($this->getCurrentCategory()['parents'], $this->getCurrentRegion())
+        );
     }
 
     public function getCategoryBreadcrumbUrls(array $parentCategories, ?array $region = null): array
@@ -629,6 +632,7 @@ class Palto
             }
 
             unset($parts[0]);
+            $parts = array_values($parts);
             if ($parts) {
                 $this->categoryUrl = $parts[count($parts) - 1];
             }

@@ -13,15 +13,20 @@ $this->initPagination($count);
 $this->partial('header.inc', [
     'title' => 'Title: ' . implode(
         ' - ',
-        array_merge(
+        array_filter(array_merge(
             array_column($this->getCurrentCategory()['parents'], 'title'),
-            [$this->getCurrentCategory()['title']]
-        )
+            [$this->getCurrentCategory()['title']],
+            [$this->getCurrentRegion()['title']]
+        ))
     ),
     'description' => 'Category Description: '
         . implode(
             ' - ',
-            array_merge(array_column($this->getCurrentCategory()['parents'], 'title'), [$this->getCurrentCategory()['title']])
+            array_filter(array_merge(
+                array_column($this->getCurrentCategory()['parents'], 'title'),
+                [$this->getCurrentCategory()['title']],
+                [$this->getCurrentRegion()['title']]
+            ))
         ),
     'nextPageUrl' => $this->getNextPageUrl(),
     'previousPageUrl' => $this->getPreviousPageUrl(),
@@ -34,17 +39,22 @@ $this->partial('header.inc', [
                 <div class="block bread">
                     <div class="bl1">
                         <div class="b1" itemscope itemtype="http://schema.org/BreadcrumbList">
-                            <?php foreach ($this->getCurrentCategoryBreadcrumbUrls() as $breadcrumbKey => $breadcrumbItem) :?>
+                            <?php foreach ($this->getListBreadcrumbUrls() as $breadcrumbKey => $breadcrumbItem) :?>
                                 <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                                     <a itemprop="item" href="<?=$breadcrumbItem['url']?>" class="bread">
                                         <span itemprop="name"><?= $breadcrumbItem['title'] ?></span>
                                     </a>
                                     <meta itemprop="position" content="<?=$breadcrumbKey + 1?>"/>
                                 </span>
-                                <span class="sep">»</span>
+                                <?php if ($this->getCurrentCategory()['title']) :?>
+                                    <span class="sep">»</span>
+                                <?php endif;?>
                             <?php endforeach;?>
 
-                            <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><span itemprop="name"><?= $this->getCurrentCategory()['title'] ?></span><meta itemprop="position" content="<?=$breadcrumbKey ?? 0 + 1?>"/></span>
+                            <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                                <span itemprop="name"><?= $this->getCurrentCategory()['title'] ?></span>
+                                <meta itemprop="position" content="<?=$breadcrumbKey ?? 0 + 1?>"/>
+                            </span>
                         </div>
                     </div>
                 </div>

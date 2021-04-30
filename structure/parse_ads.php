@@ -13,7 +13,7 @@ $scheduler->run(
     function () use ($palto) {
         foreach ($palto->getDb()->query("SELECT * FROM categories WHERE level = %d", 2) as $level2) {
             $palto->getLogger()->debug('Parsing category ' . $level2['title']);
-            $fullLevel2Url = 'https://losangeles.craigslist.org' . $level2['url'];
+            $fullLevel2Url = 'https://losangeles.craigslist.org' . $level2['donor_url'];
             $level2Response = PylesosService::download($fullLevel2Url, $palto->getEnv());
             $level2Document = new HtmlDocument($level2Response->getResponse());
             $ads = $level2Document->find('.result-row');
@@ -39,8 +39,8 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'url' => $adUrl,
             'category_id' => $level2['id'],
             'text' => trim(explode(
-                               '</div></div>',
-                               $adDocument->find('#postingbody', 0)->innertext)[1]
+               '</div></div>',
+               $adDocument->find('#postingbody', 0)->innertext)[1]
             ),
             'address' => $adDocument->find('#titletextonly small', 0)
                 ? strtr(trim($adDocument->find('#titletextonly small', 0)->innertext), [
@@ -51,6 +51,8 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'post_time' => (new DateTime($adDocument->find('.postinginfos .postinginfo time', 0)->datetime))
                 ->format('Y-m-d H:i:s'),
             'region_id' => $regionId,
+            'price' => 0,
+            'currency' => '',
         ];
         addAd($ad, getImages($adDocument), $palto);
     } else {
@@ -81,7 +83,7 @@ function getRegionId(HtmlDocument $adDocument, Palto $palto) {
     $link = $adDocument->find('.subarea a', 0);
     if ($link) {
         $regionTitle = $link->innertext;
-        $regionUrl = $link->href;
+        $regionUrl = transformUrl($link->href);
         $found = $palto->getDb()->queryFirstRow('SELECT * FROM regions WHERE url = %s', $regionUrl);
         if (!$found) {
             $palto->getDb()->insert('regions', [
@@ -126,4 +128,8 @@ function addAd(array $data, array $images, Palto $palto) {
 
 function isUrlsRegionsEquals($url1, $url2) {
     return explode('.', $url1)[0] == explode('.', $url2)[0];
+}
+
+function transformUrl($url) {
+    return str_replace('/', '_', substr($url, 1, -1));
 }

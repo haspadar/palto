@@ -28,18 +28,35 @@ class Install
             $projectPath = $this->projectPath;
             $paltoPath = $this->paltoPath;
             $databaseName = $this->databaseName;
-            $this->runCommands(
-                array_merge([
-                    "cp -R $paltoPath/examples/* $projectPath/",
-                    "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php"
-                ], $osCommands, [
-                    'mysql -e "' . $this->getMySqlSystemQuery() . '"',
-                    "mysql $databaseName < $paltoPath" . '/db/palto.sql',
-                    "cp $paltoPath/.env.example $projectPath/.env"
-                ])
-            );
+            $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
             $this->updateEnvOptions();
             $this->showWelcome();
+        }
+    }
+
+    private function getLocalCommands(): array
+    {
+        $projectPath = $this->projectPath;
+        $paltoPath = $this->paltoPath;
+        $databaseName = $this->databaseName;
+        $isDevelopment = file_exists($this->projectPath . '/../palto');
+        if ($isDevelopment) {
+            return [
+                "ln -s $paltoPath/structure/* $projectPath/",
+                'mysql -e "' . $this->getMySqlSystemQuery() . '"',
+                "mysql $databaseName < $paltoPath" . '/db/palto.sql',
+                "cp $paltoPath/.env.example $projectPath/.env",
+                "rm $projectPath/composer.json",
+                "ln -s $paltoPath/configs/composer.json $projectPath/"
+            ];
+        } else {
+            return [
+                "cp -R $paltoPath/structure/* $projectPath/",
+                "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
+                'mysql -e "' . $this->getMySqlSystemQuery() . '"',
+                "mysql $databaseName < $paltoPath" . '/db/palto.sql',
+                "cp $paltoPath/.env.example $projectPath/.env",
+            ];
         }
     }
 
@@ -91,9 +108,11 @@ class Install
 
     private function getNginxPhpConfig(string $phpMajorVersion, string $phpMinorVersion): string
     {
-        return "upstream php$phpMajorVersion-fpm{
-    server unix:/run/php/php$phpMinorVersion-fpm.sock;
-}";
+        return sprintf(
+            file_get_contents($this->paltoPath . '/configs/nginx/php-fpm.conf'),
+            $phpMajorVersion,
+            $phpMinorVersion
+        );
     }
 
     private function getNginxConfig(string $phpMajorVersion): string
@@ -101,34 +120,11 @@ class Install
         $projectName = $this->projectName;
         $path = $this->projectPath;
 
-        return sprintf('server {
-	listen 80;
-	listen [::]:80;
-	root %s;
-	index index.php index.html;
-	server_name %s/public;
-	location ~ \.php$ {
-          try_files $uri = 404;
-          include fastcgi_params;
-          fastcgi_pass php%s-fpm;
-          fastcgi_index index.php;
-          fastcgi_intercept_errors on;
-          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        }
- 
-    location / {
-          try_files $uri $uri/ @rewrite;
-          expires max;
-    }
-    
-    location @rewrite {
-          rewrite ^/(.*)$ /index.php;
-    }
-}
-',
-        $path,
-           "$projectName *.$projectName",
-           $phpMajorVersion
+        return sprintf(
+            file_get_contents($this->paltoPath . '/configs/nginx/domain'),
+            $path,
+                   "$projectName *.$projectName",
+                   $phpMajorVersion
         );
     }
 
@@ -143,12 +139,12 @@ class Install
 
     private function getOSCommands(): array
     {
-        $projectName = $this->projectName;
         if ($this->isMac()) {
             $commands = [
                 'brew install mariadb',
             ];
         } elseif ($this->isLinux()) {
+            $projectName = $this->projectName;
             $phpMinorVersion = $this->getLinuxLastPhpVersion();
             $phpMajorVersion = intval($phpMinorVersion);
             $phpFullVersion = 'php' . $phpMinorVersion;

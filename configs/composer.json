@@ -1,0 +1,20 @@
+{
+    "name": "haspadar/dev",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Kanstantsin",
+            "email": "haspadar@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "haspadar/palto": "@dev"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../palto"
+        }
+    ]
+}

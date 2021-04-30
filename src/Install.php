@@ -24,14 +24,12 @@ class Install
     public function run()
     {
         $osCommands = $this->getOSCommands();
-        if ($osCommands) {
-            $projectPath = $this->projectPath;
-            $paltoPath = $this->paltoPath;
-            $databaseName = $this->databaseName;
-            $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
-            $this->updateEnvOptions();
-            $this->showWelcome();
-        }
+        $projectPath = $this->projectPath;
+        $paltoPath = $this->paltoPath;
+        $databaseName = $this->databaseName;
+        $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
+        $this->updateEnvOptions();
+        $this->showWelcome();
     }
 
     private function getLocalCommands(): array
@@ -39,7 +37,7 @@ class Install
         $projectPath = $this->projectPath;
         $paltoPath = $this->paltoPath;
         $databaseName = $this->databaseName;
-        $isDevelopment = file_exists($this->projectPath . '/../palto');
+        $isDevelopment = $this->isDevelopment();
         if ($isDevelopment) {
             return [
                 "ln -s $paltoPath/structure/* $projectPath/",
@@ -47,7 +45,8 @@ class Install
                 "mysql $databaseName < $paltoPath" . '/db/palto.sql',
                 "cp $paltoPath/.env.example $projectPath/.env",
                 "rm $projectPath/composer.json",
-                "ln -s $paltoPath/configs/composer.json $projectPath/"
+                "ln -s $paltoPath/configs/composer.json $projectPath/",
+                "composer update"
             ];
         } else {
             return [
@@ -139,7 +138,9 @@ class Install
 
     private function getOSCommands(): array
     {
-        if ($this->isMac()) {
+        if ($this->isDevelopment()) {
+            $commands = [];
+        } elseif ($this->isMac()) {
             $commands = [
                 'brew install mariadb',
             ];
@@ -161,7 +162,7 @@ class Install
             ];
         } else {
             $this->log('Your operating system ' . PHP_OS . ' is not supported');
-            $commands  = [];
+            exit;
         }
 
         return $commands;
@@ -201,5 +202,10 @@ class Install
                 'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
             ])
         );
+    }
+
+    private function isDevelopment(): bool
+    {
+        return file_exists($this->projectPath . '/../palto');
     }
 }

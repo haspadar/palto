@@ -24,9 +24,6 @@ class Install
     public function run()
     {
         $osCommands = $this->getOSCommands();
-        $projectPath = $this->projectPath;
-        $paltoPath = $this->paltoPath;
-        $databaseName = $this->databaseName;
         $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
         $this->updateEnvOptions();
         $this->showWelcome();
@@ -41,6 +38,7 @@ class Install
         if ($isDevelopment) {
             return [
                 "ln -s $paltoPath/structure/* $projectPath/",
+                "cp -Rf $paltoPath/structure/public $projectPath/",
                 'mysql -e "' . $this->getMySqlSystemQuery() . '"',
                 "mysql $databaseName < $paltoPath" . '/db/palto.sql',
                 "cp $paltoPath/.env.example $projectPath/.env",

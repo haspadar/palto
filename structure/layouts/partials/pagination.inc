@@ -9,7 +9,6 @@ $paginationUrls = $this->getPartialVariable('paginationUrls');
         <table class="pager">
             <tr>
                 <td>
-                    <?php var_dump($paginationUrls)?>
                     <?php foreach ($paginationUrls as $page) :?>
                         <?php if ($page['url']) :?>
                             <a href="<?=$page['url']?>"><?=$page['title']?></a>

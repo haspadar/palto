@@ -3,6 +3,8 @@ namespace Palto;
 
 class Status
 {
+    const PARSE_ADS_SCRIPT = 'parse_ads.php';
+
     public static function getMySqlDirectory(\MeekroDB $db): string
     {
         if (class_exists('DB')) {

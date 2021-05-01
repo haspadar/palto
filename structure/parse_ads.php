@@ -1,6 +1,7 @@
 <?php
 
 use Palto\Palto;
+use Palto\Status;
 use Pylesos\PylesosService;
 use Pylesos\Scheduler;
 use simplehtmldom\HtmlDocument;
@@ -9,10 +10,11 @@ const DONOR_URL = 'https://losangeles.craigslist.org';
 
 require 'vendor/autoload.php';
 
+$pid = Status::getParserPid(Status::PARSE_ADS_SCRIPT);
 $palto = new Palto();
 $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
-    function () use ($palto) {
+    function () use ($palto, $pid) {
         $level2Categories = $palto->getDb()->query("SELECT * FROM categories WHERE level = %d", 2);
         if ($level2Categories) {
             shuffle($level2Categories);
@@ -20,7 +22,7 @@ $scheduler->run(
             foreach ($level2Categories as $level2Key => $level2) {
                 $logContent = [
                     'iteration' => ($level2Key + 1) . '/' . $level2CategoriesCount,
-                    'pid' => getmygid()
+                    'pid' => $pid
                 ];
                 $palto->getLogger()->info('Parsing category ' . $level2['title'], $logContent);
                 parseCategory($palto, $level2, $level2['donor_url'], $logContent);

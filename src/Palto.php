@@ -751,7 +751,7 @@ class Palto
     private function initLogger()
     {
         $this->logger = new Logger('palto');
-        $this->logger->pushHandler(new StreamHandler($this->getEnv()['LOG_PATH']));
+        $this->logger->pushHandler(new StreamHandler($this->getEnv()['PALTO_LOG_PATH']));
     }
 
     private function addAdsData(array $ads): array

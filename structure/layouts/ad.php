@@ -41,7 +41,7 @@ $this->partial('header.inc', [
                     <div class="main-ob">
                         <div class="block">
                             <div class="bl1">
-                                <h1><?=$this->getCurrentAd()['title']?> <span style="color:#999"> in <?=$this->getCurrentRegion()['title']?></span></h1>
+                                <h1><?=$this->getCurrentAd()['title']?> <span style="color:#999"> in <?=$this->getCurrentAd()['address'] ? $this->getCurrentAd()['address'] . ', ' : ''?><?=$this->getCurrentRegion()['title']?></span></h1>
                                 <?php if ($this->getCurrentAd()['images']) :?>
                                     <!-- Slideshow container -->
                                     <div class="slideshow-container">
@@ -86,7 +86,6 @@ $this->partial('header.inc', [
                                         <div class="price">🏷 <?=$this->getCurrentAd()['price']?> <span><?=$this->getCurrentAd()['currency']?></span> </div>
                                         <div class="si3">
                                             <div class="si3a">
-                                                <div class="map"><?=$this->getCurrentAd()['address'] ?? ''?></div>
                                                 <div class="param">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['post_time']))->format('d.m.Y')?> </div>
                                             </div>
                                         </div>

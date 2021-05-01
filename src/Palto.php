@@ -154,7 +154,7 @@ class Palto
 
     public function isAdUrlExists(string $url): bool
     {
-        $found = $this->getDb()->queryFirstRow('SELECT * FROM ads WHERE url = ?', $url);
+        $found = $this->getDb()->queryFirstRow('SELECT * FROM ads WHERE url = %s', $url);
 
         return $found ? true : false;
     }

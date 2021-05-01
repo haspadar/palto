@@ -14,9 +14,13 @@ $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto) {
         $level2Categories = $palto->getDb()->query("SELECT * FROM categories WHERE level = %d", 2);
-        shuffle($level2Categories);
-        foreach ($level2Categories as $level2) {
-            parseCategory($palto, $level2, $level2['donor_url']);
+        if ($level2Categories) {
+            shuffle($level2Categories);
+            foreach ($level2Categories as $level2) {
+                parseCategory($palto, $level2, $level2['donor_url']);
+            }
+        } else {
+            $palto->getLogger()->debug('Categories not found');
         }
     }
 );
@@ -53,12 +57,12 @@ function parseAd(Palto $palto, $adUrl, $level2) {
     if ($regionLink) {
         $regionTitle = $regionLink->innertext;
         $regionId = $palto->getRegionId([
-            'donor_url' => $regionLink->href,
-            'url' => $palto->transformUrl($regionLink->href),
-            'title' => $regionTitle,
-            'level' => 1,
-            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
-        ]);
+                                            'donor_url' => $regionLink->href,
+                                            'url' => $palto->transformUrl($regionLink->href),
+                                            'title' => $regionTitle,
+                                            'level' => 1,
+                                            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+                                        ]);
     }
 
     $titleElement = $adDocument->find('#titletextonly', 0);
@@ -68,8 +72,8 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'url' => $adUrl,
             'category_id' => $level2['id'],
             'text' => trim(explode(
-               '</div></div>',
-               $adDocument->find('#postingbody', 0)->innertext)[1]
+                               '</div></div>',
+                               $adDocument->find('#postingbody', 0)->innertext)[1]
             ),
             'address' => $adDocument->find('#titletextonly small', 0)
                 ? strtr(trim($adDocument->find('#titletextonly small', 0)->innertext), [

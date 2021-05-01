@@ -24,6 +24,7 @@ class Install
         $osCommands = $this->getOSCommands();
         $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
         $this->updateEnvOptions();
+        $this->updateCron();
         $this->showWelcome();
     }
 
@@ -170,6 +171,24 @@ class Install
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         return substr(str_shuffle($chars),0, $length);
+    }
+
+    private function updateCron()
+    {
+        $cronFilePath = '/etc/crontab';
+        $everyHourCommands = [
+            '0 * * * *  root cd ' . $this->projectPath . ' && php parse_ads.php'
+        ];
+        $cronFileContent = file_get_contents($cronFilePath);
+        foreach ($everyHourCommands as $command) {
+            $isCommandExists = mb_strpos($command, $cronFileContent) !== false;
+            if (!$isCommandExists) {
+                file_put_contents($cronFilePath, '#Every hour' . PHP_EOL . $command);
+                $this->log('Added cron command "' . $command . '"');
+            } else {
+                $this->log('cron command "' . $command . '" already exists');
+            }
+        }
     }
 
     private function updateEnvOptions()

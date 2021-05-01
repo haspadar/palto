@@ -3,8 +3,10 @@
 namespace Palto;
 
 use Dotenv\Dotenv;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Pylesos\PylesosService;
 
 class Palto
 {
@@ -751,7 +753,11 @@ class Palto
     private function initLogger()
     {
         $this->logger = new Logger('palto');
-        $this->logger->pushHandler(new StreamHandler($this->getEnv()['PALTO_LOG_PATH']));
+        $this->logger->pushHandler(new RotatingFileHandler(
+        $this->rootDirectory . '/logs/parser',
+        20,
+        Logger::INFO
+        ));
     }
 
     private function addAdsData(array $ads): array
@@ -826,9 +832,11 @@ class Palto
         return [$query, $values];
     }
 
-    /**
-     * @return bool
-     */
+    private function isCron(): bool
+    {
+        return $this->isCli() && !isset($_SERVER['TERM']);
+    }
+
     private function isCli(): bool
     {
         return php_sapi_name() === 'cli';
@@ -848,5 +856,25 @@ class Palto
         }
 
         return array_reverse($parents);
+    }
+
+    public function parseYoutubeVideoId(string $query): int
+    {
+        $html = PylesosService::download(
+            'https://www.youtube.com/results?search_query=' . urlencode($query),
+            $this->getEnv()
+        )->getResponse();
+        $pattern = '/watch?v=';
+        $videoUrlStart = strpos($html, '/watch?v=');
+        if ($videoUrlStart) {
+            $videoUrlFinish = strpos($html, '"', $videoUrlStart);
+            $videoId = substr(
+                $html,
+                $videoUrlStart + strlen($pattern),
+                $videoUrlFinish - $videoUrlStart - strlen($pattern)
+            );
+        }
+
+        return $videoId ?? 0;
     }
 }

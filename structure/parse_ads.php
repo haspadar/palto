@@ -16,22 +16,25 @@ $scheduler->run(
         $level2Categories = $palto->getDb()->query("SELECT * FROM categories WHERE level = %d", 2);
         if ($level2Categories) {
             shuffle($level2Categories);
-            foreach ($level2Categories as $level2) {
-                parseCategory($palto, $level2, $level2['donor_url']);
+            $level2CategoriesCount = count($level2Categories);
+            foreach ($level2Categories as $level2Key => $level2) {
+                $logContent = ['iteration' => ($level2Key + 1) . '/' . $level2CategoriesCount];
+                $palto->getLogger()->info('Parsing category ' . $level2['title'], $logContent);
+                parseCategory($palto, $level2, $level2['donor_url'], $logContent);
             }
         } else {
-            $palto->getLogger()->debug('Categories not found');
+            $palto->getLogger()->info('Categories not found');
         }
     }
 );
 
-function parseCategory(Palto $palto, array $category, string $url) {
-    $palto->getLogger()->info('Parsing category ' . $category['title']);
+function parseCategory(Palto $palto, array $category, string $url, array $logContent = []) {
     $fullLevel2Url = DONOR_URL . $url;
     $level2Response = PylesosService::download($fullLevel2Url, $palto->getEnv());
     $level2Document = new HtmlDocument($level2Response->getResponse());
     $ads = $level2Document->find('.result-row');
-    $palto->getLogger()->info('[' . $category['title'] . '] Found ' . count($ads) . ' ads');
+    $extendedLogContext = array_merge(['category' => $category['title']], $logContent);
+    $palto->getLogger()->info('Found ' . count($ads) . ' ads', $extendedLogContext);
     $addedAdsCount = 0;
     foreach ($ads as $resultRow) {
         $adUrl = $resultRow->find('h3.result-heading a', 0)->href;
@@ -47,11 +50,11 @@ function parseCategory(Palto $palto, array $category, string $url) {
         }
     }
 
-    $palto->getLogger()->info('[' . $category['title'] . '] Added ' . $addedAdsCount . ' ads from page ' . $url);
+    $palto->getLogger()->info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
     $nextPageSelector = '.paginator .buttons a.next]';
     if ($level2Document->find($nextPageSelector, 0)) {
         $palto->getLogger()->debug('Parsing next page ' . $level2Document->find($nextPageSelector, 0)->href);
-        parseCategory($palto, $category, $level2Document->find($nextPageSelector, 0)->href);
+        parseCategory($palto, $category, $level2Document->find($nextPageSelector, 0)->href, $logContent);
     }
 }
 
@@ -134,11 +137,16 @@ function getImages($adDocument) {
 }
 
 function getCoordinates($adDocument) {
-    $latitude = $adDocument->find('#map', 0)->{'data-latitude'};
-    $longitude = $adDocument->find('#map', 0)->{'data-longitude'};
-    $accuracy = $adDocument->find('#map', 0)->{'data-accuracy'};
+    $map = $adDocument->find('#map', 0);
+    if ($map) {
+        $latitude = $map->{'data-latitude'};
+        $longitude = $map->{'data-longitude'};
+        $accuracy = $map->{'data-accuracy'};
 
-    return implode(',', [$latitude, $longitude, $accuracy]);
+        return implode(',', [$latitude, $longitude, $accuracy]);
+    }
+
+    return '';
 }
 
 function isUrlsRegionsEquals($url1, $url2) {

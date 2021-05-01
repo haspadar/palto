@@ -3,3 +3,4 @@
 /vendor/
 /.idea/
 /public/index.php
+/logs/*

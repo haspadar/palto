@@ -20,6 +20,7 @@ $scheduler->run(
             foreach ($level2Categories as $level2Key => $level2) {
                 $logContent = [
                     'iteration' => ($level2Key + 1) . '/' . $level2CategoriesCount,
+                    'pid' => getmygid()
                 ];
                 $palto->getLogger()->info('Parsing category ' . $level2['title'], $logContent);
                 parseCategory($palto, $level2, $level2['donor_url'], $logContent);

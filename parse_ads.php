@@ -18,7 +18,10 @@ $scheduler->run(
             shuffle($level2Categories);
             $level2CategoriesCount = count($level2Categories);
             foreach ($level2Categories as $level2Key => $level2) {
-                $logContent = ['iteration' => ($level2Key + 1) . '/' . $level2CategoriesCount];
+                $logContent = [
+                    'iteration' => ($level2Key + 1) . '/' . $level2CategoriesCount,
+                    'pid' => getmygid()
+                ];
                 $palto->getLogger()->info('Parsing category ' . $level2['title'], $logContent);
                 parseCategory($palto, $level2, $level2['donor_url'], $logContent);
             }
@@ -33,7 +36,10 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
     $level2Response = PylesosService::download($fullLevel2Url, $palto->getEnv());
     $level2Document = new HtmlDocument($level2Response->getResponse());
     $ads = $level2Document->find('.result-row');
-    $extendedLogContext = array_merge(['category' => $category['title']], $logContent);
+    $extendedLogContext = array_merge([
+        'category' => $category['title'],
+        'url' => $fullLevel2Url
+    ], $logContent);
     $palto->getLogger()->info('Found ' . count($ads) . ' ads', $extendedLogContext);
     $addedAdsCount = 0;
     foreach ($ads as $resultRow) {

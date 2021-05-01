@@ -284,7 +284,9 @@ class Palto
             foreach ($sliderPages as $sliderPage) {
                 $urls[] = [
                     'title' => $sliderPage,
-                    'url' => $this->getPageUrl($sliderPage)
+                    'url' => $this->pageNumber == $sliderPage
+                        ? ''
+                        : $this->getPageUrl($sliderPage),
                 ];
             }
 
@@ -295,7 +297,9 @@ class Palto
                 ];
                 $urls[] = [
                     'title' => $this->pagesCount,
-                    'url' => $this->getPageUrl($this->pagesCount)
+                    'url' => $this->pageNumber == $this->pagesCount
+                        ? ''
+                        : $this->getPageUrl($this->pagesCount),
                 ];
             }
         }

@@ -107,16 +107,20 @@ $this->partial('header.inc', [
                                         </p>
                                         <?php if ($this->getCurrentAd()['address']) :?>
                                             <div>
-                                                📍Adresse: <?=$this->getCurrentAd()['address']?>
+                                                📍Address: <?=$this->getCurrentAd()['address']?>
                                             </div>
                                         <?php endif;?>
 
                                         <div>📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getCurrentAd()['seller_phone']?>">
                                                 <?php if ($this->getCurrentAd()['seller_phone']) :?>
-                                                    Vis telefon
+                                                    Show Phone
                                                 <?php else :?>
-                                                    Telefon ikke angivet
+                                                    No Phone
                                                 <?php endif;?></a>
+                                        </div>
+
+                                        <div>
+                                            <a href="<?=$this->getCurrentAd()['url']?>" target="_blank">Original</a>
                                         </div>
                                     </div>
                                 </div>

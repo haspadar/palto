@@ -6,20 +6,12 @@ $this->partial('header.inc', [
     'title' => $this->getCurrentAd()['title'] . ' in ' . implode(
             ' - ',
             array_filter(array_merge(
+                 [$this->getCurrentRegion()['title']],
                  array_column($this->getCurrentCategory()['parents'], 'title'),
                  [$this->getCurrentCategory()['title']],
-                 [$this->getCurrentRegion()['title']]
              ))
         ),
-    'description' => $this->getCurrentAd()['title'] . ' in '
-        . implode(
-            ' - ',
-            array_filter(array_merge(
-                 array_column($this->getCurrentCategory()['parents'], 'title'),
-                 [$this->getCurrentCategory()['title']],
-                 [$this->getCurrentRegion()['title']]
-             ))
-        ),
+    'description' => $this->generateShortText($this->getCurrentAd()['description']),
     'nextPageUrl' => $this->getNextPageUrl(),
     'previousPageUrl' => $this->getPreviousPageUrl(),
 ]);

@@ -656,8 +656,7 @@ class Palto
     {
         return $this->getListAdBreadcrumbUrls($this->getCurrentAd());
     }
-
-    public function generateShortText(string $text, int $length = 100): string
+    public function generateShortText(string $text, int $length = 135): string
     {
         $short = mb_substr($text, 0, $length);
         if ($short != $text) {

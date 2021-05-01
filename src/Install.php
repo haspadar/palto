@@ -185,6 +185,7 @@ class Install
             if (!$isCommandExists) {
                 file_put_contents($cronFilePath, '#Every hour' . PHP_EOL . $command);
                 $this->log('Added cron command "' . $command . '"');
+                $this->runCommands(['service cron reload']);
             } else {
                 $this->log('cron command "' . $command . '" already exists');
             }

@@ -26,23 +26,28 @@ $scheduler->run(
 );
 
 function parseCategory(Palto $palto, array $category, string $url) {
-    $palto->getLogger()->debug('Parsing category ' . $category['title']);
+    $palto->getLogger()->info('Parsing category ' . $category['title']);
     $fullLevel2Url = DONOR_URL . $url;
     $level2Response = PylesosService::download($fullLevel2Url, $palto->getEnv());
     $level2Document = new HtmlDocument($level2Response->getResponse());
     $ads = $level2Document->find('.result-row');
-    $palto->getLogger()->debug('Found ' . count($ads) . ' ads');
+    $palto->getLogger()->info('[' . $category['title'] . '] Found ' . count($ads) . ' ads');
+    $addedAdsCount = 0;
     foreach ($ads as $resultRow) {
         $adUrl = $resultRow->find('h3.result-heading a', 0)->href;
         if (isUrlsRegionsEquals($adUrl, $fullLevel2Url)) {
             if (!$palto->isAdUrlExists($adUrl)) {
-                parseAd($palto, $adUrl, $category);
+                $isAdded = parseAd($palto, $adUrl, $category);
+                if ($isAdded) {
+                    $addedAdsCount++;
+                }
             } else {
                 $palto->getLogger()->debug('Ad with url ' . $adUrl . ' already exists');
             }
         }
     }
 
+    $palto->getLogger()->info('[' . $category['title'] . '] Added ' . $addedAdsCount . ' ads from page ' . $url);
     $nextPageSelector = '.paginator .buttons a.next]';
     if ($level2Document->find($nextPageSelector, 0)) {
         $palto->getLogger()->debug('Parsing next page ' . $level2Document->find($nextPageSelector, 0)->href);
@@ -57,12 +62,12 @@ function parseAd(Palto $palto, $adUrl, $level2) {
     if ($regionLink) {
         $regionTitle = $regionLink->innertext;
         $regionId = $palto->getRegionId([
-                                            'donor_url' => $regionLink->href,
-                                            'url' => $palto->transformUrl($regionLink->href),
-                                            'title' => $regionTitle,
-                                            'level' => 1,
-                                            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
-                                        ]);
+            'donor_url' => $regionLink->href,
+            'url' => $palto->transformUrl($regionLink->href),
+            'title' => $regionTitle,
+            'level' => 1,
+            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
     }
 
     $titleElement = $adDocument->find('#titletextonly', 0);
@@ -97,8 +102,11 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'Added ad with ' . count($images) . ' images, ' . count($details) . ' details'
         );
 
+        return true;
     } else {
         $palto->getLogger()->debug('Ignored ad ' . $adUrl . ': empty title');
+
+        return false;
     }
 }
 

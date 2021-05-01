@@ -4,10 +4,12 @@ use Palto\Palto;
 use Pylesos\PylesosService;
 use simplehtmldom\HtmlDocument;
 
+const DONOR_URL = 'https://losangeles.craigslist.org';
+
 require 'vendor/autoload.php';
 
 $palto = new Palto();
-$level1Response = PylesosService::download('https://losangeles.craigslist.org/', $palto->getEnv());
+$level1Response = PylesosService::download(DONOR_URL . '/', $palto->getEnv());
 $level1Document = new HtmlDocument($level1Response->getResponse());
 foreach ($level1Document->find('.col') as $col) {
     $leve1Title = strip_tags($col->find('h3 a span', 0)->innertext);

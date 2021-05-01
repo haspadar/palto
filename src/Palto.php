@@ -208,7 +208,7 @@ class Palto
 
         foreach ($details as $detailField => $detailValue) {
             $fieldId = $this->getDetailsFieldId($ad['category_id'], $detailField);
-            $this->getDb()->insert('details_fields_values', [
+            $this->getDb()->insert('ads_details', [
                 'details_field_id' => $fieldId,
                 'ad_id' => $adId,
                 'value' => $detailValue

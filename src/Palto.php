@@ -760,13 +760,11 @@ class Palto
     {
         $this->logger = new Logger('palto');
         $this->logger->pushHandler(new StreamHandler('php://stdout'));
-        if ($this->isCron()) {
-            $this->logger->pushHandler(new RotatingFileHandler(
-                                           $this->rootDirectory . '/logs/parser',
-                                           20,
-                                           Logger::INFO
-                                       ));
-        }
+        $this->logger->pushHandler(new RotatingFileHandler(
+                                       $this->rootDirectory . '/logs/parser',
+                                       20,
+                                       Logger::INFO
+                                   ));
     }
 
     private function addAdsData(array $ads): array

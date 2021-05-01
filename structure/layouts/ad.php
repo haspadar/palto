@@ -69,7 +69,9 @@ $this->partial('header.inc', [
 
                                 <?php endif;?>
                                 <br>
-                                <div class="youtube myvideo" data-url="<?='/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>"></div>
+                                <div class="youtube myvideo" data-url="<?='/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
+                                    <img src="/img/loading.gif" alt="loading">
+                                </div>
 
                                 <?php if ($this->getCurrentAd()['details']) :?>
                                     <ul>

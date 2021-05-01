@@ -11,7 +11,7 @@ $this->partial('header.inc', [
                  [$this->getCurrentCategory()['title']],
              ))
         ),
-    'description' => $this->generateShortText($this->getCurrentAd()['description']),
+    'description' => $this->generateShortText($this->getCurrentAd()['text']),
     'nextPageUrl' => $this->getNextPageUrl(),
     'previousPageUrl' => $this->getPreviousPageUrl(),
 ]);

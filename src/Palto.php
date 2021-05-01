@@ -656,6 +656,7 @@ class Palto
     {
         return $this->getListAdBreadcrumbUrls($this->getCurrentAd());
     }
+
     public function generateShortText(string $text, int $length = 135): string
     {
         $short = mb_substr($text, 0, $length);
@@ -823,8 +824,10 @@ class Palto
     {
         if ($this->categoryUrl) {
             $this->category = $this->getUrlCategory($this->categoryUrl, $this->categoryLevel);
-            $this->category['parents'] = $this->getParentCategories($this->category);
-            $this->category['children'] = $this->getChildCategories($this->category);
+            if ($this->category) {
+                $this->category['parents'] = $this->getParentCategories($this->category);
+                $this->category['children'] = $this->getChildCategories($this->category);
+            }
         }
     }
 

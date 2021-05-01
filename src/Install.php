@@ -40,6 +40,7 @@ class Install
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',
             "cp $paltoPath/.env.example $projectPath/.env",
+            "mkdir $projectPath/logs"
         ];
     }
 

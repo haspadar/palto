@@ -152,6 +152,90 @@ class Palto
         return $this->ad ?? null;
     }
 
+    public function isAdUrlExists(string $url): bool
+    {
+        $found = $this->getDb()->queryFirstRow('SELECT * FROM ads WHERE url = ?', $url);
+
+        return $found ? true : false;
+    }
+
+    public function transformUrl(string $url): string
+    {
+        return str_replace('/', '_', substr($url, 1, -1));
+    }
+
+    public function getRegionId(array $region): int
+    {
+        $found = $this->getDb()->queryFirstRow('SELECT * FROM regions WHERE url = %s', $region['url']);
+        if (!$found) {
+            $this->getDb()->insert('regions', $region);
+            $this->getLogger()->debug('Added region ' . $region['title']);
+
+            return $this->getDb()->insertId();
+        }
+
+        $this->getLogger()->debug('Ignored existing region ' . $region['title']);
+
+        return $found['id'];
+    }
+
+    public function getCategoryId(array $category): int
+    {
+        $found = $this->getDb()->queryFirstRow('SELECT * FROM categories WHERE donor_url = %s', $category['donor_url']);
+        if (!$found) {
+            $this->getDb()->insert('categories', $category);
+            $this->getLogger()->debug('Added category ' . $category['title']);
+
+            return $this->getDb()->insertId();
+        }
+
+        $this->getLogger()->debug('Ignored existing category ' . $category['title']);
+
+        return $found['id'];
+    }
+
+    public function addAd(array $ad, array $images, array $details): int
+    {
+        $this->getDb()->insert('ads', $ad);
+        $adId = $this->getDb()->insertId();
+        foreach ($images as $image) {
+            $this->getDb()->insert('ads_images', [
+                'small' => $image['small'],
+                'big' => $image['big'],
+                'ad_id' => $adId,
+            ]);
+        }
+
+        foreach ($details as $detailField => $detailValue) {
+            $fieldId = $this->getDetailsFieldId($ad['category_id'], $detailField);
+            $this->getDb()->insert('details_fields_values', [
+                'details_field_id' => $fieldId,
+                'ad_id' => $adId,
+                'value' => $detailValue
+            ]);
+        }
+
+        return $adId;
+    }
+
+    public function getDetailsFieldId(int $categoryId, string $field): int
+    {
+        $fieldId = $this->getDb()->queryFirstField(
+            'SELECT * FROM details_fields WHERE category_id = %d AND field = %s LIMIT 1',
+            $categoryId,
+            $field
+        );
+        if (!$fieldId) {
+            $this->getDb()->insert('details_fields', [
+                'category_id' => $categoryId,
+                'field' => $field
+            ]);
+            $fieldId = $this->getDb()->insertId();
+        }
+
+        return $fieldId;
+    }
+
     public function getAd(int $adId): ?array
     {
         $query = $this->getAdsQuery();
@@ -691,7 +775,11 @@ class Palto
 
     private function getAdDetails(int $adId): array
     {
-        return [];
+        return array_column(
+            $this->getDb()->query('SELECT field, value FROM details_fields AS df INNER JOIN details_fields_values AS dfv ON df.id = dfv.details_field_id WHERE ad_id = %d', $adId),
+            'value',
+            'field'
+        );
     }
 
     private function getAdImages(int $adId): array

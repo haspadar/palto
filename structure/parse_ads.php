@@ -5,33 +5,62 @@ use Pylesos\PylesosService;
 use Pylesos\Scheduler;
 use simplehtmldom\HtmlDocument;
 
+const DONOR_URL = 'https://losangeles.craigslist.org';
+
 require 'vendor/autoload.php';
 
 $palto = new Palto();
 $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto) {
-        foreach ($palto->getDb()->query("SELECT * FROM categories WHERE level = %d", 2) as $level2) {
-            $palto->getLogger()->debug('Parsing category ' . $level2['title']);
-            $fullLevel2Url = 'https://losangeles.craigslist.org' . $level2['donor_url'];
-            $level2Response = PylesosService::download($fullLevel2Url, $palto->getEnv());
-            $level2Document = new HtmlDocument($level2Response->getResponse());
-            $ads = $level2Document->find('.result-row');
-            $palto->getLogger()->debug('Found ' . count($ads) . ' ads');
-            foreach ($ads as $resultRow) {
-                $adUrl = $resultRow->find('h3.result-heading a', 0)->href;
-                if (isUrlsRegionsEquals($adUrl, $fullLevel2Url)) {
-                    parseAd($palto, $adUrl, $level2);
-                }
-            }
+        $level2Categories = $palto->getDb()->query("SELECT * FROM categories WHERE level = %d", 2);
+        shuffle($level2Categories);
+        foreach ($level2Categories as $level2) {
+            parseCategory($palto, $level2, $level2['donor_url']);
         }
     }
 );
 
+function parseCategory(Palto $palto, array $category, string $url) {
+    $palto->getLogger()->debug('Parsing category ' . $category['title']);
+    $fullLevel2Url = DONOR_URL . $url;
+    $level2Response = PylesosService::download($fullLevel2Url, $palto->getEnv());
+    $level2Document = new HtmlDocument($level2Response->getResponse());
+    $ads = $level2Document->find('.result-row');
+    $palto->getLogger()->debug('Found ' . count($ads) . ' ads');
+    foreach ($ads as $resultRow) {
+        $adUrl = $resultRow->find('h3.result-heading a', 0)->href;
+        if (isUrlsRegionsEquals($adUrl, $fullLevel2Url)) {
+            if (!$palto->isAdUrlExists($adUrl)) {
+                parseAd($palto, $adUrl, $category);
+            } else {
+                $palto->getLogger()->debug('Ad with url ' . $adUrl . ' already exists');
+            }
+        }
+    }
+
+    $nextPageSelector = '.paginator .buttons a.next]';
+    if ($level2Document->find($nextPageSelector, 0)) {
+        $palto->getLogger()->debug('Parsing next page ' . $level2Document->find($nextPageSelector, 0)->href);
+        parseCategory($palto, $category, $level2Document->find($nextPageSelector, 0)->href);
+    }
+}
+
 function parseAd(Palto $palto, $adUrl, $level2) {
     $adResponse = PylesosService::download($adUrl, $palto->getEnv());
     $adDocument = new HtmlDocument($adResponse->getResponse());
-    $regionId = getRegionId($adDocument, $palto);
+    $regionLink = $adDocument->find('.subarea a', 0);
+    if ($regionLink) {
+        $regionTitle = $regionLink->innertext;
+        $regionId = $palto->getRegionId([
+            'donor_url' => $regionLink->href,
+            'url' => $palto->transformUrl($regionLink->href),
+            'title' => $regionTitle,
+            'level' => 1,
+            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+        ]);
+    }
+
     $titleElement = $adDocument->find('#titletextonly', 0);
     if ($titleElement) {
         $ad = [
@@ -50,14 +79,35 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'coordinates' => getCoordinates($adDocument),
             'post_time' => (new DateTime($adDocument->find('.postinginfos .postinginfo time', 0)->datetime))
                 ->format('Y-m-d H:i:s'),
-            'region_id' => $regionId,
+            'region_id' => $regionId ?? null,
             'price' => 0,
             'currency' => '',
+            'seller_name' => '',
+            'seller_postfix' => '',
+            'seller_phone' => '',
         ];
-        addAd($ad, getImages($adDocument), $palto);
+        $images = getImages($adDocument);
+        $details = getDetails($adDocument);
+        $palto->addAd($ad, $images, $details);
+        $palto->getLogger()->debug(
+            'Added ad with ' . count($images) . ' images, ' . count($details) . ' details'
+        );
+
     } else {
         $palto->getLogger()->debug('Ignored ad ' . $adUrl . ': empty title');
     }
+}
+
+function getDetails($adDocument) {
+    $details = [];
+    foreach ($adDocument->find('.vip-matrix-data table tr') as $property) {
+        $details[html_entity_decode($property->find('td', 0)->plaintext)]
+            = html_entity_decode($property->find('td', 1)->plaintext);
+        $details[html_entity_decode($property->find('td', 3)->plaintext)]
+            = html_entity_decode($property->find('td', 4)->plaintext);
+    }
+
+    return $details;
 }
 
 function getImages($adDocument) {
@@ -79,57 +129,6 @@ function getCoordinates($adDocument) {
     return implode(',', [$latitude, $longitude, $accuracy]);
 }
 
-function getRegionId(HtmlDocument $adDocument, Palto $palto) {
-    $link = $adDocument->find('.subarea a', 0);
-    if ($link) {
-        $regionTitle = $link->innertext;
-        $regionUrl = transformUrl($link->href);
-        $found = $palto->getDb()->queryFirstRow('SELECT * FROM regions WHERE url = %s', $regionUrl);
-        if (!$found) {
-            $palto->getDb()->insert('regions', [
-                'url' => $regionUrl,
-                'title' => $regionTitle,
-                'level' => 1
-            ]);
-            $palto->getLogger()->debug('Added region ' . $regionTitle);
-
-            return $palto->getDb()->insertId();
-        }
-
-        return $found['id'];
-    }
-
-    return null;
-}
-
-function addAd(array $data, array $images, Palto $palto) {
-    $url = $data['url'];
-    $found = $palto->getDb()->queryFirstRow('SELECT * FROM ads WHERE url = %s', $url);
-    if (!$found) {
-        $palto->getDb()->insert('ads', $data);
-        $adId = $palto->getDb()->insertId();
-        foreach ($images as $image) {
-            $palto->getDb()->insert('ads_images', [
-                'small' => $image['small'],
-                'big' => $image['big'],
-                'ad_id' => $adId,
-            ]);
-        }
-
-        $palto->getLogger()->debug('Added ad with ' . count($images) . ' images');
-
-        return $adId;
-    }
-
-    $palto->getLogger()->debug('Ignored ad with existing url');
-
-    return $found['id'];
-}
-
 function isUrlsRegionsEquals($url1, $url2) {
     return explode('.', $url1)[0] == explode('.', $url2)[0];
-}
-
-function transformUrl($url) {
-    return str_replace('/', '_', substr($url, 1, -1));
 }

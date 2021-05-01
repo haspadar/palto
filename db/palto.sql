@@ -4,6 +4,10 @@ CREATE TABLE `regions`
     `title`     varchar(200)     NOT NULL DEFAULT '',
     `parent_id` int(10) unsigned          DEFAULT NULL,
     `url`       varchar(200)     NOT NULL DEFAULT '',
+    `donor_url`   varchar(500)     NOT NULL DEFAULT '',
+    `icon_url`    varchar(1024)    NOT NULL DEFAULT '',
+    `icon_text`   text                      DEFAULT NULL,
+    `create_time` timestamp        NULL     DEFAULT NULL,
     `level`     int(10) unsigned NOT NULL DEFAULT 1,
     PRIMARY KEY (`id`),
     KEY `url` (`url`),
@@ -36,21 +40,21 @@ CREATE TABLE `categories`
 
 CREATE TABLE `ads`
 (
-    `id`          int(11)       NOT NULL AUTO_INCREMENT,
-    `url`         varchar(600)  NOT NULL DEFAULT '',
-    `category_id` int(11) unsigned       DEFAULT NULL,
-    `region_id`   int(10) unsigned       DEFAULT NULL,
-    `title`       varchar(1000) NOT NULL DEFAULT '',
-    `text`        text                   DEFAULT NULL,
-    `address`     varchar(1000) NOT NULL DEFAULT '',
-    `coordinates` varchar(1000) NOT NULL DEFAULT '',
-    `post_time`   timestamp     NULL     DEFAULT NULL,
-    `price`       decimal(10,2) NOT NULL DEFAULT '0',
-    `currency`    varchar(20) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '',
-    `seller_name` VARCHAR(100)  NOT NULL  DEFAULT '',
-    `seller_postfix` VARCHAR(100)  NOT NULL  DEFAULT '',
-    `seller_phone` VARCHAR(100)  NOT NULL  DEFAULT '',
-PRIMARY KEY (`id`),
+    `id`             int(11)                                  NOT NULL AUTO_INCREMENT,
+    `url`            varchar(600)                             NOT NULL DEFAULT '',
+    `category_id`    int(11) unsigned                                  DEFAULT NULL,
+    `region_id`      int(10) unsigned                                  DEFAULT NULL,
+    `title`          varchar(1000)                            NOT NULL DEFAULT '',
+    `text`           text                                              DEFAULT NULL,
+    `address`        varchar(1000)                            NOT NULL DEFAULT '',
+    `coordinates`    varchar(1000)                            NOT NULL DEFAULT '',
+    `post_time`      timestamp                                NULL     DEFAULT NULL,
+    `price`          decimal(10, 2)                           NOT NULL DEFAULT '0',
+    `currency`       varchar(20) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '',
+    `seller_name`    VARCHAR(100)                             NOT NULL DEFAULT '',
+    `seller_postfix` VARCHAR(100)                             NOT NULL DEFAULT '',
+    `seller_phone`   VARCHAR(100)                             NOT NULL DEFAULT '',
+    PRIMARY KEY (`id`),
     UNIQUE KEY `url` (`url`),
     KEY `category_id` (`category_id`),
     KEY `region_id` (`region_id`),
@@ -68,5 +72,30 @@ CREATE TABLE `ads_images`
     PRIMARY KEY (`id`),
     KEY `ad_id` (`ad_id`),
     CONSTRAINT `ads_images_ibfk_1` FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE `details_fields`
+(
+    `id`          int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `category_id` int(10) unsigned                DEFAULT NULL,
+    `field`       varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `category_field` (`category_id`, `field`),
+    CONSTRAINT `details_fields_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE `details_fields_values`
+(
+    `id`               int(11)                 NOT NULL AUTO_INCREMENT,
+    `details_field_id` int(10) unsigned                 DEFAULT NULL,
+    `ad_id`            int(10) unsigned                 DEFAULT NULL,
+    `value`            text CHARACTER SET utf8 NOT NULL DEFAULT '',
+    PRIMARY KEY (`id`),
+    KEY `details_field_id` (`details_field_id`),
+    KEY `ad_id` (`ad_id`),
+    CONSTRAINT `details_fields_values_ibfk_1` FOREIGN KEY (`details_field_id`) REFERENCES `details_fields` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `details_fields_values_ibfk_2` FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

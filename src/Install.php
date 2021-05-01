@@ -177,17 +177,15 @@ class Install
     private function updateCron()
     {
         $cronFilePath = '/etc/crontab';
-        $timePart = '0 * * * *  ';
-        $commandPart = 'root cd ' . $this->projectPath . ' && php ' . Status::PARSE_ADS_SCRIPT;
-        $everyHourCommand = $timePart . $commandPart;
+        $command = '0 * * * *  root cd ' . $this->projectPath . ' && php ' . Status::PARSE_ADS_SCRIPT;
         $cronFileContent = file_get_contents($cronFilePath);
-        $isCommandExists = mb_strpos($commandPart, Status::PARSE_ADS_SCRIPT) !== false;
+        $isCommandExists = mb_strpos($command, Status::PARSE_ADS_SCRIPT) !== false;
         if (!$isCommandExists) {
-            file_put_contents($cronFilePath, $cronFileContent . PHP_EOL . '#Every hour' . PHP_EOL . $everyHourCommand);
-            $this->log('Added cron command "' . $everyHourCommand . '"');
+            file_put_contents($cronFilePath, $cronFileContent . PHP_EOL . '#Every hour' . PHP_EOL . $command);
+            $this->log('Added cron command "' . $command . '"');
             $this->runCommands(['service cron reload']);
         } else {
-            $this->log('cron command for script "' . Status::PARSE_ADS_SCRIPT . '" already exists');
+            $this->log('cron command for script "' . $command . Status::PARSE_ADS_SCRIPT . '" already exists');
         }
     }
 

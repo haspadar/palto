@@ -101,7 +101,14 @@ $this->partial('header.inc', [
                                     $this->getAdsOffset()
                                 ) as $adIndex => $ad
                             ) :?>
-                                <?php $this->partial('ad.inc', ['adIndex' => $adIndex, 'ad' => $ad])?>
+                                <?php $this->partial('ad.inc', ['ad' => $ad])?>
+
+                                <?php if (in_array($adIndex + 1, [5, 15])) : ?>
+                                    <!--                                Counter-->
+                                <?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
+                                    <!--                                Counter-->
+                                <?php endif; ?>
+                                <hr>
                             <?php endforeach;?>
 
                             <?php $this->partial('pagination.inc', ['paginationUrls' => $this->getPaginationUrls()])?>

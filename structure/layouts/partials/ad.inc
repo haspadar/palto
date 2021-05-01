@@ -3,7 +3,6 @@
  * @var $this \Palto\Palto
  */
 $ad = $this->getPartialVariable('ad');
-$adIndex = $this->getPartialVariable('adIndex');
 ?>
 <div class="ob-block">
     <div class="img">
@@ -22,7 +21,7 @@ $adIndex = $this->getPartialVariable('adIndex');
                 <span><?= $ad['title'] ?></span></a></div>
         <div class="d"><?= $this->generateShortText($ad['text']) ?></div>
         <div class="br">
-            <?php foreach ($this->getAdBreadcrumbUrls($ad) as $breadcrumbKey => $breadcrumbItem) :?>
+            <?php foreach ($this->getListAdBreadcrumbUrls($ad) as $breadcrumbKey => $breadcrumbItem) :?>
                 <?php if ($breadcrumbKey) :?>
                     <span class="sep">»</span>
                 <?php endif;?>
@@ -36,9 +35,3 @@ $adIndex = $this->getPartialVariable('adIndex');
         </div>
     </div>
 </div>
-<?php if (in_array($adIndex + 1, [5, 15])) : ?>
-    <!--                                Counter-->
-<?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
-    <!--                                Counter-->
-<?php endif; ?>
-<hr>

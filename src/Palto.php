@@ -499,7 +499,7 @@ class Palto
 
     public function getCurrentAdBreadcrumbUrls(): array
     {
-        return $this->getAdBreadcrumbUrls($this->getCurrentAd());
+        return $this->getListAdBreadcrumbUrls($this->getCurrentAd());
     }
 
     public function generateShortText(string $text, int $length = 100): string
@@ -510,6 +510,20 @@ class Palto
         }
 
         return $short;
+    }
+
+    public function getAdBreadcrumbUrls(): array
+    {
+        return array_merge(
+            [[
+                'title' => $this->getCurrentRegion()['title'] ?? $this->getCurrentRegion()['title'],
+                'url' => $this->generateRegionUrl($this->getCurrentRegion()),
+            ]],
+            $this->getCategoryBreadcrumbUrls(
+                array_merge([$this->getCurrentCategory()], $this->getCurrentCategory()['parents']),
+                $this->getCurrentRegion()
+            )
+        );
     }
 
     public function getListBreadcrumbUrls(): array
@@ -536,7 +550,7 @@ class Palto
         return $urls;
     }
 
-    public function getAdBreadcrumbUrls(array $ad): array
+    public function getListAdBreadcrumbUrls(array $ad): array
     {
         $category = $this->getCategory($ad['category_id']);
         $categories = $this->getParentCategories($category);
@@ -669,9 +683,15 @@ class Palto
     {
         if ($ad) {
             $ad['images'] = $this->getAdImages($ad['id']);
+            $ad['details'] = $this->getAdDetails($ad['id']);
         }
 
         return $ad;
+    }
+
+    private function getAdDetails(int $adId): array
+    {
+        return [];
     }
 
     private function getAdImages(int $adId): array

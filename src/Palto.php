@@ -10,9 +10,6 @@ use Pylesos\PylesosService;
 
 class Palto
 {
-//    private string $title;
-//    private string $h1;
-//    private string $description;
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private \MeekroDB $db;
@@ -236,6 +233,11 @@ class Palto
         }
 
         return $fieldId;
+    }
+
+    public function getAdLastTime(): ?string
+    {
+        return $this->getDb()->queryFirstField("SELECT MAX(post_time) FROM ads");
     }
 
     public function getAd(int $adId): ?array
@@ -473,7 +475,7 @@ class Palto
 
     public function getPartialVariable(string $name)
     {
-        return $this->partialVariables[$name];
+        return $this->partialVariables[$name] ?? '';
     }
 
     public function generateCategoryUrl(array $category, ?array $region = null): string
@@ -754,9 +756,9 @@ class Palto
     {
         $this->logger = new Logger('palto');
         $this->logger->pushHandler(new RotatingFileHandler(
-        $this->rootDirectory . '/logs/parser',
-        20,
-        Logger::INFO
+            $this->rootDirectory . '/logs/parser',
+            20,
+            Logger::INFO
         ));
     }
 

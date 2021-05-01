@@ -776,7 +776,7 @@ class Palto
     private function getAdDetails(int $adId): array
     {
         return array_column(
-            $this->getDb()->query('SELECT field, value FROM details_fields AS df INNER JOIN details_fields_values AS dfv ON df.id = dfv.details_field_id WHERE ad_id = %d', $adId),
+            $this->getDb()->query('SELECT field, value FROM details_fields AS df INNER JOIN ads_details AS dfv ON df.id = dfv.details_field_id WHERE ad_id = %d', $adId),
             'value',
             'field'
         );

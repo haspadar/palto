@@ -16,7 +16,9 @@ class Palto
     private string $defaultRegionUrl = 'default';
     private string $defaultRegionTitle = 'Default';
     private string $regionUrl = '';
+    private array $categoriesUrls = [];
     private string $categoryUrl = '';
+    private int $categoryLevel = 0;
     private int $adId = 0;
     private ?array $region = null;
     private ?array $category = null;
@@ -42,7 +44,7 @@ class Palto
         $this->initLogger();
         $this->initDb();
         $this->initRegionUrl();
-        $this->initCategoryUrl();
+        $this->initCategoriesUrls();
         $this->initAdId();
         $this->initRegion();
         $this->initCategory();
@@ -158,9 +160,55 @@ class Palto
         return $found ? true : false;
     }
 
-    public function transformUrl(string $url): string
+    public function findCategoryUrl(string $title, int $level): string
     {
-        return str_replace('/', '_', substr($url, 1, -1));
+        $urlPattern = $this->generateUrl($title);
+        $url = $urlPattern;
+        $counter = 0;
+        while ($this->getUrlCategory($url, $level)) {
+            $url = $urlPattern . '-' . (++$counter);
+        }
+
+        return $url;
+    }
+
+    public function findRegionUrl(string $title): string
+    {
+        $urlPattern = $this->generateUrl($title);
+        $url = $urlPattern;
+        $counter = 0;
+        while ($this->getUrlRegion($url)) {
+            $url = $urlPattern . '-' . (++$counter);
+        }
+
+        return $url;
+    }
+
+    public function generateUrl(string $text): string
+    {
+        // replace non letter or digits by -
+        $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+
+        // transliterate
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+        // remove unwanted characters
+        $text = preg_replace('~[^-\w]+~', '', $text);
+
+        // trim
+        $text = trim($text, '-');
+
+        // remove duplicated - symbols
+        $text = preg_replace('~-+~', '-', $text);
+
+        // lowercase
+        $text = strtolower($text);
+
+        if (empty($text)) {
+            return 'n-a';
+        }
+
+        return $text;
     }
 
     public function getRegionId(array $region): int
@@ -398,19 +446,6 @@ class Palto
         $this->layoutDirectory = $layoutDirectory;
     }
 
-    private function initDb(): void
-    {
-        $this->db = new \MeekroDB(
-            'localhost',
-            $this->env['DB_USER'],
-            $this->env['DB_PASSWORD'],
-            $this->env['DB_NAME']
-        );
-        if ($this->isDebug() && !$this->isCli()) {
-            $this->getDb()->debugMode();
-        }
-    }
-
     public function getPreviousPageUrl(): string
     {
         return $this->previousPageUrl;
@@ -553,9 +588,21 @@ class Palto
         return $this->db;
     }
 
-    private function getUrlParts(): array
+    private function getCategoriesUrls(): array
     {
-        return array_values(array_filter(explode('/', parse_url($this->url)['path'])));
+        $parts = $this->getUrlParts();
+        if (count($parts) >= 2) {
+            $lastPart = $parts[count($parts) - 1] ?? '';
+            if ($this->isPageUrlPart($lastPart) || $this->isAdUrlPart($lastPart)) {
+                unset($parts[count($parts) - 1]);
+            }
+
+            unset($parts[0]);
+
+            return array_values($parts);
+        }
+
+        return [];
     }
 
     public function getChildCategories(array $category): array
@@ -642,6 +689,26 @@ class Palto
         return $urls;
     }
 
+    public function parseYoutubeVideoId(string $query): int
+    {
+        $html = PylesosService::download(
+            'https://www.youtube.com/results?search_query=' . urlencode($query),
+            $this->getEnv()
+        )->getResponse();
+        $pattern = '/watch?v=';
+        $videoUrlStart = strpos($html, '/watch?v=');
+        if ($videoUrlStart) {
+            $videoUrlFinish = strpos($html, '"', $videoUrlStart);
+            $videoId = substr(
+                $html,
+                $videoUrlStart + strlen($pattern),
+                $videoUrlFinish - $videoUrlStart - strlen($pattern)
+            );
+        }
+
+        return $videoId ?? 0;
+    }
+
     public function getListAdBreadcrumbUrls(array $ad): array
     {
         $category = $this->getCategory($ad['category_id']);
@@ -681,7 +748,7 @@ class Palto
         return substr($urlPart, 0, 2) == 'ad';
     }
 
-    private function getChildLevelCategoriesIds(array $categoriesIds, int $level)
+    private function getChildLevelCategoriesIds(array $categoriesIds, int $level): array
     {
         return $this->getDb()->queryFirstColumn(
             'SELECT id FROM categories WHERE parent_id IN %ld AND level = %d',
@@ -728,31 +795,21 @@ class Palto
         }
     }
 
-    private function initCategoryUrl()
+    private function initCategoriesUrls()
     {
-        $parts = $this->getUrlParts();
-        if (count($parts) >= 2) {
-            $lastPart = $parts[count($parts) - 1] ?? '';
-            if ($this->isPageUrlPart($lastPart) || $this->isAdUrlPart($lastPart)) {
-                unset($parts[count($parts) - 1]);
-            }
-
-            unset($parts[0]);
-            $parts = array_values($parts);
-            if ($parts) {
-                $this->categoryUrl = $parts[count($parts) - 1];
-            }
+        $this->categoriesUrls = $this->getCategoriesUrls();
+        if ($this->categoriesUrls) {
+            $this->categoryUrl = $this->categoriesUrls[count($this->categoriesUrls) - 1];
+            $this->categoryLevel = count($this->categoriesUrls);
         }
     }
 
     private function initCategory()
     {
         if ($this->categoryUrl) {
-            $this->category = $this->db->queryFirstRow('SELECT * FROM categories WHERE url = %s', $this->categoryUrl);
-            if ($this->category) {
-                $this->category['parents'] = $this->getParentCategories($this->category);
-                $this->category['children'] = $this->getChildCategories($this->category);
-            }
+            $this->category = $this->getUrlCategory($this->categoryUrl, $this->categoryLevel);
+            $this->category['parents'] = $this->getParentCategories($this->category);
+            $this->category['children'] = $this->getChildCategories($this->category);
         }
     }
 
@@ -865,23 +922,35 @@ class Palto
         return array_reverse($parents);
     }
 
-    public function parseYoutubeVideoId(string $query): int
+    private function getUrlParts(): array
     {
-        $html = PylesosService::download(
-            'https://www.youtube.com/results?search_query=' . urlencode($query),
-            $this->getEnv()
-        )->getResponse();
-        $pattern = '/watch?v=';
-        $videoUrlStart = strpos($html, '/watch?v=');
-        if ($videoUrlStart) {
-            $videoUrlFinish = strpos($html, '"', $videoUrlStart);
-            $videoId = substr(
-                $html,
-                $videoUrlStart + strlen($pattern),
-                $videoUrlFinish - $videoUrlStart - strlen($pattern)
-            );
-        }
+        return array_values(array_filter(explode('/', parse_url($this->url)['path'])));
+    }
 
-        return $videoId ?? 0;
+    private function initDb(): void
+    {
+        $this->db = new \MeekroDB(
+            'localhost',
+            $this->env['DB_USER'],
+            $this->env['DB_PASSWORD'],
+            $this->env['DB_NAME']
+        );
+        if ($this->isDebug() && !$this->isCli()) {
+            $this->getDb()->debugMode();
+        }
+    }
+
+    private function getUrlRegion(string $url): ?array
+    {
+        return $this->db->queryFirstRow('SELECT * FROM categories WHERE url = %s', $url);
+    }
+
+    private function getUrlCategory(string $url, int $level): ?array
+    {
+        return $this->db->queryFirstRow(
+            'SELECT * FROM categories WHERE url = %s AND level = %d',
+            $url,
+            $level
+        );
     }
 }

@@ -10,8 +10,9 @@ const DONOR_URL = 'https://losangeles.craigslist.org';
 
 require 'vendor/autoload.php';
 
-$pid = Status::getParserPid(Status::PARSE_ADS_SCRIPT);
 $palto = new Palto();
+$pid = Status::getParserPid(Status::PARSE_ADS_SCRIPT);
+$palto->getLogger()->info('Started ads parsing with pid=' . $pid);
 $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto, $pid) {
@@ -74,7 +75,7 @@ function parseAd(Palto $palto, $adUrl, $level2) {
         $regionTitle = $regionLink->innertext;
         $regionId = $palto->getRegionId([
             'donor_url' => $regionLink->href,
-            'url' => $palto->transformUrl($regionLink->href),
+            'url' => $palto->findRegionUrl($regionTitle),
             'title' => $regionTitle,
             'level' => 1,
             'create_time' => (new DateTime())->format('Y-m-d H:i:s')

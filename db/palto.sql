@@ -1,10 +1,3 @@
-SET FOREIGN_KEY_CHECKS=0;
-DROP table if exists regions;
-DROP table if exists categories;
-DROP table if exists ads_images;
-DROP table if exists ads_details;
-DROP table if exists details_fields;
-DROP table if exists ads;
 CREATE TABLE `regions`
 (
     `id`        int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -17,6 +10,7 @@ CREATE TABLE `regions`
     `create_time` timestamp        NULL     DEFAULT NULL,
     `level`     int(10) unsigned NOT NULL DEFAULT 1,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `url` (`url`),
     KEY `url` (`url`),
     KEY `title` (`title`),
     KEY `parent_id` (`parent_id`),
@@ -36,7 +30,7 @@ CREATE TABLE `categories`
     `icon_text`   text                      DEFAULT NULL,
     `create_time` timestamp        NULL     DEFAULT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `donor_url` (`donor_url`),
+    UNIQUE KEY `url_level` (`url`, `level`),
     KEY `title` (`title`),
     KEY `parent_id` (`parent_id`),
     KEY `url` (`url`),

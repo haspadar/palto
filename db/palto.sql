@@ -11,7 +11,6 @@ CREATE TABLE `regions`
     `level`     int(10) unsigned NOT NULL DEFAULT 1,
     PRIMARY KEY (`id`),
     UNIQUE KEY `url` (`url`),
-    KEY `url` (`url`),
     KEY `title` (`title`),
     KEY `parent_id` (`parent_id`),
     CONSTRAINT `regions_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE

@@ -6,7 +6,7 @@ $this->partial('header.inc', [
     'title' => $this->getCurrentAd()['title'] . ' in ' . implode(
             ' - ',
             array_filter(array_merge(
-                 [$this->getCurrentRegion()['address']],
+                 [$this->getCurrentAd()['address']],
                  [$this->getCurrentRegion()['title']],
                  array_column($this->getCurrentCategory()['parents'], 'title'),
                  [$this->getCurrentCategory()['title']],

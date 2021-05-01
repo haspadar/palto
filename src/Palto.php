@@ -705,7 +705,7 @@ class Palto
         return $urls;
     }
 
-    public function parseYoutubeVideoId(string $query): int
+    public function parseYoutubeVideoId(string $query): string
     {
         $html = PylesosService::download(
             'https://www.youtube.com/results?search_query=' . urlencode($query),
@@ -722,7 +722,7 @@ class Palto
             );
         }
 
-        return $videoId ?? 0;
+        return $videoId ?? '';
     }
 
     public function getListAdBreadcrumbUrls(array $ad): array

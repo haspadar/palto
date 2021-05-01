@@ -76,7 +76,7 @@ function parseAd(Palto $palto, $adUrl, $level2) {
         $regionId = $palto->getRegionId([
             'donor_url' => $regionLink->href,
             'url' => $palto->findRegionUrl($regionTitle),
-            'title' => $regionTitle,
+            'title' => $palto->upperCaseEveryWord($regionTitle),
             'level' => 1,
             'create_time' => (new DateTime())->format('Y-m-d H:i:s')
         ]);

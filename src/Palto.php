@@ -184,6 +184,16 @@ class Palto
         return $url;
     }
 
+    public function upperCaseEveryWord(string $text): string
+    {
+        $words = explode(' ', $text);
+        foreach ($words as &$word) {
+            $word = ucfirst($word);
+        }
+
+        return implode(' ', $words);
+    }
+
     public function generateUrl(string $text): string
     {
         // replace non letter or digits by -

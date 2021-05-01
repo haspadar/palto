@@ -18,7 +18,7 @@ foreach ($level1Document->find('.col') as $col) {
     if ($leve1Title !== 'discussion forums') {
         $palto->getLogger()->debug($leve1Title . '(' . $level1Url . ')');
         $level1Id = $palto->getCategoryId([
-            'title' => $leve1Title,
+            'title' => $palto->upperCaseEveryWord($leve1Title),
             'donor_url' => $level1DonorUrl,
             'level' => 1,
             'url' => $level1Url,
@@ -30,7 +30,7 @@ foreach ($level1Document->find('.col') as $col) {
             $level2Url = $palto->findCategoryUrl($leve2Title, 2);
             $palto->getLogger()->debug($leve2Title . '(' . $level2Url . ')');
             $palto->getCategoryId([
-                'title' => $leve2Title,
+                'title' => $palto->upperCaseEveryWord($leve2Title),
                 'parent_id' => $level1Id,
                 'donor_url' => $level2DonorUrl,
                 'level' => 2,

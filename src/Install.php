@@ -183,7 +183,7 @@ class Install
         foreach ($everyHourCommands as $command) {
             $isCommandExists = mb_strpos($command, $cronFileContent) !== false;
             if (!$isCommandExists) {
-                file_put_contents($cronFilePath, '#Every hour' . PHP_EOL . $command);
+                file_put_contents($cronFilePath, $cronFileContent . PHP_EOL . '#Every hour' . PHP_EOL . $command);
                 $this->log('Added cron command "' . $command . '"');
                 $this->runCommands(['service cron reload']);
             } else {

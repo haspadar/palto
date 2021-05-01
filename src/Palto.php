@@ -13,8 +13,8 @@ class Palto
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private \MeekroDB $db;
-    private string $defaultRegionUrl = 'default';
-    private string $defaultRegionTitle = 'Default';
+    private string $defaultRegionUrl = 'all';
+    private string $defaultRegionTitle = 'All';
     private string $regionUrl = '';
     private array $categoriesUrls = [];
     private string $categoryUrl = '';
@@ -497,8 +497,9 @@ class Palto
     public function generateAdUrl(array $ad): string
     {
         $category = $this->getCategory($ad['category_id']);
+        $region = $this->getRegion($ad['region_id']);
 
-        return $this->generateCategoryUrl($category) . '/ad' . $ad['id'];
+        return $this->generateCategoryUrl($category, $region) . '/ad' . $ad['id'];
     }
 
     public function generateRegionUrl(?array $region): string
@@ -558,6 +559,21 @@ class Palto
     public function getEnv(): array
     {
         return $this->env;
+    }
+
+    public function checkAuth()
+    {
+        if (empty($_SERVER['PHP_AUTH_USER'])) {
+            $this->showAuthForm();
+        } else {
+            $login = $_SERVER['PHP_AUTH_USER'];
+            $password = $_SERVER['PHP_AUTH_PW'];
+            if ($login != $this->getEnv()['AUTH_LOGIN']
+                || $password != $this->getEnv()['AUTH_PASSWORD']
+            ) {
+                $this->showAuthForm();
+            }
+        }
     }
 
     public function initPagination(int $count)
@@ -952,5 +968,13 @@ class Palto
             $url,
             $level
         );
+    }
+
+    private function showAuthForm()
+    {
+        header('WWW-Authenticate: Basic realm="My Realm"');
+        header('HTTP/1.0 401 Unauthorized');
+        echo "Access denied!" . PHP_EOL;
+        exit;
     }
 }

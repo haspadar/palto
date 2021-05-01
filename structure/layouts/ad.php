@@ -3,7 +3,7 @@
  * @var $this \Palto\Palto
  */
 $this->partial('header.inc', [
-    'title' => 'Title: ' . implode(
+    'title' => $this->getCurrentAd()['title'] . ' in ' . implode(
             ' - ',
             array_filter(array_merge(
                  array_column($this->getCurrentCategory()['parents'], 'title'),
@@ -11,7 +11,7 @@ $this->partial('header.inc', [
                  [$this->getCurrentRegion()['title']]
              ))
         ),
-    'description' => 'Category Description: '
+    'description' => $this->getCurrentAd()['title'] . ' in '
         . implode(
             ' - ',
             array_filter(array_merge(
@@ -23,20 +23,8 @@ $this->partial('header.inc', [
     'nextPageUrl' => $this->getNextPageUrl(),
     'previousPageUrl' => $this->getPreviousPageUrl(),
 ]);
-
-//$sectionsTitle = array_filter([
-//                                  $ad['title'] . ' køb i ' . $ad['city_title'],
-//                                  $ad['sub_section_title'],
-//                                  $ad['section_title']
-//                              ]);
-//Danannoncer::$title = implode(' - ', $sectionsTitle);
-//Danannoncer::$description = str_replace(PHP_EOL, ' ', Danannoncer::getAdShortDescription($ad));
-
-//$cityUrl = $city ? '/' . $city['url'] . '/' : '/' . Danannoncer::BR_CITY['url'] . '/';
-//$category = Danannoncer::getCategoryById($ad['category_id']);
 ?>
-<?php //require_once 'header.inc'?>
-    <div id="col-mid">
+<div id="col-mid">
         <div class="col-mid-inner">
             <div class="cmi-1">
                 <div class="cmi-1-1">

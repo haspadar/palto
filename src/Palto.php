@@ -648,7 +648,7 @@ class Palto
         if ($rootDirectory) {
             $this->rootDirectory = $rootDirectory;
         } elseif ($this->isCli()) {
-            $this->rootDirectory = $_SERVER['PWD'] ?? '';
+            $this->rootDirectory = trim(`pwd`);
         } else {
             $this->rootDirectory = dirname($_SERVER['DOCUMENT_ROOT']);
         }

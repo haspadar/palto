@@ -663,6 +663,14 @@ class Palto
             : [];
     }
 
+    public function generateSitemap(string $domain)
+    {
+//        $sitemapDirectoryUrl = '/sitemaps/';
+//        $fileNames = generateCitiesCategoriesXml($domain, $sitemapDirectoryUrl);
+//        $sitemapFile = 'web/sitemap.xml';
+//        generateIndexFile($fileNames, $domain, $sitemapFile, $sitemapDirectoryUrl);
+    }
+
     public function dump($data)
     {
         echo '<pre>';

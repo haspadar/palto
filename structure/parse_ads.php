@@ -78,6 +78,7 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'url' => $palto->findRegionUrl($regionTitle),
             'title' => $palto->upperCaseEveryWord($regionTitle),
             'level' => 1,
+            'tree_id' => $palto->getDb()->queryFirstField('SELECT MAX(tree_id) FROM regions') + 1,
             'create_time' => (new DateTime())->format('Y-m-d H:i:s')
         ]);
     }

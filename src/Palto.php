@@ -84,7 +84,7 @@ class Palto
         return $layout;
     }
 
-    public function getCategories(int $parentId, int $level = 0, int $limit = 0, $offset = 0): array
+    public function getCategories(int $parentId, int $level = 0, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
         $query = 'SELECT * FROM categories';
         $values = [];
@@ -100,6 +100,10 @@ class Palto
         if ($level) {
             $query .= 'level = %d_level';
             $values['level'] = $level;
+        }
+
+        if ($orderBy) {
+            $query .= ' ORDER BY ' .$orderBy;
         }
 
         if ($limit) {
@@ -121,7 +125,7 @@ class Palto
         return $this->getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $categoryId);
     }
 
-    public function getRegions(int $parentId, int $level = 0, int $limit = 0, int $offset = 0): array
+    public function getRegions(int $parentId, int $level = 0, int $limit = 0, int $offset = 0, $orderBy = ''): array
     {
         $query = 'SELECT * FROM regions';
         $values = [];
@@ -137,6 +141,10 @@ class Palto
         if ($level) {
             $query .= 'level = %d_level';
             $values['level'] = $level;
+        }
+
+        if ($orderBy) {
+            $query .= ' ORDER BY ' . $orderBy;
         }
 
         if ($limit) {
@@ -649,6 +657,11 @@ class Palto
         return [];
     }
 
+    public function getRootDirectory(): string
+    {
+        return $this->rootDirectory;
+    }
+
     public function getChildCategories(array $category): array
     {
         $childrenIds = [];
@@ -661,14 +674,6 @@ class Palto
         return $childrenIds
             ? $this->getDb()->query('SELECT * FROM categories WHERE id IN %ld', $childrenIds)
             : [];
-    }
-
-    public function generateSitemap(string $domain)
-    {
-//        $sitemapDirectoryUrl = '/sitemaps/';
-//        $fileNames = generateCitiesCategoriesXml($domain, $sitemapDirectoryUrl);
-//        $sitemapFile = 'web/sitemap.xml';
-//        generateIndexFile($fileNames, $domain, $sitemapFile, $sitemapDirectoryUrl);
     }
 
     public function dump($data)
@@ -770,6 +775,15 @@ class Palto
         return $this->getCategoryBreadcrumbUrls(array_merge($categories, [$category]), $region);
     }
 
+    public function getDefaultRegion(): array
+    {
+        return [
+            'id' => 0,
+            'title' => $this->defaultRegionTitle,
+            'url' => $this->defaultRegionUrl,
+        ];
+    }
+
     private function initRootDirectory(string $rootDirectory)
     {
         if ($rootDirectory) {
@@ -834,11 +848,7 @@ class Palto
     private function initRegion()
     {
         if ($this->regionUrl == $this->defaultRegionUrl || !$this->regionUrl) {
-            $this->region = [
-                'id' => 0,
-                'title' => $this->defaultRegionTitle,
-                'url' => $this->defaultRegionUrl,
-            ];
+            $this->region = $this->getDefaultRegion();
         } else {
             $this->region = $this->db->queryFirstRow('SELECT * FROM regions WHERE url = %s', $this->regionUrl);
             if ($this->region) {

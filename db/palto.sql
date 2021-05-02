@@ -9,10 +9,12 @@ CREATE TABLE `regions`
     `icon_text`   text                      DEFAULT NULL,
     `create_time` timestamp        NULL     DEFAULT NULL,
     `level`     int(10) unsigned NOT NULL DEFAULT 1,
+    `tree_id`     INT  UNSIGNED  NULL  DEFAULT '1',
     PRIMARY KEY (`id`),
     UNIQUE KEY `url` (`url`),
     KEY `title` (`title`),
     KEY `parent_id` (`parent_id`),
+    INDEX (`tree_id`),
     CONSTRAINT `regions_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -22,6 +24,7 @@ CREATE TABLE `categories`
     `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
     `parent_id`   int(11) unsigned          DEFAULT NULL,
     `level`       int(11) unsigned NOT NULL DEFAULT 1,
+    `tree_id`     INT  UNSIGNED  NULL  DEFAULT '1',
     `title`       varchar(255)     NOT NULL DEFAULT '',
     `url`         varchar(255)     NOT NULL DEFAULT '',
     `donor_url`   varchar(500)     NOT NULL DEFAULT '',
@@ -34,7 +37,8 @@ CREATE TABLE `categories`
     KEY `parent_id` (`parent_id`),
     KEY `url` (`url`),
     KEY `level` (`level`),
-    CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+    INDEX (`tree_id`),
+CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 

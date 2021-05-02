@@ -1,0 +1,1 @@
+structure/generate_sitemap.php

@@ -21,9 +21,11 @@ foreach ($level1Document->find('.col') as $col) {
             'title' => $palto->upperCaseEveryWord($leve1Title),
             'donor_url' => $level1DonorUrl,
             'level' => 1,
+            'tree_id' => $palto->getDb()->queryFirstField('SELECT MAX(tree_id) FROM categories') + 1,
             'url' => $level1Url,
             'create_time' => (new DateTime())->format('Y-m-d H:i:s')
         ]);
+        $level1 = $palto->getCategory($level1Id);
         foreach ($col->find('li') as $level2) {
             $leve2Title = strip_tags($level2->find('a span', 0)->innertext);
             $level2DonorUrl = $level2->find('a', 0)->href;
@@ -34,6 +36,7 @@ foreach ($level1Document->find('.col') as $col) {
                 'parent_id' => $level1Id,
                 'donor_url' => $level2DonorUrl,
                 'level' => 2,
+                'tree_id' => $level1['tree_id'],
                 'url' => $level2Url,
                 'create_time' => (new DateTime())->format('Y-m-d H:i:s')
             ]);

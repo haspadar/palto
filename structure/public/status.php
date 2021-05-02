@@ -3,13 +3,7 @@
 use Palto\Palto;
 use Palto\Status;
 
-if (file_exists('../vendor/autoload.php')) {
-    $rootDirectory = '..';
-} else {
-    $rootDirectory = '../..';
-}
-
-require_once $rootDirectory . '/vendor/autoload.php';
+$rootDirectory = require_once 'autoload.php';
 $palto = new Palto($rootDirectory);
 $parserPid = Status::getParserPid('parse_ads.php');
 echo json_encode([

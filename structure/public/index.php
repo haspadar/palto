@@ -2,11 +2,7 @@
 
 use Palto\Palto;
 
-if (file_exists('../vendor/autoload.php')) {
-    $rootDirectory = '..';
-} else {
-    $rootDirectory = '../..';
-}
+$rootDirectory = require_once 'autoload.php';
 
 require_once $rootDirectory . '/vendor/autoload.php';
 $palto = new Palto($rootDirectory);

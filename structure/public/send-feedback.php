@@ -3,13 +3,7 @@
 use Palto\Moderation;
 use Palto\Palto;
 
-if (file_exists('../vendor/autoload.php')) {
-    $rootDirectory = '..';
-} else {
-    $rootDirectory = '../..';
-}
-
-require_once $rootDirectory . '/vendor/autoload.php';
+$rootDirectory = require_once 'autoload.php';
 $palto = new Palto($rootDirectory);
 if ($palto->getEnv()['AUTH']) {
     $palto->checkAuth();

@@ -3,6 +3,7 @@ namespace Palto;
 
 class Sitemap
 {
+    const GENERATE_SCRIPT = 'generate_sitemap.php';
     private string $domainUrl;
     private string $path;
     private Palto $palto;

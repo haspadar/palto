@@ -179,17 +179,23 @@ class Install
     private function updateCron()
     {
         $cronFilePath = '/etc/crontab';
-        $timePart = '0 * * * *  ';
-        $commandPart = 'root cd ' . $this->projectPath . ' && php ' . Status::PARSE_ADS_SCRIPT;
-        $everyHourCommand = $timePart . $commandPart;
-        $cronFileContent = file_get_contents($cronFilePath);
-        $isCommandExists = mb_strpos($cronFileContent, $commandPart) !== false;
-        if (!$isCommandExists) {
-            file_put_contents($cronFilePath, $cronFileContent . PHP_EOL . '#Every hour' . PHP_EOL . $everyHourCommand);
-            $this->log('Added cron command "' . $everyHourCommand . '"');
-            $this->runCommands(['service cron reload']);
-        } else {
-            $this->log('cron command for script "' . Status::PARSE_ADS_SCRIPT . '" already exists');
+        $commands = [
+            '#Every hour' => '0 * * * *  root cd ' . $this->projectPath . ' && php ' . Status::PARSE_ADS_SCRIPT,
+            '#Every day' => '0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT
+        ];
+        foreach ($commands as $comment => $command) {
+            $cronFileContent = file_get_contents($cronFilePath);
+            $isCommandExists = mb_strpos($cronFileContent, $command) !== false;
+            if (!$isCommandExists) {
+                file_put_contents(
+                    $cronFilePath,
+                    $cronFileContent . PHP_EOL . $comment . PHP_EOL . $command
+                );
+                $this->log('Added cron command "' . $command . '"');
+                $this->runCommands(['service cron reload']);
+            } else {
+                $this->log('cron command for script "' . Status::PARSE_ADS_SCRIPT . '" already exists');
+            }
         }
     }
 

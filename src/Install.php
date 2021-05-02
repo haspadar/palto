@@ -37,7 +37,8 @@ class Install
         return [
             "cp -R $paltoPath/structure/layouts $projectPath/",
             "ln -s $paltoPath/structure/public $projectPath/",
-            "ln -s $paltoPath/structure/*.php $projectPath/",
+            "ln -s $paltoPath/structure/generate_sitemap.php $projectPath/",
+            "cp $paltoPath/structure/parse_*.php $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',

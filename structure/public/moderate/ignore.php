@@ -6,7 +6,6 @@ use Palto\Palto;
 $rootDirectory = require_once '../autoload.php';
 $palto = new Palto($rootDirectory);
 $palto->checkAuth();
-
 if (is_numeric($_POST['id'])) {
     $id = intval($_POST['id']);
     Moderation::ignoreComplaint($palto->getDb(), $id);

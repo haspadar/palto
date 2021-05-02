@@ -1,5 +1,4 @@
 <?php
-
 use Palto\Moderation;
 use Palto\Palto;
 

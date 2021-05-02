@@ -126,3 +126,13 @@ CREATE TABLE `complaints` (
                               FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE,
                               KEY `response_time_ignore_time` (`response_time`,`ignore_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `translates` (
+                              `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                              `from_code` varchar(8) NOT NULL DEFAULT '',
+                              `to_code` varchar(8) NOT NULL DEFAULT '',
+                              `from_text` longtext NULL,
+                              `to_text` longtext NULL,
+                              `create_time` timestamp NULL,
+                              INDEX `from_code_to_code` (`from_code`, `to_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

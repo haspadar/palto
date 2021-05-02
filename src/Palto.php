@@ -286,7 +286,7 @@ class Palto
     public function getDetailsFieldId(int $categoryId, string $field): int
     {
         $fieldId = $this->getDb()->queryFirstField(
-            'SELECT * FROM details_fields WHERE category_id = %d AND field = %s LIMIT 1',
+            'SELECT id FROM details_fields WHERE category_id = %d AND field = %s LIMIT 1',
             $categoryId,
             $field
         );
@@ -746,6 +746,58 @@ class Palto
         return $urls;
     }
 
+    public function safeTranslate(string $text, string $fromLanguageCode, string $toLanguageCode): string
+    {
+        if ($fromLanguageCode == $toLanguageCode || !$fromLanguageCode || !$toLanguageCode) {
+            return $text;
+        } elseif ($foundTranslate = $this->getDb()->queryFirstField(
+            "SELECT to_text FROM translates WHERE from_code = %s AND to_code = %s AND from_text = %s",
+            $fromLanguageCode,
+            $toLanguageCode,
+            $text
+        )) {
+            return $foundTranslate;
+        } else {
+            $translate = $this->translate($text, $fromLanguageCode, $toLanguageCode);
+            if ($translate && $translate != $text) {
+                $this->getDb()->insert(
+                    'translates',
+                    [
+                        'from_code' => $fromLanguageCode,
+                        'to_code' => $toLanguageCode,
+                        'from_text' => $text,
+                        'to_text' => $translate
+                    ]
+                );
+
+                return $translate;
+            }
+        }
+
+        return $text;
+    }
+
+    public function translate(string $text, string $fromLanguageCode, string $toLanguageCode): string
+    {
+        if ($text) {
+            $response = $this->sendYandexRequest(
+                'https://translate.api.cloud.yandex.net/translate/v2/translate',
+                [
+                    "sourceLanguageCode" => $fromLanguageCode,
+                    "targetLanguageCode" => $toLanguageCode,
+                    "format" => "PLAIN_TEXT",
+                    "texts" => [$text]
+                ]
+            );
+            if ($response) {
+                $parsedResponse = json_decode($response);
+                $text = $parsedResponse->translations[0]->text;
+            }
+        }
+
+        return $text;
+    }
+
     public function parseYoutubeVideoId(string $query): string
     {
         $html = PylesosService::download(
@@ -875,6 +927,22 @@ class Palto
                 $this->category['children'] = $this->getChildCategories($this->category);
             }
         }
+    }
+
+    private function sendYandexRequest(string $url, array $post)
+    {
+        $apiKey = $this->getEnv()['YANDEX_TRANSLATE_API_KEY'];
+        $ch = curl_init($url);
+        $post = json_encode($post);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Authorization: Api-Key ' . $apiKey]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, 1); // Specify the request method as POST
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post); // Set the posted fields
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // This will follow any redirects
+        $result = curl_exec($ch); // Execute the cURL statement
+        curl_close($ch); // Close the cURL connection
+
+        return $result;
     }
 
     private function initLogger()

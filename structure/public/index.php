@@ -2,9 +2,14 @@
 
 use Palto\Palto;
 
-require_once '../vendor/autoload.php';
+if (file_exists('../vendor/autoload.php')) {
+    $rootDirectory = '..';
+} else {
+    $rootDirectory = '../..';
+}
 
-$palto = new Palto();
+require_once $rootDirectory . '/vendor/autoload.php';
+$palto = new Palto($rootDirectory);
 if ($palto->getEnv()['AUTH']) {
     $palto->checkAuth();
 }

@@ -9,7 +9,12 @@ $this->partial('header.inc', [
 ]);
 ?>
     <br/>
+<?php if ($this->getCurrentAd()) :?>
+    <h1>Ad was deleted</h1>
+<?php else :?>
     <h1>Not found</h1>
+<?php endif;?>
+
 
     <h2>Categories</h2>
 <?php foreach ($this->getCategories(0, 1) as $level1Category) :?>

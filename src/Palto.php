@@ -75,7 +75,7 @@ class Palto
             $layout = 'index.php';
         } elseif ($isRegionPage || $isCategoryPage) {
             $layout = 'list.php';
-        } elseif ($this->adId && $this->ad) {
+        } elseif ($this->adId && $this->ad && !$this->ad['deleted_time']) {
             $layout = 'ad.php';
         } else {
             $layout = '404.php';
@@ -496,9 +496,11 @@ class Palto
         return '/' . implode('/', $parts);
     }
 
-    /**
-     * @return string
-     */
+    public function filterString(string $param): string
+    {
+        return $param ? trim(strip_tags(htmlentities($param))) : '';
+    }
+
     public function getCategoryUrl(): string
     {
         return $this->categoryUrl;
@@ -569,6 +571,22 @@ class Palto
     public function getEnv(): array
     {
         return $this->env;
+    }
+
+    public function sendEmail(string $toEmail, string $subject, string $body): int
+    {
+        $env = $this->getEnv();
+        $transport = (new \Swift_SmtpTransport($env['SMTP_HOST'], $env['SMTP_PORT'], $env['SMTP_ENCRYPTION']))
+            ->setUsername($env['SMTP_EMAIL'])
+            ->setPassword($env['SMTP_PASSWORD']);
+        $mailer = new \Swift_Mailer($transport);
+        $message = (new \Swift_Message($subject))
+            ->setContentType("text/html")
+            ->setFrom([$env['SMTP_EMAIL'] => $env['SMTP_FROM']])
+            ->setTo([$toEmail])
+            ->setBody($body);
+
+        return $mailer->send($message);
     }
 
     public function checkAuth()
@@ -899,12 +917,11 @@ class Palto
 
     private function getAdsWhere($categoryId, int $regionId): array
     {
-        $query = '';
+        $query = ' WHERE ';
         $values = [];
+        $where = [];
         if ($categoryId || $regionId) {
-            $query .= ' WHERE ';
             $values['category'] = $categoryId;
-            $where = [];
             if ($categoryId && is_array($categoryId)) {
                 $where[] = 'a.category_id IN %ld_category';
             } elseif ($categoryId) {
@@ -917,9 +934,10 @@ class Palto
             } elseif ($regionId) {
                 $where[] = 'a.region_id = %d_region';
             }
-
-            $query .= implode(' AND ', $where);
         }
+
+        $where[] = 'a.deleted_time IS NULL';
+        $query .= implode(' AND ', $where);
 
         return [$query, $values];
     }

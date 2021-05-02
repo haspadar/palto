@@ -3,9 +3,14 @@
 use Palto\Palto;
 use Palto\Status;
 
-require_once '../vendor/autoload.php';
+if (file_exists('../vendor/autoload.php')) {
+    $rootDirectory = '..';
+} else {
+    $rootDirectory = '../..';
+}
 
-$palto = new Palto();
+require_once $rootDirectory . '/vendor/autoload.php';
+$palto = new Palto($rootDirectory);
 $parserPid = Status::getParserPid('parse_ads.php');
 echo json_encode([
     'disk_mysql_used' => Status::getDirectoryUsePercent(

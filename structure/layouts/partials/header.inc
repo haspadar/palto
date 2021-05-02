@@ -16,6 +16,7 @@ $description = $this->getPartialVariable('description');
     <link rel="stylesheet" href="/css/slider.css?v=<?=time()?>">
     <link rel="stylesheet" href="/css/styles.css?v=<?=time()?>">
     <link rel="stylesheet" href="/css/styles_ali.css?v=<?=time()?>">
+    <link rel="stylesheet" href="/css/abuse.css?v=<?=time()?>">
     <?php if ($this->getPartialVariable('previousPageUrl')) :?>
         <meta name="robots" content="noindex, follow" />
         <link rel="prev" href="<?=$this->getPartialVariable('previousPageUrl')?>">

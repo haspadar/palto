@@ -3,9 +3,14 @@
 use Palto\Palto;
 use Pylesos\PylesosService;
 
-require '../vendor/autoload.php';
+if (file_exists('../vendor/autoload.php')) {
+    $rootDirectory = '..';
+} else {
+    $rootDirectory = '../..';
+}
 
-$palto = new Palto();
+require_once $rootDirectory . '/vendor/autoload.php';
+$palto = new Palto($rootDirectory);
 if (isset($_GET['query']) && $_GET['query']) {
     $query = $_GET['query'];
     $query = str_replace('Cruisecontrol', 'Cruise control', $query);

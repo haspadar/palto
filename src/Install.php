@@ -35,7 +35,9 @@ class Install
         $databaseName = $this->databaseName;
 
         return [
-            "cp -R $paltoPath/structure/* $projectPath/",
+            "cp -R $paltoPath/structure/layouts $projectPath/",
+            "ln -s $paltoPath/structure/public $projectPath/",
+            "ln -s $paltoPath/structure/*.php $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',

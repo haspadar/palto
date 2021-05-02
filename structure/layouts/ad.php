@@ -121,6 +121,22 @@ $this->partial('header.inc', [
                                                 <?php endif;?></a>
                                         </div>
 
+                                        <p><a href="javascript:void(0);" id="send-abuse">Пожаловаться на объявление</a></p>
+                                        <div id="send-abuse-modal">
+                                            <div class="send-abuse-modal-bg"></div>
+                                            <div class="form">
+                                                <form>
+                                                    Пожаловаться на объявление
+                                                    <input type="hidden" name="page" value="http://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>">
+                                                    <input type="email" name="email" placeholder="Ваша почта">
+                                                    <input type="hidden" name="ad_id" value="<?=$this->getCurrentAd()['id']?>">
+                                                    Сообщение
+                                                    <textarea name="message" rows="3" width="200px"></textarea>
+                                                    <input type="submit" value="Отправить">
+                                                </form>
+                                            </div>
+                                        </div>
+
                                         <div>
                                             <a href="<?=$this->getCurrentAd()['url']?>" target="_blank">Original</a>
                                         </div>

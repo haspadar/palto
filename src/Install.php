@@ -117,7 +117,7 @@ class Install
         return sprintf(
             file_get_contents($this->paltoPath . '/configs/nginx/domain'),
             $path,
-            $projectName,
+            $projectName . ' www.' . $projectName,
             $path,
             "php.$projectName",
             $phpMajorVersion
@@ -191,11 +191,11 @@ class Install
     private function updateHost()
     {
         $hostsFilePath = '/etc/hosts';
-        $hostLine = '127.0.0.1 ' . $this->projectName;
+        $hostLine = '127.0.0.1 ' . $this->projectName . ' php.' . $this->projectName;
         $hostsContent = file_get_contents($hostsFilePath);
         $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
         if (!$isHostExists) {
-            file_put_contents($hostsFilePath, PHP_EOL . $hostLine . PHP_EOL);
+            file_put_contents($hostsFilePath, $hostsContent . PHP_EOL . $hostLine . PHP_EOL);
             $this->log('Added host "' . $hostLine . '"');
         } else {
             $this->log('host "' . $hostLine . '" already exists');

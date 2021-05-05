@@ -7,9 +7,9 @@ require 'vendor/autoload.php';
 
 $palto = new Palto();
 $pathParts = explode('/', $palto->getRootDirectory());
-$domainUrl = $palto->getEnv()['DOMAIN_URL'];
+$domainUrl = $palto->getEnv()['PHP_DOMAIN_URL'];
 if (!$domainUrl) {
-    $domainUrl = 'http://' . $palto->findDomainName();
+    $domainUrl = 'http://php.' . $palto->findDomainName();
 }
 
 $staticHtml = new StaticHtml($domainUrl, '/static', $palto);

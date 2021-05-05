@@ -71,10 +71,25 @@ class StaticHtml
 
         file_put_contents(
             $directoryFullPath . '/index.html',
-            file_get_contents($this->domainUrl . $url)
+            $this->download($this->domainUrl . $url)
         );
         $this->palto->getLogger()->debug('Saved static html ' . $directoryFullPath . '/index.html', [
             'progress' => $counter . '/' . $count
         ]);
+    }
+
+    private function download(string $url): string
+    {
+        $auth = base64_encode(
+            $this->palto->getEnv()['AUTH_LOGIN'] . ':' . $this->palto->getEnv()['AUTH_PASSWORD']
+        );
+        $context = $this->palto->getEnv()['AUTH']
+            ? stream_context_create([
+                'http' => [
+                    'header' => "Authorization: Basic $auth"
+                ]
+            ]) : [];
+
+        return file_get_contents($url, false, $context);
     }
 }

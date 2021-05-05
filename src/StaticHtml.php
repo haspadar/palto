@@ -86,7 +86,8 @@ class StaticHtml
         $context = $this->palto->getEnv()['AUTH']
             ? stream_context_create([
                 'http' => [
-                    'header' => "Authorization: Basic $auth"
+                    'header' => "Authorization: Basic $auth",
+                    'protocol_version' => 1.1, 
                 ]
             ]) : [];
 

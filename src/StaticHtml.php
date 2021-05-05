@@ -21,7 +21,7 @@ class StaticHtml
         $executionTime->start();
         $regions = $this->palto->getRegions(0, 0, 0, 0, 'level');
         $categories = $this->palto->getCategories(0, 0, 0, 0, 'level');
-        $regionsCategoriesUrls = [];
+        $regionsCategoriesUrls = ['/'];
         foreach ($regions as $region) {
             $regionUrl = $this->palto->generateRegionUrl($region);
             $regionAdsCount = $this->palto->getAdsCount(0, $region['id']);

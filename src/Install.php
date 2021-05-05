@@ -37,7 +37,8 @@ class Install
         return [
             "cp -R $paltoPath/structure/layouts $projectPath/",
             "ln -s $paltoPath/structure/public $projectPath/",
-            "ln -s $paltoPath/structure/generate_sitemap.php $projectPath/",
+            "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
+            "ln -s $paltoPath/structure/" . StaticHtml::GENERATE_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/parse_*.php $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
@@ -188,21 +189,26 @@ class Install
     {
         $cronFilePath = '/etc/crontab';
         $commands = [
-            '#Every hour' => '0 * * * *  root cd ' . $this->projectPath . ' && php ' . Status::PARSE_ADS_SCRIPT,
-            '#Every day' => '0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT
+            '#Every hour' => [
+                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . Status::PARSE_ADS_SCRIPT,
+                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . StaticHtml::GENERATE_SCRIPT
+            ],
+            '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT]
         ];
-        foreach ($commands as $comment => $command) {
-            $cronFileContent = file_get_contents($cronFilePath);
-            $isCommandExists = mb_strpos($cronFileContent, $command) !== false;
-            if (!$isCommandExists) {
-                file_put_contents(
-                    $cronFilePath,
-                    $cronFileContent . PHP_EOL . $comment . PHP_EOL . $command
-                );
-                $this->log('Added cron command "' . $command . '"');
-                $this->runCommands(['service cron reload']);
-            } else {
-                $this->log('cron command for script "' . Status::PARSE_ADS_SCRIPT . '" already exists');
+        foreach ($commands as $comment => $commentCommands) {
+            foreach ($commentCommands as $command) {
+                $cronFileContent = file_get_contents($cronFilePath);
+                $isCommandExists = mb_strpos($cronFileContent, $command) !== false;
+                if (!$isCommandExists) {
+                    file_put_contents(
+                        $cronFilePath,
+                        $cronFileContent . PHP_EOL . $comment . PHP_EOL . $command
+                    );
+                    $this->log('Added cron command "' . $command . '"');
+                    $this->runCommands(['service cron reload']);
+                } else {
+                    $this->log('cron command for script "' . Status::PARSE_ADS_SCRIPT . '" already exists');
+                }
             }
         }
     }

@@ -36,11 +36,6 @@ class Sitemap
         }
 
         $this->generateIndexes();
-//        }
-
-//        $fileNames = $this->generateRegionsCategoriesXml($domainUrl, $sitemapDirectoryUrl);
-//        $sitemapFile = 'web/sitemap.xml';
-//        generateIndexFile($fileNames, $domain, $sitemapFile, $sitemapDirectoryUrl);
     }
 
     private function groupTrees(array $leaves): array

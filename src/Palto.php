@@ -51,6 +51,13 @@ class Palto
         $this->initAd();
     }
 
+    public function findDomainName(): string
+    {
+        $pathParts = explode('/', $this->getRootDirectory());
+
+        return $pathParts[count($pathParts) - 1];
+    }
+
     public function setDefaultRegionTitle(string $regionTitle)
     {
         $this->defaultRegionTitle = $regionTitle;
@@ -612,9 +619,14 @@ class Palto
         }
     }
 
+    public function calculatePagesCount(int $count): int
+    {
+        return ceil($count / $this->adsLimit);
+    }
+
     public function initPagination(int $count)
     {
-        $this->pagesCount = ceil($count / $this->adsLimit);
+        $this->pagesCount = $this->calculatePagesCount($count);
         $parts = $this->getUrlParts();
         $lastPart = $parts[count($parts) - 1] ?? '';
         $this->pageNumber = $this->isPageUrlPart($lastPart) ? intval($lastPart) : 1;

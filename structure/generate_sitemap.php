@@ -6,16 +6,14 @@ use Palto\Sitemap;
 require 'vendor/autoload.php';
 
 $palto = new Palto();
-
-$domainUrl = $palto->getEnv()['SITEMAP_DOMAIN_URL'];
-$pathParts = explode('/', $palto->getRootDirectory());
+$domainUrl = $palto->getEnv()['DOMAIN_URL'];
 if (!$domainUrl) {
-    $domainUrl = 'http://' . $pathParts[count($pathParts) - 1];
+    $domainUrl = 'http://' . $palto->findDomainName();
 }
 
 $path = $palto->getEnv()['SITEMAP_PATH'];
 if (!$path) {
-    $path = '/sitemaps/' . $pathParts[count($pathParts) - 1];
+    $path = '/sitemaps/' . $palto->findDomainName();
 }
 
 $sitemap = new Sitemap($domainUrl, $path, $palto);

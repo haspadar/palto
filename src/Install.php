@@ -93,7 +93,7 @@ class Install
         return '7.4';
     }
 
-    private function getNginxPhpConfig(string $phpMajorVersion, string $phpMinorVersion): string
+    private function getNginxPhpFpmConfig(string $phpMajorVersion, string $phpMinorVersion): string
     {
         return sprintf(
             file_get_contents($this->paltoPath . '/configs/nginx/php-fpm.conf'),
@@ -102,7 +102,12 @@ class Install
         );
     }
 
-    private function getNginxConfig(string $phpMajorVersion): string
+    private function getNginxMainConfig(): string
+    {
+        return file_get_contents($this->paltoPath . '/configs/nginx.conf');
+    }
+
+    private function getNginxDomainConfig(string $phpMajorVersion): string
     {
         $projectName = $this->projectName;
         $path = $this->projectPath;
@@ -135,15 +140,17 @@ class Install
             $phpMinorVersion = $this->getLinuxLastPhpVersion();
             $phpMajorVersion = intval($phpMinorVersion);
             $phpFullVersion = 'php' . $phpMinorVersion;
-            $nginxConfig = $this->getNginxConfig($phpMajorVersion);
-            $nginxPhpConfig = $this->getNginxPhpConfig($phpMajorVersion, $phpMinorVersion);
+            $nginxMainConfig = $this->getNginxMainConfig($phpMajorVersion);
+            $nginxDomainConfig = $this->getNginxDomainConfig($phpMajorVersion);
+            $nginxPhpFpmConfig = $this->getNginxPhpFpmConfig($phpMajorVersion, $phpMinorVersion);
             $commands = [
                 'apt-get install mariadb-server',
                 'apt-get install nginx',
                 "apt install $phpFullVersion-fpm $phpFullVersion-cli $phpFullVersion-mysql $phpFullVersion-xml $phpFullVersion-curl $phpFullVersion-zip $phpFullVersion-iconv",
-                "echo '$nginxConfig' > /etc/nginx/sites-available/$projectName",
+                "echo '$nginxMainConfig' > /etc/nginx/nginx.conf",
+                "echo '$nginxDomainConfig' > /etc/nginx/sites-available/$projectName",
                 "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName",
-                "echo '$nginxPhpConfig' > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf",
+                "echo '$nginxPhpFpmConfig' > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf",
                 'service nginx reload'
             ];
         } else {

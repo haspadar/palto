@@ -4,6 +4,18 @@ server {
 	root %s/public;
 	index index.php index.html;
 	server_name %s;
+	if ($http_user_agent = "Mozilla/5.0 (compatible; Adsbot/3.1)") {
+        return 403;
+    }
+
+    if ($http_user_agent = "") {
+        return  403;
+    }
+
+    if ($limit_bots = 1) {
+      return  403;
+    }
+
 	location ~ \.php$ {
           try_files $uri = 404;
           include fastcgi_params;

@@ -17,10 +17,10 @@ class StaticHtml
 
     public function generate()
     {
-        $regions = $this->palto->getRegions(0, 0, 0, 0, 'level');
-        $categories = $this->palto->getCategories(0, 0, 0, 0, 'level');
         $executionTime = new ExecutionTime();
         $executionTime->start();
+        $regions = $this->palto->getRegions(0, 0, 0, 0, 'level');
+        $categories = $this->palto->getCategories(0, 0, 0, 0, 'level');
         $regionsCategoriesUrls = [];
         foreach ($regions as $region) {
             $regionUrl = $this->palto->generateRegionUrl($region);

@@ -17,6 +17,8 @@ class Sitemap
 
     public function generate()
     {
+        $executionTime = new ExecutionTime();
+        $executionTime->start();
         $regions = $this->groupTrees(
             $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
         );
@@ -35,7 +37,11 @@ class Sitemap
             }
         }
 
-        $this->generateIndexes();
+        $siteMapIndexUrl = $this->generateIndexes();
+        $executionTime->end();
+        $this->palto->getLogger()->info(
+            'Generated sitemap ' . $siteMapIndexUrl . ' for ' . $executionTime->get()
+        );
     }
 
     private function groupTrees(array $leaves): array
@@ -134,7 +140,7 @@ class Sitemap
         return $results;
     }
 
-    private function generateIndexes()
+    private function generateIndexes(): string
     {
         $filesUrls = $this->getFilesUrls(
             $this->getDirectoryRecursiveFiles($this->palto->getPublicDirectory() . $this->path)
@@ -150,7 +156,8 @@ class Sitemap
         }
 
         $siteMapIndexUrl = $this->domainUrl . $this->path . '/' . $fileName . '.xml';
-        $this->palto->getLogger()->info('Generated sitemap ' . $siteMapIndexUrl);
+
+        return $siteMapIndexUrl;
     }
 
     private function getFilesUrls(array $paths): array

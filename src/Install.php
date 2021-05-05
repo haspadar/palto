@@ -207,7 +207,7 @@ class Install
                     $this->log('Added cron command "' . $command . '"');
                     $this->runCommands(['service cron reload']);
                 } else {
-                    $this->log('cron command for script "' . Status::PARSE_ADS_SCRIPT . '" already exists');
+                    $this->log('cron command "' . $command . '" already exists');
                 }
             }
         }

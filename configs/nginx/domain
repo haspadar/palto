@@ -1,36 +1,44 @@
 server {
 	listen 80;
 	listen [::]:80;
+	root %s/static;
+	index index.html;
+	server_name %s;
+}
+
+server {
+	listen 80;
+	listen [::]:80;
 	root %s/public;
 	index index.php index.html;
 	server_name %s;
 	if ($http_user_agent = "Mozilla/5.0 (compatible; Adsbot/3.1)") {
-        return 403;
-    }
+		return 403;
+	}
 
-    if ($http_user_agent = "") {
-        return  403;
-    }
+	if ($http_user_agent = "") {
+		return  403;
+	}
 
-    if ($limit_bots = 1) {
-      return  403;
-    }
+	if ($limit_bots = 1) {
+	  return  403;
+	}
 
 	location ~ \.php$ {
-          try_files $uri = 404;
-          include fastcgi_params;
-          fastcgi_pass php%s-fpm;
-          fastcgi_index index.php;
-          fastcgi_intercept_errors on;
-          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        }
+		  try_files $uri = 404;
+		  include fastcgi_params;
+		  fastcgi_pass php%s-fpm;
+		  fastcgi_index index.php;
+		  fastcgi_intercept_errors on;
+		  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		}
  
-    location / {
-          try_files $uri $uri/ @rewrite;
-          expires max;
-    }
-    
-    location @rewrite {
-          rewrite ^/(.*)$ /index.php;
-    }
+	location / {
+		  try_files $uri $uri/ @rewrite;
+		  expires max;
+	}
+	
+	location @rewrite {
+		  rewrite ^/(.*)$ /index.php;
+	}
 }

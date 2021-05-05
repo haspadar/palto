@@ -51,7 +51,7 @@ class Palto
         $this->initAd();
     }
 
-    public function findDomainName(): string
+    public function getProjectName(): string
     {
         $pathParts = explode('/', $this->getRootDirectory());
 

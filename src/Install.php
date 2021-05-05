@@ -25,6 +25,7 @@ class Install
         $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
         $this->updateEnvOptions();
         $this->updateCron();
+        $this->updateHost();
         $this->showWelcome();
     }
 
@@ -116,8 +117,10 @@ class Install
         return sprintf(
             file_get_contents($this->paltoPath . '/configs/nginx/domain'),
             $path,
-                   "$projectName *.$projectName",
-                   $phpMajorVersion
+            $projectName,
+            $path,
+            "php.$projectName",
+            $phpMajorVersion
         );
     }
 
@@ -183,6 +186,20 @@ class Install
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         return substr(str_shuffle($chars),0, $length);
+    }
+
+    private function updateHost()
+    {
+        $hostsFilePath = '/etc/hosts';
+        $hostLine = '127.0.0.1 ' . $this->projectName;
+        $hostsContent = file_get_contents($hostsFilePath);
+        $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
+        if (!$isHostExists) {
+            file_put_contents($hostsFilePath, PHP_EOL . $hostLine . PHP_EOL);
+            $this->log('Added host "' . $hostLine . '"');
+        } else {
+            $this->log('host "' . $hostLine . '" already exists');
+        }
     }
 
     private function updateCron()

@@ -9,7 +9,7 @@ $palto = new Palto();
 $pathParts = explode('/', $palto->getRootDirectory());
 $domainUrl = $palto->getEnv()['PHP_DOMAIN_URL'];
 if (!$domainUrl) {
-    $domainUrl = 'http://php.' . $palto->findDomainName();
+    $domainUrl = 'http://php.' . $palto->getProjectName();
 }
 
 $staticHtml = new StaticHtml($domainUrl, '/static', $palto);

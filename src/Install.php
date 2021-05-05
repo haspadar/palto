@@ -105,7 +105,7 @@ class Install
 
     private function getNginxMainConfig(): string
     {
-        return file_get_contents($this->paltoPath . '/configs/nginx.conf');
+        return file_get_contents($this->paltoPath . '/configs/nginx/nginx.conf');
     }
 
     private function getNginxDomainConfig(string $phpMajorVersion): string

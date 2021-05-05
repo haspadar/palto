@@ -1,6 +1,10 @@
 <?php
 namespace Palto;
 
+use Pylesos\Exception;
+use Pylesos\Pylesos;
+use Pylesos\PylesosService;
+
 class StaticHtml
 {
     const GENERATE_SCRIPT = 'generate_static_html.php';
@@ -71,10 +75,32 @@ class StaticHtml
 
         file_put_contents(
             $directoryFullPath . '/index.html',
-            file_get_contents($this->domainUrl . $url)
+            $this->download($this->domainUrl . $url)
         );
         $this->palto->getLogger()->debug('Saved static html ' . $directoryFullPath . '/index.html', [
             'progress' => $counter . '/' . $count
         ]);
+    }
+
+    private function download(string $url): string
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
+        $headers = [];
+        $headers[] = 'Pragma: no-cache';
+        $headers[] = 'Cache-Control: no-cache';
+        $headers[] = 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            throw new Exception(curl_error($ch));
+        }
+
+        curl_close($ch);
+
+        return $result;
     }
 }

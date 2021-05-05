@@ -60,6 +60,7 @@ class StaticHtml
             }
         }
 
+        $this->addAssetsLinks();
         $executionTime->end();
         $this->palto->getLogger()->info(
             'Generated ' . $urlsCount . ' static pages for ' . $executionTime->get()
@@ -102,5 +103,16 @@ class StaticHtml
         curl_close($ch);
 
         return $result;
+    }
+
+    private function addAssetsLinks()
+    {
+        $publicDirectories = ['css', 'img', 'js', 'sitemaps'];
+        foreach ($publicDirectories as $publicDirectory) {
+            $fullPublicPath = $this->palto->getRootDirectory() . '/public/' . $publicDirectory;
+            $fullStaticPath = $this->palto->getRootDirectory() . $this->path . '/';
+            $command = 'ln -s ' . $fullPublicPath . ' ' . $fullStaticPath;
+            `$command`;
+        }
     }
 }

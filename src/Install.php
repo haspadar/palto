@@ -39,7 +39,6 @@ class Install
             "cp -R $paltoPath/structure/layouts $projectPath/",
             "ln -s $paltoPath/structure/public $projectPath/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
-            "ln -s $paltoPath/structure/" . StaticHtml::GENERATE_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/parse_*.php $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
@@ -117,9 +116,7 @@ class Install
         return sprintf(
             file_get_contents($this->paltoPath . '/configs/nginx/domain'),
             $path,
-            $projectName . ' www.' . $projectName,
-            $path,
-            "php.$projectName",
+            "$projectName *.$projectName",
             $phpMajorVersion
         );
     }
@@ -129,7 +126,7 @@ class Install
         if ($this->isMac()) {
             $this->log('Run command "php -S localhost:8000 -t public/" and open http://localhost:8000/adminer.php');
         } elseif ($this->isLinux()) {
-            $this->log('Open http://' . $this->projectName . '/adminer.php');
+            $this->log('Open https://' . $this->projectName . '/adminer.php');
         }
     }
 
@@ -208,7 +205,6 @@ class Install
         $commands = [
             '#Every hour' => [
                 '0 * * * *  root cd ' . $this->projectPath . ' && php ' . Status::PARSE_ADS_SCRIPT,
-                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . StaticHtml::GENERATE_SCRIPT
             ],
             '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT]
         ];

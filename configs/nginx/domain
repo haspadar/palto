@@ -1,14 +1,6 @@
 server {
 	listen 80;
 	listen [::]:80;
-	root %s/static;
-	index index.html;
-	server_name %s;
-}
-
-server {
-	listen 80;
-	listen [::]:80;
 	root %s/public;
 	index index.php index.html;
 	server_name %s;

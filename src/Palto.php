@@ -55,7 +55,7 @@ class Palto
     {
         $domainUrl = $this->getEnv()['DOMAIN_URL'];
         if (!$domainUrl) {
-            $domainUrl = 'http://' . $this->getProjectName();
+            $domainUrl = 'https://www.' . $this->getProjectName();
         }
 
         return $domainUrl;
@@ -65,7 +65,7 @@ class Palto
     {
         $domainUrl = $this->getEnv()['PHP_DOMAIN_URL'];
         if (!$domainUrl) {
-            $domainUrl = 'http://php.' . $this->getProjectName();
+            $domainUrl = 'https://php.' . $this->getProjectName();
         }
 
         return $domainUrl;
@@ -654,7 +654,7 @@ class Palto
 
     public function calculatePagesCount(int $count): int
     {
-        return ceil($count / $this->adsLimit);
+        return max(ceil($count / $this->adsLimit), 1);
     }
 
     public function initPagination(int $count)

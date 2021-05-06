@@ -26,7 +26,7 @@ class StaticHtml
         $regions = $this->palto->getRegions(0, 0, 0, 0, 'level');
         $categories = $this->palto->getCategories(0, 0, 0, 0, 'level');
         $regionsCategoriesUrls = ['/'];
-        foreach ($regions as $region) {
+        foreach (array_merge([$this->palto->getDefaultRegion()], $regions) as $region) {
             $regionUrl = $this->palto->generateRegionUrl($region);
             $regionAdsCount = $this->palto->getAdsCount(0, $region['id']);
             $regionAdsPagesCount = $this->palto->calculatePagesCount($regionAdsCount);

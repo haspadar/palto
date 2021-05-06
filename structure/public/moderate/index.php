@@ -69,7 +69,7 @@ $palto->checkAuth();
         <a href="javascript:void(0);"
            data-id="<?=implode(',', array_column($actualComplaints, 'id'))?>"
            class="ignore-profile"
-           data-url="<?=$palto->getPhpDomainUrl()?>/moderate/ignore.php"
+           data-url="<?=$palto->getDomainUrl()?>/moderate/ignore.php"
         >
             <br/><br/><div style="padding-left:10px">Игнорировать все жалобы</div>
         </a>

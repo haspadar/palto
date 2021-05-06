@@ -188,7 +188,7 @@ class Install
     private function updateHost()
     {
         $hostsFilePath = '/etc/hosts';
-        $hostLine = '127.0.0.1 ' . $this->projectName . ' php.' . $this->projectName;
+        $hostLine = '127.0.0.1 ' . $this->projectName;
         $hostsContent = file_get_contents($hostsFilePath);
         $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
         if (!$isHostExists) {

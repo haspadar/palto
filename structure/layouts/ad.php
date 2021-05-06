@@ -69,7 +69,7 @@ $this->partial('header.inc', [
 
                                 <?php endif;?>
                                 <br>
-                                <div class="youtube myvideo" data-url="<?='/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
+                                <div class="youtube myvideo" data-url="<?=$this->getPhpDomainUrl() . '/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
                                     <img src="/img/loading.gif" alt="loading">
                                 </div>
 
@@ -122,7 +122,7 @@ $this->partial('header.inc', [
                                         </div>
 
                                         <p><a href="javascript:void(0);" id="send-abuse">Пожаловаться на объявление</a></p>
-                                        <div id="send-abuse-modal" class="modal">
+                                        <div id="send-abuse-modal" class="modal" data-url="<?=$this->getPhpDomainUrl()?>/send-feedback.php">
                                             <!-- Modal content -->
                                             <div class="modal-content">
                                                 <div class="modal-header">

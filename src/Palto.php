@@ -51,6 +51,26 @@ class Palto
         $this->initAd();
     }
 
+    public function getDomainUrl(): string
+    {
+        $domainUrl = $this->getEnv()['DOMAIN_URL'];
+        if (!$domainUrl) {
+            $domainUrl = 'http://' . $this->getProjectName();
+        }
+
+        return $domainUrl;
+    }
+
+    public function getPhpDomainUrl(): string
+    {
+        $domainUrl = $this->getEnv()['PHP_DOMAIN_URL'];
+        if (!$domainUrl) {
+            $domainUrl = 'http://php.' . $this->getProjectName();
+        }
+
+        return $domainUrl;
+    }
+
     public function getProjectName(): string
     {
         $pathParts = explode('/', $this->getRootDirectory());

@@ -53,11 +53,11 @@ $palto->checkAuth();
                         <?=$actualComplaint['ip']?>
                     </td>
                     <td style="border-bottom:#CCC solid 1px">
-                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="ignore-profile">
+                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="ignore-profile" data-url="<?=$palto->getPhpDomainUrl()?>/moderate/ignore.php">
                             Игнорировать жалобу
                         </a>
 
-                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="remove-profile">
+                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="remove-profile" data-url="<?=$palto->getPhpDomainUrl()?>/moderate/remove.php">
                             Удалить анкету
                         </a>
                     </td>
@@ -69,6 +69,7 @@ $palto->checkAuth();
         <a href="javascript:void(0);"
            data-id="<?=implode(',', array_column($actualComplaints, 'id'))?>"
            class="ignore-profile"
+           data-url="<?=$palto->getPhpDomainUrl()?>/moderate/ignore.php"
         >
             <br/><br/><div style="padding-left:10px">Игнорировать все жалобы</div>
         </a>

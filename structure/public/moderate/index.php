@@ -53,11 +53,11 @@ $palto->checkAuth();
                         <?=$actualComplaint['ip']?>
                     </td>
                     <td style="border-bottom:#CCC solid 1px">
-                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="ignore-profile" data-url="<?=$palto->getPhpDomainUrl()?>/moderate/ignore.php">
+                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="ignore-profile" data-url="<?=$palto->getDomainUrl()?>/moderate/ignore.php">
                             Игнорировать жалобу
                         </a>
 
-                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="remove-profile" data-url="<?=$palto->getPhpDomainUrl()?>/moderate/remove.php">
+                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="remove-profile" data-url="<?=$palto->getDomainUrl()?>/moderate/remove.php">
                             Удалить анкету
                         </a>
                     </td>

@@ -20,12 +20,15 @@ class Sitemap
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $regions = $this->groupTrees(
-            $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
+            array_merge(
+                [$this->palto->getDefaultRegion()],
+                $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
+            )
         );
         $categories = $this->groupTrees(
             $this->palto->getCategories(0, 0, 0, 0, 'tree_id, level')
         );
-        foreach (array_merge([$this->palto->getDefaultRegion()], $regions) as $regionTree) {
+        foreach ($regions as $regionTree) {
             $regionTreeUrl = $regionTree[0]['url'];
             foreach ($categories as $categoryTree) {
                 $categoryTreeUrl = $categoryTree[0]['url'];

@@ -875,7 +875,8 @@ class Palto
     public function getDefaultRegion(): array
     {
         return [
-            'id' => 0,
+            'tree_id' => 0,
+            'level' => 0,
             'title' => $this->defaultRegionTitle,
             'url' => $this->defaultRegionUrl,
         ];

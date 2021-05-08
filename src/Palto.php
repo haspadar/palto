@@ -1047,7 +1047,7 @@ class Palto
             . ' LEFT JOIN regions AS r ON a.region_id = r.id';
     }
 
-    private function getAdsWhere($categoryId, int $regionId): array
+    private function getAdsWhere(?int $categoryId, ?int $regionId): array
     {
         $query = ' WHERE ';
         $values = [];

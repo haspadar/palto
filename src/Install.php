@@ -37,7 +37,12 @@ class Install
 
         return [
             "cp -R $paltoPath/structure/layouts $projectPath/",
-            "ln -s $paltoPath/structure/public $projectPath/",
+            "mkdir $projectPath/public",
+            "cp -R $paltoPath/structure/public/css $projectPath/public/",
+            "cp -R $paltoPath/structure/public/img $projectPath/public/",
+            "cp -R $paltoPath/structure/public/js $projectPath/public/",
+            "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
+            "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/parse_*.php $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",

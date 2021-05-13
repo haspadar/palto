@@ -59,6 +59,7 @@ CREATE TABLE `ads`
     `seller_postfix` VARCHAR(100)                             NOT NULL DEFAULT '',
     `seller_phone`   VARCHAR(100)                             NOT NULL DEFAULT '',
     `deleted_time`   TIMESTAMP  NULL,
+    `create_time`      timestamp                                NULL     DEFAULT NULL,
 PRIMARY KEY (`id`),
     UNIQUE KEY `url` (`url`),
     KEY `category_id` (`category_id`),

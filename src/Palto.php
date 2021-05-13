@@ -358,7 +358,7 @@ class Palto
 
     public function getAdLastTime(): ?string
     {
-        return $this->getDb()->queryFirstField("SELECT MAX(post_time) FROM ads");
+        return $this->getDb()->queryFirstField("SELECT MAX(create_time) FROM ads");
     }
 
     public function getAd(int $adId): ?array

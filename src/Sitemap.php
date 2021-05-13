@@ -30,7 +30,7 @@ class Sitemap
             foreach ($categories as $categoryTree) {
                 $categoryTreeUrl = $categoryTree[0]['url'];
                 $this->generateDirectoryFiles(
-                    '/' . $regionTreeUrl . '-' . $categoryTreeUrl,
+                    '/' . $regionTreeUrl . '/' . $categoryTreeUrl,
                     $regionTree,
                     $categoryTree
                 );

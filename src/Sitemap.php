@@ -19,17 +19,18 @@ class Sitemap
     {
         $executionTime = new ExecutionTime();
         $executionTime->start();
-        $regions = $this->groupTrees(
+        $groupedRegions = $this->groupTrees(
             $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
         );
-        $categories = $this->groupTrees(
+        $groupedCategories = $this->groupTrees(
             $this->palto->getCategories(0, 0, 0, 0, 'tree_id, level')
         );
-        foreach ($regions as $regionTree) {
+        $this->generateRegionsFiles('/regions', $groupedRegions);
+        foreach ($groupedRegions as $regionTree) {
             $regionTreeUrl = $regionTree[0]['url'];
-            foreach ($categories as $categoryTree) {
+            foreach ($groupedCategories as $categoryTree) {
                 $categoryTreeUrl = $categoryTree[0]['url'];
-                $this->generateDirectoryFiles(
+                $this->generateCategoriesFiles(
                     '/' . $regionTreeUrl . '-' . $categoryTreeUrl,
                     $regionTree,
                     $categoryTree
@@ -37,9 +38,6 @@ class Sitemap
             }
         }
 
-        $this->saveUrls($this->path . '/' . $this->palto->getDefaultRegion()['url'], 1, [
-            $this->palto->generateRegionUrl($this->palto->getDefaultRegion())
-        ]);
         $siteMapIndexUrl = $this->generateIndexes();
         $executionTime->end();
         $this->palto->getLogger()->info(
@@ -57,11 +55,26 @@ class Sitemap
         return $trees;
     }
 
-    private function generateDirectoryFiles(string $regionTreePath, array $regions, array $categories)
+    private function generateRegionsFiles(string $regionTreePath, array $groupedRegions)
+    {
+        $urls = [];
+        foreach ($groupedRegions as $regionTree) {
+            foreach ($regionTree as $region) {
+                $urls[] = $this->palto->generateRegionUrl($region);
+            }
+        }
+
+        $urls[] = $this->palto->generateRegionUrl($this->palto->getDefaultRegion());
+        $chunks = array_chunk($urls, $this->getMaxFileLinks());
+        foreach ($chunks as $chunkKey => $chunk) {
+            $this->saveUrls($this->path . $regionTreePath, $chunkKey + 1, $chunk);
+        }
+    }
+
+    private function generateCategoriesFiles(string $regionTreePath, array $regions, array $categories)
     {
         $urls = [];
         foreach ($regions as $region) {
-            $urls[] = $this->palto->generateRegionUrl($region);
             foreach ($categories as $category) {
                 if ($this->palto->getAdsCount($category['id'], $region['id'])) {
                     $urls[] = $this->palto->generateCategoryUrl($category, $region);

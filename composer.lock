@@ -456,12 +456,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/haspadar/pylesos.git",
-                "reference": "3a51f56185c48b28617c985cdcccbcd4643fef97"
+                "reference": "7f7c2e9416e39b57ed164af019371039ae3b6054"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/3a51f56185c48b28617c985cdcccbcd4643fef97",
-                "reference": "3a51f56185c48b28617c985cdcccbcd4643fef97",
+                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/7f7c2e9416e39b57ed164af019371039ae3b6054",
+                "reference": "7f7c2e9416e39b57ed164af019371039ae3b6054",
                 "shasum": ""
             },
             "require": {
@@ -474,7 +474,7 @@
                 "monolog/monolog": "2.x-dev",
                 "nesk/puphpeteer": "dev-master",
                 "php": ">=7.4",
-                "php-webdriver/webdriver": "1.8.x-dev",
+                "php-webdriver/webdriver": "9999999-dev",
                 "simplehtmldom/simplehtmldom": "dev-master",
                 "vlucas/phpdotenv": "^5.1"
             },
@@ -503,7 +503,7 @@
                 "issues": "https://github.com/haspadar/pylesos/issues",
                 "source": "https://github.com/haspadar/pylesos/tree/master"
             },
-            "time": "2021-05-01T17:00:40+00:00"
+            "time": "2021-05-13T13:32:17+00:00"
         },
         {
             "name": "league/climate",
@@ -803,12 +803,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-webdriver/php-webdriver.git",
-                "reference": "356dd1d5fda67f25d0491f411905452f5ee99256"
+                "reference": "744004ed0cdb0c2b5ed2bd1a59ea012607775b59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/356dd1d5fda67f25d0491f411905452f5ee99256",
-                "reference": "356dd1d5fda67f25d0491f411905452f5ee99256",
+                "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/744004ed0cdb0c2b5ed2bd1a59ea012607775b59",
+                "reference": "744004ed0cdb0c2b5ed2bd1a59ea012607775b59",
                 "shasum": ""
             },
             "require": {
@@ -837,11 +837,6 @@
             },
             "default-branch": true,
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.8.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Facebook\\WebDriver\\": "lib/"
@@ -867,7 +862,7 @@
                 "issues": "https://github.com/php-webdriver/php-webdriver/issues",
                 "source": "https://github.com/php-webdriver/php-webdriver/tree/main"
             },
-            "time": "2021-04-27T21:33:17+00:00"
+            "time": "2021-05-12T20:58:29+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -945,12 +940,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "a18c1e692e02b84abbafe4856c3cd7cc6903908c"
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/a18c1e692e02b84abbafe4856c3cd7cc6903908c",
-                "reference": "a18c1e692e02b84abbafe4856c3cd7cc6903908c",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
                 "shasum": ""
             },
             "require": {
@@ -986,9 +981,9 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/master"
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
             },
-            "time": "2021-03-02T15:02:34+00:00"
+            "time": "2021-05-03T11:20:27+00:00"
         },
         {
             "name": "seld/cli-prompt",

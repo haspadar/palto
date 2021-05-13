@@ -20,10 +20,7 @@ class Sitemap
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $regions = $this->groupTrees(
-            array_merge(
-                [$this->palto->getDefaultRegion()],
-                $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
-            )
+            $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
         );
         $categories = $this->groupTrees(
             $this->palto->getCategories(0, 0, 0, 0, 'tree_id, level')
@@ -40,6 +37,9 @@ class Sitemap
             }
         }
 
+        $this->saveUrls($this->path . '/' . $this->palto->getDefaultRegion()['url'], 1, [
+            $this->palto->generateRegionUrl($this->palto->getDefaultRegion())
+        ]);
         $siteMapIndexUrl = $this->generateIndexes();
         $executionTime->end();
         $this->palto->getLogger()->info(

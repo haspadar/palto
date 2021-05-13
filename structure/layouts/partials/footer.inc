@@ -19,6 +19,14 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/slider.js?t=<?=time()?>"></script>
+<?php if ($this->getPartialVariable('js')) :?>
+    <?php foreach ($this->getPartialVariable('js') as $js) :?>
+        <?php foreach ($js as $jsAttribute => $jsValue) :?>
+            <script <?=$jsAttribute?>="<?=$jsValue?>"></script>
+        <?php endforeach;?>
+    <?php endforeach;?>
+<?php endif;?>
+
 <script src="/js/moderation.js?t=<?=time()?>"></script>
 <script src="/js/script.js?t=<?=time()?>"></script>
 </body>

@@ -201,6 +201,21 @@ class Palto
         return $this->ad ?? null;
     }
 
+    public function getLatitude(): string
+    {
+        return $this->getCoordinate(0);
+    }
+
+    public function getLongitute(): string
+    {
+        return $this->getCoordinate(1);
+    }
+
+    public function getAccuracy(): string
+    {
+        return $this->getCoordinate(2);
+    }
+
     public function isAdUrlExists(string $url): bool
     {
         $found = $this->getDb()->queryFirstRow('SELECT * FROM ads WHERE url = %s', $url);
@@ -1154,5 +1169,16 @@ class Palto
         header('HTTP/1.0 401 Unauthorized');
         echo "Access denied!" . PHP_EOL;
         exit;
+    }
+
+    private function getCoordinate(int $partNumber): string
+    {
+        if ($this->ad && $this->ad['coordinates']) {
+            $parts = explode(',', $this->ad['coordinates']);
+
+            return $parts[$partNumber] ?? '';
+        }
+
+        return '';
     }
 }

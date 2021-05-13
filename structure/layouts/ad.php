@@ -15,6 +15,13 @@ $this->partial('header.inc', [
     'description' => $this->generateShortText($this->getCurrentAd()['text']),
     'nextPageUrl' => $this->getNextPageUrl(),
     'previousPageUrl' => $this->getPreviousPageUrl(),
+    'css' => $this->getCurrentAd()['coordinates'] ? [
+        [
+            'href' => 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css',
+            'integrity' => 'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
+            'crossorigin' => ''
+        ]
+    ] : []
 ]);
 ?>
 <div id="col-mid">
@@ -104,13 +111,21 @@ $this->partial('header.inc', [
                                     <div class="pb1"></div>
                                     <div class="pb2">
                                         <p>
-                                        <div class="seller">💁‍♂️ <?=$this->getCurrentAd()['seller_name']?></div>
-                                        <div><?=$this->getCurrentAd()['seller_postfix'] ?? ''?></div>
+                                            <div class="seller">💁‍♂️ <?=$this->getCurrentAd()['seller_name']?></div>
+                                            <div><?=$this->getCurrentAd()['seller_postfix'] ?? ''?></div>
                                         </p>
                                         <?php if ($this->getCurrentAd()['address']) :?>
                                             <div>
                                                 📍Address: <?=$this->getCurrentAd()['address']?>
                                             </div>
+                                        <?php endif;?>
+
+                                        <?php if ($this->getCurrentAd()['coordinates']) :?>
+                                            <div id="map"
+                                                 data-latitude="<?=$this->getLatitude()?>"
+                                                 data-longitude="<?=$this->getLongitute()?>"
+                                                 data-accuracy="<?=$this->getAccuracy()?>"
+                                            ></div>
                                         <?php endif;?>
 
                                         <div>📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getCurrentAd()['seller_phone']?>">
@@ -166,4 +181,12 @@ $this->partial('header.inc', [
             </div>
         </div>
     </div>
-<?php $this->partial('footer.inc');
+<?php $this->partial('footer.inc', [
+    'js' => $this->getCurrentAd()['coordinates'] ? [
+            [
+                'src' => 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
+                'integrity' => 'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
+                'crossorigin' => ''
+            ]
+    ] : []
+]);

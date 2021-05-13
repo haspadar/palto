@@ -21,4 +21,16 @@ $(function() {
         let phone = $(this).data('phone');
         $(this).html(phone);
     });
+
+    let $map = $('#map');
+    if ($map && $map.length) {
+        let latitude = $map.data('latitude');
+        let longitude = $map.data('longitude');
+        let accuracy = $map.data('accuracy');
+        let map = L.map('map').setView([latitude, longitude], accuracy);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        L.marker([latitude, longitude]).addTo(map);
+    }
 });

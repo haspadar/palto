@@ -8,7 +8,7 @@ $this->partial('header.inc', [
     'description' => '404',
 ]);
 ?>
-    <br/>
+<br/>
 <?php if ($this->getCurrentAd()) :?>
     <h1>Ad was deleted</h1>
 <?php else :?>

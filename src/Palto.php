@@ -414,7 +414,7 @@ class Palto
     }
 
     /**
-     * @param int|array $categoryId
+     * @param int|array|null $categoryId
      * @param int|null $regionId
      * @return int
      */
@@ -1052,7 +1052,12 @@ class Palto
             . ' LEFT JOIN regions AS r ON a.region_id = r.id';
     }
 
-    private function getAdsWhere(?int $categoryId, ?int $regionId): array
+    /**
+     * @param int|array|null $categoryId
+     * @param int|null $regionId
+     * @return array
+     */
+    private function getAdsWhere($categoryId, ?int $regionId): array
     {
         $query = ' WHERE ';
         $values = [];

@@ -13,9 +13,7 @@ $description = $this->getPartialVariable('description');
     <meta name="description" content="<?=$this->getPartialVariable('description')?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.ico?1">
-    <link rel="stylesheet" href="/css/slider.css?v=<?=time()?>">
     <link rel="stylesheet" href="/css/styles.css?v=<?=time()?>">
-    <link rel="stylesheet" href="/css/abuse.css?v=<?=time()?>">
     <?php if ($this->getPartialVariable('previousPageUrl')) :?>
         <meta name="robots" content="noindex, follow" />
         <link rel="prev" href="<?=$this->getPartialVariable('previousPageUrl')?>">

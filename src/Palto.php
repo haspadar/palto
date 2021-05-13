@@ -413,7 +413,12 @@ class Palto
         return $urls;
     }
 
-    public function getAdsCount($categoryId, $regionId): int
+    /**
+     * @param int|array $categoryId
+     * @param int|null $regionId
+     * @return int
+     */
+    public function getAdsCount($categoryId, ?int $regionId): int
     {
         $query = 'SELECT COUNT(*) FROM ads AS a LEFT JOIN categories AS c ON a.category_id = c.id'
             . ' LEFT JOIN regions AS r ON a.region_id = r.id';

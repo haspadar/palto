@@ -869,7 +869,7 @@ class Palto
 
     public function parseYoutubeVideoId(string $query): string
     {
-        $html = PylesosService::download(
+        $html = PylesosService::get(
             'https://www.youtube.com/results?search_query=' . urlencode($query),
             $this->getEnv()
         )->getResponse();

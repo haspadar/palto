@@ -76,33 +76,11 @@ class StaticHtml
 
         file_put_contents(
             $directoryFullPath . '/index.html',
-            $this->download($this->domainUrl . $url)
+            PylesosService::getWithoutProxy($url, $this->palto->getEnv())
         );
         $this->palto->getLogger()->debug('Saved static html ' . $directoryFullPath . '/index.html', [
             'progress' => $counter . '/' . $count
         ]);
-    }
-
-    private function download(string $url): string
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_ENCODING, 'gzip, deflate');
-        $headers = [];
-        $headers[] = 'Pragma: no-cache';
-        $headers[] = 'Cache-Control: no-cache';
-        $headers[] = 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36';
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        $result = curl_exec($ch);
-        if (curl_errno($ch)) {
-            throw new Exception(curl_error($ch));
-        }
-
-        curl_close($ch);
-
-        return $result;
     }
 
     private function addAssetsLinks()

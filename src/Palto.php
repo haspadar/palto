@@ -871,6 +871,7 @@ class Palto
     {
         $html = PylesosService::get(
             'https://www.youtube.com/results?search_query=' . urlencode($query),
+            [],
             $this->getEnv()
         )->getResponse();
         $pattern = '/watch?v=';

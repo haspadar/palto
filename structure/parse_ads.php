@@ -36,7 +36,7 @@ $scheduler->run(
 
 function parseCategory(Palto $palto, array $category, string $url, array $logContent = []) {
     $fullLevel2Url = DONOR_URL . $url;
-    $level2Response = PylesosService::get($fullLevel2Url, $palto->getEnv());
+    $level2Response = PylesosService::get($fullLevel2Url, [], $palto->getEnv());
     $level2Document = new HtmlDocument($level2Response->getResponse());
     $ads = $level2Document->find('.result-row');
     $extendedLogContext = array_merge([
@@ -68,7 +68,7 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
 }
 
 function parseAd(Palto $palto, $adUrl, $level2) {
-    $adResponse = PylesosService::get($adUrl, $palto->getEnv());
+    $adResponse = PylesosService::get($adUrl, [], $palto->getEnv());
     $adDocument = new HtmlDocument($adResponse->getResponse());
     $regionLink = $adDocument->find('.subarea a', 0);
     if ($regionLink) {

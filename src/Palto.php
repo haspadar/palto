@@ -13,8 +13,8 @@ class Palto
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private \MeekroDB $db;
-    private string $defaultRegionUrl = 'all';
-    private string $defaultRegionTitle = 'All';
+    private string $defaultRegionUrl;
+    private string $defaultRegionTitle;
     private string $regionUrl = '';
     private array $categoriesUrls = [];
     private string $categoryUrl = '';
@@ -43,6 +43,7 @@ class Palto
         $this->env = $dotenv->load();
         $this->initLogger();
         $this->initDb();
+        $this->initDefaultRegion();
         $this->initRegionUrl();
         $this->initCategoriesUrls();
         $this->initAdId();
@@ -967,6 +968,12 @@ class Palto
     {
         $parts = $this->getUrlParts();
         $this->regionUrl = $parts[0] ?? $this->regionUrl;
+    }
+
+    private function initDefaultRegion()
+    {
+        $this->setDefaultRegionTitle($this->env['DEFAULT_REGION_TITLE']);
+        $this->setDefaultRegionUrl($this->env['DEFAULT_REGION_URL']);
     }
 
     private function initRegion()

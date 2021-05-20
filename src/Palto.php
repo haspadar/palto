@@ -1051,6 +1051,7 @@ class Palto
         if ($ad) {
             $ad['images'] = $this->getAdImages($ad['id']);
             $ad['details'] = $this->getAdDetails($ad['id']);
+            $ad['region'] = $ad['region_id'] ? $this->getRegion($ad['region_id']) : [];
         }
 
         return $ad;

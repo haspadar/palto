@@ -16,17 +16,17 @@ $palto->getLogger()->info('Started ads parsing with pid=' . $pid);
 $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto, $pid) {
-        $level2Categories = $palto->getDb()->query("SELECT * FROM categories WHERE level = %d", 2);
-        if ($level2Categories) {
-            shuffle($level2Categories);
-            $level2CategoriesCount = count($level2Categories);
-            foreach ($level2Categories as $level2Key => $level2) {
+        $leafCategories = $palto->getDb()->query("SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)");
+        if ($leafCategories) {
+            shuffle($leafCategories);
+            $leafCategoriesCount = count($leafCategories);
+            foreach ($leafCategories as $leafKey => $category) {
                 $logContent = [
-                    'iteration' => ($level2Key + 1) . '/' . $level2CategoriesCount,
+                    'iteration' => ($leafKey + 1) . '/' . $leafCategoriesCount,
                     'pid' => $pid
                 ];
-                $palto->getLogger()->info('Parsing category ' . $level2['title'], $logContent);
-                parseCategory($palto, $level2, $level2['donor_url'], $logContent);
+                $palto->getLogger()->info('Parsing category ' . $category['title'], $logContent);
+                parseCategory($palto, $category, $category['donor_url'], $logContent);
             }
         } else {
             $palto->getLogger()->info('Categories not found');
@@ -36,13 +36,13 @@ $scheduler->run(
 
 function parseCategory(Palto $palto, array $category, string $url, array $logContent = []) {
     $fullLevel2Url = DONOR_URL . $url;
-    $level2Response = PylesosService::get($fullLevel2Url, [], $palto->getEnv());
-    $level2Document = new HtmlDocument($level2Response->getResponse());
-    $ads = $level2Document->find('.result-row');
+    $categoryResponse = PylesosService::get($fullLevel2Url, [], $palto->getEnv());
+    $categoryDocument = new HtmlDocument($categoryResponse->getResponse());
+    $ads = $categoryDocument->find('.result-row');
     $extendedLogContext = array_merge([
-        'category' => $category['title'],
-        'url' => $fullLevel2Url
-    ], $logContent);
+                                          'category' => $category['title'],
+                                          'url' => $fullLevel2Url
+                                      ], $logContent);
     $palto->getLogger()->info('Found ' . count($ads) . ' ads', $extendedLogContext);
     $addedAdsCount = 0;
     foreach ($ads as $resultRow) {
@@ -61,9 +61,9 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
 
     $palto->getLogger()->info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
     $nextPageSelector = '.paginator .buttons a.next]';
-    if ($level2Document->find($nextPageSelector, 0)) {
-        $palto->getLogger()->debug('Parsing next page ' . $level2Document->find($nextPageSelector, 0)->href);
-        parseCategory($palto, $category, $level2Document->find($nextPageSelector, 0)->href, $logContent);
+    if ($categoryDocument->find($nextPageSelector, 0)) {
+        $palto->getLogger()->debug('Parsing next page ' . $categoryDocument->find($nextPageSelector, 0)->href);
+        parseCategory($palto, $category, $categoryDocument->find($nextPageSelector, 0)->href, $logContent);
     }
 }
 
@@ -74,13 +74,13 @@ function parseAd(Palto $palto, $adUrl, $level2) {
     if ($regionLink) {
         $regionTitle = $regionLink->innertext;
         $regionId = $palto->getRegionId([
-            'donor_url' => $regionLink->href,
-            'url' => $palto->findRegionUrl($regionTitle),
-            'title' => $palto->upperCaseEveryWord($regionTitle),
-            'level' => 1,
-            'tree_id' => $palto->getDb()->queryFirstField('SELECT MAX(tree_id) FROM regions') + 1,
-            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
-        ]);
+                                            'donor_url' => $regionLink->href,
+                                            'url' => $palto->findRegionUrl($regionTitle),
+                                            'title' => $palto->upperCaseEveryWord($regionTitle),
+                                            'level' => 1,
+                                            'tree_id' => $palto->getDb()->queryFirstField('SELECT MAX(tree_id) FROM regions') + 1,
+                                            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+                                        ]);
     }
 
     $titleElement = $adDocument->find('#titletextonly', 0);

@@ -449,7 +449,7 @@ class Palto
         $query = $this->getAdsQuery();
         [$where, $values] = $this->getAdsWhere($categoryId, $regionId);
         $query .= $where;
-        $query .= ' LIMIT %d_limit OFFSET %d_offset';
+        $query .= ' ORDER BY create_time DESC LIMIT %d_limit OFFSET %d_offset';
         $values['limit'] = $limit;
         $values['offset'] = $offset;
         $ads = $this->getDb()->query($query, $values);

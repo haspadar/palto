@@ -64,6 +64,8 @@ PRIMARY KEY (`id`),
     UNIQUE KEY `url` (`url`),
     KEY `category_id` (`category_id`),
     KEY `region_id` (`region_id`),
+    INDEX (`create_time`),
+    INDEX (`post_time`),
     INDEX (`deleted_time`),
 
 CONSTRAINT `ads_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,

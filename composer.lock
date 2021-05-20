@@ -456,12 +456,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/haspadar/pylesos.git",
-                "reference": "e8319d6e3265085a885573cd20b3d2942dd269e0"
+                "reference": "df656a2cd6cd8da2be7243b7b3f05d1adf307ad3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/e8319d6e3265085a885573cd20b3d2942dd269e0",
-                "reference": "e8319d6e3265085a885573cd20b3d2942dd269e0",
+                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/df656a2cd6cd8da2be7243b7b3f05d1adf307ad3",
+                "reference": "df656a2cd6cd8da2be7243b7b3f05d1adf307ad3",
                 "shasum": ""
             },
             "require": {
@@ -503,7 +503,7 @@
                 "issues": "https://github.com/haspadar/pylesos/issues",
                 "source": "https://github.com/haspadar/pylesos/tree/master"
             },
-            "time": "2021-05-14T16:25:03+00:00"
+            "time": "2021-05-14T18:02:36+00:00"
         },
         {
             "name": "league/climate",

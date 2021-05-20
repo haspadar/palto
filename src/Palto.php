@@ -794,13 +794,34 @@ class Palto
 
     public function getListBreadcrumbUrls(): array
     {
-        return array_merge(
-            [[
+        $urls = [[
+            'title' => $this->getDefaultRegion()['title'],
+            'url' => $this->generateRegionUrl($this->getDefaultRegion()),
+        ]];
+        if ($this->getCurrentRegion()['url'] != $this->getDefaultRegion()['url']) {
+            $urls[] = [
                 'title' => $this->getCurrentRegion()['title'] ?? $this->getCurrentRegion()['title'],
                 'url' => $this->generateRegionUrl($this->getCurrentRegion()),
-            ]],
+            ];
+        }
+
+        $urls = array_merge(
+            $urls,
             $this->getCategoryBreadcrumbUrls($this->getCurrentCategory()['parents'], $this->getCurrentRegion())
         );
+        if ($this->getCurrentCategory() && $this->getCurrentCategory()['title']) {
+            $urls[] = [
+                'title' => $this->getCurrentCategory()['title'],
+                'url' => $this->generateCategoryUrl($this->getCurrentCategory(), $this->getCurrentRegion()),
+            ];
+        }
+        foreach ($urls as &$url) {
+            if ($url['url'] == $_SERVER['REQUEST_URI']) {
+                $url['url'] = '';
+            }
+        }
+
+        return $urls;
     }
 
     public function getCategoryBreadcrumbUrls(array $parentCategories, ?array $region = null): array

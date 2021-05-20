@@ -769,8 +769,9 @@ class Palto
 
     public function generateShortText(string $text, int $length = 135): string
     {
-        $short = mb_substr($text, 0, $length);
-        if ($short != $text) {
+        $cleanText = strip_tags($text);
+        $short = mb_substr($cleanText, 0, $length);
+        if ($short != $cleanText) {
             $short .= '...';
         }
 

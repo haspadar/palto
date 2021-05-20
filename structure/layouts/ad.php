@@ -172,7 +172,7 @@ $this->partial('header.inc', [
                             <div class="bl1">
                                 <h2>Similar ads</h2>
                                 <?php foreach ($this->getAds($this->getCurrentCategory()['id'], $this->getCurrentRegion()['id'], 5) as $similarAd) :?>
-                                    <?php $this->partial('ad.inc', ['ad' => $similarAd])?>
+                                    <?php $this->partial('ad_in_list.inc', ['ad' => $similarAd])?>
                                 <?php endforeach;?>
                             </div>
                         </div>

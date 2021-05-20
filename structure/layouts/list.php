@@ -101,7 +101,7 @@ $this->partial('header.inc', [
                                     $this->getAdsOffset()
                                 ) as $adIndex => $ad
                             ) :?>
-                                <?php $this->partial('ad.inc', ['ad' => $ad])?>
+                                <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
 
                                 <?php if (in_array($adIndex + 1, [5, 15])) : ?>
                                     <!--                                Counter-->

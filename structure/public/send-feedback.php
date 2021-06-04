@@ -13,7 +13,7 @@ $message = $palto->filterString($_POST['message']);
 $adId = intval($_POST['ad_id']);
 if (filter_var($email, FILTER_VALIDATE_EMAIL) && $message) {
     Moderation::addComplaint(
-        $palto->getDb(), [
+        $palto, [
             'email' => $email,
             'message' => $message,
             'ad_id' => $adId,

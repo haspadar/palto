@@ -36,7 +36,7 @@ $scheduler->run(
 
 function parseCategory(Palto $palto, array $category, string $url, array $logContent = []) {
     $fullLevel2Url = DONOR_URL . $url;
-    $categoryResponse = PylesosService::get($fullLevel2Url, [], $palto->getEnv());
+    $categoryResponse = PylesosService::download($fullLevel2Url, [], [], $palto->getEnv(), 20);
     $categoryDocument = new HtmlDocument($categoryResponse->getResponse());
     $ads = $categoryDocument->find('.result-row');
     $extendedLogContext = array_merge([
@@ -68,7 +68,7 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
 }
 
 function parseAd(Palto $palto, $adUrl, $level2) {
-    $adResponse = PylesosService::get($adUrl, [], $palto->getEnv());
+    $adResponse = PylesosService::download($adUrl, [], [], $palto->getEnv(), 20);
     $adDocument = new HtmlDocument($adResponse->getResponse());
     $regionLink = $adDocument->find('.subarea a', 0);
     if ($regionLink) {
@@ -85,6 +85,9 @@ function parseAd(Palto $palto, $adUrl, $level2) {
 
     $titleElement = $adDocument->find('#titletextonly', 0);
     if ($titleElement) {
+        $priceWithCurrency = $adDocument->find('.postingtitletext .price', 0)->innertext ?? '';
+        $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
+        $price = floatval($priceWithCurrency ? strtr(mb_substr($priceWithCurrency, 1), [',' => '', ' ' => '']) : 0);
         $ad = [
             'title' => $titleElement->innertext,
             'url' => $adUrl,
@@ -93,8 +96,8 @@ function parseAd(Palto $palto, $adUrl, $level2) {
                                '</div></div>',
                                $adDocument->find('#postingbody', 0)->innertext)[1]
             ),
-            'address' => $adDocument->find('#titletextonly small', 0)
-                ? strtr(trim($adDocument->find('#titletextonly small', 0)->innertext), [
+            'address' => $adDocument->find('.postingtitletext small', 0)
+                ? strtr(trim($adDocument->find('.postingtitletext small', 0)->innertext), [
                     '(' => '',
                     ')' => '',
                 ]) : '',
@@ -102,8 +105,8 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'post_time' => (new DateTime($adDocument->find('.postinginfos .postinginfo time', 0)->datetime))
                 ->format('Y-m-d H:i:s'),
             'region_id' => $regionId ?? null,
-            'price' => 0,
-            'currency' => '',
+            'price' => $price,
+            'currency' => $currency,
             'seller_name' => '',
             'seller_postfix' => '',
             'seller_phone' => '',
@@ -126,11 +129,11 @@ function parseAd(Palto $palto, $adUrl, $level2) {
 
 function getDetails($adDocument) {
     $details = [];
-    foreach ($adDocument->find('.vip-matrix-data table tr') as $property) {
-        $details[html_entity_decode($property->find('td', 0)->plaintext)]
-            = html_entity_decode($property->find('td', 1)->plaintext);
-        $details[html_entity_decode($property->find('td', 3)->plaintext)]
-            = html_entity_decode($property->find('td', 4)->plaintext);
+    foreach ($adDocument->find('.attrgroup span') as $property) {
+        if (mb_strpos($property->plaintext, ':') !== false) {
+            list($name, $value) = explode(': ', $property->plaintext);
+            $details[$name] = $value;
+        }
     }
 
     return $details;

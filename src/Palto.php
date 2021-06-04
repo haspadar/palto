@@ -780,13 +780,18 @@ class Palto
 
     public function getAdBreadcrumbUrls(): array
     {
+        $urls = [[
+            'title' => $this->getDefaultRegion()['title'],
+            'url' => $this->generateRegionUrl($this->getDefaultRegion()),
+        ], [
+            'title' => $this->getCurrentRegion()['title'] ?? $this->getCurrentRegion()['title'],
+            'url' => $this->generateRegionUrl($this->getCurrentRegion()),
+        ]];
+
         return array_merge(
-            [[
-                'title' => $this->getCurrentRegion()['title'] ?? $this->getCurrentRegion()['title'],
-                'url' => $this->generateRegionUrl($this->getCurrentRegion()),
-            ]],
+            $urls,
             $this->getCategoryBreadcrumbUrls(
-                array_merge([$this->getCurrentCategory()], $this->getCurrentCategory()['parents']),
+                array_merge($this->getCurrentCategory()['parents'], [$this->getCurrentCategory()]),
                 $this->getCurrentRegion()
             )
         );
@@ -1170,7 +1175,7 @@ class Palto
     private function initDb(): void
     {
         $this->db = new \MeekroDB(
-            'localhost',
+            '127.0.0.1',
             $this->env['DB_USER'],
             $this->env['DB_PASSWORD'],
             $this->env['DB_NAME']

@@ -3,14 +3,14 @@
  * @var $this \Palto\Palto
  */
 $this->partial('header.inc', [
-    'title' => $this->getCurrentAd()['title'] . ' in ' . implode(
+    'title' => $this->getCurrentAd()['title'] . ': ' . implode(
             ' - ',
             array_filter(array_merge(
-                 [$this->getCurrentAd()['address']],
-                 [$this->getCurrentRegion()['title']],
-                 array_column($this->getCurrentCategory()['parents'], 'title'),
-                 [$this->getCurrentCategory()['title']],
-             ))
+                             [$this->getCurrentCategory()['title']],
+                             array_column($this->getCurrentCategory()['parents'], 'title'),
+                             [$this->getCurrentAd()['address']],
+                             [$this->getCurrentRegion()['title']],
+                         ))
         ),
     'description' => $this->generateShortText($this->getCurrentAd()['text']),
     'nextPageUrl' => $this->getNextPageUrl(),
@@ -21,172 +21,134 @@ $this->partial('header.inc', [
             'integrity' => 'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
             'crossorigin' => ''
         ]
-    ] : []
+    ] : [],
 ]);
 ?>
-<div id="col-mid">
-        <div class="col-mid-inner">
-            <div class="cmi-1">
-                <div class="cmi-1-1">
-                    <div class="block bread">
-                        <div class="bl1">
-                            <div class="b1" itemscope itemtype="http://schema.org/BreadcrumbList">
-                                <?php foreach ($this->getAdBreadcrumbUrls() as $breadcrumbKey => $breadcrumbItem) : ?>
-                                    <?php if ($breadcrumbKey) : ?>
-                                        <span class="sep">»</span>
-                                    <?php endif;?>
-
-                                    <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                                        <a itemprop="item" href="<?=$breadcrumbItem['url']?>" class="bread">
-                                            <span itemprop="name"><?= $breadcrumbItem['title'] ?></span>
-                                        </a>
-                                        <meta itemprop="position" content="<?=$breadcrumbKey + 1?>"/>
-                                    </span>
-                                <?php endforeach;?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="main-ob">
-                        <div class="block">
-                            <div class="bl1">
-                                <h1><?=$this->getCurrentAd()['title']?> <span style="color:#999"> in <?=$this->getCurrentAd()['address'] ? $this->getCurrentAd()['address'] . ', ' : ''?><?=$this->getCurrentRegion()['title']?></span></h1>
-                                <?php if ($this->getCurrentAd()['images']) :?>
-                                    <!-- Slideshow container -->
-                                    <div class="slideshow-container">
-                                        <!-- Full-width images with number and caption text -->
-                                        <?php foreach ($this->getCurrentAd()['images'] as $key => $image) :?>
-                                            <div class="mySlides fade">
-                                                <div class="numbertext"><?=$key + 1?> / <?=count($this->getCurrentAd()['images'])?></div>
-                                                <img src="<?=$image['big']?>" style="width:100%" loading="lazy">
-                                            </div>
-                                        <?php endforeach;?>
-
-                                        <!-- Next and previous buttons -->
-                                        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                                        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-                                    </div>
-                                    <br>
-
-                                    <!-- The dots/circles -->
-                                    <div style="text-align:center;">
-                                        <?php foreach ($this->getCurrentAd()['images'] as $key => $image) :?>
-                                            <span class="dot" onclick="currentSlide(<?=$key + 1?>)"></span>
-                                        <?php endforeach;?>
-                                    </div>
-
-                                <?php endif;?>
-                                <br>
-                                <div class="youtube myvideo" data-url="<?=$this->getDomainUrl() . '/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
-                                    <img src="/img/loading.gif" alt="loading">
-                                </div>
-
-                                <?php if ($this->getCurrentAd()['details']) :?>
-                                    <ul>
-                                        <?php foreach ($this->getCurrentAd()['details'] as $field => $value) :?>
-                                            <li><?=$field?>: <?=$value?></li>
-                                        <?php endforeach;?>
-                                    </ul>
-                                <?php endif;?>
-                            </div>
-                        </div>
-                        <div class="block">
-                            <div class="bl1">
-                                <div class="short-info">
-                                    <div class="si1">
-                                        <div class="price">🏷 <?=$this->getCurrentAd()['price']?> <span><?=$this->getCurrentAd()['currency']?></span> </div>
-                                        <div class="si3">
-                                            <div class="si3a">
-                                                <div class="param">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['post_time']))->format('d.m.Y')?> </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="block">
-                            <div class="bl1">
-                                <div class="descr"> <?=urldecode($this->getCurrentAd()['text'])?> </div>
-                                <div class="phone-block">
-                                    <div class="pb1"></div>
-                                    <div class="pb2">
-                                        <p>
-                                            <div class="seller">💁‍♂️ <?=$this->getCurrentAd()['seller_name']?></div>
-                                            <div><?=$this->getCurrentAd()['seller_postfix'] ?? ''?></div>
-                                        </p>
-                                        <?php if ($this->getCurrentAd()['address']) :?>
-                                            <div>
-                                                📍Address: <?=$this->getCurrentAd()['address']?>
-                                            </div>
-                                        <?php endif;?>
-
-                                        <?php if ($this->getCurrentAd()['coordinates']) :?>
-                                            <div id="map"
-                                                 data-latitude="<?=$this->getLatitude()?>"
-                                                 data-longitude="<?=$this->getLongitute()?>"
-                                                 data-accuracy="<?=$this->getAccuracy()?>"
-                                            ></div>
-                                        <?php endif;?>
-
-                                        <div>📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getCurrentAd()['seller_phone']?>">
-                                                <?php if ($this->getCurrentAd()['seller_phone']) :?>
-                                                    Show Phone
-                                                <?php else :?>
-                                                    No Phone
-                                                <?php endif;?></a>
-                                        </div>
-
-                                        <p><a href="javascript:void(0);" id="send-abuse">Пожаловаться на объявление</a></p>
-                                        <div id="send-abuse-modal" class="modal" data-url="<?=$this->getDomainUrl()?>/send-feedback.php">
-                                            <!-- Modal content -->
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <span class="close">&times;</span>
-                                                    <h2>Пожаловаться на объявление</h2>
-                                                </div>
-                                                <p class="form">
-                                                    <form>
-                                                        <input type="hidden" name="page" value="http://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>">
-                                                    <label><b>Email</b></label>
-                                                    <input type="email" name="email" placeholder="Ваша почта" required>
-                                                    <br>
-                                                    <input type="hidden" name="ad_id" value="<?=$this->getCurrentAd()['id']?>">
-                                                    <label><b>Сообщение</b></label>
-                                                    <textarea name="message" rows="3" width="200px"></textarea>
-                                                    <br>
-                                                        <input type="submit" value="Отправить">
-                                                    </form>
-                                                </p>
-                                            </div>
-
-                                        </div>
-
-                                        <div>
-                                            <a href="<?=$this->getCurrentAd()['url']?>" target="_blank">Original</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="block">
-                            <div class="bl1">
-                                <h2>Similar ads</h2>
-                                <?php foreach ($this->getAds($this->getCurrentCategory()['id'], $this->getCurrentRegion()['id'], 5) as $similarAd) :?>
-                                    <?php $this->partial('ad_in_list.inc', ['ad' => $similarAd])?>
-                                <?php endforeach;?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getAdBreadcrumbUrls()]);?>
+    </div>
+    <h1><?=$this->getCurrentAd()['title']?> <span style="color:#999"> in <?=$this->getCurrentAd()['address'] ? $this->getCurrentAd()['address'] . ', ' : ''?><?=$this->getCurrentRegion()['title']?> from craigslist</span></h1>
+<?php if ($this->getCurrentAd()['images']) :?>
+    <!-- Slideshow container -->
+    <div class="slideshow-container">
+        <!-- Full-width images with number and caption text -->
+        <?php foreach ($this->getCurrentAd()['images'] as $key => $image) :?>
+            <div class="mySlides fade">
+                <div class="numbertext"><?=$key + 1?> / <?=count($this->getCurrentAd()['images'])?></div>
+                <img src="<?=$image['big']?>" style="width:100%" loading="lazy">
             </div>
+        <?php endforeach;?>
+
+        <!-- Next and previous buttons -->
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <br>
+
+    <!-- The dots/circles -->
+    <div style="text-align:center;">
+        <?php foreach ($this->getCurrentAd()['images'] as $key => $image) :?>
+            <span class="dot" onclick="currentSlide(<?=$key + 1?>)"></span>
+        <?php endforeach;?>
+    </div>
+
+<?php endif;?>
+
+    <br>
+    <div class="youtube myvideo" data-url="<?=$this->getDomainUrl() . '/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
+        <img src="/img/loading.gif" alt="loading">
+    </div>
+
+<?php if ($this->getCurrentAd()['details']) :?>
+    <ul>
+        <?php foreach ($this->getCurrentAd()['details'] as $field => $value) :?>
+            <li><?=$field?>: <?=$value?></li>
+        <?php endforeach;?>
+    </ul>
+<?php endif;?>
+    <hr />
+    <div class="description"> <?=urldecode($this->getCurrentAd()['text'])?> </div>
+<?php if ($this->getCurrentAd()['price'] > 0) :?>
+    <div class="price">
+        🏷 <?=$this->getCurrentAd()['currency']?><?=number_format($this->getCurrentAd()['price'])?></span>
+    </div>
+<?php endif;?>
+
+    <div><?=$this->getCurrentAd()['seller_postfix'] ?? ''?></div>
+<?php if ($this->getCurrentAd()['address']) :?>
+    <div class="adress">📍Address: <?=$this->getCurrentAd()['address']?></div>
+<?php endif;?>
+
+<?php if ($this->getCurrentAd()['coordinates']) :?>
+    <div id="map"
+         data-latitude="<?=$this->getLatitude()?>"
+         data-longitude="<?=$this->getLongitute()?>"
+         data-accuracy="15"
+    ></div>
+<?php endif;?>
+<?php if (trim($this->getCurrentAd()['seller_name'])) :?>
+    <div class="seller">💁‍♂️ <?=$this->getCurrentAd()['seller_name']?></div>
+<?php endif;?>
+
+<?php if ($this->getCurrentAd()['seller_phone']) :?>
+    <div class="phone">📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getCurrentAd()['seller_phone']?>">
+            <?php if ($this->getCurrentAd()['seller_phone']) :?>
+                Show Phone
+            <?php else :?>
+                No Phone
+            <?php endif;?></a>
+    </div>
+<?php endif;?>
+
+    <div class="reply"><a class="reply_link" href="<?=$this->getCurrentAd()['url']?>" target="_blank">🤙 Reply</a></div>
+    <div class="post_time">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['post_time']))->format('d.m.Y')?> </div>
+    <div class="report"><a class="report_link" href="javascript:void(0);" id="send-abuse">⚠️ Report this ad</a></div>
+    <div id="send-abuse-modal" class="modal" data-url="<?=$this->getDomainUrl()?>/send-feedback.php">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <div>Report this ad</div>
+            </div>
+            <p class="form">
+                <form>
+                    <table class="tbl_report">
+                        <tr>
+                            <td class="td_report"><input type="hidden" name="page" value="http://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>"><label>Email:</label></td>
+                            <td><input type="email" name="email" required></td>
+                        </tr>
+                        <tr>
+                            <td class="td_report"><input type="hidden" name="ad_id" value="<?=$this->getCurrentAd()['id']?>"><label>Report:</label></td>
+                            <td><textarea name="message" rows="3" width="200px"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="submit" value="Send" class="button"></td>
+                        </tr>
+                    </table>
+                </form>
+            </p>
+            <p class="success" style="display: none">
+                Сообщение отправлено
+            </p>
         </div>
     </div>
+    <br />
+    <h2>Similar ads</h2>
+    <table class="serp">
+        <?php foreach ($this->getAds($this->getCurrentCategory()['id'], $this->getCurrentRegion()['id'], 6) as $similarAd) :?>
+            <?php if ($similarAd['id'] != $this->getCurrentAd()['id']) :?>
+                <?php $this->partial('ad_in_list.inc', ['ad' => $similarAd])?>
+            <?php endif;?>
+        <?php endforeach;?>
+    </table>
+
 <?php $this->partial('footer.inc', [
     'js' => $this->getCurrentAd()['coordinates'] ? [
-            [
-                'src' => 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
-                'integrity' => 'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
-                'crossorigin' => ''
-            ]
+        [
+            'src' => 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
+            'integrity' => 'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
+            'crossorigin' => ''
+        ]
     ] : []
 ]);

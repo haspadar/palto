@@ -13,11 +13,11 @@ class Moderation
     public static function sendRemovedComplaintMail(Palto $palto, int $id)
     {
         $complaint = self::getComplaint($palto->getDb(), $id);
-        $subject = 'Ваша анкета удалена';
-        $body = 'Ваша <a target="_blank" href="'
+        $subject = 'Your ad was removed';
+        $body = 'Your <a target="_blank" href="'
             . $complaint['domain']
             . $complaint['page']
-            . '">анкета</a> удалена.<br><br>Вы нам писали: "'
+            . '">ad</a> was removed.<br><br>Your report: : "'
             . $complaint['message']
             . '"';
         $palto->sendEmail($complaint['email'], $subject, $body);
@@ -46,9 +46,16 @@ class Moderation
         return $db->query("SELECT * FROM complaints WHERE response_time IS NULL AND ignore_time IS NULL");
     }
 
-    public static function addComplaint(\MeekroDB $db, array $complaint)
+    public static function addComplaint(Palto $palto, array $complaint)
     {
-        $db->insert('complaints', $complaint);
+        $complaint = self::getComplaint($palto->getDb(), $complaint['id']);
+        $subject = 'Пришла жалоба';
+        $body = 'Текст жалобы: "'. $complaint['message'] . '"<br><a target="_blank" href="'
+            . $complaint['domain']
+            . '/moderate/'
+            . '">Зайти в админку</a>';
+        $palto->sendEmail($palto->getEnv()['SMTP_EMAIL'], $subject, $body);
+        $palto->getDb()->insert('complaints', $complaint);
     }
 
     private static function getIp(): string

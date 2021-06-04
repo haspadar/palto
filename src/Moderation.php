@@ -48,7 +48,6 @@ class Moderation
 
     public static function addComplaint(Palto $palto, array $complaint)
     {
-        $complaint = self::getComplaint($palto->getDb(), $complaint['id']);
         $subject = 'Пришла жалоба';
         $body = 'Текст жалобы: "'. $complaint['message'] . '"<br><a target="_blank" href="'
             . $complaint['domain']

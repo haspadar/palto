@@ -1,5 +1,6 @@
 <?php
 
+$flashMessage = $this->getFlashMessage();
 /**
  * @var $this \Palto\Palto
  */
@@ -67,6 +68,10 @@ $this->partial('header.inc', [
                                 <?php endif;?>
 
                                 <?= $this->getCurrentRegion()['title'] ?>
+
+                                <?php if ($flashMessage) :?>
+                                    <div class="alert"><?=$flashMessage?></div>
+                                <?php endif;?>
                             </h1>
                             <ul class="adap">
                                 <?php $categories = $this->getCurrentCategory()['id']

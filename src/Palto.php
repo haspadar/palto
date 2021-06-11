@@ -120,13 +120,28 @@ class Palto
         } elseif ($this->adId && $this->ad && !$this->ad['deleted_time']) {
             $layout = 'ad.php';
         } elseif ($this->adId && $this->ad && $this->ad['deleted_time']) {
-            $this->redirect($this->categoryUrl);
+            $this->addFlashMessage('Ad was deleted');
+            $this->redirect($this->generateCategoryUrl($this->category));
             $layout = '404.php';
         } else {
             $layout = '404.php';
         }
 
         return $layout;
+    }
+
+    public function addFlashMessage(string $message)
+    {
+        setcookie('flash_message', $message, time() + 60 * 10, '/');
+    }
+
+    public function getFlashMessage(): string
+    {
+        $message = $_COOKIE['flash_message'] ?? '';
+        unset($_COOKIE['flash_message']);
+        setcookie('flash_message', null, -1, '/');
+
+        return $message;
     }
 
     public function getCategories(int $parentId, int $level = 0, int $limit = 0, $offset = 0, $orderBy = ''): array

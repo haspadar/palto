@@ -15,31 +15,30 @@ $palto = new Palto();
 $pid = Status::getParserPid(Status::PARSE_ADS_SCRIPT);
 $palto->getLogger()->info('Started ads parsing with pid=' . $pid);
 $scheduler = new Scheduler($palto->getEnv());
-try {
-    $scheduler->run(
-        function () use ($palto, $pid) {
-            $leafCategories = $palto->getDb()->query(
-                "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
-            );
-            if ($leafCategories) {
-                shuffle($leafCategories);
-                $leafCategoriesCount = count($leafCategories);
-                foreach ($leafCategories as $leafKey => $category) {
-                    $logContent = [
-                        'iteration' => ($leafKey + 1) . '/' . $leafCategoriesCount,
-                        'pid' => $pid
-                    ];
-                    $palto->getLogger()->info('Parsing category ' . $category['title'], $logContent);
-                    parseCategory($palto, $category, $category['donor_url'], $logContent);
-                }
-            } else {
-                $palto->getLogger()->info('Categories not found');
+$scheduler->run(
+    function () use ($palto, $pid) {
+        $leafCategories = $palto->getDb()->query(
+            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
+        );
+        if ($leafCategories) {
+            shuffle($leafCategories);
+            $leafCategoriesCount = count($leafCategories);
+            foreach ($leafCategories as $leafKey => $category) {
+                $logContent = [
+                    'iteration' => ($leafKey + 1) . '/' . $leafCategoriesCount,
+                    'pid' => $pid
+                ];
+                $palto->getLogger()->info('Parsing category ' . $category['title'], $logContent);
+                parseCategory($palto, $category, $category['donor_url'], $logContent);
             }
+        } else {
+            $palto->getLogger()->info('Categories not found');
         }
-    );
-} catch (\Exception $e) {
-    $palto->getLogger()->error($e->getMessage());
-}
+    },
+    function(Exception $e) use ($palto) {
+        $palto->getLogger()->error($e->getMessage());
+    }
+);
 
 function parseCategory(Palto $palto, array $category, string $url, array $logContent = [])
 {

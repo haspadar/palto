@@ -52,6 +52,20 @@ class Palto
         $this->initAd();
     }
 
+    public function safeTransaction(Callable $function)
+    {
+        try {
+            $this->getDb()->startTransaction();
+            $return = $function();
+            $this->getDb()->commit();
+
+            return $return;
+        } catch (\Exception $e) {
+            $this->getDb()->rollback();
+            $this->getLogger()->error($e->getMessage());
+        }
+    }
+
     public function getDomainUrl(): string
     {
         $domainUrl = $this->getEnv()['DOMAIN_URL'];
@@ -1187,6 +1201,7 @@ class Palto
         $errorHandler = function ($params) {
             $this->getLogger()->error('Database error: ' . $params['error']);
             $this->getLogger()->error('Database query: ' . $params['query']);
+            throw new \Exception('Database error: ' . $params['error']);
         };
         $this->db->error_handler = $errorHandler; // runs on mysql query errors
         $this->db->nonsql_error_handler = $errorHandler; // runs on library errors (bad syntax, etc)

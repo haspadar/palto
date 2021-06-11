@@ -16,7 +16,9 @@ $palto->getLogger()->info('Started ads parsing with pid=' . $pid);
 $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto, $pid) {
-        $leafCategories = $palto->getDb()->query("SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)");
+        $leafCategories = $palto->getDb()->query(
+            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
+        );
         if ($leafCategories) {
             shuffle($leafCategories);
             $leafCategoriesCount = count($leafCategories);
@@ -34,22 +36,32 @@ $scheduler->run(
     }
 );
 
-function parseCategory(Palto $palto, array $category, string $url, array $logContent = []) {
+function parseCategory(Palto $palto, array $category, string $url, array $logContent = [])
+{
     $fullLevel2Url = DONOR_URL . $url;
     $categoryResponse = PylesosService::download($fullLevel2Url, [], [], $palto->getEnv(), 20);
     $categoryDocument = new HtmlDocument($categoryResponse->getResponse());
     $ads = $categoryDocument->find('.result-row');
-    $extendedLogContext = array_merge([
-                                          'category' => $category['title'],
-                                          'url' => $fullLevel2Url
-                                      ], $logContent);
+    $extendedLogContext = array_merge(
+        [
+            'category' => $category['title'],
+            'url' => $fullLevel2Url
+        ],
+        $logContent
+    );
     $palto->getLogger()->info('Found ' . count($ads) . ' ads', $extendedLogContext);
     $addedAdsCount = 0;
     foreach ($ads as $resultRow) {
         $adUrl = $resultRow->find('h3.result-heading a', 0)->href;
         if (isUrlsRegionsEquals($adUrl, $fullLevel2Url)) {
             if (!$palto->isAdUrlExists($adUrl)) {
-                $isAdded = parseAd($palto, $adUrl, $category);
+                $isAdded = $palto->safeTransaction(function () use ($palto, $adUrl, $category) {
+                    return parseAd($palto, $adUrl, $category);
+                });
+                if (!is_bool($isAdded)) {
+                    $palto->getLogger()->debug('Skipped wrong ad with url ' . $adUrl);
+                }
+
                 if ($isAdded) {
                     $addedAdsCount++;
                 }
@@ -67,20 +79,23 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
     }
 }
 
-function parseAd(Palto $palto, $adUrl, $level2) {
+function parseAd(Palto $palto, $adUrl, $level2)
+{
     $adResponse = PylesosService::download($adUrl, [], [], $palto->getEnv(), 20);
     $adDocument = new HtmlDocument($adResponse->getResponse());
     $regionLink = $adDocument->find('.subarea a', 0);
     if ($regionLink) {
         $regionTitle = $regionLink->innertext;
-        $regionId = $palto->getRegionId([
-                                            'donor_url' => $regionLink->href,
-                                            'url' => $palto->findRegionUrl($regionTitle),
-                                            'title' => $palto->upperCaseEveryWord($regionTitle),
-                                            'level' => 1,
-                                            'tree_id' => $palto->getDb()->queryFirstField('SELECT MAX(tree_id) FROM regions') + 1,
-                                            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
-                                        ]);
+        $regionId = $palto->getRegionId(
+            [
+                'donor_url' => $regionLink->href,
+                'url' => $palto->findRegionUrl($regionTitle),
+                'title' => $palto->upperCaseEveryWord($regionTitle),
+                'level' => 1,
+                'tree_id' => $palto->getDb()->queryFirstField('SELECT MAX(tree_id) FROM regions') + 1,
+                'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+            ]
+        );
     }
 
     $titleElement = $adDocument->find('#titletextonly', 0);
@@ -92,15 +107,20 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'title' => $titleElement->innertext,
             'url' => $adUrl,
             'category_id' => $level2['id'],
-            'text' => trim(explode(
-                               '</div></div>',
-                               $adDocument->find('#postingbody', 0)->innertext)[1]
+            'text' => trim(
+                explode(
+                    '</div></div>',
+                    $adDocument->find('#postingbody', 0)->innertext
+                )[1]
             ),
             'address' => $adDocument->find('.postingtitletext small', 0)
-                ? strtr(trim($adDocument->find('.postingtitletext small', 0)->innertext), [
-                    '(' => '',
-                    ')' => '',
-                ]) : '',
+                ? strtr(
+                    trim($adDocument->find('.postingtitletext small', 0)->innertext),
+                    [
+                        '(' => '',
+                        ')' => '',
+                    ]
+                ) : '',
             'coordinates' => getCoordinates($adDocument),
             'post_time' => (new DateTime($adDocument->find('.postinginfos .postinginfo time', 0)->datetime))
                 ->format('Y-m-d H:i:s'),
@@ -110,7 +130,7 @@ function parseAd(Palto $palto, $adUrl, $level2) {
             'seller_name' => '',
             'seller_postfix' => '',
             'seller_phone' => '',
-            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
+            'create_time' => 'eopiropweirpoweirpoweirp'
         ];
         $images = getImages($adDocument);
         $details = getDetails($adDocument);
@@ -127,7 +147,8 @@ function parseAd(Palto $palto, $adUrl, $level2) {
     }
 }
 
-function getDetails($adDocument) {
+function getDetails($adDocument)
+{
     $details = [];
     foreach ($adDocument->find('.attrgroup span') as $property) {
         if (mb_strpos($property->plaintext, ':') !== false) {
@@ -139,7 +160,8 @@ function getDetails($adDocument) {
     return $details;
 }
 
-function getImages($adDocument) {
+function getImages($adDocument)
+{
     $images = [];
     foreach ($adDocument->find('#thumbs a') as $link) {
         $bigImage = $link->href;
@@ -150,7 +172,8 @@ function getImages($adDocument) {
     return $images;
 }
 
-function getCoordinates($adDocument) {
+function getCoordinates($adDocument)
+{
     $map = $adDocument->find('#map', 0);
     if ($map) {
         $latitude = $map->{'data-latitude'};
@@ -163,6 +186,7 @@ function getCoordinates($adDocument) {
     return '';
 }
 
-function isUrlsRegionsEquals($url1, $url2) {
+function isUrlsRegionsEquals($url1, $url2)
+{
     return explode('.', $url1)[0] == explode('.', $url2)[0];
 }

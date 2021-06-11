@@ -53,7 +53,7 @@ CREATE TABLE `ads`
     `address`        varchar(1000)                            NOT NULL DEFAULT '',
     `coordinates`    varchar(1000)                            NOT NULL DEFAULT '',
     `post_time`      timestamp                                NULL     DEFAULT NULL,
-    `price`          decimal(10, 2)                           NOT NULL DEFAULT '0',
+    `price`          decimal(10, 2) unsigned                  NOT NULL DEFAULT '0',
     `currency`       varchar(20) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '',
     `seller_name`    VARCHAR(100)                             NOT NULL DEFAULT '',
     `seller_postfix` VARCHAR(100)                             NOT NULL DEFAULT '',

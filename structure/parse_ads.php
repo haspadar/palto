@@ -1,6 +1,7 @@
 <?php
 
 use Palto\Palto;
+use Palto\Parser;
 use Palto\Status;
 use Pylesos\PylesosService;
 use Pylesos\Scheduler;
@@ -102,7 +103,7 @@ function parseAd(Palto $palto, $adUrl, $level2)
     if ($titleElement) {
         $priceWithCurrency = $adDocument->find('.postingtitletext .price', 0)->innertext ?? '';
         $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
-        $price = floatval($priceWithCurrency ? strtr(mb_substr($priceWithCurrency, 1), [',' => '', ' ' => '']) : 0);
+        $price = $priceWithCurrency ? Parser::filterPrice(mb_substr($priceWithCurrency, 1)) : 0;
         $ad = [
             'title' => $titleElement->innertext,
             'url' => $adUrl,

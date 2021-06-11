@@ -119,6 +119,9 @@ class Palto
             $layout = 'list.php';
         } elseif ($this->adId && $this->ad && !$this->ad['deleted_time']) {
             $layout = 'ad.php';
+        } elseif ($this->adId && $this->ad && $this->ad['deleted_time']) {
+            $this->redirect($this->categoryUrl);
+            $layout = '404.php';
         } else {
             $layout = '404.php';
         }
@@ -1238,5 +1241,10 @@ class Palto
         }
 
         return '';
+    }
+
+    private function redirect(string $categoryUrl)
+    {
+        header("Location: " . $categoryUrl,true,301);
     }
 }

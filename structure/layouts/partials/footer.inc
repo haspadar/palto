@@ -18,7 +18,7 @@ alt=""/></a><script>(function(d,s){d.getElementById("licnt4AF3").src=
 </table>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="/js/slider.js?t=<?=time()?>"></script>
+<script src="/js/slider.js?v=<?=hash_file('md5', $this->getPublicDirectory() . '/js/slider.js')?>"></script>
 <?php if ($this->getPartialVariable('js')) :?>
     <?php foreach ($this->getPartialVariable('js') as $js) :?>
         <?php foreach ($js as $jsAttribute => $jsValue) :?>

@@ -45,7 +45,6 @@ class Install
             "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/parse_*.php $projectPath/",
-            "cp $paltoPath/structure/composer.json $projectPath/ && composer update",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',

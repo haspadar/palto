@@ -18,7 +18,7 @@
 </table>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="/js/slider.js?t=<?=time()?>"></script>
+<script src="/js/slider.js?v=<?=hash_file('md5', $this->getPublicDirectory() . '/js/slider.js')?>"></script>
 <?php if ($this->getPartialVariable('js')) :?>
     <?php foreach ($this->getPartialVariable('js') as $js) :?>
         <?php foreach ($js as $jsAttribute => $jsValue) :?>
@@ -27,7 +27,7 @@
     <?php endforeach;?>
 <?php endif;?>
 
-<script src="/js/moderation.js?t=<?=time()?>"></script>
-<script src="/js/script.js?t=<?=time()?>"></script>
+<script src="/js/moderation.js?v=<?=hash_file('md5', $this->getPublicDirectory() . '/js/moderation.js')?>"></script>
+<script src="/js/script.js?v=<?=hash_file('md5', $this->getPublicDirectory() . '/js/script.js')?>"></script>
 </body>
 </html>

@@ -120,7 +120,7 @@ class Palto
         } elseif ($this->adId && $this->ad && !$this->ad['deleted_time']) {
             $layout = 'ad.php';
         } elseif ($this->adId) {
-            $this->addFlashMessage('Ad was deleted');
+            $this->addFlashMessage('The ad was deleted.');
             $this->redirect($this->generateCategoryUrl($this->category));
             $layout = '404.php';
         } else {

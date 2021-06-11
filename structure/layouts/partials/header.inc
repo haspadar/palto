@@ -13,7 +13,7 @@ $description = $this->getPartialVariable('description');
     <meta name="description" content="<?=$this->getPartialVariable('description')?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/favicon.ico?1">
-    <link rel="stylesheet" href="/css/styles.css?v=<?=time()?>">
+    <link rel="stylesheet" href="/css/styles.css?v=<?=hash_file('md5', $this->getPublicDirectory() . '/css/styles.css')?>">
     <?php if ($this->getPartialVariable('css')) :?>
         <?php foreach ($this->getPartialVariable('css') as $css) :?>
             <?php foreach ($css as $cssAttribute => $cssValue) :?>
@@ -30,7 +30,6 @@ $description = $this->getPartialVariable('description');
     <?php if ($this->getPartialVariable('nextPageUrl')) :?>
         <link rel="next" href="<?=$this->getPartialVariable('nextPageUrl')?>">
     <?php endif;?>
-<!--    <script data-ad-client="ca-pub-4251434934288140" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
 </head>
 <body>
     <table class="tbl_base">

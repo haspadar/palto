@@ -1183,6 +1183,13 @@ class Palto
         if ($this->isDebug() && !$this->isCli()) {
             $this->getDb()->debugMode();
         }
+
+        $errorHandler = function ($params) {
+            $this->getLogger()->error('Database error: ' . $params['error']);
+            $this->getLogger()->error('Database query: ' . $params['query']);
+        };
+        $this->db->error_handler = $errorHandler; // runs on mysql query errors
+        $this->db->nonsql_error_handler = $errorHandler; // runs on library errors (bad syntax, etc)
     }
 
     private function getUrlRegion(string $url): ?array

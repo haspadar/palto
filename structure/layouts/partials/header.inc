@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru-RU">
+<html lang="en-US">
 <?php 
 /**
  * @var $this \Palto\Palto
@@ -30,6 +30,14 @@ $description = $this->getPartialVariable('description');
     <?php if ($this->getPartialVariable('nextPageUrl')) :?>
         <link rel="next" href="<?=$this->getPartialVariable('nextPageUrl')?>">
     <?php endif;?>
+
+    <?php if ($this->getPartialVariable('css')) :?>
+        <?php foreach ($this->getPartialVariable('css') as $css) :?>
+            <?php foreach ($css as $cssAttribute => $cssValue) :?>
+                <link rel="stylesheet" <?=$cssAttribute?>="<?=$cssValue?>">
+            <?php endforeach;?>
+        <?php endforeach;?>
+    <?php endif;?>
 </head>
 <body>
     <table class="tbl_base">
@@ -39,8 +47,8 @@ $description = $this->getPartialVariable('description');
                 <table class="top_tbl">
                     <tr>
                         <td>
-                            <?php if (file_exists($this->getPublicDirectory() . '/images/logo.png')) :?>
-                                <a href="/"><img src="/images/logo.png" alt="My Logo" class="mylogo"/></a>
+                            <?php if (file_exists($this->getPublicDirectory() . '/img/logo.png')) :?>
+                                <a href="/"><img src="/img/logo.png" alt="Classified Ads in LA" class="mylogo"/></a>
                             <?php endif;?>
                             <div class="main_menu">
                                 <table class="tbl_menu">

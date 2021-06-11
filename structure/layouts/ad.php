@@ -6,11 +6,11 @@ $this->partial('header.inc', [
     'title' => $this->getCurrentAd()['title'] . ': ' . implode(
             ' - ',
             array_filter(array_merge(
-                             [$this->getCurrentCategory()['title']],
-                             array_column($this->getCurrentCategory()['parents'], 'title'),
-                             [$this->getCurrentAd()['address']],
-                             [$this->getCurrentRegion()['title']],
-                         ))
+                 [$this->getCurrentCategory()['title']],
+                 array_column($this->getCurrentCategory()['parents'], 'title'),
+                 [$this->getCurrentAd()['address']],
+                 [$this->getCurrentRegion()['title']],
+             ))
         ),
     'description' => $this->generateShortText($this->getCurrentAd()['text']),
     'nextPageUrl' => $this->getNextPageUrl(),
@@ -24,10 +24,10 @@ $this->partial('header.inc', [
     ] : [],
 ]);
 ?>
-    <div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getAdBreadcrumbUrls()]);?>
-    </div>
-    <h1><?=$this->getCurrentAd()['title']?> <span style="color:#999"> in <?=$this->getCurrentAd()['address'] ? $this->getCurrentAd()['address'] . ', ' : ''?><?=$this->getCurrentRegion()['title']?> from craigslist</span></h1>
+<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getAdBreadcrumbUrls()]);?>
+</div>
+<h1><?=$this->getCurrentAd()['title']?> <span style="color:#999"> in <?=$this->getCurrentAd()['address'] ? $this->getCurrentAd()['address'] . ', ' : ''?><?=$this->getCurrentRegion()['title']?> from craigslist</span></h1>
 <?php if ($this->getCurrentAd()['images']) :?>
     <!-- Slideshow container -->
     <div class="slideshow-container">
@@ -54,27 +54,26 @@ $this->partial('header.inc', [
 
 <?php endif;?>
 
-    <br>
-    <div class="youtube myvideo" data-url="<?=$this->getDomainUrl() . '/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
-        <img src="/img/loading.gif" alt="loading">
-    </div>
-
+<br>
+<div class="youtube myvideo" data-url="<?=$this->getDomainUrl() . '/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
+    <img src="/img/loading.gif" alt="loading">
+</div>
+<hr />
 <?php if ($this->getCurrentAd()['details']) :?>
-    <ul>
+    <ul class="details">
         <?php foreach ($this->getCurrentAd()['details'] as $field => $value) :?>
-            <li><?=$field?>: <?=$value?></li>
+            <li>➡️ <?=$field?>: <?=$value?></li>
         <?php endforeach;?>
     </ul>
 <?php endif;?>
-    <hr />
-    <div class="description"> <?=urldecode($this->getCurrentAd()['text'])?> </div>
+<div class="description"> <?=urldecode($this->getCurrentAd()['text'])?> </div>
 <?php if ($this->getCurrentAd()['price'] > 0) :?>
     <div class="price">
         🏷 <?=$this->getCurrentAd()['currency']?><?=number_format($this->getCurrentAd()['price'])?></span>
     </div>
 <?php endif;?>
 
-    <div><?=$this->getCurrentAd()['seller_postfix'] ?? ''?></div>
+<div><?=$this->getCurrentAd()['seller_postfix'] ?? ''?></div>
 <?php if ($this->getCurrentAd()['address']) :?>
     <div class="adress">📍Address: <?=$this->getCurrentAd()['address']?></div>
 <?php endif;?>
@@ -91,57 +90,55 @@ $this->partial('header.inc', [
 <?php endif;?>
 
 <?php if ($this->getCurrentAd()['seller_phone']) :?>
-    <div class="phone">📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getCurrentAd()['seller_phone']?>">
-            <?php if ($this->getCurrentAd()['seller_phone']) :?>
-                Show Phone
-            <?php else :?>
-                No Phone
-            <?php endif;?></a>
+    <div class="phone">📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getCurrentAd()['seller_phone']?>" href="tel:<?=$this->getCurrentAd()['seller_phone']?>">
+        <?php if ($this->getCurrentAd()['seller_phone']) :?>
+            Show Phone
+        <?php else :?>
+            No Phone
+        <?php endif;?></a>
     </div>
 <?php endif;?>
 
-    <div class="reply"><a class="reply_link" href="<?=$this->getCurrentAd()['url']?>" target="_blank">🤙 Reply</a></div>
-    <div class="post_time">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['post_time']))->format('d.m.Y')?> </div>
-    <div class="report"><a class="report_link" href="javascript:void(0);" id="send-abuse">⚠️ Report this ad</a></div>
-    <div id="send-abuse-modal" class="modal" data-url="<?=$this->getDomainUrl()?>/send-feedback.php">
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <div>Report this ad</div>
-            </div>
-            <p class="form">
-                <form>
-                    <table class="tbl_report">
-                        <tr>
-                            <td class="td_report"><input type="hidden" name="page" value="http://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>"><label>Email:</label></td>
-                            <td><input type="email" name="email" required></td>
-                        </tr>
-                        <tr>
-                            <td class="td_report"><input type="hidden" name="ad_id" value="<?=$this->getCurrentAd()['id']?>"><label>Report:</label></td>
-                            <td><textarea name="message" rows="3" width="200px"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><input type="submit" value="Send" class="button"></td>
-                        </tr>
-                    </table>
-                </form>
-            </p>
-            <p class="success" style="display: none">
-                Сообщение отправлено
-            </p>
+<div class="reply"><a class="reply_link" href="<?=$this->getCurrentAd()['url']?>" target="_blank" rel="nofollow">🤙 Reply</a></div>
+<div class="post_time">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['post_time']))->format('d.m.Y')?> </div>
+<div class="report"><a class="report_link" href="javascript:void(0);" id="send-abuse">⚠️ Report this ad</a></div>
+<div id="send-abuse-modal" class="modal" data-url="<?=$this->getDomainUrl()?>/send-feedback.php">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <div>Report this ad</div>
         </div>
+        <form class="form">
+            <table class="tbl_report">
+                <tr>
+                    <td class="td_report"><input type="hidden" name="page" value="http://<?=$_SERVER['HTTP_HOST']?><?=$_SERVER['REQUEST_URI']?>"><label>Email:</label></td>
+                    <td><input type="email" name="email" required></td>
+                </tr>
+                <tr>
+                    <td class="td_report"><input type="hidden" name="ad_id" value="<?=$this->getCurrentAd()['id']?>"><label>Report:</label></td>
+                    <td><textarea name="message" rows="3" width="200px"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Send" class="button"></td>
+                </tr>
+            </table>
+        </form>
+        <p class="success" style="display: none">
+            Your report has been sent.
+        </p>
     </div>
-    <br />
-    <h2>Similar ads</h2>
-    <table class="serp">
-        <?php foreach ($this->getAds($this->getCurrentCategory()['id'], $this->getCurrentRegion()['id'], 6) as $similarAd) :?>
-            <?php if ($similarAd['id'] != $this->getCurrentAd()['id']) :?>
-                <?php $this->partial('ad_in_list.inc', ['ad' => $similarAd])?>
-            <?php endif;?>
-        <?php endforeach;?>
-    </table>
+</div>
+<br />
+<h2>Similar ads</h2>
+<table class="serp">
+<?php foreach ($this->getAds($this->getCurrentCategory()['id'], $this->getCurrentRegion()['id'], 6) as $similarAd) :?>
+    <?php if ($similarAd['id'] != $this->getCurrentAd()['id']) :?>
+        <?php $this->partial('ad_in_list.inc', ['ad' => $similarAd])?>
+    <?php endif;?>
+<?php endforeach;?>
+</table>
 
 <?php $this->partial('footer.inc', [
     'js' => $this->getCurrentAd()['coordinates'] ? [

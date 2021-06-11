@@ -8,11 +8,15 @@ $this->partial('header.inc', [
     'description' => '404',
 ]);
 ?>
-<br/>
-<h1>Not found</h1>
+    <br/>
+<?php if ($this->getCurrentAd()) :?>
+    <h1>Ad was deleted</h1>
+<?php else :?>
+    <h1>Not found</h1>
+<?php endif;?>
 
 
-<h2>Categories</h2>
+    <h2>Categories</h2>
 <?php foreach ($this->getCategories(0, 1) as $level1Category) :?>
     <div class="span-d">
         <p>

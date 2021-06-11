@@ -4,34 +4,27 @@
  */
 $ad = $this->getPartialVariable('ad');
 ?>
-<div class="ob-block">
-    <div class="img">
-        <div class="i0">
-            <div class="i1">
-                <a href="<?= $this->generateAdUrl($ad) ?>">
-                    <?php if ($ad['images']) : ?>
-                        <img src="<?= $ad['images'][0]['small'] ?>" alt="<?=$ad['title']?>"/>
-                    <?php endif; ?>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div class="bod">
-        <div class="t"><a href="<?= $this->generateAdUrl($ad) ?>" class="bread">
-                <span><?= $ad['title'] ?></span></a></div>
-        <div class="d"><?= $this->generateShortText($ad['text']) ?></div>
-        <div class="br">
+<tr>
+    <td class="serp_img">
+        <?php if ($ad['images']) : ?>
+            <a href="<?= $this->generateAdUrl($ad) ?>"><img src="<?= $ad['images'][0]['small'] ?>" alt="<?=$ad['title']?>"/></a>
+        <?php endif; ?>
+    </td>
+    <td>
+        <div><a href="<?= $this->generateAdUrl($ad) ?>" class="serp_link"><?= $ad['title'] ?></a></div>
+        <div><?= $this->generateShortText($ad['text']) ?></div>
+        <div class="serp_bread">
             <?php foreach ($this->getListAdBreadcrumbUrls($ad) as $breadcrumbKey => $breadcrumbItem) :?>
                 <?php if ($breadcrumbKey) :?>
                     <span class="sep">»</span>
                 <?php endif;?>
-                <a href="<?= $breadcrumbItem['url'] ?>" class="bread"><?= $breadcrumbItem['title'] ?></a>
+                <a href="<?= $breadcrumbItem['url'] ?>" class="bread_link"><?= $breadcrumbItem['title'] ?></a>
             <?php endforeach;?>
         </div>
-        <div class="p">
-            <span class="price2"><b><?= $ad['currency'] ?> <?= $ad['price'] ?></b> </span>
-        </div>
-        <div>
-        </div>
-    </div>
-</div>
+        <?php if ($ad['price'] > 0) :?>
+            <div class="serp_price">🏷 <?= $ad['currency'] ?> <?= number_format($ad['price']) ?></div>
+        <?php endif;?>
+
+        <div class="serp_region">📍<a class="bread_link" href="<?= $this->generateRegionUrl($ad['region']) ?>"><?=$ad['region']['title']?></a></div>
+    </td>
+</tr>

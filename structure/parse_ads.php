@@ -130,7 +130,7 @@ function parseAd(Palto $palto, $adUrl, $level2)
             'seller_name' => '',
             'seller_postfix' => '',
             'seller_phone' => '',
-            'create_time' => 'eopiropweirpoweirpoweirp'
+            'create_time' => (new DateTime())->format('Y-m-d H:i:s')
         ];
         $images = getImages($adDocument);
         $details = getDetails($adDocument);

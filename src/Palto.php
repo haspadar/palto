@@ -175,9 +175,11 @@ class Palto
         return $this->getDb()->query($query, $values);
     }
 
-    public function getRegion(int $regionId): array
+    public function getRegion(?int $regionId): array
     {
-        return $this->getDb()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $regionId);
+        return $regionId
+            ? $this->getDb()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $regionId)
+            : $this->getDefaultRegion();
     }
 
     public function getCategory(int $categoryId): array
@@ -1114,7 +1116,7 @@ class Palto
         if ($ad) {
             $ad['images'] = $this->getAdImages($ad['id']);
             $ad['details'] = $this->getAdDetails($ad['id']);
-            $ad['region'] = $ad['region_id'] ? $this->getRegion($ad['region_id']) : [];
+            $ad['region'] = $this->getRegion($ad['region_id']);
         }
 
         return $ad;

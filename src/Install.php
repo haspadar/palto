@@ -65,7 +65,7 @@ class Install
 
     private function log($string)
     {
-        echo $string . PHP_EOL;
+        echo '[' . (new \DateTime())->format('H:i:s') . ']' . $string . PHP_EOL;
     }
 
     private function runCommands(array $commands)
@@ -157,7 +157,7 @@ class Install
                 "echo '$nginxDomainConfig' > /etc/nginx/sites-available/$projectName",
                 "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName",
                 "echo '$nginxPhpFpmConfig' > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf",
-                'service nginx reload'
+                'service nginx restart'
             ];
         } else {
             $this->log('Your operating system ' . PHP_OS . ' is not supported');

@@ -12,6 +12,7 @@ if ($palto->getEnv()['AUTH'] && $palto->getIP() != '127.0.0.1') {
 } elseif ($palto->isDebug()) {
     ini_set('display_errors', true);
     ini_set('display_startup_errors', true);
+    $palto->getDb()->query('SET SESSION query_cache_type=0;');
 }
 
 $palto->loadLayout($palto->getLayout());

@@ -22,6 +22,7 @@ class Sitemap
         $groupedRegions = $this->groupTrees(
             $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
         );
+        $groupedRegions[0][] = $this->palto->getDefaultRegion();
         $groupedCategories = $this->groupTrees(
             $this->palto->getCategories(0, 0, 0, 0, 'tree_id, level')
         );
@@ -64,7 +65,6 @@ class Sitemap
             }
         }
 
-        $urls[] = $this->palto->generateRegionUrl($this->palto->getDefaultRegion());
         $chunks = array_chunk($urls, $this->getMaxFileLinks());
         foreach ($chunks as $chunkKey => $chunk) {
             $this->saveUrls($this->path . $regionTreePath, $chunkKey + 1, $chunk);

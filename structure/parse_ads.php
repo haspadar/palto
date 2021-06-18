@@ -12,7 +12,8 @@ const DONOR_URL = 'https://losangeles.craigslist.org';
 require 'vendor/autoload.php';
 
 $palto = new Palto();
-$pid = Status::getParserPid(Status::PARSE_ADS_SCRIPT);
+$pid = $palto->getParserPid();
+
 $palto->getLogger()->info('Started ads parsing with pid=' . $pid);
 $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(

@@ -10,6 +10,7 @@ use Pylesos\PylesosService;
 
 class Palto
 {
+    public const PARSE_ADS_SCRIPT = 'parse_ads.php';
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private \MeekroDB $db;
@@ -1178,6 +1179,11 @@ class Palto
         $query .= implode(' AND ', $where);
 
         return [$query, $values];
+    }
+
+    public function getParserPid(): int
+    {
+        return Status::getPhpCommandPid(self::PARSE_ADS_SCRIPT, $this->getProjectName());
     }
 
     private function isCron(): bool

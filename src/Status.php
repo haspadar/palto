@@ -3,7 +3,6 @@ namespace Palto;
 
 class Status
 {
-    const PARSE_ADS_SCRIPT = 'parse_ads.php';
 
     public static function getMySqlDirectory(\MeekroDB $db): string
     {
@@ -38,8 +37,22 @@ class Status
         return trim(str_replace('ELAPSED', '', `ps -p $pid -o etime`));
     }
 
-    public static function getParserPid(string $scriptName): int
+    public static function getPhpCommandPid(string $scriptName, string $directoryName): int
     {
-        return intval(`pgrep -f $scriptName`);
+        $pidWithCommands = `ps -eo pid,command | grep $scriptName`;
+        foreach (explode(PHP_EOL, $pidWithCommands) as $pidWithCommand) {
+            $pid = intval($pidWithCommand);
+            $command = trim(str_replace($pid, '', $pidWithCommand));
+            $hasCommandPhp = strpos($command, 'php ') !== false;
+            if ($hasCommandPhp) {
+                $commandPathCommandParts = explode(' ', `lsof -p $pid | grep cwd`);
+                $commandPath = trim($commandPathCommandParts[count($commandPathCommandParts) - 1]);
+                if (strpos($commandPath, '/' . $directoryName)) {
+                    return $pid;
+                }
+            }
+        }
+
+        return 0;
     }
 }

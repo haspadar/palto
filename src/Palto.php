@@ -947,6 +947,11 @@ class Palto
         return $videoId ?? '';
     }
 
+    public function isDebug(): bool
+    {
+        return $this->getEnv()['DEBUG'] || ($_GET['debug'] ?? 0);
+    }
+
     public function getListAdBreadcrumbUrls(array $ad): array
     {
         $category = $this->getCategory($ad['category_id']);
@@ -1181,11 +1186,6 @@ class Palto
     private function isCli(): bool
     {
         return php_sapi_name() === 'cli';
-    }
-
-    private function isDebug(): bool
-    {
-        return $this->getEnv()['DEBUG'] || ($_GET['debug'] ?? 0);
     }
 
     private function getParentRegions(array $region): array

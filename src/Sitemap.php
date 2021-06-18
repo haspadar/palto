@@ -160,14 +160,17 @@ class Sitemap
 
     private function generateIndexes(): string
     {
-        $filesUrls = $this->getFilesUrls(
-            $this->getDirectoryRecursiveFiles($this->palto->getPublicDirectory() . $this->path)
-        );
         $fileNameParts = array_values(array_filter(explode('/', $this->path)));
         $fileName = $fileNameParts[count($fileNameParts) - 1];
+        $filesUrls = $this->getFilesUrls(
+            $this->getDirectoryRecursiveFiles($this->palto->getPublicDirectory() . $this->path),
+            ['/' . $fileName . '.xml']
+        );
+
         $this->saveUrls($this->path, $fileName, $filesUrls);
         $indexesUrls = $this->getFilesUrls(
-            $this->getDirectoryFiles($this->palto->getPublicDirectory() . $this->path)
+            $this->getDirectoryFiles($this->palto->getPublicDirectory() . $this->path),
+            ['/' . $fileName . '.xml']
         );
         if (count($indexesUrls) > 1) {
             $this->saveUrls($this->path, $fileName, $indexesUrls, false);
@@ -178,12 +181,14 @@ class Sitemap
         return $siteMapIndexUrl;
     }
 
-    private function getFilesUrls(array $paths): array
+    private function getFilesUrls(array $paths, array $excludes = []): array
     {
         $filesUrls = [];
         foreach ($paths as $path) {
             $parts = explode($this->path, $path);
-            $filesUrls[] = $this->path . $parts[1];
+            if (!in_array($parts[1], $excludes)) {
+                $filesUrls[] = $this->path . $parts[1];
+            }
         }
 
         return $filesUrls;

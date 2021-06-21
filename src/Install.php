@@ -221,7 +221,7 @@ class Install
                 if (!$isCommandExists) {
                     file_put_contents(
                         $cronFilePath,
-                        $cronFileContent . PHP_EOL . $comment . PHP_EOL . $command
+                        $cronFileContent . PHP_EOL . $comment . PHP_EOL . $command . PHP_EOL
                     );
                     $this->log('Added cron command "' . $command . '"');
                     $this->runCommands(['service cron reload']);

@@ -176,7 +176,22 @@ class Palto
         return $this->getDb()->query($query, $values);
     }
 
-    public function getRegion(?int $regionId): array
+    public function getAdsRegions(array $regionIds): array
+    {
+        $regions = $regionIds
+            ? $this->getDb()->queryFirstRow('SELECT * FROM regions WHERE id IN %ld', $regionIds)
+            : [];
+        $grouped = $regions ? $this->groupByField($regions, 'id') : [];
+        foreach ($regionIds as $regionId) {
+            $grouped[$regionId] = isset($grouped[$regionId])
+                ? $grouped[$regionId][0]
+                : $this->getDefaultRegion();
+        }
+
+        return $grouped;
+    }
+
+    public function getAdRegion(?int $regionId): array
     {
         return $regionId
             ? $this->getDb()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $regionId)
@@ -616,7 +631,7 @@ class Palto
     public function generateAdUrl(array $ad): string
     {
         $category = $this->getCategory($ad['category_id']);
-        $region = $this->getRegion($ad['region_id']);
+        $region = $this->getAdRegion($ad['region_id']);
 
         return $this->generateCategoryUrl($category, $region) . '/ad' . $ad['id'];
     }
@@ -959,7 +974,7 @@ class Palto
     {
         $category = $this->getCategory($ad['category_id']);
         $categories = $this->getParentCategories($category);
-        $region = $this->getRegion($ad['region_id']);
+        $region = $this->getAdRegion($ad['region_id']);
 
         return $this->getCategoryBreadcrumbUrls(array_merge($categories, [$category]), $region);
     }
@@ -1051,7 +1066,7 @@ class Palto
         } else {
             $this->region = $this->db->queryFirstRow('SELECT * FROM regions WHERE url = %s', $this->regionUrl);
             if ($this->region) {
-                $this->region['parents'] = $this->getParentRegions($this->region);
+                $this->region['parents'] = $this->getParentsRegions($this->region);
             }
         }
     }
@@ -1105,36 +1120,70 @@ class Palto
 
     private function addAdsData(array $ads): array
     {
-        foreach ($ads as &$ad) {
-            $ad = $this->addAdData($ad);
+        $adIds = array_column($ads, 'id');
+        $images = $this->getAdsImages($adIds);
+        $details = $this->getAdsDetails($adIds);
+        $regions = $this->getAdsRegions($adIds);
+        $grouped = [];
+        foreach ($ads as $ad) {
+            $ad['images'] = $images[$ad['id']] ?? [];
+            $ad['details'] = $details[$ad['id']] ?? [];
+            $ad['region'] = $regions[$ad['id']] ?? $this->getDefaultRegion();
+            $grouped[$ad['id']] = $ad;
         }
 
-        return $ads;
+        return $grouped;
     }
 
     private function addAdData(?array $ad): ?array
     {
         if ($ad) {
-            $ad['images'] = $this->getAdImages($ad['id']);
-            $ad['details'] = $this->getAdDetails($ad['id']);
-            $ad['region'] = $this->getRegion($ad['region_id']);
+            $ad['images'] = $this->getAdsImages([$ad['id']])[$ad['id']];
+            $ad['details'] = $this->getAdsDetails([$ad['id']])[$ad['id']];
+            $ad['region'] = $this->getAdsRegions([$ad['region_id']])[$ad['id']];
         }
 
         return $ad;
     }
 
-    private function getAdDetails(int $adId): array
+    private function getAdsDetails(array $adIds): array
     {
-        return array_column(
-            $this->getDb()->query('SELECT field, value FROM details_fields AS df INNER JOIN ads_details AS dfv ON df.id = dfv.details_field_id WHERE ad_id = %d', $adId),
-            'value',
-            'field'
+        $details = $this->getDb()->query(
+            'SELECT ad_id, field, value FROM details_fields AS df INNER JOIN ads_details AS dfv ON df.id = dfv.details_field_id WHERE ad_id IN %ld',
+            $adIds
         );
+        $groupedByAdId = $this->groupByField($details, 'ad_id');
+        $groupedWithDetails = [];
+        foreach ($groupedByAdId as $adId => $adDetails) {
+            $groupedWithDetails[$adId] = array_column(
+                $adDetails,
+                'value',
+                'field'
+            );
+        }
+
+        return $groupedWithDetails;
     }
 
-    private function getAdImages(int $adId): array
+    private function getAdsImages(array $adIds): array
     {
-        return $this->getDb()->query('SELECT big, small FROM ads_images WHERE ad_id = %d', $adId);
+        $images = $this->getDb()->query('SELECT ad_id, big, small FROM ads_images WHERE ad_id IN %ld', $adIds);
+
+        return $this->groupByField($images, 'ad_id');
+    }
+
+    private function groupByField(array $unGrouped, string $field): array
+    {
+        $grouped = [];
+        foreach ($unGrouped as $data) {
+            if (!isset($data[$field])) {
+                throw new \Exception('Undefined key ' . $field . ' in array: can not group');
+            }
+
+            $grouped[$data[$field]][] = $data;
+        }
+
+        return $grouped;
     }
 
     /**
@@ -1196,11 +1245,11 @@ class Palto
         return php_sapi_name() === 'cli';
     }
 
-    private function getParentRegions(array $region): array
+    private function getParentsRegions(array $region): array
     {
         $parents = [];
         while ($region['parent_id'] ?? 0) {
-            $region = $this->getRegion($region['parent_id']);
+            $region = $this->getAdRegion($region['parent_id']);
             $parents[] = $region;
         }
 

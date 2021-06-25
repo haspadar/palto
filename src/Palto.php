@@ -1275,7 +1275,7 @@ class Palto
 
         $errorHandler = function ($params) {
             $this->getLogger()->error('Database error: ' . $params['error']);
-            $this->getLogger()->error('Database query: ' . $params['query']);
+            $this->getLogger()->error('Database query: ' . $params['query'] ?? '');
             throw new \Exception('Database error: ' . $params['error']);
         };
         $this->db->error_handler = $errorHandler; // runs on mysql query errors

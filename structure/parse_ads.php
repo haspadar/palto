@@ -1,5 +1,6 @@
 <?php
 
+use Palto\ExecutionTime;
 use Palto\Palto;
 use Palto\Parser;
 use Palto\Status;
@@ -11,13 +12,14 @@ const DONOR_URL = 'https://losangeles.craigslist.org';
 
 require 'vendor/autoload.php';
 
+$executionTime = new ExecutionTime();
+$executionTime->start();
 $palto = new Palto();
 $pid = $palto->getParserPid();
-
 $palto->getLogger()->info('Started ads parsing with pid=' . $pid);
 $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
-    function () use ($palto, $pid) {
+    function () use ($palto, $pid, $executionTime) {
         $leafCategories = $palto->getDb()->query(
             "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
         );
@@ -32,12 +34,21 @@ $scheduler->run(
                 $palto->getLogger()->info('Parsing category ' . $category['title'], $logContent);
                 parseCategory($palto, $category, $category['donor_url'], $logContent);
             }
+
+            $executionTime->end();
+            $palto->getLogger()->info(
+                sprintf(
+                    'Parsed %d categories for %s',
+                    count($leafCategories),
+                    $executionTime->get()
+                )
+            );
         } else {
             $palto->getLogger()->info('Categories not found');
         }
     },
     function(Exception $e) use ($palto) {
-        $palto->getLogger()->error($e->getMessage());
+        $palto->getLogger()->error('[Scheduler] ' . $e->getMessage());
     }
 );
 

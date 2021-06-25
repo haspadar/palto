@@ -67,12 +67,12 @@
             "version": "0.10.x-dev",
             "source": {
                 "type": "git",
-                "url": "https://github.com/chrome-php/headless-chromium-php.git",
+                "url": "https://github.com/chrome-php/chrome.git",
                 "reference": "c45bf49b9363a3c43a510e88fdea6fffc4e10c94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chrome-php/headless-chromium-php/zipball/c45bf49b9363a3c43a510e88fdea6fffc4e10c94",
+                "url": "https://api.github.com/repos/chrome-php/chrome/zipball/c45bf49b9363a3c43a510e88fdea6fffc4e10c94",
                 "reference": "c45bf49b9363a3c43a510e88fdea6fffc4e10c94",
                 "shasum": ""
             },
@@ -123,8 +123,8 @@
                 "screenshot"
             ],
             "support": {
-                "issues": "https://github.com/chrome-php/headless-chromium-php/issues",
-                "source": "https://github.com/chrome-php/headless-chromium-php/tree/0.10"
+                "issues": "https://github.com/chrome-php/chrome/issues",
+                "source": "https://github.com/chrome-php/chrome/tree/0.10"
             },
             "time": "2021-05-22T22:26:13+00:00"
         },
@@ -456,12 +456,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/haspadar/pylesos.git",
-                "reference": "532989e5534dec6f5b51650d1d5bd3bee622acef"
+                "reference": "84f20b8d9937e63e30830f1a7e65618661195143"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/532989e5534dec6f5b51650d1d5bd3bee622acef",
-                "reference": "532989e5534dec6f5b51650d1d5bd3bee622acef",
+                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/84f20b8d9937e63e30830f1a7e65618661195143",
+                "reference": "84f20b8d9937e63e30830f1a7e65618661195143",
                 "shasum": ""
             },
             "require": {
@@ -503,7 +503,7 @@
                 "issues": "https://github.com/haspadar/pylesos/issues",
                 "source": "https://github.com/haspadar/pylesos/tree/master"
             },
-            "time": "2021-06-18T11:54:15+00:00"
+            "time": "2021-06-25T12:38:02+00:00"
         },
         {
             "name": "league/climate",

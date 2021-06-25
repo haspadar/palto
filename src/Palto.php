@@ -179,7 +179,7 @@ class Palto
     public function getAdsRegions(array $regionIds): array
     {
         $regions = $regionIds
-            ? $this->getDb()->queryFirstRow('SELECT * FROM regions WHERE id IN %ld', $regionIds)
+            ? $this->getDb()->query('SELECT * FROM regions WHERE id IN %ld', $regionIds)
             : [];
         $grouped = $regions ? $this->groupByField($regions, 'id') : [];
         foreach ($regionIds as $regionId) {

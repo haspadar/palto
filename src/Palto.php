@@ -1138,9 +1138,9 @@ class Palto
     private function addAdData(?array $ad): ?array
     {
         if ($ad) {
-            $ad['images'] = $this->getAdsImages([$ad['id']])[$ad['id']];
-            $ad['details'] = $this->getAdsDetails([$ad['id']])[$ad['id']];
-            $ad['region'] = $this->getAdsRegions([$ad['region_id']])[$ad['id']];
+            $ad['images'] = $this->getAdsImages([$ad['id']])[$ad['id']] ?? [];
+            $ad['details'] = $this->getAdsDetails([$ad['id']])[$ad['id']] ?? [];
+            $ad['region'] = $this->getAdsRegions([$ad['region_id']])[$ad['region_id']];
         }
 
         return $ad;

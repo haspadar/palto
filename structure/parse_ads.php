@@ -169,7 +169,9 @@ function getDetails($adDocument)
     foreach ($adDocument->find('.attrgroup span') as $property) {
         if (mb_strpos($property->plaintext, ':') !== false) {
             list($name, $value) = explode(': ', $property->plaintext);
-            $details[$name] = $value;
+            if (trim($value)) {
+                $details[$name] = trim($value);
+            }
         }
     }
 

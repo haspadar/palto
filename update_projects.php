@@ -1,7 +1,6 @@
 <?php
-$path = '..';
+$path = $_SERVER['PWD'] . '/..';
 $commands = ['composer update'];
-
 foreach (getProjects($path) as $project) {
     `cd $path/$project`;
     foreach ($commands as $command) {

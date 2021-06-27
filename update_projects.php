@@ -4,7 +4,10 @@ if (!isset($argv[1])) {
     exit('Укажите параметр – путь к проектам');
 }
 
-$commands = ['composer update'];
+$commands = [
+    'composer update',
+    'ln -s /var/www/washingtonspot.org/parse_donor_ads.php ./'
+];
 $projectPaths = getProjectPaths($projectsDirectory);
 echo 'Projects: ' . implode(',', $projectPaths) . PHP_EOL;
 foreach ($projectPaths as $projectKey => $project) {

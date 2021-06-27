@@ -7,10 +7,9 @@ use Pylesos\PylesosService;
 use Pylesos\Scheduler;
 use simplehtmldom\HtmlDocument;
 
-const DONOR_URL = 'https://washingtondc.craigslist.org';
-
 require 'vendor/autoload.php';
 
+Parser::checkDonorUrl();
 $palto = new Palto();
 $pid = $palto->getParserPid();
 $palto->getLogger()->info('Started ads parsing with pid=' . $pid);
@@ -42,7 +41,7 @@ $scheduler->run(
 
 function parseCategory(Palto $palto, array $category, string $url, array $logContent = [])
 {
-    $fullLevel2Url = DONOR_URL . $url;
+    $fullLevel2Url = Parser::getDonorUrl() . $url;
     $categoryResponse = PylesosService::download($fullLevel2Url, [], [], $palto->getEnv(), 20);
     $categoryDocument = new HtmlDocument($categoryResponse->getResponse());
     $ads = $categoryDocument->find('.result-row');

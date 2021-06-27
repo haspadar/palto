@@ -210,7 +210,7 @@ class Install
         $commands = [
             '#Every hour' => [
                 '0 * * * *  root cd ' . $this->projectPath . ' && php ' . Palto::PARSE_ADS_SCRIPT,
-                '0 * * * *  root cd ' . $this->projectPath . ' && composer update',
+//                '0 * * * *  root cd ' . $this->projectPath . ' && composer update',
             ],
             '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT]
         ];

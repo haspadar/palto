@@ -7,10 +7,15 @@ if (!$argv[1]) {
 $commands = ['composer update'];
 $projectPaths = getProjectPaths($projectsDirectory);
 echo 'Projects: ' . implode(',', $projectPaths) . PHP_EOL;
-foreach ($projectPaths as $project) {
+foreach ($projectPaths as $projectKey => $project) {
     foreach ($commands as $command) {
         $fullCommand = "cd $project && $command";
-        echo 'RUN COMMAND: ' . $fullCommand . PHP_EOL;
+        echo 'RUN COMMAND FOR PROJECT '
+            . ($projectKey + 1)
+            . '/' . count($projectPaths)
+            . ': '
+            . $fullCommand
+            . PHP_EOL;
         `cd $project && $command` . PHP_EOL;
     }
 }

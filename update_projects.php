@@ -9,7 +9,9 @@ $projectPaths = getProjectPaths($projectsDirectory);
 echo 'Projects: ' . implode(',', $projectPaths) . PHP_EOL;
 foreach ($projectPaths as $project) {
     foreach ($commands as $command) {
-        echo `cd $project && $command` . PHP_EOL;
+        $fullCommand = "cd $project && $command";
+        echo 'RUN COMMAND: ' . $fullCommand . PHP_EOL;
+        `cd $project && $command` . PHP_EOL;
     }
 }
 

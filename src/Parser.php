@@ -13,13 +13,14 @@ class Parser
 
     public static function getDonorUrl(): string
     {
-        return $argv[1] ?? '';
+        return $_SERVER['argv'][1] ?? '';
     }
 
     public static function checkDonorUrl()
     {
-        if (!isset($argv[1])) {
-            exit('Укажите первым параметром URL страницы, например: php parse_ads.php https://losangeles.craigslist.org');
+
+        if (!isset($_SERVER['argv'])) {
+            exit('Укажите первым параметром URL страницы, например: php parse_ads.php https://losangeles.craigslist.org' . PHP_EOL);
         }
     }
 }

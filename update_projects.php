@@ -8,9 +8,8 @@ $commands = ['composer update'];
 $projectPaths = getProjectPaths($projectsDirectory);
 echo 'Projects: ' . implode(',', $projectPaths) . PHP_EOL;
 foreach ($projectPaths as $project) {
-    `cd $project`;
     foreach ($commands as $command) {
-        `$command`;
+        echo `cd $project && $command` . PHP_EOL;
     }
 }
 

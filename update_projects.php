@@ -17,7 +17,7 @@ foreach ($projectPaths as $project) {
 function getProjectPaths(string $path): array
 {
     $projects = [];
-    if ($handle = opendir('.')) {
+    if ($handle = opendir($path)) {
         while (false !== ($entry = readdir($handle))) {
             if ($entry != "." && $entry != "..") {
                 $filePath = $path

@@ -367,9 +367,6 @@ class Palto
 
     public function addAd(array $ad, array $images, array $details): int
     {
-        $this->getLogger()->debug('Ignored addAd for check CPU performance');
-
-        return 0;
         $this->getDb()->insert('ads', $ad);
         $adId = $this->getDb()->insertId();
         foreach ($images as $image) {

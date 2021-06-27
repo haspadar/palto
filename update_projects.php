@@ -1,6 +1,6 @@
 <?php
 $projectsDirectory = $argv[1] ?? '';
-if (!$argv[1]) {
+if (!isset($argv[1])) {
     exit('Укажите параметр – путь к проектам');
 }
 

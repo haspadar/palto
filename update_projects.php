@@ -5,7 +5,9 @@ if (!$argv[1]) {
 }
 
 $commands = ['composer update'];
-foreach (getProjectPaths($projectsDirectory) as $project) {
+$projectPaths = getProjectPaths($projectsDirectory);
+echo 'Projects: ' . implode(',', $projectPaths) . PHP_EOL;
+foreach ($projectPaths as $project) {
     `cd $project`;
     foreach ($commands as $command) {
         `$command`;
@@ -18,9 +20,12 @@ function getProjectPaths(string $path): array
     if ($handle = opendir('.')) {
         while (false !== ($entry = readdir($handle))) {
             if ($entry != "." && $entry != "..") {
-                $projects[] = $path
+                $filePath = $path
                     . (substr($path, -1) != '/' ? '/' : '')
                     . $entry;
+                if (is_dir($filePath)) {
+                    $projects[] = $filePath;
+                }
             }
         }
 

@@ -1,20 +1,26 @@
 <?php
-$path = $_SERVER['PWD'] . '/..';
+$projectsDirectory = $argv[1] ?? '';
+if (!$argv[1]) {
+    exit('Укажите параметр – путь к проектам');
+}
+
 $commands = ['composer update'];
-foreach (getProjects($path) as $project) {
-    `cd $path/$project`;
+foreach (getProjectPaths($projectsDirectory) as $project) {
+    `cd $project`;
     foreach ($commands as $command) {
         `$command`;
     }
 }
 
-function getProjects(string $path): array
+function getProjectPaths(string $path): array
 {
     $projects = [];
     if ($handle = opendir('.')) {
         while (false !== ($entry = readdir($handle))) {
             if ($entry != "." && $entry != "..") {
-                $projects[] = $entry;
+                $projects[] = $path
+                    . (substr($path, -1) != '/' ? '/' : '')
+                    . $entry;
             }
         }
 

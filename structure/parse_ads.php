@@ -55,7 +55,7 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
     $palto->getLogger()->info('Found ' . count($ads) . ' ads', $extendedLogContext);
     $addedAdsCount = 0;
     $ads->each(function (Crawler $ad, $i) use ($palto, $fullLevel2Url, $category, &$addedAdsCount) {
-        $adUrl = $ad->filter('h3.result-heading a')->first()->link()->getUri();
+        $adUrl = $ad->filter('h3.result-heading a')->first()->attr('href');
         if (isUrlsRegionsEquals($adUrl, $fullLevel2Url)) {
             if (!$palto->isAdUrlExists($adUrl)) {
                 $isAdded = $palto->safeTransaction(function () use ($palto, $adUrl, $category) {
@@ -77,12 +77,12 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
     $nextPageSelector = '.paginator .buttons a.next';
     if (count($categoryDocument->filter($nextPageSelector))) {
         $palto->getLogger()->debug(
-            'Parsing next page ' . $categoryDocument->filter($nextPageSelector)->first()->link()->getUri()
+            'Parsing next page ' . $categoryDocument->filter($nextPageSelector)->first()->attr('href')
         );
         parseCategory(
             $palto,
             $category,
-            $categoryDocument->filter($nextPageSelector)->first()->link()->getUri(),
+            $categoryDocument->filter($nextPageSelector)->first()->attr('href'),
             $logContent
         );
     }

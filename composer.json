@@ -10,8 +10,8 @@
         "monolog/monolog": "2.x-dev",
         "sergeytsalkov/meekrodb": "9999999-dev",
         "swiftmailer/swiftmailer": "^6.0",
-        "symfony/dom-crawler": "9999999-dev",
-        "symfony/css-selector": "9999999-dev"
+        "symfony/dom-crawler": "5.4.x-dev",
+        "symfony/css-selector": "5.3.x-dev"
     },
     "autoload": {
         "psr-4": {

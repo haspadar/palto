@@ -2,10 +2,9 @@
 
 use Palto\Palto;
 use Palto\Parser;
-use Palto\Status;
 use Pylesos\PylesosService;
 use Pylesos\Scheduler;
-use simplehtmldom\HtmlDocument;
+use Symfony\Component\DomCrawler\Crawler;
 
 const DONOR_URL = 'https://washingtondc.craigslist.org';
 
@@ -44,8 +43,7 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
 {
     $fullLevel2Url = DONOR_URL . $url;
     $categoryResponse = PylesosService::download($fullLevel2Url, [], [], $palto->getEnv(), 20);
-    $categoryDocument = new HtmlDocument($categoryResponse->getResponse());
-    $ads = $categoryDocument->find('.result-row');
+    $categoryDocument = new Crawler($categoryResponse->getResponse());
     $extendedLogContext = array_merge(
         [
             'category' => $category['title'],
@@ -53,10 +51,11 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
         ],
         $logContent
     );
+    $ads = $categoryDocument->filter('.result-row');
     $palto->getLogger()->info('Found ' . count($ads) . ' ads', $extendedLogContext);
     $addedAdsCount = 0;
-    foreach ($ads as $resultRow) {
-        $adUrl = $resultRow->find('h3.result-heading a', 0)->href;
+    $ads->each(function (Crawler $ad, $i) use ($palto, $fullLevel2Url, $category, &$addedAdsCount) {
+        $adUrl = $ad->filter('h3.result-heading a')->first()->link()->getUri();
         if (isUrlsRegionsEquals($adUrl, $fullLevel2Url)) {
             if (!$palto->isAdUrlExists($adUrl)) {
                 $isAdded = $palto->safeTransaction(function () use ($palto, $adUrl, $category) {
@@ -73,26 +72,32 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
                 $palto->getLogger()->debug('Ad with url ' . $adUrl . ' already exists');
             }
         }
-    }
-
+    });
     $palto->getLogger()->info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
     $nextPageSelector = '.paginator .buttons a.next]';
-    if ($categoryDocument->find($nextPageSelector, 0)) {
-        $palto->getLogger()->debug('Parsing next page ' . $categoryDocument->find($nextPageSelector, 0)->href);
-        parseCategory($palto, $category, $categoryDocument->find($nextPageSelector, 0)->href, $logContent);
+    if (count($categoryDocument->filter($nextPageSelector))) {
+        $palto->getLogger()->debug(
+            'Parsing next page ' . $categoryDocument->filter($nextPageSelector)->first()->link()->getUri()
+        );
+        parseCategory(
+            $palto,
+            $category,
+            $categoryDocument->filter($nextPageSelector)->first()->link()->getUri(),
+            $logContent
+        );
     }
 }
 
 function parseAd(Palto $palto, $adUrl, $level2)
 {
     $adResponse = PylesosService::download($adUrl, [], [], $palto->getEnv(), 20);
-    $adDocument = new HtmlDocument($adResponse->getResponse());
-    $regionLink = $adDocument->find('.subarea a', 0);
+    $adDocument = new Crawler($adResponse->getResponse());
+    $regionLink = $adDocument->filter('.subarea p a');
     if ($regionLink) {
-        $regionTitle = $regionLink->innertext;
+        $regionTitle = $regionLink->text();
         $regionId = $palto->getRegionId(
             [
-                'donor_url' => $regionLink->href,
+                'donor_url' => $regionLink->attr('href'),
                 'url' => $palto->findRegionUrl($regionTitle),
                 'title' => $palto->upperCaseEveryWord($regionTitle),
                 'level' => 1,
@@ -102,31 +107,31 @@ function parseAd(Palto $palto, $adUrl, $level2)
         );
     }
 
-    $titleElement = $adDocument->find('#titletextonly', 0);
+    $titleElement = $adDocument->filter('#titletextonly');
     if ($titleElement) {
-        $priceWithCurrency = $adDocument->find('.postingtitletext .price', 0)->innertext ?? '';
+        $priceWithCurrency = $adDocument->filter('.postingtitletext .price')->first()->html() ?? '';
         $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
         $price = $priceWithCurrency ? Parser::filterPrice(mb_substr($priceWithCurrency, 1)) : 0;
         $ad = [
-            'title' => $titleElement->innertext,
+            'title' => $titleElement->html(),
             'url' => $adUrl,
             'category_id' => $level2['id'],
             'text' => trim(
                 explode(
                     '</div></div>',
-                    $adDocument->find('#postingbody', 0)->innertext
-                )[1]
+                    $adDocument->filter('#postingbody')->first()->html()
+                )[1] ?? $adDocument->filter('#postingbody')->first()->html()
             ),
-            'address' => $adDocument->find('.postingtitletext small', 0)
+            'address' => $adDocument->filter('.postingtitletext small')
                 ? strtr(
-                    trim($adDocument->find('.postingtitletext small', 0)->innertext),
+                    trim($adDocument->filter('.postingtitletext small')->first()->html()),
                     [
                         '(' => '',
                         ')' => '',
                     ]
                 ) : '',
             'coordinates' => getCoordinates($adDocument),
-            'post_time' => (new DateTime($adDocument->find('.postinginfos .postinginfo time', 0)->datetime))
+            'post_time' => (new DateTime($adDocument->filter('.postinginfos .postinginfo time')->first()->attr('datetime')))
                 ->format('Y-m-d H:i:s'),
             'region_id' => $regionId ?? null,
             'price' => $price,
@@ -154,35 +159,35 @@ function parseAd(Palto $palto, $adUrl, $level2)
 function getDetails($adDocument)
 {
     $details = [];
-    foreach ($adDocument->find('.attrgroup span') as $property) {
-        if (mb_strpos($property->plaintext, ':') !== false) {
-            list($name, $value) = explode(': ', $property->plaintext);
+    $adDocument->filter('.attrgroup span')->each(function (Crawler $property, $i) {
+        if (mb_strpos($property->text(), ':') !== false) {
+            list($name, $value) = explode(': ', $property->text());
             $details[$name] = $value;
         }
-    }
+    });
 
     return $details;
 }
 
-function getImages($adDocument)
+function getImages(Crawler $adDocument)
 {
     $images = [];
-    foreach ($adDocument->find('#thumbs a') as $link) {
-        $bigImage = $link->href;
-        $smallImage = $link->find('img', 0)->src;
+    $adDocument->filter('#thumbs a')->each(function (Crawler $link, $i) use (&$images) {
+        $bigImage = $link->attr('href');
+        $smallImage = $link->filter('img')->first()->attr('src');
         $images[] = ['big' => $bigImage, 'small' => $smallImage];
-    }
+    });
 
     return $images;
 }
 
-function getCoordinates($adDocument)
+function getCoordinates(Crawler $adDocument)
 {
-    $map = $adDocument->find('#map', 0);
+    $map = $adDocument->filter('#map');
     if ($map) {
-        $latitude = $map->{'data-latitude'};
-        $longitude = $map->{'data-longitude'};
-        $accuracy = $map->{'data-accuracy'};
+        $latitude = $map->first()->attr('data-latitude');
+        $longitude = $map->first()->attr('data-longitude');
+        $accuracy = $map->first()->attr('data-accuracy');
 
         return implode(',', [$latitude, $longitude, $accuracy]);
     }

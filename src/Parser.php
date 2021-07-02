@@ -18,7 +18,6 @@ class Parser
 
     public static function checkDonorUrl()
     {
-
         if (!isset($_SERVER['argv'])) {
             exit('Укажите первым параметром URL страницы, например: php parse_ads.php https://losangeles.craigslist.org' . PHP_EOL);
         }

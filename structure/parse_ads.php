@@ -112,16 +112,26 @@ function parseAd(Palto $palto, $adUrl, $level2)
         $priceWithCurrency = $adDocument->filter('.postingtitletext .price')->first()->html() ?? '';
         $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
         $price = $priceWithCurrency ? Parser::filterPrice(mb_substr($priceWithCurrency, 1)) : 0;
-        $ad = [
-            'title' => $titleElement->html(),
-            'url' => $adUrl,
-            'category_id' => $level2['id'],
-            'text' => trim(
+        var_dump(trim(
+            explode(
+                '</div></div>',
+                $adDocument->filter('#postingbody')->first()->html()
+            )[1] ?? $adDocument->filter('#postingbody')->first()->html()
+        ));
+        var_dump(Parser::removeDivWithClass(
+            trim(
                 explode(
                     '</div></div>',
                     $adDocument->filter('#postingbody')->first()->html()
                 )[1] ?? $adDocument->filter('#postingbody')->first()->html()
-            ),
+            ))
+        );
+        exit;
+        $ad = [
+            'title' => $titleElement->html(),
+            'url' => $adUrl,
+            'category_id' => $level2['id'],
+            'text' => getHtml($adDocument),
             'address' => $adDocument->filter('.postingtitletext small')
                 ? strtr(
                     trim($adDocument->filter('.postingtitletext small')->first()->html()),
@@ -198,4 +208,17 @@ function getCoordinates(Crawler $adDocument)
 function isUrlsRegionsEquals($url1, $url2)
 {
     return explode('.', $url1)[0] == explode('.', $url2)[0];
+}
+
+function getHtml(Crawler $adDocument)
+{
+    if (count($adDocument->filter('#postingbody')) > 0) {
+        $html = $adDocument->filter('#postingbody')->first()->html();
+        $parts = explode('</div>
+        </div>', $html);
+
+        return isset($parts[1]) ? trim($parts[1]) : $html;
+    }
+
+    return '';
 }

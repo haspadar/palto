@@ -65,6 +65,9 @@ class Palto
             $this->getDb()->rollback();
             $this->getLogger()->error($e->getMessage());
             $this->getLogger()->error($e->getTraceAsString());
+            if (!$this->isCron() && $this->isCli()) {
+                exit;
+            }
         }
     }
 

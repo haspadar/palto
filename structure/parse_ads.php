@@ -74,7 +74,7 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
         }
     });
     $palto->getLogger()->info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
-    $nextPageSelector = '.paginator .buttons a.next]';
+    $nextPageSelector = '.paginator .buttons a.next';
     if (count($categoryDocument->filter($nextPageSelector))) {
         $palto->getLogger()->debug(
             'Parsing next page ' . $categoryDocument->filter($nextPageSelector)->first()->link()->getUri()

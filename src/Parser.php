@@ -13,7 +13,13 @@ class Parser
 
     public static function getDonorUrl(): string
     {
-        return $_SERVER['argv'][1] ?? '';
+        if (isset($_SERVER['argv'][1])) {
+            $parsed = parse_url($_SERVER['argv'][1]);
+
+            return $parsed['scheme'] . '://' . $parsed['host'];
+        }
+
+        return '';
     }
 
     public static function checkDonorUrl()

@@ -182,17 +182,20 @@ class Palto
 
     public function getAdsRegions(array $regionIds): array
     {
-        $regions = $regionIds
-            ? $this->getDb()->query('SELECT * FROM regions WHERE id IN %ld', $regionIds)
-            : [];
-        $grouped = $regions ? $this->groupByField($regions, 'id') : [];
-        foreach ($regionIds as $regionId) {
-            $grouped[$regionId] = isset($grouped[$regionId])
-                ? $grouped[$regionId][0]
-                : $this->getDefaultRegion();
+        if ($regionIds) {
+            $regions = $this->getDb()->query('SELECT * FROM regions WHERE id IN %ld', $regionIds);
+            $grouped = $regions ? $this->groupByField($regions, 'id') : [];
+            foreach ($regionIds as $regionId) {
+                $grouped[$regionId] = isset($grouped[$regionId])
+                    ? $grouped[$regionId][0]
+                    : $this->getDefaultRegion();
+            }
+
+            return $grouped;
         }
 
-        return $grouped;
+
+        return [];
     }
 
     public function getAdRegion(?int $regionId): array
@@ -1157,28 +1160,36 @@ class Palto
 
     private function getAdsDetails(array $adIds): array
     {
-        $details = $this->getDb()->query(
-            'SELECT ad_id, field, value FROM details_fields AS df INNER JOIN ads_details AS dfv ON df.id = dfv.details_field_id WHERE ad_id IN %ld',
-            $adIds
-        );
-        $groupedByAdId = $this->groupByField($details, 'ad_id');
-        $groupedWithDetails = [];
-        foreach ($groupedByAdId as $adId => $adDetails) {
-            $groupedWithDetails[$adId] = array_column(
-                $adDetails,
-                'value',
-                'field'
+        if ($adIds) {
+            $details = $this->getDb()->query(
+                'SELECT ad_id, field, value FROM details_fields AS df INNER JOIN ads_details AS dfv ON df.id = dfv.details_field_id WHERE ad_id IN %ld',
+                $adIds
             );
+            $groupedByAdId = $this->groupByField($details, 'ad_id');
+            $groupedWithDetails = [];
+            foreach ($groupedByAdId as $adId => $adDetails) {
+                $groupedWithDetails[$adId] = array_column(
+                    $adDetails,
+                    'value',
+                    'field'
+                );
+            }
+
+            return $groupedWithDetails;
         }
 
-        return $groupedWithDetails;
+        return [];
     }
 
     private function getAdsImages(array $adIds): array
     {
-        $images = $this->getDb()->query('SELECT ad_id, big, small FROM ads_images WHERE ad_id IN %ld', $adIds);
+        if ($adIds) {
+            $images = $this->getDb()->query('SELECT ad_id, big, small FROM ads_images WHERE ad_id IN %ld', $adIds);
 
-        return $this->groupByField($images, 'ad_id');
+            return $this->groupByField($images, 'ad_id');
+        }
+
+        return [];
     }
 
     private function groupByField(array $unGrouped, string $field): array

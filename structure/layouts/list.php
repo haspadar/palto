@@ -16,8 +16,6 @@ $ads = $this->getAds(
     $this->getAdsOffset()
 );
 $this->initPager($this->hasNextPage(count($ads)));
-//$count = $this->getAdsCount($categoryWithChildrenIds, $this->getCurrentRegion()['id']);
-//$this->initPagination($count);
 $this->partial('header.inc', [
     'title' => implode(
         ' - ',

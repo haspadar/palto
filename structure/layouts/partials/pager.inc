@@ -4,9 +4,9 @@
  */
 ?>
 <?php if ($this->previousPageUrl) : ?>
-    <a href="<?=$this->previousPageUrl?>">« предыдущая</a>
+    <a href="<?=$this->previousPageUrl?>">« Previous</a>
 <?php endif;?>
 
 <?php if ($this->nextPageUrl) :?>
-    <a href="<?=$this->nextPageUrl?>"> следующая »</a>
+    <a href="<?=$this->nextPageUrl?>"> Next »</a>
 <?php endif;

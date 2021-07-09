@@ -9,8 +9,15 @@ $categoryWithChildrenIds = $this->getCurrentCategory()['id']
         [$this->getCurrentCategory()['id']],
         array_column($this->getCurrentCategory()['children'], 'id')
     ) : [];
-$count = $this->getAdsCount($categoryWithChildrenIds, $this->getCurrentRegion()['id']);
-$this->initPagination($count);
+$ads = $this->getAds(
+    $categoryWithChildrenIds,
+    $this->getCurrentRegion()['id'],
+    $this->getAdsLimit(),
+    $this->getAdsOffset()
+);
+$this->initPager($this->hasNextPage(count($ads)));
+//$count = $this->getAdsCount($categoryWithChildrenIds, $this->getCurrentRegion()['id']);
+//$this->initPagination($count);
 $this->partial('header.inc', [
     'title' => implode(
         ' - ',
@@ -56,14 +63,7 @@ $this->partial('header.inc', [
 
 <div class="region_cat"><b>Region:</b> <?= $this->getCurrentRegion()['title'] ?></div>
 <table class="serp">
-    <?php
-    foreach ($this->getAds(
-            $categoryWithChildrenIds,
-            $this->getCurrentRegion()['id'],
-            $this->getAdsLimit(),
-            $this->getAdsOffset()
-        ) as $adIndex => $ad
-    ) :?>
+    <?php foreach ($ads as $adIndex => $ad) :?>
         <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
 
         <?php if (in_array($adIndex + 1, [5, 15])) : ?>
@@ -73,6 +73,10 @@ $this->partial('header.inc', [
         <?php endif; ?>
     <?php endforeach;?>
 </table>
-    <?php $this->partial('pagination.inc', ['paginationUrls' => $this->getPaginationUrls()])?>
+<?php $this->partial('pager.inc', [
+    'pageNumber' => $this->getPageNumber(),
+    'nextPageUrl' => $this->getNextPageUrl(),
+    'previousPageUrl' => $this->getPreviousPageUrl(),
+])?>
 
 <?php $this->partial('footer.inc');

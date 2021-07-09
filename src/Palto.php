@@ -597,6 +597,11 @@ class Palto
         return $this->pageNumber + 1;
     }
 
+    public function hasNextPage(int $count): bool
+    {
+        return $count == $this->getAdsLimit();
+    }
+
     public function getPageNumber(): int
     {
         return $this->pageNumber;
@@ -735,19 +740,18 @@ class Palto
         return max(ceil($count / $this->adsLimit), 1);
     }
 
-    public function initPagination(int $count)
+    public function initPager(bool $hasNextPage): void
     {
-        $this->pagesCount = $this->calculatePagesCount($count);
-        $parts = $this->getUrlParts();
-        $lastPart = $parts[count($parts) - 1] ?? '';
-        $this->pageNumber = $this->isPageUrlPart($lastPart) ? intval($lastPart) : 1;
-        if ($this->pageNumber + 1 <= $this->pagesCount) {
-            $this->nextPageUrl = $this->getPageUrl($this->pageNumber + 1);
-        }
+        $this->initCurrentPage();
+        $this->pagesCount = $hasNextPage ? $this->pageNumber + 1 : $this->pageNumber;
+        $this->initPages();
+    }
 
-        if ($this->pageNumber > 1) {
-            $this->previousPageUrl = $this->getPageUrl($this->pageNumber - 1);
-        }
+    public function initPagination(int $count): void
+    {
+        $this->initCurrentPage();
+        $this->pagesCount = $this->calculatePagesCount($count);
+        $this->initPages();
     }
 
     public function getLogger(): Logger
@@ -1322,5 +1326,25 @@ class Palto
     private function redirect(string $categoryUrl)
     {
         header("Location: " . $categoryUrl,true,301);
+    }
+
+    private function initCurrentPage(): int
+    {
+        $parts = $this->getUrlParts();
+        $lastPart = $parts[count($parts) - 1] ?? '';
+        $this->pageNumber = $this->isPageUrlPart($lastPart) ? intval($lastPart) : 1;
+
+        return $this->pageNumber;
+    }
+
+    private function initPages()
+    {
+        if ($this->pageNumber + 1 <= $this->pagesCount) {
+            $this->nextPageUrl = $this->getPageUrl($this->pageNumber + 1);
+        }
+
+        if ($this->pageNumber > 1) {
+            $this->previousPageUrl = $this->getPageUrl($this->pageNumber - 1);
+        }
     }
 }

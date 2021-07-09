@@ -507,8 +507,9 @@ class Palto
         $values['limit'] = $limit;
         $values['offset'] = $offset;
         $ads = $this->getDb()->query($query, $values);
+        $extendedAds = $this->addAdsData($ads);
 
-        return $this->addAdsData($ads);
+        return array_values($extendedAds);
     }
 
     public function loadLayout(string $layout)

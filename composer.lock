@@ -508,16 +508,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/haspadar/pylesos.git",
-                "reference": "2382dc8d3e3cdd0989ef7884bead7db493384dbc"
+                "reference": "9b0294e555fc13855844664c98fdb42e735712f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/2382dc8d3e3cdd0989ef7884bead7db493384dbc",
-                "reference": "2382dc8d3e3cdd0989ef7884bead7db493384dbc",
+                "url": "https://api.github.com/repos/haspadar/pylesos/zipball/9b0294e555fc13855844664c98fdb42e735712f1",
+                "reference": "9b0294e555fc13855844664c98fdb42e735712f1",
                 "shasum": ""
             },
             "require": {
-                "chrome-php/chrome": "9999999-dev",
+                "chrome-php/chrome": "1.0.x-dev",
                 "ext-curl": "*",
                 "ext-json": "*",
                 "ext-posix": "*",
@@ -526,7 +526,7 @@
                 "monolog/monolog": "2.x-dev",
                 "nesk/puphpeteer": "dev-master",
                 "php": ">=7.4",
-                "php-webdriver/webdriver": "9999999-dev",
+                "php-webdriver/webdriver": "dev-main",
                 "simplehtmldom/simplehtmldom": "dev-master",
                 "vlucas/phpdotenv": "^5.1"
             },
@@ -555,7 +555,7 @@
                 "issues": "https://github.com/haspadar/pylesos/issues",
                 "source": "https://github.com/haspadar/pylesos/tree/master"
             },
-            "time": "2021-07-23T10:37:29+00:00"
+            "time": "2021-07-23T10:47:21+00:00"
         },
         {
             "name": "league/climate",

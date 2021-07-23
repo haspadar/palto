@@ -9,10 +9,10 @@ $this->partial('header.inc', [
 ]);
 ?>
 
-    <h1>Registration</h1>
-    <form action="#">
-        <input type="email" placeholder="email">
-        <button>Зарегистрировать</button>
-    </form>
+<h1>Registration</h1>
+<form action="#">
+    <input type="email" placeholder="email">
+    <button>Зарегистрировать</button>
+</form>
 
 <?php $this->partial('footer.inc', []);

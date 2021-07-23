@@ -6,9 +6,9 @@
     "license": "proprietary",
     "require": {
         "php": ">=7.4",
-        "haspadar/pylesos": "9999999-dev",
+        "haspadar/pylesos": "dev-master",
         "monolog/monolog": "2.x-dev",
-        "sergeytsalkov/meekrodb": "9999999-dev",
+        "sergeytsalkov/meekrodb": "dev-master",
         "swiftmailer/swiftmailer": "^6.0",
         "symfony/dom-crawler": "5.4.x-dev",
         "symfony/css-selector": "5.3.x-dev"

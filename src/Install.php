@@ -19,12 +19,12 @@ class Install
         $this->databasePassword = $this->generatePassword(12);
     }
 
-    public function run()
+    public function run(string $parseAdsScript = Palto::PARSE_SINGLE_SITE_ADS_SCRIPT)
     {
         $osCommands = $this->getOSCommands();
         $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
         $this->updateEnvOptions();
-        $this->updateCron();
+        $this->updateCron($parseAdsScript);
         $this->updateHost();
         $this->showWelcome();
     }
@@ -34,8 +34,7 @@ class Install
         $projectPath = $this->projectPath;
         $paltoPath = $this->paltoPath;
         $databaseName = $this->databaseName;
-
-        return [
+        $commands = [
             "cp -R $paltoPath/structure/layouts $projectPath/",
             "mkdir $projectPath/public",
             "cp -R $paltoPath/structure/public/css $projectPath/public/",
@@ -44,13 +43,21 @@ class Install
             "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
             "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
-            "cp $paltoPath/structure/parse_*.php $projectPath/",
+            "cp $paltoPath/structure/" . Palto::PARSE_SINGLE_SITE_ADS_SCRIPT . " $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',
             "cp $paltoPath/.env.example $projectPath/.env",
             "mkdir $projectPath/logs",
         ];
+        $manySitesDonorDirectory = $this->getManySitesDonorDirectory();
+        if ($manySitesDonorDirectory) {
+            $commands[] = "ln -s $manySitesDonorDirectory/" . Palto::PARSE_MANY_SITES_ADS_SCRIPT . " $projectPath/";
+        } else {
+            $commands[] = "cp $paltoPath/structure/" . Palto::PARSE_MANY_SITES_ADS_SCRIPT . " $projectPath/";
+        }
+
+        return $commands;
     }
 
     private function isLinux(): bool
@@ -204,13 +211,12 @@ class Install
         }
     }
 
-    private function updateCron()
+    private function updateCron(string $parseAdsScript)
     {
         $cronFilePath = '/etc/crontab';
         $commands = [
             '#Every hour' => [
-                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . Palto::PARSE_ADS_SCRIPT,
-//                '0 * * * *  root cd ' . $this->projectPath . ' && composer update',
+                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . $parseAdsScript,
             ],
             '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT]
         ];
@@ -243,5 +249,10 @@ class Install
                 'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
             ])
         );
+    }
+
+    private function getManySitesDonorDirectory()
+    {
+
     }
 }

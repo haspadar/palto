@@ -18,6 +18,6 @@
             "Palto\\": "src/"
         }
     },
-    "bin": ["bin/install.php"],
+    "bin": ["bin/install_single_site.php", "bin/install_many_sites.php"],
     "minimum-stability": "dev"
 }

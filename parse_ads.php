@@ -1,1 +1,0 @@
-structure/parse_ads.php

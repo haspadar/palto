@@ -251,8 +251,36 @@ class Install
         );
     }
 
-    private function getManySitesDonorDirectory()
+    private function getManySitesDonorDirectory(): string
     {
+        foreach ($this->getPaltoDirectories() as $paltoDirectory) {
+            if ($paltoDirectory) {
+                $manySitesAdsScript = $paltoDirectory . '/' . Palto::PARSE_MANY_SITES_ADS_SCRIPT;
+                if (!is_link($manySitesAdsScript)) {
+                    return $paltoDirectory;
+                }
+            }
+        }
 
+        return '';
+    }
+
+    private function getPaltoDirectories(): array
+    {
+        $directories = scandir($this->projectPath . '/..');
+        $paltoDirectories = [];
+        foreach ($directories as $directory) {
+            $directoryPath = $this->projectPath . '/../' . $directory;
+            if (!in_array($directory, ['..', '.']) && is_dir($directoryPath) && $this->isPaltoDirectory($directoryPath)) {
+                $paltoDirectories[] = $directoryPath;
+            }
+        }
+
+        return $paltoDirectories;
+    }
+
+    private function isPaltoDirectory(string $directoryPath): bool
+    {
+        return file_exists($directoryPath . '/' . Palto::PARSE_SINGLE_SITE_ADS_SCRIPT);
     }
 }

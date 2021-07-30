@@ -43,6 +43,7 @@ class Install
             "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
             "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
+            "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_SINGLE_SITE_ADS_SCRIPT . " $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',

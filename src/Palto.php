@@ -1292,7 +1292,9 @@ class Palto
             '127.0.0.1',
             $this->env['DB_USER'],
             $this->env['DB_PASSWORD'],
-            $this->env['DB_NAME']
+            $this->env['DB_NAME'],
+            3306,
+            'utf8'
         );
         if ($this->isDebug() && !$this->isCli()) {
             $this->getDb()->debugMode();

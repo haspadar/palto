@@ -120,7 +120,7 @@ class Palto
         $parts = $this->getUrlParts();
         $isRegionPage = !$this->categoryUrl && $this->regionUrl && $this->region;
         $isCategoryPage = !$this->adId && $this->categoryUrl && $this->category;
-        $isRegistrationPage = $parts && $parts[0] == 'registration';
+        $isRegistrationPage = $parts && $parts[1] == 'registration';
         if (!$parts) {
             $layout = 'index.php';
         } elseif ($isRegionPage || $isCategoryPage) {

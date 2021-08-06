@@ -71,6 +71,7 @@ function download($url, $proxy)
 function getProxy($env)
 {
     $response = json_decode(file_get_contents($env['ROTATOR_URL']));
+    shuffle($response->list);
 
     return $response->list[0];
 }

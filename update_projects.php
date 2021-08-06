@@ -7,7 +7,7 @@ if (!isset($argv[1])) {
 $commands = [
     'composer update',
     'ln -s /var/www/washingtonspot.org/parse_donor_ads.php ./',
-//    'cp vendor/haspadar/palto/structure/layouts/registration.php layouts/'
+    'cp vendor/haspadar/palto/structure/public/youtube.php public/'
 ];
 $projectPaths = getProjectPaths($projectsDirectory);
 echo 'Projects: ' . implode(',', $projectPaths) . PHP_EOL;

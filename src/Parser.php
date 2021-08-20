@@ -4,6 +4,15 @@ namespace Palto;
 
 class Parser
 {
+    public static function filterPriceCurrency(string $price): array
+    {
+        $parts = explode(' ', $price);
+        $currency = $parts[count($parts) - 1];
+        unset($parts[count($parts) - 1]);
+
+        return [self::filterPrice(implode(' ', $parts)), $currency];
+    }
+
     public static function filterPrice(string $price): float
     {
         $filtered = floatval(strtr($price, [',' => '', ' ' => '']));

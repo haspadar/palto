@@ -1,10 +1,12 @@
 <?php
 
 use Palto\Palto;
+use Palto\Parser;
 use Pylesos\PylesosService;
 use Symfony\Component\DomCrawler\Crawler;
 
-const DONOR_URL = 'http://www.olx.pl';
+//http://www.olx.pl
+Parser::checkDonorUrl();
 
 require 'vendor/autoload.php';
 

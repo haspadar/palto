@@ -6,3 +6,5 @@
 /logs/
 /structure/public/sitemaps/
 /static/
+/parse_ads.php
+/parse_categories.php

@@ -19,7 +19,7 @@ class Install
         $this->databasePassword = $this->generatePassword(12);
     }
 
-    public function run(string $parseAdsScript = Palto::PARSE_SINGLE_SITE_ADS_SCRIPT)
+    public function run(string $parseAdsScript = Palto::PARSE_ADS_SCRIPT)
     {
         $osCommands = $this->getOSCommands();
         $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
@@ -44,19 +44,13 @@ class Install
             "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
-            "cp $paltoPath/structure/" . Palto::PARSE_SINGLE_SITE_ADS_SCRIPT . " $projectPath/",
+            "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',
             "cp $paltoPath/.env.example $projectPath/.env",
             "mkdir $projectPath/logs",
         ];
-        $manySitesDonorDirectory = $this->getManySitesDonorDirectory();
-        if ($manySitesDonorDirectory) {
-            $commands[] = "ln -s $manySitesDonorDirectory/" . Palto::PARSE_MANY_SITES_ADS_SCRIPT . " $projectPath/";
-        } else {
-            $commands[] = "cp $paltoPath/structure/" . Palto::PARSE_MANY_SITES_ADS_SCRIPT . " $projectPath/";
-        }
 
         return $commands;
     }
@@ -256,7 +250,7 @@ class Install
     {
         foreach ($this->getPaltoDirectories() as $paltoDirectory) {
             if ($paltoDirectory) {
-                $manySitesAdsScript = $paltoDirectory . '/' . Palto::PARSE_MANY_SITES_ADS_SCRIPT;
+                $manySitesAdsScript = $paltoDirectory . '/' . Palto::PARSE_ADS_SCRIPT;
                 if (!is_link($manySitesAdsScript)) {
                     return $paltoDirectory;
                 }
@@ -282,6 +276,6 @@ class Install
 
     private function isPaltoDirectory(string $directoryPath): bool
     {
-        return file_exists($directoryPath . '/' . Palto::PARSE_SINGLE_SITE_ADS_SCRIPT);
+        return file_exists($directoryPath . '/' . Palto::PARSE_ADS_SCRIPT);
     }
 }

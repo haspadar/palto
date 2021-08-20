@@ -12,7 +12,7 @@ class Palto
 {
     public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
     public const PARSE_SINGLE_SITE_ADS_SCRIPT = 'parse_single_site_ads.php';
-    public const PARSE_MANY_SITES_ADS_SCRIPT = 'parse_many_sites_ads.php';
+    public const PARSE_ADS_SCRIPT = 'parse_ads.php';
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private \MeekroDB $db;
@@ -1257,7 +1257,7 @@ class Palto
 
     public function getParserPid(): int
     {
-        return Status::getPhpCommandPid(self::PARSE_SINGLE_SITE_ADS_SCRIPT, $this->getProjectName());
+        return Status::getPhpCommandPid(self::PARSE_ADS_SCRIPT, $this->getProjectName());
     }
 
     private function isCron(): bool

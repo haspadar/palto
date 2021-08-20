@@ -170,18 +170,11 @@ function getDetails($adDocument)
 
 function getImages($adDocument)
 {
-    return [[
-        'small' => $adDocument->filter('img[src][srcset]')->attr('src'),
-        'big' => ''
-    ]];
-//    $adDocument->filter('img[data-srcset]')->each(function (Crawler $image, $i) {
-//        $sizes = explode(', ', $image->attr('data-srcset'));
-//        $bigImage = $sizes;
-//        $smallImage = $link->find('img', 0)->src;
-//        $images[] = ['big' => $bigImage, 'small' => $smallImage];
-//    });
-//
-//    return $images;
+    return $adDocument->filter('img[src][srcset]')->count()
+        ? [[
+            'small' => $adDocument->filter('img[src][srcset]')->attr('src'),
+            'big' => ''
+        ]] : [];
 }
 
 function getCoordinates($adDocument)

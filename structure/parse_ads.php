@@ -73,36 +73,10 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
         }
     });
     $palto->getLogger()->info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
-    var_dump(Parser::hasNextPageLinkTag($categoryDocument));
-    var_dump(Parser::getNextPageUrl($categoryDocument));
-    exit;
-    $nextPageSelector = '.pager .buttons a.next]';
-    if ($categoryDocument->find($nextPageSelector, 0)) {
-        $palto->getLogger()->debug('Parsing next page ' . $categoryDocument->find($nextPageSelector, 0)->href);
-        parseCategory($palto, $category, $categoryDocument->find($nextPageSelector, 0)->href, $logContent);
+    if (Parser::hasNextPageLinkTag($categoryDocument) && Parser::getNextPageUrl($categoryDocument) <= 10) {
+        $palto->getLogger()->debug('Parsing next page ' . Parser::getNextPageUrl($categoryDocument));
+        parseCategory($palto, $category, Parser::getNextPageUrl($categoryDocument), $logContent);
     }
-
-//    echo 'done';exit;
-//    $addedAdsCount = 0;
-//    foreach ($ads as $resultRow) {
-//        $adUrl = $resultRow->find('h3 a', 0)->href;
-////        if (isUrlsRegionsEquals($adUrl, $fullLevel2Url)) {
-//            if (!$palto->isAdUrlExists($adUrl)) {
-//                $isAdded = $palto->safeTransaction(function () use ($palto, $adUrl, $category) {
-//                    return parseAd($palto, $adUrl, $category);
-//                });
-//                if (!is_bool($isAdded)) {
-//                    $palto->getLogger()->debug('Skipped wrong ad with url ' . $adUrl);
-//                }
-//
-//                if ($isAdded) {
-//                    $addedAdsCount++;
-//                }
-//            } else {
-//                $palto->getLogger()->debug('Ad with url ' . $adUrl . ' already exists');
-//            }
-////        }
-//    }
 }
 
 function parseAd(Palto $palto, $adUrl, $level3)
@@ -110,7 +84,7 @@ function parseAd(Palto $palto, $adUrl, $level3)
     $adResponse = PylesosService::download($adUrl, [], [], $palto->getEnv(), 20);
     $adDocument = new Crawler($adResponse->getResponse());
     $count = $adDocument->filter('[data-testid=breadcrumb-item]')->count();
-    if ($adDocument->filter('[data-testid=breadcrumb-item]')->eq($count - 1)) {
+    if ($adDocument->filter('[data-testid=breadcrumb-item]')->eq($count - 1)->count()) {
         $breadCrumbLevel2RegionTitle = $adDocument->filter('[data-testid=breadcrumb-item]')->eq($count - 1)->text();
         $breadCrumbLevel2RegionTitleParts = explode(' - ', $breadCrumbLevel2RegionTitle);
         $level2RegionTitle = $breadCrumbLevel2RegionTitleParts[count($breadCrumbLevel2RegionTitleParts) - 1];

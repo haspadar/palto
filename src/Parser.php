@@ -38,7 +38,7 @@ class Parser
         return $categoryDocument->filter('link[rel=next]')->count() > 0;
     }
 
-    public static function getNextPageUrl($categoryDocument): bool
+    public static function getNextPageUrl($categoryDocument): string
     {
         return $categoryDocument->filter('link[rel=next]')->attr('href');
     }

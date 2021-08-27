@@ -494,7 +494,8 @@ class Palto
     public function getAds($categoryId, $regionId, int $limit, int $offset = 0): array
     {
         $query = $this->getAdsQuery();
-        [$where, $values] = $this->getAdsWhere($categoryId, $regionId);
+        $regionsIds = $this->getRegionsChildrenIds(array_filter([$regionId]));
+        [$where, $values] = $this->getAdsWhere($categoryId, $regionsIds);
         $query .= $where;
         $query .= ' ORDER BY create_time DESC LIMIT %d_limit OFFSET %d_offset';
         $values['limit'] = $limit;
@@ -1210,10 +1211,10 @@ class Palto
 
     /**
      * @param int|array|null $categoryId
-     * @param int|null $regionId
+     * @param int|array|null $regionId
      * @return array
      */
-    private function getAdsWhere($categoryId, ?int $regionId): array
+    private function getAdsWhere($categoryId, $regionId): array
     {
         $query = ' WHERE ';
         $values = [];
@@ -1350,5 +1351,16 @@ class Palto
         if ($this->pageNumber > 1) {
             $this->previousPageUrl = $this->getPageUrl($this->pageNumber - 1);
         }
+    }
+
+    public function getRegionsChildrenIds(array $parentIds, array $mergedIds = [])
+    {
+        if ($parentIds) {
+            $childrenIds = $this->getDb()->queryFirstColumn('SELECT id FROM regions WHERE parent_id IN %ld', $parentIds);
+
+            return array_merge($childrenIds, array_merge($mergedIds, $childrenIds));
+        }
+
+        return $mergedIds;
     }
 }

@@ -485,7 +485,8 @@ class Palto
     {
         $query = 'SELECT COUNT(*) FROM ads AS a LEFT JOIN categories AS c ON a.category_id = c.id'
             . ' LEFT JOIN regions AS r ON a.region_id = r.id';
-        [$where, $values] = $this->getAdsWhere($categoryId, $regionId);
+        $regionsIds = $this->getRegionsChildrenIds(array_filter([$regionId]));
+        [$where, $values] = $this->getAdsWhere($categoryId, $regionsIds);
         $query .= $where;
 
         return $this->getDb()->queryFirstField($query, $values);

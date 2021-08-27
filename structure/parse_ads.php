@@ -106,7 +106,7 @@ function parseAd(Palto $palto, $adUrl, $level3)
         $regionLevel2Id = $palto->getRegionId(
             [
                 'donor_url' => '',
-                'url' => '',
+                'url' => $palto->findRegionUrl($level2RegionTitle),
                 'parent_id' => $regionLevel1Id,
                 'title' => $palto->upperCaseEveryWord($level2RegionTitle),
                 'level' => 2,

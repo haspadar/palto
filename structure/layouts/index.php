@@ -7,22 +7,7 @@ $this->partial('header.inc', [
     'title' => 'Private free classifieds in Los Angeles (LA) from craigslist and other boards',
     'description' => 'Aggregator of all classifieds boards in Los Angeles.',
 ]);
-var_dump($this->generateUrl('Śmigiel'));
 ?>
-    <h1>Classified Ads in LA</h1>
-    <?php foreach ($this->getRegions(0, 1) as $level1Region) :?>
-        <div class="span-d regions"><a href="<?=$this->generateRegionUrl($level1Region)?>"><strong> <?=$level1Region['title']?></strong></a>
-            <?php if ($level2Regions = $this->getRegions($level1Region['id'])) :?>
-                <ul>
-                    <?php foreach ($level2Regions as  $level2Region) :?>
-                        <li><a href="<?=$this->generateRegionUrl($level2Region)?>"><?=$level2Region['title']?></a></li>
-                    <?php endforeach;?>
-                </ul>
-            <?php endif;?></div>
-    <?php endforeach;?>
-
-    <br style="clear: both">
-    <br style="clear: both">
     <h2>Categories</h2>
     <?php foreach ($this->getCategories(0, 1) as $level1Category) :?>
         <div class="span-d">

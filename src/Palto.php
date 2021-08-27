@@ -120,9 +120,14 @@ class Palto
         $parts = $this->getUrlParts();
         $isRegionPage = !$this->categoryUrl && $this->regionUrl && $this->region;
         $isCategoryPage = !$this->adId && $this->categoryUrl && $this->category;
-        $isRegistrationPage = isset($parts[1]) && $parts[1] == 'registration';
+        $isRegistrationPage = isset($parts[0]) && $parts[0] == 'registration';
+        $isRegionsListPage = isset($parts[0]) && $parts[0] == 'regions';
         if (!$parts) {
             $layout = 'index.php';
+        } elseif ($isRegionsListPage) {
+            $layout = 'regions-list.php';
+        } elseif ($isRegistrationPage) {
+            $layout = 'registration.php';
         } elseif ($isRegionPage || $isCategoryPage) {
             $layout = 'list.php';
         } elseif ($this->adId && $this->ad && !$this->ad['deleted_time']) {
@@ -131,8 +136,6 @@ class Palto
             $this->addFlashMessage('The ad was deleted.');
             $this->redirect($this->generateCategoryUrl($this->category));
             $layout = '404.php';
-        } elseif ($isRegistrationPage) {
-            $layout = 'registration.php';
         } else {
             $layout = '404.php';
         }

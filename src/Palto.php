@@ -122,8 +122,11 @@ class Palto
         $isCategoryPage = !$this->adId && $this->categoryUrl && $this->category;
         $isRegistrationPage = isset($parts[0]) && $parts[0] == 'registration';
         $isRegionsListPage = isset($parts[0]) && $parts[0] == 'regions';
+        $isCategoriesListPage = isset($parts[0]) && $parts[0] == 'categories';
         if (!$parts) {
             $layout = 'index.php';
+        } elseif ($isCategoriesListPage) {
+            $layout = 'categories-list.php';
         } elseif ($isRegionsListPage) {
             $layout = 'regions-list.php';
         } elseif ($isRegistrationPage) {

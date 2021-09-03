@@ -24,7 +24,7 @@ class Sitemap
         );
         $groupedRegions[0][] = $this->palto->getDefaultRegion();
         $groupedCategories = $this->groupTrees(
-            $this->palto->getCategories(0, 0, 0, 0, 'tree_id, level')
+            $this->palto->getWithAdsCategories(0, 0, 0, 0, 'tree_id, level')
         );
         $this->generateRegionsFiles('/regions', $groupedRegions);
         foreach ($groupedRegions as $regionTree) {

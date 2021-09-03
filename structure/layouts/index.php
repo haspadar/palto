@@ -23,14 +23,14 @@ $this->partial('header.inc', [
     <br style="clear: both">
     <br style="clear: both">
     <h2>Categories</h2>
-    <?php foreach ($this->getCategories(0, 1) as $level1Category) :?>
+    <?php foreach ($this->getWithAdsCategories(0, 1) as $level1Category) :?>
         <div class="span-d">
             <p><a href="<?=$this->generateCategoryUrl($level1Category)?>">
                     <?php if ($level1Category['icon_url']) :?>
                         <img src="<?=$level1Category['icon_url']?>" title="<?=$level1Category['icon_text']?>" class="icm" />
                     <?php endif?>
                     <strong> <?=$level1Category['title']?></strong></a></p>
-            <?php if ($level2Categories = $this->getCategories($level1Category['id'])) :?>
+            <?php if ($level2Categories = $this->getWithAdsCategories($level1Category['id'])) :?>
                 <ul>
                     <?php foreach ($level2Categories as  $level2Category) :?>
                         <li><a href="<?=$this->generateCategoryUrl($level2Category)?>"><?=$level2Category['title']?></a></li>

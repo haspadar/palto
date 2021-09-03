@@ -24,7 +24,7 @@ class StaticHtml
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $regions = $this->palto->getRegions(0, 0, 0, 0, 'level');
-        $categories = $this->palto->getCategories(0, 0, 0, 0, 'level');
+        $categories = $this->palto->getWithAdsCategories(0, 0, 0, 0, 'level');
         $regionsCategoriesUrls = ['/'];
         foreach (array_merge([$this->palto->getDefaultRegion()], $regions) as $region) {
             $regionUrl = $this->palto->generateRegionUrl($region);

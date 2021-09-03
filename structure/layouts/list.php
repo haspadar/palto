@@ -47,8 +47,8 @@ $this->partial('header.inc', [
 <?php endif;?>
 
 <?php $categories = $this->getCurrentCategory()['id']
-    ? $this->getCategories($this->getCurrentCategory()['id'])
-    : $this->getCategories(0, 1)
+    ? $this->getWithAdsCategories($this->getCurrentCategory()['id'])
+    : $this->getWithAdsCategories(0, 1)
 ?>
 <?php if ($categories) :?>
     <ul class="sub_cat">

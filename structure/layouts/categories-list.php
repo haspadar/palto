@@ -9,7 +9,7 @@ $this->partial('header.inc', [
 ]);
 ?>
 <h1>Categories</h1>
-<?php foreach ($this->getCategories(0, 1) as $level1Category) :?>
+<?php foreach ($this->getWithAdsCategories(0, 1) as $level1Category) :?>
     <div class="span-d regions"><a href="<?=$this->generateCategoryUrl($level1Category)?>"><strong> <?=$level1Category['title']?></strong></a>
         <?php if ($level2Categories = $this->getWithAdsCategories($level1Category['id'])) :?>
             <ul>

@@ -11,7 +11,13 @@ if ($palto->getEnv()['AUTH']) {
 $email = $palto->filterString($_POST['email']);
 $message = $palto->filterString($_POST['message']);
 $adId = intval($_POST['ad_id']);
-if (filter_var($email, FILTER_VALIDATE_EMAIL) && $message) {
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $response = 'Is not email';
+} elseif (!$message) {
+    $response = 'Message is empty';
+} elseif (!Moderation::getSmtpEmail()) {
+    $response = 'Smtp email is empty';
+} else {
     Moderation::addComplaint(
         $palto, [
             'email' => $email,
@@ -22,7 +28,6 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL) && $message) {
             'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
         ]
     );
-    echo "1";
-} else {
-    echo "0";
 }
+
+echo $response ?? '1';

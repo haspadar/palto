@@ -46,6 +46,11 @@ class Moderation
         return $db->query("SELECT * FROM complaints WHERE response_time IS NULL AND ignore_time IS NULL");
     }
 
+    public static function getSmtpEmail(Palto $palto): string
+    {
+        return $palto->getEnv()['SMTP_EMAIL'];
+    }
+
     public static function addComplaint(Palto $palto, array $complaint)
     {
         $subject = 'Пришла жалоба';
@@ -53,7 +58,7 @@ class Moderation
             . $complaint['domain']
             . '/moderate/'
             . '">Зайти в админку</a>';
-        $palto->sendEmail($palto->getEnv()['SMTP_EMAIL'], $subject, $body);
+        $palto->sendEmail(self::getSmtpEmail(), $subject, $body);
         $palto->getDb()->insert('complaints', $complaint);
     }
 

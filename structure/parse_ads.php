@@ -2,11 +2,9 @@
 
 use Palto\Palto;
 use Palto\Parser;
-use Palto\Status;
 use Pylesos\PylesosService;
 use Pylesos\Scheduler;
 use Symfony\Component\DomCrawler\Crawler;
-//use simplehtmldom\HtmlDocument;
 
 require 'vendor/autoload.php';
 

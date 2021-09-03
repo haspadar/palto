@@ -664,7 +664,7 @@ class Palto
         return '/' . implode(
                 '/',
                 array_merge(
-                    [$region['url'] ?? $this->getCurrentRegion()['url']],
+                    [$region['url'] ?? $this->getCurrentRegion()['url'] ?? $this->getDefaultRegion()['url']],
                     array_column($parents, 'url'),
                     [$category['url']]
                 )

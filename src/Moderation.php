@@ -58,7 +58,7 @@ class Moderation
             . $complaint['domain']
             . '/moderate/'
             . '">Зайти в админку</a>';
-        $palto->sendEmail(self::getSmtpEmail(), $subject, $body);
+        $palto->sendEmail(self::getSmtpEmail($palto), $subject, $body);
         $palto->getDb()->insert('complaints', $complaint);
     }
 

@@ -165,7 +165,10 @@ class Palto
         $unfiltered = $this->getCategories($parentId, $level, $limit, $offset, $orderBy);
 
         return array_filter($unfiltered, function (array $category) {
-            return count($this->getChildCategories($category)) > 0;
+            $childrenIds = array_column($this->getChildCategories($category), 'id');
+
+            return $childrenIds
+                && $this->getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $childrenIds) > 0;
         });
     }
 

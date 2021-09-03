@@ -160,6 +160,15 @@ class Palto
         return $message;
     }
 
+    public function getWithAdsCategories(int $parentId, int $level = 0, int $limit = 0, $offset = 0, $orderBy = ''): array
+    {
+        $unfiltered = $this->getCategories($parentId, $level, $limit, $offset, $orderBy);
+
+        return array_filter($unfiltered, function (array $category) {
+            return count($this->getChildCategories($category)) > 0;
+        });
+    }
+
     public function getCategories(int $parentId, int $level = 0, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
         $query = 'SELECT * FROM categories';

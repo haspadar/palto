@@ -2,9 +2,11 @@
 
 use Palto\Palto;
 use Palto\Parser;
+use Palto\Status;
 use Pylesos\PylesosService;
 use Pylesos\Scheduler;
 use Symfony\Component\DomCrawler\Crawler;
+//use simplehtmldom\HtmlDocument;
 
 require 'vendor/autoload.php';
 
@@ -15,7 +17,7 @@ $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto, $pid) {
         $leafCategories = $palto->getDb()->query(
-            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
+            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL) and id=1397"
         );
         if ($leafCategories) {
             shuffle($leafCategories);
@@ -41,7 +43,6 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
 {
     $fullLevel2Url = strpos($url, 'http') !== 0 ? Parser::getDonorUrl() . $url: $url;
     $categoryResponse = PylesosService::download($fullLevel2Url, [], [], $palto->getEnv(), 20);
-//    $categoryDocument = new HtmlDocument($categoryResponse->getResponse());
     $categoryDocument = new Crawler($categoryResponse->getResponse());
     $extendedLogContext = array_merge(
         [
@@ -51,11 +52,17 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
         $logContent
     );
     $ads = $categoryDocument->filter('#offers_table tr.wrap');
+    if (!$ads->count()) {
+        $ads = $categoryDocument->filter('.gallerywide li[data-id]');
+    }
+
     $palto->getLogger()->info('Found ' . count($ads) . ' ads', $extendedLogContext);
     $addedAdsCount = 0;
     $ads->each(function (Crawler $resultRow, $i) use (&$level1Categories, $palto, &$addedAdsCount, $category) {
-        $adUrl = $resultRow->filter('h3 a', 0)->attr('href');
-        if (!$palto->isAdUrlExists($adUrl)) {
+        $adUrl = getAdUrl($resultRow);
+        if (!$adUrl) {
+            $palto->getLogger()->error('Url not parsed: ' . $resultRow->outerHtml());
+        } elseif (!$palto->isAdUrlExists($adUrl)) {
             $isAdded = $palto->safeTransaction(function () use ($palto, $adUrl, $category) {
                 return parseAd($palto, $adUrl, $category);
             });
@@ -135,6 +142,7 @@ function parseAd(Palto $palto, $adUrl, $level3)
                 'seller_phone' => '',
                 'create_time' => (new DateTime())->format('Y-m-d H:i:s')
             ];
+
             $images = getImages($adDocument);
             $details = getDetails($adDocument);
             $palto->addAd($ad, $images, $details);
@@ -155,12 +163,18 @@ function getDetails($adDocument)
 {
     $translates = Parser::getJsVariable($adDocument, 'window.__INIT_CONFIG__');
     $locale = $translates['locale'];
-    $privateTranslate = $translates['language']['messages'][$locale]['posting.private_business.value.private'];
-    $businessTranslate = $translates['language']['messages'][$locale]['posting.private_business.value.business'];
     $values = Parser::getJsVariable($adDocument, 'window.__PRERENDERED_STATE__');
-    $details = ['isBusiness' => $values['ad']['ad']['isBusiness'] ? $privateTranslate : $businessTranslate];
-    foreach ($values['ad']['ad']['params'] as $param) {
-        $details[$param['name']] = $param['value'];
+    $details = [];
+    if (isset($translates['language']['messages'][$locale]['posting.private_business.value.private'])) {
+        $details['isBusiness'] = $values['ad']['ad']['isBusiness']
+            ? $translates['language']['messages'][$locale]['posting.private_business.value.private']
+            : $translates['language']['messages'][$locale]['posting.private_business.value.business'];
+    }
+
+    if (isset($values['ad']['ad']['params'])) {
+        foreach ($values['ad']['ad']['params'] as $param) {
+            $details[$param['name']] = $param['value'];
+        }
     }
 
     return $details;
@@ -168,11 +182,23 @@ function getDetails($adDocument)
 
 function getImages($adDocument)
 {
-    return $adDocument->filter('img[src][srcset]')->count()
-        ? [[
-            'small' => $adDocument->filter('img[src][srcset]')->attr('src'),
+    $mainImage = $adDocument->filter('img[src]')->attr('src');
+    $otherImages = $adDocument->filter('img[data-srcset]')->each(
+        function (Crawler $resultRow, $i) {
+            return $resultRow->attr('data-srcset');
+        }
+    );
+
+    $images = [];
+    foreach (array_merge([$mainImage], $otherImages) as $image) {
+        $imageParts = explode(';', $image);
+        $images[] = [
+            'small' => $imageParts[0],
             'big' => ''
-        ]] : [];
+        ];
+    }
+
+    return $images;
 }
 
 function getCoordinates($adDocument)
@@ -192,4 +218,14 @@ function getCoordinates($adDocument)
 function isUrlsRegionsEquals($url1, $url2)
 {
     return explode('.', $url1)[0] == explode('.', $url2)[0];
+}
+
+function getAdUrl(Crawler $resultRow) {
+    if ($resultRow->filter('h3 a', 0)->count() > 0) {
+        $adUrl = $resultRow->filter('h3 a', 0)->attr('href');
+    } elseif ($resultRow->filter('h4 a', 0)->count() > 0) {
+        $adUrl = $resultRow->filter('h4 a', 0)->attr('href');
+    }
+
+    return $adUrl ?? '';
 }

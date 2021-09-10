@@ -175,7 +175,7 @@ function getDetails($adDocument)
 
     if (isset($values['ad']['ad']['params'])) {
         foreach ($values['ad']['ad']['params'] as $param) {
-            $details[$param['name']] = $param['value'];
+            $details[$param['name']] = strval($param['value']);
         }
     }
 

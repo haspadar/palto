@@ -8,6 +8,8 @@ $ad = $this->getPartialVariable('ad');
     <td class="serp_img">
         <?php if ($ad['images']) : ?>
             <a href="<?= $this->generateAdUrl($ad) ?>"><img src="<?= $ad['images'][0]['small'] ?>" alt="<?=$ad['title']?>"/></a>
+        <?php else :?>
+            <img src="/img/no-photo.png">
         <?php endif; ?>
     </td>
     <td>

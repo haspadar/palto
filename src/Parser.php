@@ -43,11 +43,13 @@ class Parser
         return $categoryDocument->filter('link[rel=next]')->attr('href');
     }
 
-    public static function checkDonorUrl()
+    public static function checkDonorUrl(): string
     {
         if (!isset($_SERVER['argv'][1])) {
             exit('Укажите первым параметром URL страницы, например: php parse_ads.php https://losangeles.craigslist.org' . PHP_EOL);
         }
+
+        return $_SERVER['argv'][1];
     }
 
     public static function getJsVariable($adDocument, string $variableName, $endCharacter = ';'): array

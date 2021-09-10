@@ -5,13 +5,12 @@ use Palto\Parser;
 use Pylesos\PylesosService;
 use Symfony\Component\DomCrawler\Crawler;
 
-//http://www.olx.pl
-$donorUrl = Parser::checkDonorUrl();
-
 require 'vendor/autoload.php';
 
+$donorUrl = Parser::checkDonorUrl();
 $palto = new Palto();
 $level1Response = PylesosService::get($donorUrl . '/sitemap', [], $palto->getEnv());
+var_dump($level1Response);exit;
 $categoriesDocument = new Crawler($level1Response->getResponse());
 $categoriesDocument->filter('h3')->each(function (Crawler $level1Category, $i) use (&$level1Categories, $palto) {
     if ($level1Category->filter('a span')->count()) {

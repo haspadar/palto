@@ -1291,11 +1291,11 @@ class Palto
     private function initDb(): void
     {
         $this->db = new \MeekroDB(
-            '127.0.0.1',
+            $this->env['DB_HOST'] ?? '127.0.0.1',
             $this->env['DB_USER'],
             $this->env['DB_PASSWORD'],
             $this->env['DB_NAME'],
-            3306,
+            $this->env['DB_PORT'] ?? 3306,
             'utf8'
         );
         if ($this->isDebug() && !$this->isCli()) {

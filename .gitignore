@@ -2,10 +2,10 @@
 /phinx.php
 /vendor/
 /.idea/
-/_public/index.php
 /logs/
 /structure/public/sitemaps/
 /static/
 /parse_ads.php
 /parse_categories.php
 /public/adminer.php
+/ssh_tunnel.sh

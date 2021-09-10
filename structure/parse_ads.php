@@ -17,7 +17,7 @@ $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto, $pid) {
         $leafCategories = $palto->getDb()->query(
-            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL) and id=1397"
+            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL) and id=1726"
         );
         if ($leafCategories) {
             shuffle($leafCategories);
@@ -122,9 +122,11 @@ function parseAd(Palto $palto, $adUrl, $level3)
         $title = $adDocument->filter('h1')->count() ? $adDocument->filter('h1')->text() : '';
         $html = $adDocument->filter('[data-cy="ad_description"] div')->count()
             ? $adDocument->filter('[data-cy="ad_description"] div')->html()
-            : '';
+            : $adDocument->filter('h2+div')->html();
         if ($title && $html) {
-            $priceWithCurrency = $adDocument->filter('h3')->text();
+            $priceWithCurrency = $adDocument->filter('h3')->count() > 0
+                ? $adDocument->filter('h3')->text()
+                : '';
             list($price, $currency) = Parser::filterPriceCurrency($priceWithCurrency);
             $ad = [
                 'title' => $title,
@@ -166,7 +168,7 @@ function getDetails($adDocument)
     $values = Parser::getJsVariable($adDocument, 'window.__PRERENDERED_STATE__');
     $details = [];
     if (isset($translates['language']['messages'][$locale]['posting.private_business.value.private'])) {
-        $details['isBusiness'] = $values['ad']['ad']['isBusiness']
+        $details['isBusiness'] = isset($values['ad']['ad']['isBusiness'])
             ? $translates['language']['messages'][$locale]['posting.private_business.value.private']
             : $translates['language']['messages'][$locale]['posting.private_business.value.business'];
     }
@@ -192,10 +194,12 @@ function getImages($adDocument)
     $images = [];
     foreach (array_merge([$mainImage], $otherImages) as $image) {
         $imageParts = explode(';', $image);
-        $images[] = [
-            'small' => $imageParts[0],
-            'big' => ''
-        ];
+        if (mb_substr($imageParts[0], 0, 4) == 'http') {
+            $images[] = [
+                'small' => $imageParts[0],
+                'big' => ''
+            ];
+        }
     }
 
     return $images;

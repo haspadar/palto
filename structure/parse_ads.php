@@ -17,7 +17,7 @@ $scheduler = new Scheduler($palto->getEnv());
 $scheduler->run(
     function () use ($palto, $pid) {
         $leafCategories = $palto->getDb()->query(
-            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL) and id=1726"
+            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
         );
         if ($leafCategories) {
             shuffle($leafCategories);

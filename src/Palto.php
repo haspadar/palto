@@ -308,12 +308,12 @@ class Palto
         return $found ? true : false;
     }
 
-    public function findCategoryUrl(string $title, int $level): string
+    public function findCategoryUrl(string $title, int $level, int $excludeId = 0): string
     {
         $urlPattern = $this->generateUrl($title);
         $url = $urlPattern;
         $counter = 0;
-        while ($this->getUrlCategory($url, $level)) {
+        while ($this->getUrlCategory($url, $level, $excludeId)) {
             $url = $urlPattern . '-' . (++$counter);
         }
 
@@ -1318,12 +1318,13 @@ class Palto
         return $this->db->queryFirstRow('SELECT * FROM categories WHERE url = %s', $url);
     }
 
-    private function getUrlCategory(string $url, int $level): ?array
+    private function getUrlCategory(string $url, int $level, int $excludeId = 0): ?array
     {
         return $this->db->queryFirstRow(
-            'SELECT * FROM categories WHERE url = %s AND level = %d',
+            'SELECT * FROM categories WHERE url = %s AND level = %d AND id <> %d',
             $url,
-            $level
+            $level,
+            $excludeId
         );
     }
 

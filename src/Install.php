@@ -24,6 +24,7 @@ class Install
         $osCommands = $this->getOSCommands();
         $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
         $this->updateEnvOptions();
+        $this->updatePhinx();
         $this->updateCron($parseAdsScript);
         $this->updateHost();
         $this->showWelcome();
@@ -45,6 +46,7 @@ class Install
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
+            "cp $paltoPath/structure/" . Palto::PHINX_CONFIG . " $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',
@@ -242,6 +244,19 @@ class Install
                 'DB_USER=' => 'DB_USER=' . $this->databaseName,
                 'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->databasePassword,
                 'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
+            ])
+        );
+    }
+
+    private function updatePhinx()
+    {
+        $this->log('Updating Phinx');
+        file_put_contents(
+            $this->projectPath . '/' . Palto::PHINX_CONFIG,
+            strtr(file_get_contents($this->projectPath . '/' . Palto::PHINX_CONFIG), [
+                'production_db' => $this->databaseName,
+                'production_user' => $this->databaseName,
+                'production_pass' => $this->databasePassword
             ])
         );
     }

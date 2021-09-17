@@ -13,6 +13,7 @@ class Palto
     public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
     public const PARSE_SINGLE_SITE_ADS_SCRIPT = 'parse_single_site_ads.php';
     public const PARSE_ADS_SCRIPT = 'parse_ads.php';
+    public const PHINX_CONFIG = 'phinx.php';
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private \MeekroDB $db;

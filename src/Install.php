@@ -47,6 +47,7 @@ class Install
             "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PHINX_CONFIG . " $projectPath/",
+            "ln -s $paltoPath/db $projectPath/",
             "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',

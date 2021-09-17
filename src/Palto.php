@@ -320,12 +320,12 @@ class Palto
         return $url;
     }
 
-    public function findRegionUrl(string $title): string
+    public function findRegionUrl(string $title, int $excludeId = 0): string
     {
         $urlPattern = $this->generateUrl($title);
         $url = $urlPattern;
         $counter = 0;
-        while ($this->getUrlRegion($url)) {
+        while ($this->getUrlRegion($url, $excludeId)) {
             $url = $urlPattern . '-' . (++$counter);
         }
 
@@ -1313,9 +1313,9 @@ class Palto
         $this->db->nonsql_error_handler = $errorHandler; // runs on library errors (bad syntax, etc)
     }
 
-    private function getUrlRegion(string $url): ?array
+    private function getUrlRegion(string $url, int $excludeId = 0): ?array
     {
-        return $this->db->queryFirstRow('SELECT * FROM categories WHERE url = %s', $url);
+        return $this->db->queryFirstRow('SELECT * FROM categories WHERE url = %s AND id <> %d', $url, $excludeId);
     }
 
     private function getUrlCategory(string $url, int $level, int $excludeId = 0): ?array

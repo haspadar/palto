@@ -12,7 +12,8 @@
         "swiftmailer/swiftmailer": "^6.0",
         "symfony/dom-crawler": "5.4.x-dev",
         "symfony/css-selector": "5.3.x-dev",
-        "robmorgan/phinx": "dev-master"
+        "robmorgan/phinx": "dev-master",
+        "cocur/slugify": "dev-master"
     },
     "autoload": {
         "psr-4": {

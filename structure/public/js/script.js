@@ -1,7 +1,7 @@
 $(function() {
     let $youtube = $('.youtube');
     let url = $youtube.data('url');
-    if (url.length) {
+    if (url && url.length) {
         $.ajax({
             type: "GET",
             url: url,

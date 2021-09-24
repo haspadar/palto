@@ -1114,7 +1114,7 @@ class Palto
                             array_reverse($this->category['parents']),
                             'title'
                         ),
-                    )   
+                    )
                 );
                 $this->category['children'] = $this->getChildCategories($this->category);
             }

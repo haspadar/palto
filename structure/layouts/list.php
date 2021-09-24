@@ -16,16 +16,12 @@ $ads = $this->getAds(
     $this->getAdsOffset()
 );
 $this->initPager($this->hasNextPage(count($ads)));
+$categoriesTitle = implode(' - ', $this->getCurrentCategory()['titles']);
 $this->partial('header.inc', [
-    'title' => implode(
-        ' - ',
-        array_filter(array_merge(
-            [$this->getCurrentCategory()['title']],
-            array_column($this->getCurrentCategory()['parents'], 'title'),
-            [$this->getCurrentRegion()['title']]
-        ))
-    ) . ' Classifieds',
-    'description' => 'Aggregator of all classifieds boards in '
+    'title' => ($categoriesTitle ? $categoriesTitle . ' - ' : $categoriesTitle)
+        . 'Ogłoszenia w '
+        . $this->getCurrentRegion()['title'],
+    'description' => 'Agregator wszystkich tablic ogłoszeniowych w '
         . implode(
             ' - ',
             array_filter(array_merge(
@@ -38,10 +34,20 @@ $this->partial('header.inc', [
     'previousPageUrl' => $this->getPreviousPageUrl(),
 ]);
 ?>
-<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-    <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getListBreadcrumbUrls()]);?>
-</div>
-<h1><?php if ($this->getCurrentCategory()['title']) :?><?= $this->getCurrentCategory()['title']?> in <?php endif;?><?= $this->getCurrentRegion()['title'] ?>: Classified Ads from craigslist</h1>
+    <div class="bread"
+         itemscope
+         itemtype="http://schema.org/BreadcrumbList"
+    >
+        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getListBreadcrumbUrls()]);?>
+    </div>
+    <h1><?php if ($this->getCurrentCategory()['title']) :?>
+            <?= $this->getCurrentCategory()['title']?> w
+        <?php endif;?>
+        <?= $this->getCurrentRegion()['title'] == 'Polska'
+            ? 'Polske'
+            : $this->getCurrentRegion()['title']
+        ?>: Ogłoszenia drobne z OLX
+    </h1>
 <?php if ($flashMessage) :?>
     <div class="alert"><?=$flashMessage?></div>
 <?php endif;?>
@@ -59,18 +65,18 @@ $this->partial('header.inc', [
     </ul>
 <?php endif;?>
 
-<div class="region_cat"><b>Region:</b> <?= $this->getCurrentRegion()['title'] ?></div>
-<table class="serp">
-    <?php foreach ($ads as $adIndex => $ad) :?>
-        <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
+    <div class="region_cat"><b>Region:</b> <?= $this->getCurrentRegion()['title'] ?></div>
+    <table class="serp">
+        <?php foreach ($ads as $adIndex => $ad) :?>
+            <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
 
-        <?php if (in_array($adIndex + 1, [5, 15])) : ?>
-            <!--                                Counter-->
-        <?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
-            <!--                                Counter-->
-        <?php endif; ?>
-    <?php endforeach;?>
-</table>
+            <?php if (in_array($adIndex + 1, [5, 15])) : ?>
+                <!--                                Counter-->
+            <?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
+                <!--                                Counter-->
+            <?php endif; ?>
+        <?php endforeach;?>
+    </table>
 <?php $this->partial('pager.inc', [
     'pageNumber' => $this->getPageNumber(),
     'nextPageUrl' => $this->getNextPageUrl(),

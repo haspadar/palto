@@ -573,6 +573,7 @@ class Palto
             'tree_id' => 0,
             'level' => 0,
             'title' => '',
+            'titles' => [],
             'url' => '',
             'children' => [],
             'parents' => []

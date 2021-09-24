@@ -8,6 +8,8 @@ use Pylesos\Scheduler;
 use Symfony\Component\DomCrawler\Crawler;
 //use simplehtmldom\HtmlDocument;
 
+const DONOR_URL = 'https://www.olx.ua';
+
 require 'vendor/autoload.php';
 
 $palto = new Palto();

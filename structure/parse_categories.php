@@ -16,7 +16,6 @@ $categoriesDocument->filter('h3')->each(function (Crawler $level1Category, $i) u
         $level1CategoryTitle = $level1Category->filter('a span')->text();
         $level1CategoryUrl = $level1Category->filter('a')->first()->attr('href');
         $palto->getLogger()->debug($level1CategoryTitle . '(' . $level1CategoryUrl . ')');
-        var_dump($palto->findCategoryUrl($level1CategoryTitle, 1));exit;
         $palto->getCategoryId(
             [
                 'title' => $level1CategoryTitle,

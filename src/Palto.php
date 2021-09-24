@@ -1107,10 +1107,13 @@ class Palto
             $this->category = $this->getUrlCategory($this->categoryUrl, $this->categoryLevel);
             if ($this->category) {
                 $this->category['parents'] = $this->getParentCategories($this->category);
-                $this->category['reverse_parent_titles'] = array_column(
-                    array_reverse($this->category['parents']),
-                    'title'
-                );
+                $this->category['titles'] = array_filter(array_merge(
+                    [$this->getCurrentCategory()['title']],
+                    array_column(
+                        array_reverse($this->category['parents']),
+                        'title'
+                    ),
+                ));
                 $this->category['children'] = $this->getChildCategories($this->category);
             }
         }

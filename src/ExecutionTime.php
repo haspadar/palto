@@ -3,8 +3,8 @@ namespace Palto;
 
 class ExecutionTime
 {
-    private $startTime;
-    private $endTime;
+    private float $startTime;
+    private float $endTime;
 
     public function start()
     {

@@ -44,7 +44,7 @@ $scheduler->run(
 function parseCategory(Palto $palto, array $category, string $url, array $logContent = [])
 {
     $fullLevel2Url = strpos($url, 'http') !== 0 ? Parser::getDonorUrl() . $url: $url;
-    $categoryResponse = PylesosService::download($fullLevel2Url, [], [], $palto->getEnv(), 20);
+    $categoryResponse = PylesosService::get($fullLevel2Url, [], $palto->getEnv());
     $categoryDocument = new Crawler($categoryResponse->getResponse());
     $extendedLogContext = array_merge(
         [
@@ -88,7 +88,7 @@ function parseCategory(Palto $palto, array $category, string $url, array $logCon
 
 function parseAd(Palto $palto, $adUrl, $level3)
 {
-    $adResponse = PylesosService::download($adUrl, [], [], $palto->getEnv(), 20);
+    $adResponse = PylesosService::get($adUrl, [], $palto->getEnv());
     $adDocument = new Crawler($adResponse->getResponse());
     $count = $adDocument->filter('[data-testid=breadcrumb-item]')->count();
     if ($adDocument->filter('[data-testid=breadcrumb-item]')->eq($count - 1)->count()) {

@@ -1,4 +1,4 @@
-source ads[PROJECT]
+source ads_[PROJECT]
 {
         type = mysql
         sql_host = 127.0.0.1
@@ -22,10 +22,10 @@ source ads[PROJECT]
         sql_field_string = title
 }
 
-index ads[PROJECT]
+index ads_[PROJECT]
 {
-        source = ads[PROJECT]
-        path = data/ads[PROJECT]
+        source = ads_[PROJECT]
+        path = data/ads_[PROJECT]
         docinfo = extern
         dict = keywords
         mlock = 0

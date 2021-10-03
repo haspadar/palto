@@ -35,6 +35,19 @@ server {
 
     add_header x-fastcgi-cache $upstream_cache_status;
 
+    location ^~ /adminer.php {
+        auth_basic           "Restricted";
+        auth_basic_user_file /var/www/%s/.htpasswd;
+
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php8-fpm;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_script_name;
+    }
+
 	location ~ \.php$ {
           fastcgi_cache fastcgicache;
           fastcgi_cache_valid 200 60m;

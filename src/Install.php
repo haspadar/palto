@@ -233,7 +233,7 @@ class Install
                 $this->log('cron command "' . $serverCommand . '" already exists');
             }
         }
-        
+
         $projectCommands = [
             '#Every hour' => [
                 '0 * * * *  root cd ' . $this->projectPath . ' && php ' . $parseAdsScript,
@@ -264,9 +264,10 @@ class Install
         file_put_contents(
             $this->projectPath . 'sphinx/sphinx.conf',
             strtr(file_get_contents($this->projectPath . 'sphinx/sphinx.conf'), [
-                'DB_USER' => $this->databaseName,
-                'DB_PASSWORD' => $this->databasePassword,
-                'DB_NAME' => $this->databaseName,
+                '[DB_USER]' => $this->databaseName,
+                '[DB_PASSWORD]' => $this->databasePassword,
+                '[DB_NAME]' => $this->databaseName,
+                '[PROJECT]' => $this->projectName
             ])
         );
     }

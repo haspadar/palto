@@ -10,8 +10,8 @@
 /public/adminer.php
 /ssh_tunnel.sh
 /phinx.php
-/sphinx/sphinx.conf
-/sphinx/query.log
-/sphinx/searchd.log
-/sphinx/searchd.pid
-/sphinx/data/
+/structure/sphinx/sphinx.conf
+/structure/sphinx/query.log
+/structure/sphinx/searchd.log
+/structure/sphinx/searchd.pid
+/structure/sphinx/data/

@@ -38,6 +38,7 @@ class Install
         $databaseName = $this->databaseName;
         $commands = [
             "cp -R $paltoPath/structure/layouts $projectPath/",
+            "cp -R $paltoPath/structure/sphinx $projectPath/",
             "mkdir $projectPath/public",
             "cp -R $paltoPath/structure/public/css $projectPath/public/",
             "cp -R $paltoPath/structure/public/img $projectPath/public/",

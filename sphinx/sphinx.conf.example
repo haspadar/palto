@@ -1,10 +1,10 @@
-source ads
+source ads[PROJECT]
 {
         type = mysql
         sql_host = 127.0.0.1
-        sql_user = DB_USER
-        sql_pass = DB_PASSWORD
-        sql_db = DB_NAME
+        sql_user = [DB_USER]
+        sql_pass = [DB_PASSWORD]
+        sql_db = [DB_NAME]
         sql_port = 3306  # optional, default is 3306
         sql_query_pre = SET NAMES UTF8
 
@@ -22,10 +22,10 @@ source ads
         sql_field_string = title
 }
 
-index ads
+index ads[PROJECT]
 {
-        source = ads
-        path = data/ads
+        source = ads[PROJECT]
+        path = data/ads[PROJECT]
         docinfo = extern
         dict = keywords
         mlock = 0

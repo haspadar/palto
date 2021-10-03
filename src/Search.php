@@ -8,6 +8,8 @@ require_once 'sphinxapi.php';
 
 class Search
 {
+    const REINDEX_SCRIPT = 'reindex.php';
+
     public static function getIds(array $found): array
     {
         if ($found && isset($found['matches'])) {

@@ -129,7 +129,9 @@ class Install
             file_get_contents($this->paltoPath . '/configs/nginx/domain'),
             $path,
             "$projectName *.$projectName",
-            $phpMajorVersion
+            $phpMajorVersion,
+            $this->databaseName,
+            $this->databaseName
         );
     }
 
@@ -268,7 +270,7 @@ class Install
                 '[DB_USER]' => $this->databaseName,
                 '[DB_PASSWORD]' => $this->databasePassword,
                 '[DB_NAME]' => $this->databaseName,
-                '[PROJECT]' => $this->projectName
+                '[PROJECT]' => $this->databaseName
             ])
         );
     }

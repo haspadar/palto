@@ -4,6 +4,8 @@ server {
 	root %s/public;
 	index index.php index.html;
 	server_name %s;
+	access_log /var/log/nginx/%s_access.log;
+    error_log /var/log/nginx/%s_error.log;
 	if ($http_user_agent = "Mozilla/5.0 (compatible; Adsbot/3.1)") {
 		return 403;
 	}

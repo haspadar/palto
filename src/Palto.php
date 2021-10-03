@@ -8,6 +8,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Pylesos\PylesosService;
 use Cocur\Slugify\Slugify;
+use function vierbergenlars\SemVer\Internal\validRange;
 
 
 class Palto
@@ -126,10 +127,13 @@ class Palto
         $isRegistrationPage = isset($parts[0]) && $parts[0] == 'registration';
         $isRegionsListPage = isset($parts[0]) && $parts[0] == 'regions';
         $isCategoriesListPage = isset($parts[0]) && $parts[0] == 'categories';
+        $isSearchPage = isset($parts[0]) && $parts[0] == 'search';
         if (!$parts) {
             $layout = 'index.php';
         } elseif ($isCategoriesListPage) {
             $layout = 'categories-list.php';
+        } elseif ($isSearchPage) {
+            $layout = 'search-list.php';
         } elseif ($isRegionsListPage) {
             $layout = 'regions-list.php';
         } elseif ($isRegistrationPage) {
@@ -507,6 +511,15 @@ class Palto
         $query .= $where;
 
         return $this->getDb()->queryFirstField($query, $values);
+    }
+
+    public function getAdsByIds(array $ids): array
+    {
+        $query = $this->getAdsQuery() . ' WHERE a.id IN %ld';
+        $ads = $this->getDb()->query($query, $ids);
+        $extendedAds = $this->addAdsData($ads);
+
+        return array_values($extendedAds);
     }
 
     public function getAds($categoryId, $regionId, int $limit, int $offset = 0): array

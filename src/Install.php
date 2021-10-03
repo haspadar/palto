@@ -27,6 +27,7 @@ class Install
         $this->updatePhinx();
         $this->updateCron($parseAdsScript);
         $this->updateHost();
+        $this->updateSphinxConfig();
         $this->showWelcome();
     }
 
@@ -145,23 +146,26 @@ class Install
         if ($this->isMac()) {
             $commands = [
                 'brew install mariadb',
+                'brew install sphinx'
             ];
         } elseif ($this->isLinux()) {
             $projectName = $this->projectName;
             $phpMinorVersion = $this->getLinuxLastPhpVersion();
             $phpMajorVersion = intval($phpMinorVersion);
             $phpFullVersion = 'php' . $phpMinorVersion;
-            $nginxMainConfig = $this->getNginxMainConfig($phpMajorVersion);
+            $nginxMainConfig = $this->getNginxMainConfig();
             $nginxDomainConfig = $this->getNginxDomainConfig($phpMajorVersion);
             $nginxPhpFpmConfig = $this->getNginxPhpFpmConfig($phpMajorVersion, $phpMinorVersion);
             $commands = [
                 'apt-get install mariadb-server',
                 'apt-get install nginx',
                 "apt install $phpFullVersion-fpm $phpFullVersion-cli $phpFullVersion-mysql $phpFullVersion-xml $phpFullVersion-curl $phpFullVersion-zip $phpFullVersion-iconv",
+                'apt-get install sphinxsearch',
                 "echo '$nginxMainConfig' > /etc/nginx/nginx.conf",
                 "echo '$nginxDomainConfig' > /etc/nginx/sites-available/$projectName",
                 "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName",
                 "echo '$nginxPhpFpmConfig' > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf",
+                "cp sphinx/sphinx.conf.example sphinx/sphinx.conf",
                 'service nginx restart'
             ];
         } else {
@@ -234,6 +238,19 @@ class Install
                 }
             }
         }
+    }
+
+    private function updateSphinxConfig()
+    {
+        $this->log('Updating sphinx config');
+        file_put_contents(
+            $this->projectPath . 'sphinx/sphinx.conf',
+            strtr(file_get_contents($this->projectPath . 'sphinx/sphinx.conf'), [
+                'DB_USER' => $this->databaseName,
+                'DB_PASSWORD' => $this->databasePassword,
+                'DB_NAME' => $this->databaseName,
+            ])
+        );
     }
 
     private function updateEnvOptions()

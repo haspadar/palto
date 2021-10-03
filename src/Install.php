@@ -216,14 +216,29 @@ class Install
     private function updateCron(string $parseAdsScript)
     {
         $cronFilePath = '/etc/crontab';
+        $serverCommands = [
+            '#Every 30 minutes reindex sphinx' => '*/30 * * * *  root cd ' . $this->projectPath . '/sphinx && php ' . Search::REINDEX_SCRIPT
+        ];
+        foreach ($serverCommands as $comment => $serverCommand) {
+            $cronFileContent = file_get_contents($cronFilePath);
+            $isCommandExists = mb_strpos($cronFileContent, $comment) !== false;
+            if (!$isCommandExists) {
+                file_put_contents(
+                    $cronFilePath,
+                    $cronFileContent . PHP_EOL . $comment . PHP_EOL . $serverCommand . PHP_EOL
+                );
+                $this->log('Added cron command "' . $serverCommand . '"');
+                $this->runCommands(['service cron reload']);
+            } else {
+                $this->log('cron command "' . $serverCommand . '" already exists');
+            }
+        }
+        
         $projectCommands = [
             '#Every hour' => [
                 '0 * * * *  root cd ' . $this->projectPath . ' && php ' . $parseAdsScript,
             ],
             '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT],
-        ];
-        $serverCommands = [
-            '#Every 30 minutes reindex sphinx' => '*/30 * * * *  root cd ' . $this->projectPath . '/sphinx && php ' . Search::REINDEX_SCRIPT
         ];
         foreach ($projectCommands as $comment => $commentCommands) {
             foreach ($commentCommands as $command) {
@@ -239,21 +254,6 @@ class Install
                 } else {
                     $this->log('cron command "' . $command . '" already exists');
                 }
-            }
-        }
-
-        foreach ($serverCommands as $comment => $serverCommand) {
-            $cronFileContent = file_get_contents($cronFilePath);
-            $isCommandExists = mb_strpos($cronFileContent, $comment) !== false;
-            if (!$isCommandExists) {
-                file_put_contents(
-                    $cronFilePath,
-                    $cronFileContent . PHP_EOL . $comment . PHP_EOL . $serverCommand . PHP_EOL
-                );
-                $this->log('Added cron command "' . $serverCommand . '"');
-                $this->runCommands(['service cron reload']);
-            } else {
-                $this->log('cron command "' . $serverCommand . '" already exists');
             }
         }
     }

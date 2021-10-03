@@ -16,21 +16,40 @@ server {
 	  return  403;
 	}
 
+	fastcgi_cache_key "$scheme$request_method$host$request_uri$cookie_codeAuth";
+    set $no_cache 0;
+
+    if ($request_method != GET) {
+         set $no_cache 1;
+    }
+
+    if ($query_string != "") {
+         set $no_cache 1;
+    }
+
+    if ($request_uri != "/") {
+         #set $no_cache 1;
+    }
+
+    add_header x-fastcgi-cache $upstream_cache_status;
+
 	location ~ \.php$ {
-		  try_files $uri = 404;
-		  include fastcgi_params;
-		  fastcgi_pass php%s-fpm;
-		  fastcgi_index index.php;
-		  fastcgi_intercept_errors on;
-		  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-		}
+          fastcgi_cache fastcgicache;
+          fastcgi_cache_valid 200 60m;
+          fastcgi_cache_bypass $no_cache;
+          fastcgi_no_cache $no_cache;
+          fastcgi_ignore_headers Cache-Control Expires Set-Cookie; # Игнорируем заголовки, относящиеся к кешированию, полученные от FastCGI-сервера
+
+          try_files $uri =404;
+          fastcgi_split_path_info ^(.+\.php)(/.+)$;
+          fastcgi_pass php8-fpm;
+          fastcgi_index index.php;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param PATH_INFO $fastcgi_script_name;
+    }
  
 	location / {
-		  try_files $uri $uri/ @rewrite;
-		  expires max;
-	}
-	
-	location @rewrite {
-		  rewrite ^/(.*)$ /index.php;
+          try_files $uri $uri/ /index.php?$query_string;
 	}
 }

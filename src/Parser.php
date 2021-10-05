@@ -65,7 +65,7 @@ class Parser
                     $firstQuotePosition = mb_strpos($variableWithNameAndQuote, '"');
                     $variableAfterFirstQuote = substr($variableWithNameAndQuote, $firstQuotePosition + 1);
                     $cleanedUp = trim(stripslashes(html_entity_decode($variableAfterFirstQuote)));
-                    file_put_contents('test.json', $cleanedUp);
+//                    file_put_contents('test.json', $cleanedUp);
                     $foundVariable = \json_decode($cleanedUp, true);
                 }
             }

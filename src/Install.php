@@ -8,10 +8,12 @@ class Install
     private string $databaseName;
     private string $databasePassword;
     private string $paltoPath;
+    private string $configsPath;
 
     public function __construct()
     {
         $this->projectPath = trim(`pwd`);
+        $this->configsPath = $this->projectPath . '/configs';
         $this->paltoPath = $this->projectPath . '/vendor/haspadar/palto';
         $pathParts = explode('/', $this->projectPath);
         $this->projectName = $pathParts[count($pathParts) - 1];
@@ -19,16 +21,53 @@ class Install
         $this->databasePassword = $this->generatePassword(12);
     }
 
-    public function run(string $parseAdsScript = Palto::PARSE_ADS_SCRIPT)
+    public function run()
     {
-        $osCommands = $this->getOSCommands();
-        $this->runCommands(array_merge($osCommands, $this->getLocalCommands()));
+        $this->runCommands(array_merge($this->getOSCommands(), $this->getLocalCommands()));
+        $this->updateCron();
+        $this->updateHost();
+        $this->updateSystemConfigs();
+        $this->updateProjectConfigs();
+        $this->showWelcome();
+    }
+
+    public function updateSystemConfigs()
+    {
+        $this->updateSphinxConfig();
+        $this->runCommands([
+            $this->getReplaceNginxMainConfigCommand(),
+            $this->getReplaceNginxPhpFpmConfigCommand()
+        ]);
+    }
+
+    public function updateProjectConfigs()
+    {
         $this->updateEnvOptions();
         $this->updatePhinx();
-        $this->updateCron($parseAdsScript);
-        $this->updateHost();
-        $this->updateSphinxConfig();
-        $this->showWelcome();
+        $this->runCommands([
+            $this->getReplaceCrunzCommand(),
+            $this->getReplaceNginxMainConfigCommand(),
+            $this->getReplaceNginxDomainConfigCommand(),
+            $this->getReplaceNginxPhpFpmConfigCommand(),
+            $this->getReplaceLastAdminerCommand(),
+            $this->getReplaceHtpasswdCommand()
+        ]);
+    }
+
+    private function getReplaceCrunzCommand(): string
+    {
+        $projectPath = $this->projectPath;
+        $configsPath = $this->configsPath;
+
+        return "cp $configsPath/crunz.yml" . Palto::PARSE_ADS_SCRIPT . " $projectPath/";
+    }
+
+    private function getReplaceLastAdminerCommand(): string
+    {
+        $this->log('Updating adminer');
+        $projectPath = $this->projectPath;
+
+        return "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php";
     }
 
     private function getLocalCommands(): array
@@ -38,7 +77,6 @@ class Install
         $databaseName = $this->databaseName;
         $commands = [
             "cp -R $paltoPath/structure/layouts $projectPath/",
-            "cp -R $paltoPath/structure/.htpasswd $projectPath/",
             "cp -R $paltoPath/structure/sphinx $projectPath/",
             "mkdir $projectPath/public",
             "cp -R $paltoPath/structure/public/css $projectPath/public/",
@@ -47,14 +85,12 @@ class Install
             "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
             "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
+            "ln -s $paltoPath/structure/tasks $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
-            "cp $paltoPath/structure/" . Palto::PHINX_CONFIG . " $projectPath/",
             "ln -s $paltoPath/db $projectPath/",
-            "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',
-            "cp $paltoPath/.env.example $projectPath/.env",
             "mkdir $projectPath/logs",
         ];
 
@@ -84,7 +120,7 @@ class Install
         }
     }
 
-    private function getLinuxLastPhpVersion()
+    private function getLinuxLastPhpVersion(): string
     {
         $output = `apt show php`;
         $outputLines = explode(PHP_EOL, $output);
@@ -156,21 +192,16 @@ class Install
         } elseif ($this->isLinux()) {
             $projectName = $this->projectName;
             $phpMinorVersion = $this->getLinuxLastPhpVersion();
-            $phpMajorVersion = intval($phpMinorVersion);
             $phpFullVersion = 'php' . $phpMinorVersion;
-            $nginxMainConfig = $this->getNginxMainConfig();
-            $nginxDomainConfig = $this->getNginxDomainConfig($phpMajorVersion);
-            $nginxPhpFpmConfig = $this->getNginxPhpFpmConfig($phpMajorVersion, $phpMinorVersion);
             $commands = [
                 'apt-get install mariadb-server',
                 'apt-get install nginx',
                 "apt install $phpFullVersion-fpm $phpFullVersion-cli $phpFullVersion-mysql $phpFullVersion-xml $phpFullVersion-curl $phpFullVersion-zip $phpFullVersion-iconv",
                 'apt-get install sphinxsearch',
-                "echo '$nginxMainConfig' > /etc/nginx/nginx.conf",
-                "echo '$nginxDomainConfig' > /etc/nginx/sites-available/$projectName",
+                $this->getReplaceNginxMainConfigCommand(),
+                $this->getReplaceNginxDomainConfigCommand(),
                 "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName",
-                "echo '$nginxPhpFpmConfig' > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf",
-                "cp sphinx/sphinx.conf.example sphinx/sphinx.conf",
+                $this->getReplaceNginxPhpFpmConfigCommand(),
                 'service nginx restart'
             ];
         } else {
@@ -218,15 +249,19 @@ class Install
         }
     }
 
-    private function updateCron(string $parseAdsScript)
+    private function updateCron()
     {
         $cronFilePath = '/etc/crontab';
         $commands = [
-            '#Every hour' => [
-                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . $parseAdsScript,
+            '#Every minute' => [
+                '* * * * * root cd ' . $this->projectPath . ' && vendor/bin/crunz schedule:run'
+
             ],
-            '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT],
-            '#Every 30 minutes' => '*/30 * * * *  root cd ' . $this->projectPath . '/sphinx && php ' . Search::REINDEX_SCRIPT
+//            '#Every hour' => [
+//                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . $parseAdsScript,
+//            ],
+//            '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT],
+//            '#Every 30 minutes' => '*/30 * * * *  root cd ' . $this->projectPath . '/sphinx && php ' . Search::REINDEX_SCRIPT
         ];
         foreach ($commands as $comment => $commentCommands) {
             foreach ($commentCommands as $command) {
@@ -250,7 +285,7 @@ class Install
     {
         $this->log('Updating sphinx config');
         file_put_contents(
-            $this->projectPath . 'sphinx/sphinx.conf',
+            $this->configsPath . '/sphinx.conf',
             strtr(file_get_contents($this->projectPath . 'sphinx/sphinx.conf'), [
                 '[DB_USER]' => $this->databaseName,
                 '[DB_PASSWORD]' => $this->databasePassword,
@@ -265,7 +300,7 @@ class Install
         $this->log('Updating env options');
         file_put_contents(
             $this->projectPath . '/.env',
-            strtr(file_get_contents($this->projectPath . '/.env'), [
+            strtr(file_get_contents($this->configsPath . '/.env'), [
                 'DB_USER=' => 'DB_USER=' . $this->databaseName,
                 'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->databasePassword,
                 'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
@@ -278,7 +313,7 @@ class Install
         $this->log('Updating Phinx');
         file_put_contents(
             $this->projectPath . '/' . Palto::PHINX_CONFIG,
-            strtr(file_get_contents($this->projectPath . '/' . Palto::PHINX_CONFIG), [
+            strtr(file_get_contents($this->configsPath . Palto::PHINX_CONFIG), [
                 'production_db' => $this->databaseName,
                 'production_user' => $this->databaseName,
                 'production_pass' => $this->databasePassword
@@ -317,5 +352,46 @@ class Install
     private function isPaltoDirectory(string $directoryPath): bool
     {
         return file_exists($directoryPath . '/' . Palto::PARSE_ADS_SCRIPT);
+    }
+
+    private function getReplaceNginxMainConfigCommand(): string
+    {
+        $nginxMainConfig = $this->getNginxMainConfig();
+
+        return "echo '$nginxMainConfig' > /etc/nginx/nginx.conf";
+    }
+
+    private function getReplaceNginxDomainConfigCommand(): string
+    {
+        $phpMajorVersion = $this->getPhpMajorVersion();
+        $nginxDomainConfig = $this->getNginxDomainConfig($phpMajorVersion);
+        $projectName = $this->projectName;
+
+        return "echo '$nginxDomainConfig' > /etc/nginx/sites-available/$projectName";
+    }
+
+    private function getReplaceNginxPhpFpmConfigCommand(): string
+    {
+        $phpMinorVersion = $this->getLinuxLastPhpVersion();
+        $phpMajorVersion = $this->getPhpMajorVersion();
+        $nginxPhpFpmConfig = $this->getNginxPhpFpmConfig($phpMajorVersion, $phpMinorVersion);
+
+        return "echo '$nginxPhpFpmConfig' > /etc/nginx/conf.d/php$phpMajorVersion-fpm.conf";
+    }
+
+    /**
+     * @return int
+     */
+    private function getPhpMajorVersion(): int
+    {
+        return intval($this->getLinuxLastPhpVersion());
+    }
+
+    private function getReplaceHtpasswdCommand(): string
+    {
+        $configsPath = $this->configsPath;
+        $projectPath = $this->projectPath;
+
+        return "cp -R $configsPath/.htpasswd $projectPath/";
     }
 }

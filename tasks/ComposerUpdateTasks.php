@@ -4,11 +4,10 @@ use Crunz\Schedule;
 use Palto\Search;
 
 $schedule = new Schedule();
-
-$task = $schedule->run(PHP_BINARY . ' ' . Search::REINDEX_SCRIPT);
+$task = $schedule->run('composer update');
 $task
-    ->everyFiveMinutes()
+    ->everyThirtyMinutes()
     ->description('Composer update')
-    ->preventOverlapping();;
+    ->preventOverlapping();
 
 return $schedule;

@@ -16,3 +16,5 @@
 /structure/sphinx/searchd.pid
 /structure/sphinx/data/
 /crunz.yml
+/backups/*
+/*.lock

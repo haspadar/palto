@@ -15,7 +15,7 @@ class Parser
         return [self::filterPrice(implode(' ', $parts)), $currency];
     }
 
-    public static function filterPrice(string $price): float
+    public static function filterPrice(string $price): string 
     {
         $filtered = strtr($price, [',' => '', ' ' => '']);
 

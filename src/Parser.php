@@ -70,6 +70,13 @@ class Parser
         return $content;
     }
 
+    public function findSelector(Crawler $adDocument, array $selectors): string
+    {
+        list($selector, $_) = $this->findSelectorWithContent($adDocument, $selectors);
+
+        return $selector;
+    }
+
     public static function getJsVariable($adDocument, string $variableName, $endCharacter = ';'): array
     {
         $foundVariable = [];

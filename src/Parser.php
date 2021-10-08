@@ -52,6 +52,24 @@ class Parser
         return $_SERVER['argv'][1];
     }
 
+    public function findSelectorWithContent(Crawler $adDocument, array $selectors): array
+    {
+        foreach ($selectors as $selector) {
+            if ($adDocument->filter($selector)->count() > 0) {
+                return [$selector, $adDocument->filter($selector)->html()];
+            }
+        }
+
+        return ['', ''];
+    }
+
+    public function findContent(Crawler $adDocument, array $selectors): string
+    {
+        list($_, $content) = $this->findSelectorWithContent($adDocument, $selectors);
+
+        return $content;
+    }
+
     public static function getJsVariable($adDocument, string $variableName, $endCharacter = ';'): array
     {
         $foundVariable = [];

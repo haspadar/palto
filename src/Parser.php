@@ -52,7 +52,7 @@ class Parser
         return $_SERVER['argv'][1];
     }
 
-    public function findSelectorWithContent(Crawler $adDocument, array $selectors): array
+    public static function findSelectorWithContent(Crawler $adDocument, array $selectors): array
     {
         foreach ($selectors as $selector) {
             if ($adDocument->filter($selector)->count() > 0) {
@@ -63,16 +63,16 @@ class Parser
         return ['', ''];
     }
 
-    public function findContent(Crawler $adDocument, array $selectors): string
+    public static function findContent(Crawler $adDocument, array $selectors): string
     {
-        list($_, $content) = $this->findSelectorWithContent($adDocument, $selectors);
+        list($_, $content) = self::findSelectorWithContent($adDocument, $selectors);
 
         return $content;
     }
 
-    public function findSelector(Crawler $adDocument, array $selectors): string
+    public static function findSelector(Crawler $adDocument, array $selectors): string
     {
-        list($selector, $_) = $this->findSelectorWithContent($adDocument, $selectors);
+        list($selector, $_) = self::findSelectorWithContent($adDocument, $selectors);
 
         return $selector;
     }

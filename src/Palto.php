@@ -241,6 +241,11 @@ class Palto
         return $this->getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $categoryId);
     }
 
+    public function getRegionById(int $id): array
+    {
+        return $this->getDb()->query('SELECT * FROM regions WHERE id = %d', $id);
+    }
+
     public function getRegions(int $parentId, int $level = 0, int $limit = 0, int $offset = 0, $orderBy = ''): array
     {
         $query = 'SELECT * FROM regions';

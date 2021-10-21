@@ -13,8 +13,8 @@ class Install
     public function __construct()
     {
         $this->projectPath = trim(`pwd`);
-        $this->configsPath = $this->projectPath . '/configs';
         $this->paltoPath = $this->projectPath . '/vendor/haspadar/palto';
+        $this->configsPath = $this->paltoPath . '/configs';
         $pathParts = explode('/', $this->projectPath);
         $this->projectName = $pathParts[count($pathParts) - 1];
         $this->databaseName = str_replace('.', '_', $this->projectName);
@@ -59,7 +59,7 @@ class Install
         $projectPath = $this->projectPath;
         $configsPath = $this->configsPath;
 
-        return "cp $configsPath/crunz.yml" . Palto::PARSE_ADS_SCRIPT . " $projectPath/";
+        return "cp $configsPath/crunz.yml" . " $projectPath/";
     }
 
     private function getReplaceLastAdminerCommand(): string
@@ -146,7 +146,7 @@ class Install
     private function getNginxPhpFpmConfig(string $phpMajorVersion, string $phpMinorVersion): string
     {
         return sprintf(
-            file_get_contents($this->paltoPath . '/configs/nginx/php-fpm.conf'),
+            file_get_contents($this->configsPath . '/nginx/php-fpm.conf'),
             $phpMajorVersion,
             $phpMinorVersion
         );
@@ -154,7 +154,7 @@ class Install
 
     private function getNginxMainConfig(): string
     {
-        return file_get_contents($this->paltoPath . '/configs/nginx/nginx.conf');
+        return file_get_contents($this->configsPath . '/nginx/nginx.conf');
     }
 
     private function getNginxDomainConfig(string $phpMajorVersion): string
@@ -163,7 +163,7 @@ class Install
         $path = $this->projectPath;
 
         return sprintf(
-            file_get_contents($this->paltoPath . '/configs/nginx/domain'),
+            file_get_contents($this->configsPath . '/nginx/domain'),
             $path,
             "$projectName *.$projectName",
             $phpMajorVersion,

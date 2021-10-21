@@ -2,19 +2,17 @@
 
 namespace Palto;
 
+use Bramus\Monolog\Formatter\ColoredLineFormatter;
 use Dotenv\Dotenv;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Pylesos\PylesosService;
 use Cocur\Slugify\Slugify;
-use function vierbergenlars\SemVer\Internal\validRange;
-
 
 class Palto
 {
     public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
-    public const PARSE_SINGLE_SITE_ADS_SCRIPT = 'parse_single_site_ads.php';
     public const PARSE_ADS_SCRIPT = 'parse_ads.php';
     public const PHINX_CONFIG = 'phinx.php';
     private string $previousPageUrl = '';
@@ -1159,7 +1157,9 @@ class Palto
     private function initLogger()
     {
         $this->logger = new Logger('palto');
-        $this->logger->pushHandler(new StreamHandler('php://stdout'));
+        $handler = new StreamHandler('php://stdout');
+        $handler->setFormatter(new ColoredLineFormatter());
+        $this->logger->pushHandler($handler);
         $this->logger->pushHandler(new RotatingFileHandler(
                                        $this->rootDirectory . '/logs/parser',
                                        20,

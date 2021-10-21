@@ -85,7 +85,7 @@ class Install
             "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
             "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
             "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
-            "ln -s $paltoPath/structure/tasks $projectPath/",
+            "ln -s $paltoPath/tasks $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
             "ln -s $paltoPath/db $projectPath/",

@@ -833,10 +833,14 @@ class Palto
             : [];
     }
 
-    public static function dump($data, ?string $ip = '')
+    public static function dump($data, string $name = '', string $ip = '')
     {
         if (!$ip || $ip == self::getIP()) {
             echo '<pre>';
+            if ($name) {
+                var_dump($name);
+            }
+
             var_dump($data);
         }
     }

@@ -1178,7 +1178,8 @@ class Palto
         $adIds = array_column($ads, 'id');
         $images = $this->getAdsImages($adIds);
         $details = $this->getAdsDetails($adIds);
-        $regions = $this->getAdsRegions(array_column($ads, 'region_id'));
+        $regionIds = array_unique(array_column($ads, 'region_id'));
+        $regions = $this->getAdsRegions($regionIds);
         $grouped = [];
         foreach ($ads as $ad) {
             $ad['images'] = $images[$ad['id']] ?? [];

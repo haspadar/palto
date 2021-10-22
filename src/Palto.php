@@ -275,7 +275,7 @@ class Palto
         return $this->getDb()->query($query, $values);
     }
 
-    public function getIP(): string
+    public static function getIP(): string
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -556,15 +556,15 @@ class Palto
 
         echo 'Info:' . PHP_EOL;
         print_r([
-                    'layout' => $this->getLayout(),
-                    'region_url' => $this->getRegionUrl(),
-                    'category_url' => $this->getCategoryUrl(),
-                    'ad_id' => $this->getAdId(),
-                    'page_number' => $this->getPageNumber(),
-                    'region' => $this->getCurrentRegion(),
-                    'category' => $this->getCurrentCategory(),
-                    'ad' => $this->getCurrentAd()
-                ]);
+            'layout' => $this->getLayout(),
+            'region_url' => $this->getRegionUrl(),
+            'category_url' => $this->getCategoryUrl(),
+            'ad_id' => $this->getAdId(),
+            'page_number' => $this->getPageNumber(),
+            'region' => $this->getCurrentRegion(),
+            'category' => $this->getCurrentCategory(),
+            'ad' => $this->getCurrentAd()
+        ]);
     }
 
     public function getAdsLimit(): int
@@ -833,10 +833,12 @@ class Palto
             : [];
     }
 
-    public function dump($data)
+    public static function dump($data, ?string $ip = '')
     {
-        echo '<pre>';
-        var_dump($data);
+        if (!$ip || $ip == self::getIP()) {
+            echo '<pre>';
+            var_dump($data);
+        }
     }
 
     public function getParentCategories(array $category): array

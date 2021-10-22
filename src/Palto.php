@@ -833,6 +833,17 @@ class Palto
             : [];
     }
 
+    /**
+     * @param string $codePoint
+     * @return string
+     *
+     * Из U+1F3C3 делает \u{1F3C3}
+     */
+    public function getEmojiCode(string $codePoint): string
+    {
+        return "\\u{" . str_replace('U+', '', $codePoint) . "}";
+    }
+
     public static function dump($data, string $name = '', string $ip = '')
     {
         if (!$ip || $ip == self::getIP()) {

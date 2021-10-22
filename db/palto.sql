@@ -26,6 +26,7 @@ CREATE TABLE `categories`
     `level`       int(11) unsigned NOT NULL DEFAULT 1,
     `tree_id`     INT  UNSIGNED  NULL  DEFAULT '1',
     `title`       varchar(255)     NOT NULL DEFAULT '',
+    `emoji`       varchar(255) COLLATE 'utf8mb4_bin' NOT NULL DEFAULT '',
     `url`         varchar(255)     NOT NULL DEFAULT '',
     `donor_url`   varchar(500)     NOT NULL DEFAULT '',
     `icon_url`    varchar(1024)    NOT NULL DEFAULT '',

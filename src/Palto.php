@@ -14,6 +14,7 @@ class Palto
 {
     public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
     public const PARSE_ADS_SCRIPT = 'parse_ads.php';
+    public const SHOW_ERRORS_SCRIPT = 'show_errors.php';
     public const PHINX_CONFIG = 'phinx.php';
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';

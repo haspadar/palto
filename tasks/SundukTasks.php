@@ -19,7 +19,7 @@ $task = $schedule->run(function () {
     if (isset($palto->getEnv()['SUNDUK_URL']) && $palto->getEnv()['SUNDUK_URL']) {
         $isSent = Backup::sendSundukArchive($backupName, $palto->getEnv()['SUNDUK_URL']);
         if ($isSent) {
-            $logger->error('Sent Sunduk archive successfully');
+            $logger->info('Sent Sunduk archive successfully');
         } else {
             $logger->error('Can\'t send Sunduk archive');
         }

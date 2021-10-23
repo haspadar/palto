@@ -9,7 +9,6 @@
 /parse_categories.php
 /public/adminer.php
 /ssh_tunnel.sh
-/phinx.php
 /configs/sphinx.conf
 /structure/sphinx/query.log
 /structure/sphinx/searchd.log

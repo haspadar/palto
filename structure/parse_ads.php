@@ -37,7 +37,7 @@ $scheduler->run(
         }
     },
     function(Exception $e) use ($palto) {
-        $palto->getLogger()->error($e->getMessage());
+        $palto->getLogger()->warning($e->getMessage());
     }
 );
 

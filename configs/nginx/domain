@@ -29,9 +29,7 @@ server {
          set $no_cache 1;
     }
 
-    if ($request_uri != "/") {
-         #set $no_cache 1;
-    }
+    set $no_cache 1;#disable cache
 
     add_header x-fastcgi-cache $upstream_cache_status;
 

@@ -6,6 +6,7 @@ use Bramus\Monolog\Formatter\ColoredLineFormatter;
 use Dotenv\Dotenv;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\ZendMonitorHandler;
 use Monolog\Logger;
 use Pylesos\PylesosService;
 use Cocur\Slugify\Slugify;
@@ -123,7 +124,7 @@ class Palto
         $parts = $this->getUrlParts();
         $isRegionPage = !$this->categoryUrl && $this->regionUrl && $this->region;
         $isCategoryPage = !$this->adId && $this->categoryUrl && $this->category;
-        $isRegistrationPage = isset($parts[0]) && $parts[0] == 'registration';
+        $isRegistrationPage = isset($parts[1]) && $parts[1] == 'registration';
         $isRegionsListPage = isset($parts[0]) && $parts[0] == 'regions';
         $isCategoriesListPage = isset($parts[0]) && $parts[0] == 'categories';
         $isSearchPage = isset($parts[0]) && $parts[0] == 'search';

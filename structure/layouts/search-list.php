@@ -8,7 +8,7 @@ use Palto\Search;
 
 $query = $this->filterString($_GET['query'] ?? '');
 $offset = ($this->getPageNumber() - 1) * $this->getAdsLimit();
-$found = Search::find($query, $this->getEnv()['DB_NAME'], $offset, $this->getAdsLimit());
+$found = Search::find($query, $this->getSphinxIndex(), $offset, $this->getAdsLimit());
 $adsIds = Search::getIds($found);
 $hasNextPage = Search::getCount($found) > $offset + count($adsIds);
 $this->initPager($hasNextPage);

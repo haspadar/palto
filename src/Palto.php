@@ -1036,6 +1036,11 @@ class Palto
         return $this->getCategoryBreadcrumbUrls(array_merge($categories, [$category]), $region);
     }
 
+    public function getSphinxIndex(): string
+    {
+        return 'ads_' . $this->getEnv()['DB_NAME'];
+    }
+
     public function getDefaultRegion(): array
     {
         return [

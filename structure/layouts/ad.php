@@ -102,7 +102,7 @@ $this->partial('header.inc', [
 <?php endif;?>
 
     <div class="reply"><a class="reply_link" href="<?=$this->getCurrentAd()['url']?>" target="_blank" rel="nofollow">🤙 Reply</a></div>
-    <div class="post_time">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['post_time']))->format('d.m.Y')?> </div>
+    <div class="create_time">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['create_time']))->format('d.m.Y')?> </div>
     <div class="report"><a class="report_link" href="javascript:void(0);" id="send-abuse">⚠️ Report this ad</a></div>
     <div id="send-abuse-modal" class="modal" data-url="<?=$this->getDomainUrl()?>/send-feedback.php">
         <!-- Modal content -->

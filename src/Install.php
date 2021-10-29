@@ -9,6 +9,7 @@ class Install
     private string $databasePassword;
     private string $paltoPath;
     private string $configsPath;
+    private string $sphinxDirectory = '/var/www/sphinx';
 
     public function __construct()
     {
@@ -33,7 +34,7 @@ class Install
 
     public function updateSystemConfigs()
     {
-        $this->updateSphinxConfig();
+        $this->updateSphinx();
         $this->runCommands([
             $this->getReplaceNginxMainConfigCommand(),
             $this->getReplaceNginxPhpFpmConfigCommand()
@@ -282,7 +283,7 @@ class Install
         }
     }
 
-    private function updateSphinxConfig()
+    private function updateSphinx()
     {
         $this->log('Updating sphinx config');
 

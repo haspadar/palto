@@ -69,5 +69,9 @@ $description = $this->getPartialVariable('description');
             <td class="fifty"></td>
         </tr>
         <tr>
-            <td></td>
+            <td class="tdleft"></td>
             <td class="table_main">
+                <form action="/search" method="get" class="search">
+                    <input type="search" name="query" value="<?=$this->getSearchQuery()?>" placeholder="Find what yo need..." class="input" />
+                    <input type="submit" name="" value="" class="submit" />
+                </form>

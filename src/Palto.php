@@ -520,7 +520,7 @@ class Palto
 
     public function getAdsByIds(array $ids): array
     {
-        $query = $this->getAdsQuery() . ' WHERE a.id IN %ld';
+        $query = $this->getAdsQuery() . ' WHERE a.id IN %ld ORDER BY id DESC';
         $ads = $this->getDb()->query($query, $ids);
         $extendedAds = $this->addAdsData($ads);
 
@@ -614,6 +614,11 @@ class Palto
         $this->layoutDirectory = $layoutDirectory;
     }
 
+    public function getSearchQuery(): string
+    {
+        return isset($_GET['query']) ? $this->filterString($_GET['query']) : '';
+    }
+
     public function getPreviousPageUrl(): string
     {
         return $this->previousPageUrl;
@@ -656,7 +661,13 @@ class Palto
             $parts[] = $pageNumber;
         }
 
-        return '/' . implode('/', $parts);
+        $url = '/' . implode('/', $parts);
+        $query = parse_url($this->url)['query'] ?? '';
+        if ($query) {
+            $url .= '?' . $query;
+        }
+
+        return $url;
     }
 
     public function filterString(string $param): string

@@ -8,20 +8,19 @@ use Palto\Search;
 
 $query = $this->filterString($_GET['query'] ?? '');
 $offset = ($this->getPageNumber() - 1) * $this->getAdsLimit();
-$found = Search::find($query, $offset, $this->getAdsLimit());
+$found = Search::find($query, $this->getEnv()['DB_NAME'], $offset, $this->getAdsLimit());
 $adsIds = Search::getIds($found);
 $hasNextPage = Search::getCount($found) > $offset + count($adsIds);
 $this->initPager($hasNextPage);
-
 $this->partial('header.inc', [
-    'title' => 'Search result',
-    'description' => 'Search result',
+    'title' => $this->getSearchQuery() . ' in ' . $this->getCurrentRegion()['title'] . ': search results',
+    'description' => $this->getSearchQuery() . ' in ' . $this->getCurrentRegion()['title'] . ': search results',
     'nextPageUrl' => $this->getNextPageUrl(),
     'previousPageUrl' => $this->getPreviousPageUrl(),
 ]);
 ?>
 
-    <h1>Search result</h1>
+    <h1><?=$this->getSearchQuery()?> in <?=$this->getCurrentRegion()['title']?></h1>
     <table class="serp">
         <?php if ($adsIds) :?>
             <?php foreach ($this->getAdsByIds($adsIds) as $ad) :?>

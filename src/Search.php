@@ -19,14 +19,14 @@ class Search
         return [];
     }
 
-    public static function find(string $query, int $offset, int $limit): array
+    public static function find(string $query, string $index, int $offset, int $limit): array
     {
         $sphinx = new \SphinxClient();
         $sphinx->SetFieldWeights(['title' => 20, 'text' => 10]);
         $sphinx->SetSortMode(SPH_SORT_ATTR_ASC, 'create_time');
         $sphinx->SetLimits($offset, $limit);
 
-        return $sphinx->Query($query) ?: [];
+        return $sphinx->Query($query, $index) ?: [];
     }
 
     public static function getCount(array $found): int

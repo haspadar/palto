@@ -1107,7 +1107,9 @@ class Palto
     private function initRegionUrl()
     {
         $parts = $this->getUrlParts();
-        $this->regionUrl = $parts[0] ?? $this->regionUrl;
+        if (isset($parts[0]) && !in_array($parts[0], ['registration', 'regions', 'categories', 'search'])) {
+            $this->regionUrl = $parts[0];
+        }
     }
 
     private function initDefaultRegion()

@@ -76,9 +76,10 @@ class Install
         $projectPath = $this->projectPath;
         $paltoPath = $this->paltoPath;
         $databaseName = $this->databaseName;
-        $commands = [
+
+        return [
             "cp -R $paltoPath/structure/layouts $projectPath/",
-            "cp -R $paltoPath/structure/sphinx $projectPath/",
+            "cp -R -n $paltoPath/structure/sphinx /var/www/",
             "mkdir $projectPath/public",
             "cp -R $paltoPath/structure/public/css $projectPath/public/",
             "cp -R $paltoPath/structure/public/img $projectPath/public/",
@@ -93,10 +94,8 @@ class Install
             "ln -s $paltoPath/db $projectPath/",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',
-            "mkdir $projectPath/logs",
+            "mkdir $projectPath/logs"
         ];
-
-        return $commands;
     }
 
     private function isLinux(): bool
@@ -258,12 +257,7 @@ class Install
             '#Every minute' => [
                 '* * * * * root cd ' . $this->projectPath . ' && vendor/bin/crunz schedule:run'
 
-            ],
-//            '#Every hour' => [
-//                '0 * * * *  root cd ' . $this->projectPath . ' && php ' . $parseAdsScript,
-//            ],
-//            '#Every day' => ['0 1 * * *  root cd ' . $this->projectPath . ' && php ' . Sitemap::GENERATE_SCRIPT],
-//            '#Every 30 minutes' => '*/30 * * * *  root cd ' . $this->projectPath . '/sphinx && php ' . Search::REINDEX_SCRIPT
+            ]
         ];
         foreach ($commands as $comment => $commentCommands) {
             foreach ($commentCommands as $command) {
@@ -286,15 +280,14 @@ class Install
     private function updateSphinx()
     {
         $this->log('Updating sphinx config');
-
-        file_put_contents(
-            $this->configsPath . '/sphinx.conf',
-            strtr(file_get_contents($this->projectPath . 'sphinx/sphinx.conf'), [
-                '[DB_USER]' => $this->databaseName,
-                '[DB_PASSWORD]' => $this->databasePassword,
-                '[DB_NAME]' => $this->databaseName,
-                '[PROJECT]' => $this->databaseName
-            ])
+        $sphinxSourceAndIndex = strtr(file_get_contents($this->configsPath . '/sphinx_source_index.conf'), [
+            '[DB_USER]' => $this->databaseName,
+            '[DB_PASSWORD]' => $this->databasePassword,
+            '[DB_NAME]' => $this->databaseName,
+            '[PROJECT]' => $this->databaseName
+        ]);
+        file_put_contents('/var/www/sphinx/sphinx.conf',
+            str_replace('indexer', $sphinxSourceAndIndex . PHP_EOL . 'indexer', '/var/www/sphinx/sphinx.conf')
         );
     }
 

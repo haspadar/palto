@@ -285,6 +285,7 @@ class Install
     private function updateSphinxConfig()
     {
         $this->log('Updating sphinx config');
+
         file_put_contents(
             $this->configsPath . '/sphinx.conf',
             strtr(file_get_contents($this->projectPath . 'sphinx/sphinx.conf'), [

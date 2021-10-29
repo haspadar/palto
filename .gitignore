@@ -12,7 +12,7 @@
 /structure/sphinx/query.log
 /structure/sphinx/searchd.log
 /structure/sphinx/searchd.pid
-/structure/sphinx/data/
+/structure/sphinx/data/*
 /crunz.yml
 /backups/*
 /*.lock

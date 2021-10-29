@@ -17,9 +17,13 @@ $this->partial('header.inc', [
 <?php $adsIds = Search::getIds($found);?>
 
 <table class="serp">
-    <?php foreach ($this->getAdsByIds($adsIds) as $ad) :?>
-        <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
-    <?php endforeach;?>
+    <?php if ($adsIds) :?>
+        <?php foreach ($this->getAdsByIds($adsIds) as $ad) :?>
+            <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
+        <?php endforeach;?>
+    <?php else :?>
+        Not found
+    <?php endif;?>
 </table>
 <?php $this->initPager($this->hasNextPage(Search::getCount($found)));?>
 <?php $this->partial('pager.inc', [

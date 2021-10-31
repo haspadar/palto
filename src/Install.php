@@ -79,7 +79,8 @@ class Install
 
         return [
             "cp -R $paltoPath/structure/layouts $projectPath/",
-            "cp -R -n $paltoPath/structure/sphinx /var/www/",
+            "cp -R -n $paltoPath/sphinx /var/www/",
+            "cp -R -n $paltoPath/structure/sphinx $projectPath",
             "mkdir $projectPath/public",
             "cp -R $paltoPath/structure/public/css $projectPath/public/",
             "cp -R $paltoPath/structure/public/img $projectPath/public/",

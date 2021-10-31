@@ -9,9 +9,9 @@
 /parse_categories.php
 /public/adminer.php
 /ssh_tunnel.sh
-/structure/sphinx/query.log
-/structure/sphinx/searchd.log
-/structure/sphinx/data/*
+/sphinx/query.log
+/sphinx/searchd.log
+/sphinx/data/*
 /crunz.yml
 /backups/*
 /*.lock

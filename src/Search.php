@@ -22,8 +22,7 @@ class Search
     public static function find(string $query, string $index, int $offset, int $limit): array
     {
         $sphinx = new \SphinxClient();
-        $sphinx->SetFieldWeights(['title' => 20, 'text' => 10]);
-        $sphinx->SetSortMode(SPH_SORT_ATTR_ASC, 'create_time');
+        $sphinx->SetSortMode(SPH_SORT_ATTR_DESC, 'create_timestamp');
         $sphinx->SetLimits($offset, $limit);
 
         return $sphinx->Query($query, $index) ?: [];

@@ -9,13 +9,19 @@ class StaticHtml
 {
     const GENERATE_SCRIPT = 'generate_static_html.php';
     private string $domainUrl;
-    private string $path;
+    private string $storagePath;
     private Palto $palto;
 
-    public function __construct(string $domainUrl, string $path, Palto $palto)
+    /**
+     * @param string $domainUrl
+     * @param string $storagePath
+     * @param Palto $palto
+     * @example $staticHtml = new StaticHtml($palto->getPhpDomainUrl(), '/static', $palto);
+     */
+    public function __construct(string $domainUrl, string $storagePath, Palto $palto)
     {
         $this->domainUrl = $domainUrl;
-        $this->path = $path;
+        $this->storagePath = $storagePath;
         $this->palto = $palto;
     }
 
@@ -69,7 +75,7 @@ class StaticHtml
 
     private function saveUrlResponseToFile(string $url, int $counter, int $count)
     {
-        $directoryFullPath = $this->palto->getRootDirectory() . $this->path . $url;
+        $directoryFullPath = $this->palto->getRootDirectory() . $this->storagePath . $url;
         if (!file_exists($directoryFullPath)) {
             mkdir($directoryFullPath, 0777, true);
         }
@@ -88,7 +94,7 @@ class StaticHtml
         $publicDirectories = ['css', 'img', 'js', 'sitemaps'];
         foreach ($publicDirectories as $publicDirectory) {
             $fullPublicPath = $this->palto->getRootDirectory() . '/public/' . $publicDirectory;
-            $fullStaticPath = $this->palto->getRootDirectory() . $this->path . '/';
+            $fullStaticPath = $this->palto->getRootDirectory() . $this->storagePath . '/';
             $command = 'ln -s ' . $fullPublicPath . ' ' . $fullStaticPath;
             `$command`;
         }

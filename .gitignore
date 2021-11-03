@@ -11,7 +11,6 @@
 /ssh_tunnel.sh
 /sphinx/query.log
 /sphinx/searchd.log
-/sphinx/data/*
 /crunz.yml
 /backups/*
 /*.lock

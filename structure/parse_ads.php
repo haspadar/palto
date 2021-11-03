@@ -40,6 +40,7 @@ $scheduler->run(
         $palto->getLogger()->warning($e->getMessage());
     }
 );
+$palto->getLogger()->info('Finished ads parsing with pid=' . $pid);
 
 function parseCategory(Palto $palto, array $category, string $url, array $logContent = [])
 {

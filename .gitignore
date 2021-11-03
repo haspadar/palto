@@ -9,6 +9,7 @@
 /parse_categories.php
 /public/adminer.php
 /ssh_tunnel.sh
+/sphinx/data/*
 /sphinx/query.log
 /sphinx/searchd.log
 /crunz.yml

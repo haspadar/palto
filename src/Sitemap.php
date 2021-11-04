@@ -76,7 +76,7 @@ class Sitemap
         $urls = [];
         foreach ($regions as $region) {
             foreach ($categories as $category) {
-                if ($this->palto->getAdsCount($category['id'], $region['id'])) {
+                if ($this->palto->hasAds($category['id'], $region['id'])) {
                     $urls[] = $this->palto->generateCategoryUrl($category, $region);
                 }
             }

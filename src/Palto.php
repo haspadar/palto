@@ -502,12 +502,23 @@ class Palto
         return $urls;
     }
 
+    public function hasAds(int $categoryId, ?int $regionId): bool
+    {
+        $query = 'SELECT a.id FROM ads AS a LEFT JOIN categories AS c ON a.category_id = c.id'
+            . ' LEFT JOIN regions AS r ON a.region_id = r.id';
+        $regionsIds = $this->getRegionsChildrenIds(array_filter([$regionId]));
+        [$where, $values] = $this->getAdsWhere($categoryId, $regionsIds);
+        $query .= $where . ' LIMIT 1';
+
+        return $this->getDb()->queryFirstField($query, $values) > 1;
+    }
+
     /**
      * @param int|array|null $categoryId
      * @param int|null $regionId
      * @return int
      */
-    public function getAdsCount($categoryId, ?int $regionId): int
+    public function getAdsCount(int $categoryId, ?int $regionId): int
     {
         $query = 'SELECT COUNT(*) FROM ads AS a LEFT JOIN categories AS c ON a.category_id = c.id'
             . ' LEFT JOIN regions AS r ON a.region_id = r.id';

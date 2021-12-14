@@ -3,10 +3,11 @@ namespace Palto;
 
 class Sphinx
 {
-    private const SPHINX_LOCAL_CONFIG = 'sphinx_source_index.conf';
-    public const SPHINX_GLOBAL_DIRECTORY = '/var/www/sphinx/';
-    public const SPHINX_GLOBAL_CONFIG = self::SPHINX_GLOBAL_DIRECTORY . 'sphinx.conf';
-    public const REINDEX_COMMAND = "indexer --all --rotate";
+    const UPDATE_SPHINX_CONFIG_FILE = 'update_sphinx_config.php';
+    const SPHINX_GLOBAL_DIRECTORY = '/var/www/sphinx/';
+    const SPHINX_GLOBAL_CONFIG = self::SPHINX_GLOBAL_DIRECTORY . 'sphinx.conf';
+    const SPHINX_LOCAL_CONFIG = 'sphinx_source_index.conf';
+    public const REINDEX_SCRIPT = 'reindex.php';
 
     public function addConfig(string $localConfigsPath, string $databaseName, string $databasePassword)
     {

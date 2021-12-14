@@ -32,7 +32,7 @@ class Sphinx
         return system("indexer --all --rotate");
     }
 
-    public function install(string $projectsPath = self::SPHINX_GLOBAL_DIRECTORY): void
+    public function install(string $projectsPath): void
     {
         $paltoSphinxDirectory = __DIR__ . '/../sphinx';
         $copyCommand = "cp -R -n $paltoSphinxDirectory " . $projectsPath;

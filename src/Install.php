@@ -1,6 +1,11 @@
 <?php
 namespace Palto;
 
+use Bramus\Monolog\Formatter\ColoredLineFormatter;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
 class Install
 {
     private string $projectPath;
@@ -9,6 +14,7 @@ class Install
     private string $databasePassword;
     private string $paltoPath;
     private string $configsPath;
+    private Logger $logger;
 
     public function __construct()
     {
@@ -19,6 +25,10 @@ class Install
         $this->projectName = $pathParts[count($pathParts) - 1];
         $this->databaseName = str_replace('.', '_', $this->projectName);
         $this->databasePassword = $this->generatePassword(12);
+        $this->logger = new Logger('install');
+        $handler = new StreamHandler('php://stdout');
+        $handler->setFormatter(new ColoredLineFormatter());
+        $this->logger->pushHandler($handler);
     }
 
     public function run()
@@ -65,7 +75,7 @@ class Install
 
     private function getReplaceLastAdminerCommand(): string
     {
-        $this->log('Updating adminer');
+        $this->logger->info('Updating adminer');
         $projectPath = $this->projectPath;
 
         return "wget -O $projectPath/public/adminer.php https://www.adminer.org/latest-mysql-en.php";
@@ -109,16 +119,11 @@ class Install
         return PHP_OS == 'Darwin';
     }
 
-    private function log($string)
-    {
-        echo '[' . (new \DateTime())->format('H:i:s') . ']' . $string . PHP_EOL;
-    }
-
     private function runCommands(array $commands)
     {
         foreach ($commands as $command) {
-            $this->log('Running command: ' . $command);
-            $this->log(`$command`);
+            $this->logger->debug('Running command: ' . $command);
+            $this->logger->debug(`$command`);
         }
     }
 
@@ -178,9 +183,9 @@ class Install
     private function showWelcome()
     {
         if ($this->isMac()) {
-            $this->log('Run command "php -S localhost:8000 -t public/" and open http://localhost:8000/adminer.php');
+            $this->logger->info('Run command "php -S localhost:8000 -t public/" and open http://localhost:8000/adminer.php');
         } elseif ($this->isLinux()) {
-            $this->log('Open https://' . $this->projectName . '/adminer.php');
+            $this->logger->info('Open https://' . $this->projectName . '/adminer.php');
         }
     }
 
@@ -207,7 +212,7 @@ class Install
                 'service nginx restart'
             ];
         } else {
-            $this->log('Your operating system ' . PHP_OS . ' is not supported');
+            $this->logger->critical('Your operating system ' . PHP_OS . ' is not supported');
             exit;
         }
 
@@ -245,9 +250,9 @@ class Install
         $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
         if (!$isHostExists) {
             file_put_contents($hostsFilePath, $hostsContent . PHP_EOL . $hostLine . PHP_EOL);
-            $this->log('Added host "' . $hostLine . '"');
+            $this->logger->debug('Added host "' . $hostLine . '"');
         } else {
-            $this->log('host "' . $hostLine . '" already exists');
+            $this->logger->warning('host "' . $hostLine . '" already exists');
         }
     }
 
@@ -269,10 +274,10 @@ class Install
                         $cronFilePath,
                         $cronFileContent . PHP_EOL . $comment . PHP_EOL . $command . PHP_EOL
                     );
-                    $this->log('Added cron command "' . $command . '"');
+                    $this->logger->debug('Added cron command "' . $command . '"');
                     $this->runCommands(['service cron reload']);
                 } else {
-                    $this->log('cron command "' . $command . '" already exists');
+                    $this->logger->debug('cron command "' . $command . '" already exists');
                 }
             }
         }
@@ -291,7 +296,7 @@ class Install
 
     private function updateEnvOptions()
     {
-        $this->log('Updating env options');
+        $this->logger->debug('Updating env options');
         file_put_contents(
             $this->projectPath . '/.env',
             strtr(file_get_contents($this->configsPath . '/.env'), [
@@ -304,7 +309,7 @@ class Install
 
     private function updatePhinx()
     {
-        $this->log('Updating Phinx');
+        $this->logger->debug('Updating Phinx');
         file_put_contents(
             $this->projectPath . '/' . Palto::PHINX_CONFIG,
             strtr(file_get_contents($this->configsPath . Palto::PHINX_CONFIG), [

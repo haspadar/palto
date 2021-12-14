@@ -513,6 +513,24 @@ class Palto
         return $this->getDb()->queryFirstField($query, $values) > 1;
     }
 
+    public static function hasComposerLockPalto(string $content): bool
+    {
+        return $content && mb_strpos($content, '"name": "haspadar/palto"') !== false;
+    }
+
+    public static function extractDatabaseCredentials(string $envContent): array
+    {
+        $credentials = [];
+        foreach (explode(PHP_EOL, $envContent) as $line) {
+            if (mb_substr($line, 0, 3) == 'DB_') {
+                list($name, $value) = explode('=', $line);
+                $credentials[$name] = $value;
+            }
+        }
+
+        return $credentials;
+    }
+
     /**
      * @param int|array|null $categoryId
      * @param int|null $regionId

@@ -2,14 +2,10 @@
 
 namespace Palto;
 
-use Monolog\Logger;
-
 require_once 'sphinxapi.php';
 
 class Search
 {
-    const REINDEX_SCRIPT = 'reindex.php';
-
     public static function getIds(array $found): array
     {
         if ($found && isset($found['matches'])) {
@@ -33,13 +29,4 @@ class Search
         return $found['total_found'] ?? 0;
     }
 
-    public static function reIndex(Logger $logger): void
-    {
-        $executionTime = new ExecutionTime();
-        $executionTime->start();
-        $commandOutput = system("indexer --all --rotate");
-        $logger->info($commandOutput);
-        $executionTime->end();
-        $logger->info('Sphinx reIndexed for ' . $executionTime->get());
-    }
 }

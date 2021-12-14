@@ -9,7 +9,6 @@ class Install
     private string $databasePassword;
     private string $paltoPath;
     private string $configsPath;
-    private string $sphinxDirectory = '/var/www/sphinx';
 
     public function __construct()
     {
@@ -25,6 +24,7 @@ class Install
     public function run()
     {
         $this->runCommands(array_merge($this->getOSCommands(), $this->getLocalCommands()));
+        (new Sphinx())->install('/var/www/');
         $this->updateCron();
         $this->updateHost();
         $this->updateSystemConfigs();
@@ -34,7 +34,7 @@ class Install
 
     public function updateSystemConfigs()
     {
-        $this->updateSphinx();
+//        $this->updateSphinx();
         $this->runCommands([
             $this->getReplaceNginxMainConfigCommand(),
             $this->getReplaceNginxPhpFpmConfigCommand()
@@ -79,8 +79,8 @@ class Install
 
         return [
             "cp -R $paltoPath/structure/layouts $projectPath/",
-            "cp -R -n $paltoPath/sphinx /var/www/",
-            "cp -R -n $paltoPath/structure/sphinx $projectPath",
+//            "cp -R -n $paltoPath/sphinx /var/www/",
+//            "cp -R -n $paltoPath/structure/sphinx $projectPath",
             "mkdir $projectPath/public",
             "cp -R $paltoPath/structure/public/css $projectPath/public/",
             "cp -R $paltoPath/structure/public/img $projectPath/public/",
@@ -278,19 +278,16 @@ class Install
         }
     }
 
-    private function updateSphinx()
-    {
-        $this->log('Updating sphinx config');
-        $sphinxSourceAndIndex = strtr(file_get_contents($this->configsPath . '/sphinx_source_index.conf'), [
-            '[DB_USER]' => $this->databaseName,
-            '[DB_PASSWORD]' => $this->databasePassword,
-            '[DB_NAME]' => $this->databaseName,
-            '[PROJECT]' => $this->databaseName
-        ]);
-        file_put_contents('/var/www/sphinx/sphinx.conf',
-            str_replace('indexer', $sphinxSourceAndIndex . PHP_EOL . 'indexer', '/var/www/sphinx/sphinx.conf')
-        );
-    }
+//    private function updateSphinx()
+//    {
+//        $this->log('Updating sphinx config');
+//        $sphinx = new Sphinx();
+//        $sphinx->addConfig(
+//            $this->configsPath . '/' . Sphinx::SPHINX_LOCAL_CONFIG,
+//            $this->databaseName,
+//            $this->databasePassword
+//        );
+//    }
 
     private function updateEnvOptions()
     {

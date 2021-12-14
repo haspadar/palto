@@ -34,6 +34,7 @@ class Install
     public function run()
     {
         $this->runCommands(array_merge($this->getOSCommands(), $this->getLocalCommands()));
+        $this->logger->info('Installing Sphinx config');
         (new Sphinx())->install('/var/www/');
         $this->updateCron();
         $this->updateHost();
@@ -44,6 +45,7 @@ class Install
 
     public function updateSystemConfigs()
     {
+        $this->logger->info('Updating system configs: nginx, php');
 //        $this->updateSphinx();
         $this->runCommands([
             $this->getReplaceNginxMainConfigCommand(),
@@ -244,6 +246,7 @@ class Install
 
     private function updateHost()
     {
+        $this->logger->info('Updating host');
         $hostsFilePath = '/etc/hosts';
         $hostLine = '127.0.0.1 ' . $this->projectName;
         $hostsContent = file_get_contents($hostsFilePath);
@@ -258,6 +261,7 @@ class Install
 
     private function updateCron()
     {
+        $this->logger->info('Updating cron');
         $cronFilePath = '/etc/crontab';
         $commands = [
             '#Every minute' => [
@@ -282,17 +286,6 @@ class Install
             }
         }
     }
-
-//    private function updateSphinx()
-//    {
-//        $this->log('Updating sphinx config');
-//        $sphinx = new Sphinx();
-//        $sphinx->addConfig(
-//            $this->configsPath . '/' . Sphinx::SPHINX_LOCAL_CONFIG,
-//            $this->databaseName,
-//            $this->databasePassword
-//        );
-//    }
 
     private function updateEnvOptions()
     {

@@ -131,25 +131,11 @@ class Install
 
     private function getLinuxLastPhpVersion(): string
     {
-        $output = `apt show php`;
-        $outputLines = explode(PHP_EOL, $output);
-        foreach ($outputLines as $outputLine) {
-            $parts = explode(': ', $outputLine);
-            if ($parts[0] == 'Version') {
-                $version = $parts[1];
-                if (strpos($version, ':') !== false) {
-                    $version = explode(':', $version)[1];
-                }
+        $output = `php -v`;
+        $outputLines = explode(' ', $output);
+        $versionParts = explode('.', $outputLines[1]);
 
-                if (strpos($version, '+') !== false) {
-                    $version = explode('+', $version)[0];
-                }
-
-                return $version;
-            }
-        }
-
-        return '8.1';
+        return $versionParts[0] . '.' . $versionParts[1];
     }
 
     private function getNginxPhpFpmConfig(string $phpMajorVersion, string $phpMinorVersion): string

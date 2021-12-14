@@ -37,6 +37,7 @@ class Sphinx
         $paltoSphinxDirectory = __DIR__ . '/../sphinx';
         $copyCommand = "cp -R -n $paltoSphinxDirectory " . $projectsPath;
         `$copyCommand`;
+        `mkdir $projectsPath/sphinx/data`;
         $localConfigPattern = file_get_contents(__DIR__ . '/../configs/sphinx_source_index.conf');
         foreach ($this->getPaltoProjects($projectsPath) as $projectName) {
             echo 'Found palto project ' . $projectName . PHP_EOL;

@@ -252,7 +252,7 @@ class Install
             file_put_contents($hostsFilePath, $hostsContent . PHP_EOL . $hostLine . PHP_EOL);
             $this->logger->debug('Added host "' . $hostLine . '"');
         } else {
-            $this->logger->warning('host "' . $hostLine . '" already exists');
+            $this->logger->debug('host "' . $hostLine . '" already exists');
         }
     }
 
@@ -296,7 +296,7 @@ class Install
 
     private function updateEnvOptions()
     {
-        $this->logger->debug('Updating env options');
+        $this->logger->info('Updating env options');
         file_put_contents(
             $this->projectPath . '/.env',
             strtr(file_get_contents($this->configsPath . '/.env'), [
@@ -309,7 +309,7 @@ class Install
 
     private function updatePhinx()
     {
-        $this->logger->debug('Updating Phinx');
+        $this->logger->info('Updating Phinx');
         file_put_contents(
             $this->projectPath . '/' . Palto::PHINX_CONFIG,
             strtr(file_get_contents($this->configsPath . Palto::PHINX_CONFIG), [

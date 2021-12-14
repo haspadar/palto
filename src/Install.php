@@ -252,7 +252,9 @@ class Install
         $commands = [
             '#Every minute' => [
                 '* * * * * root cd ' . $this->projectPath . ' && vendor/bin/crunz schedule:run'
-
+            ],
+            '#Every 12 hours' => [
+                '0 */12 * * * root cd ' . Sphinx::SPHINX_GLOBAL_DIRECTORY . ' && indexer --all && searchd'
             ]
         ];
         foreach ($commands as $comment => $commentCommands) {

@@ -3,11 +3,10 @@ namespace Palto;
 
 class Sphinx
 {
-    const UPDATE_SPHINX_CONFIG_FILE = 'update_sphinx_config.php';
-    const SPHINX_GLOBAL_DIRECTORY = '/var/www/sphinx/';
-    const SPHINX_GLOBAL_CONFIG = self::SPHINX_GLOBAL_DIRECTORY . 'sphinx.conf';
-    const SPHINX_LOCAL_CONFIG = 'sphinx_source_index.conf';
-    public const REINDEX_SCRIPT = 'reindex.php';
+    private const SPHINX_LOCAL_CONFIG = 'sphinx_source_index.conf';
+    public const SPHINX_GLOBAL_DIRECTORY = '/var/www/sphinx/';
+    public const SPHINX_GLOBAL_CONFIG = self::SPHINX_GLOBAL_DIRECTORY . 'sphinx.conf';
+    public const REINDEX_COMMAND = "indexer --all --rotate";
 
     public function addConfig(string $localConfigsPath, string $databaseName, string $databasePassword)
     {
@@ -29,7 +28,7 @@ class Sphinx
 
     public function reIndex(): string
     {
-        return system("indexer --all --rotate");
+        return system(self::REINDEX_COMMAND);
     }
 
     public function install(string $projectsPath): void
@@ -38,7 +37,8 @@ class Sphinx
         $copyCommand = "cp -R -n $paltoSphinxDirectory " . $projectsPath;
         `$copyCommand`;
         `mkdir {$projectsPath}sphinx/data`;
-        $localConfigPattern = file_get_contents(__DIR__ . '/../configs/sphinx_source_index.conf');
+        $localConfigPattern = file_get_contents(__DIR__ . '/../configs/' . self::SPHINX_LOCAL_CONFIG);
+        $globalSphinxConfig = file_get_contents($paltoSphinxDirectory . '/sphinx.conf');
         foreach ($this->getPaltoProjects($projectsPath) as $projectName) {
             echo 'Found palto project ' . $projectName . PHP_EOL;
             $response = file_get_contents($projectsPath . $projectName . '/.env');
@@ -53,7 +53,7 @@ class Sphinx
             $globalSphinxConfig = str_replace(
                 'indexer',
                 $localConfig . PHP_EOL . 'indexer',
-                file_get_contents($paltoSphinxDirectory . '/sphinx.conf')
+                $globalSphinxConfig
             );
             $this->saveGlobalConfig($globalSphinxConfig);
             echo 'Added sphinx config for ' . $projectName . PHP_EOL;

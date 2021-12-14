@@ -312,7 +312,7 @@ class Install
         $this->logger->info('Updating Phinx');
         file_put_contents(
             $this->projectPath . '/' . Palto::PHINX_CONFIG,
-            strtr(file_get_contents($this->configsPath . Palto::PHINX_CONFIG), [
+            strtr(file_get_contents($this->configsPath . '/' . Palto::PHINX_CONFIG), [
                 'production_db' => $this->databaseName,
                 'production_user' => $this->databaseName,
                 'production_pass' => $this->databasePassword

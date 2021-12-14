@@ -34,12 +34,12 @@ class Install
     public function run()
     {
         $this->runCommands(array_merge($this->getOSCommands(), $this->getLocalCommands()));
-        $this->logger->info('Installing Sphinx config');
-        (new Sphinx())->install('/var/www/');
         $this->updateCron();
         $this->updateHost();
         $this->updateSystemConfigs();
         $this->updateProjectConfigs();
+        $this->logger->info('Installing Sphinx config');
+        (new Sphinx())->install('/var/www/');
         $this->showWelcome();
     }
 

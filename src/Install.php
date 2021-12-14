@@ -142,7 +142,7 @@ class Install
             }
         }
 
-        return '7.4';
+        return '8.1';
     }
 
     private function getNginxPhpFpmConfig(string $phpMajorVersion, string $phpMinorVersion): string
@@ -188,18 +188,18 @@ class Install
     {
         if ($this->isMac()) {
             $commands = [
-                'brew install mariadb',
+//                'brew install mariadb',
                 'brew install sphinx'
             ];
         } elseif ($this->isLinux()) {
             $projectName = $this->projectName;
-            $phpMinorVersion = $this->getLinuxLastPhpVersion();
-            $phpFullVersion = 'php' . $phpMinorVersion;
+//            $phpMinorVersion = $this->getLinuxLastPhpVersion();
+//            $phpFullVersion = 'php' . $phpMinorVersion;
             $commands = [
-                'apt-get install mariadb-server',
-                'apt-get install nginx',
-                "apt install $phpFullVersion-fpm $phpFullVersion-cli $phpFullVersion-mysql $phpFullVersion-xml $phpFullVersion-curl $phpFullVersion-zip $phpFullVersion-iconv",
-                'apt-get install sphinxsearch',
+//                'apt-get install mariadb-server',
+//                'apt-get install nginx',
+//                "apt install $phpFullVersion-fpm $phpFullVersion-cli $phpFullVersion-mysql $phpFullVersion-xml $phpFullVersion-curl $phpFullVersion-zip $phpFullVersion-iconv",
+//                'apt-get install sphinxsearch',
                 $this->getReplaceNginxMainConfigCommand(),
                 $this->getReplaceNginxDomainConfigCommand(),
                 "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName",

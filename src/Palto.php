@@ -4,12 +4,17 @@ namespace Palto;
 
 use Bramus\Monolog\Formatter\ColoredLineFormatter;
 use Dotenv\Dotenv;
+use Exception;
+use MeekroDB;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\ZendMonitorHandler;
 use Monolog\Logger;
 use Pylesos\PylesosService;
 use Cocur\Slugify\Slugify;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
 
 class Palto
 {
@@ -19,7 +24,7 @@ class Palto
     public const PHINX_CONFIG = 'phinx.php';
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
-    private \MeekroDB $db;
+    private MeekroDB $db;
     private string $defaultRegionUrl;
     private string $defaultRegionTitle;
     private string $regionUrl = '';
@@ -67,7 +72,7 @@ class Palto
             $this->getDb()->commit();
 
             return $return;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->getDb()->rollback();
             $this->getLogger()->error($e->getMessage());
             $this->getLogger()->error($e->getTraceAsString());
@@ -779,17 +784,28 @@ class Palto
     public function sendEmail(string $toEmail, string $subject, string $body): int
     {
         $env = $this->getEnv();
-        $transport = (new \Swift_SmtpTransport($env['SMTP_HOST'], $env['SMTP_PORT'], $env['SMTP_ENCRYPTION']))
-            ->setUsername($env['SMTP_EMAIL'])
-            ->setPassword($env['SMTP_PASSWORD']);
-        $mailer = new \Swift_Mailer($transport);
-        $message = (new \Swift_Message($subject))
-            ->setContentType("text/html")
-            ->setFrom([$env['SMTP_EMAIL'] => $env['SMTP_FROM']])
-            ->setTo([$toEmail])
-            ->setBody($body);
+//        $transport = (new \Swift_SmtpTransport($env['SMTP_HOST'], $env['SMTP_PORT'], $env['SMTP_ENCRYPTION']))
+//            ->setUsername($env['SMTP_EMAIL'])
+//            ->setPassword($env['SMTP_PASSWORD']);
+//        $mailer = new \Swift_Mailer($transport);
+//        $message = (new \Swift_Message($subject))
+//            ->setContentType("text/html")
+//            ->setFrom([$env['SMTP_EMAIL'] => $env['SMTP_FROM']])
+//            ->setTo([$toEmail])
+//            ->setBody($body);
+//
+//        return $mailer->send($message);
+        $login = explode('@', $env['SMTP_EMAIL'])[0];
+        $dsn = "smtp://$login:{$env['SMTP_PASSWORD']}@{$env['SMTP_HOST']}:{$env['SMTP_PORT']}";
+        $transport = Transport::fromDsn($dsn);
+        $mailer = new Mailer($transport);
+        $email = (new Email())
+            ->from($env['SMTP_EMAIL'])
+            ->to($toEmail)
+            ->subject($subject)
+            ->html($body);
 
-        return $mailer->send($message);
+        $mailer->send($email);
     }
 
     public function checkAuth()
@@ -832,9 +848,9 @@ class Palto
     }
 
     /**
-     * @return \MeekroDB
+     * @return MeekroDB
      */
-    public function getDb(): \MeekroDB
+    public function getDb(): MeekroDB
     {
         return $this->db;
     }
@@ -1290,7 +1306,7 @@ class Palto
         $grouped = [];
         foreach ($unGrouped as $data) {
             if (!isset($data[$field])) {
-                throw new \Exception('Undefined key ' . $field . ' in array: can not group');
+                throw new Exception('Undefined key ' . $field . ' in array: can not group');
             }
 
             $grouped[$data[$field]][] = $data;
@@ -1376,7 +1392,7 @@ class Palto
 
     private function initDb(): void
     {
-        $this->db = new \MeekroDB(
+        $this->db = new MeekroDB(
             $this->env['DB_HOST'] ?? '127.0.0.1',
             $this->env['DB_USER'],
             $this->env['DB_PASSWORD'],
@@ -1391,7 +1407,7 @@ class Palto
         $errorHandler = function ($params) {
             $this->getLogger()->error('Database error: ' . $params['error']);
             $this->getLogger()->error('Database query: ' . $params['query'] ?? '');
-            throw new \Exception('Database error: ' . $params['error']);
+            throw new Exception('Database error: ' . $params['error']);
         };
         $this->db->error_handler = $errorHandler; // runs on mysql query errors
         $this->db->nonsql_error_handler = $errorHandler; // runs on library errors (bad syntax, etc)

@@ -105,6 +105,7 @@ class Install
             "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::SHOW_ERRORS_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Sphinx::REINDEX_SCRIPT . " $projectPath/",
+            "cp $paltoPath/structure/" . Palto::ROUTES_SCRIPT . " $projectPath/",
             "ln -s $paltoPath/db $projectPath/",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
             "mysql $databaseName < $paltoPath" . '/db/palto.sql',

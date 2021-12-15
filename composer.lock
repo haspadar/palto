@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1532cb58356d316734ee364e9be7f3d9",
+    "content-hash": "8b619ecc4a12d8d2db655a365c0c41c4",
     "packages": [
         {
             "name": "apix/log",
@@ -1381,6 +1381,72 @@
                 "source": "https://github.com/nesk/rialto/tree/1.4.0"
             },
             "time": "2020-04-12T13:11:08+00:00"
+        },
+        {
+            "name": "nikic/fast-route",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nikic/FastRoute.git",
+                "reference": "ea5d3abe8b9fc7d63bb42b0384cb1db60972ff68"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/ea5d3abe8b9fc7d63bb42b0384cb1db60972ff68",
+                "reference": "ea5d3abe8b9fc7d63bb42b0384cb1db60972ff68",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^9.0",
+                "phpbench/phpbench": "^1.0",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan-deprecation-rules": "^0.12",
+                "phpstan/phpstan-phpunit": "^0.12",
+                "phpstan/phpstan-strict-rules": "^0.12",
+                "phpunit/phpunit": "^9.5"
+            },
+            "suggest": {
+                "ext-apcu": "To be able to use APCu cache driver"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "FastRoute\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Nikita Popov",
+                    "email": "nikic@php.net"
+                }
+            ],
+            "description": "Fast request router for PHP",
+            "keywords": [
+                "router",
+                "routing"
+            ],
+            "support": {
+                "issues": "https://github.com/nikic/FastRoute/issues",
+                "source": "https://github.com/nikic/FastRoute/tree/master"
+            },
+            "time": "2021-06-21T15:01:25+00:00"
         },
         {
             "name": "opis/closure",
@@ -4421,7 +4487,8 @@
         "robmorgan/phinx": 20,
         "cocur/slugify": 20,
         "lavary/crunz": 20,
-        "bramus/monolog-colored-line-formatter": 20
+        "bramus/monolog-colored-line-formatter": 20,
+        "nikic/fast-route": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

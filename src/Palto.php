@@ -8,8 +8,8 @@ use Exception;
 use MeekroDB;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\ZendMonitorHandler;
 use Monolog\Logger;
+use Palto\Router\Router;
 use Pylesos\PylesosService;
 use Cocur\Slugify\Slugify;
 use Symfony\Component\Mailer\Mailer;
@@ -22,30 +22,24 @@ class Palto
     public const PARSE_ADS_SCRIPT = 'parse_ads.php';
     public const SHOW_ERRORS_SCRIPT = 'show_errors.php';
     public const PHINX_CONFIG = 'phinx.php';
+    public const ROUTES_SCRIPT = 'routes.php';
     private string $previousPageUrl = '';
     private string $nextPageUrl = '';
     private MeekroDB $db;
     private string $defaultRegionUrl;
     private string $defaultRegionTitle;
-    private string $regionUrl = '';
-    private array $categoriesUrls = [];
-    private string $categoryUrl = '';
-    private int $categoryLevel = 0;
-    private int $adId = 0;
     private ?array $region = null;
     private ?array $category = null;
     private ?array $ad = null;
-    private string $layoutDirectory = '../layouts/';
-    private int $pageNumber = 1;
+    private string $layoutDirectory = 'layouts/';
     private array $env;
     private Logger $logger;
     private string $rootDirectory;
     private string $url;
     private int $adsLimit = 30;
-
     private int $pagesCount;
-
     private array $partialVariables = [];
+    private Router $router;
 
     public function __construct($rootDirectory = '', string $url = '')
     {
@@ -53,12 +47,10 @@ class Palto
         $this->initUrl($url);
         $dotenv = Dotenv::createImmutable($this->rootDirectory);
         $this->env = $dotenv->load();
+        $this->router = Routers::create($this->getUrl(), $this->getStandardRoutes());
         $this->initLogger();
         $this->initDb();
         $this->initDefaultRegion();
-        $this->initRegionUrl();
-        $this->initCategoriesUrls();
-        $this->initAdId();
         $this->initRegion();
         $this->initCategory();
         $this->initAd();
@@ -92,14 +84,9 @@ class Palto
         return $domainUrl;
     }
 
-    public function getPhpDomainUrl(): string
+    public function getStandardRoutes(): array
     {
-        $domainUrl = $this->getEnv()['PHP_DOMAIN_URL'];
-        if (!$domainUrl) {
-            $domainUrl = 'https://php.' . $this->getProjectName();
-        }
-
-        return $domainUrl;
+        return require_once $this->getRootDirectory() . '/' . self::ROUTES_SCRIPT;
     }
 
     public function getProjectName(): string
@@ -119,16 +106,11 @@ class Palto
         $this->defaultRegionUrl = $regionUrl;
     }
 
-    public function setAdsLimit(int $limit)
-    {
-        $this->adsLimit = $limit;
-    }
-
     public function getLayout(): string
     {
         $parts = $this->getUrlParts();
-        $isRegionPage = !$this->categoryUrl && $this->regionUrl && $this->region;
-        $isCategoryPage = !$this->adId && $this->categoryUrl && $this->category;
+        $isRegionPage = !$this->getRouter()->getCategoryUrl() && $this->getRouter()->getRegionUrl() && $this->region;
+        $isCategoryPage = !$this->getRouter()->getAdId() && $this->getRouter()->getCategoryUrl() && $this->category;
         $isRegistrationPage = isset($parts[1]) && $parts[1] == 'registration';
         $isRegionsListPage = isset($parts[0]) && $parts[0] == 'regions';
         $isCategoriesListPage = isset($parts[0]) && $parts[0] == 'categories';
@@ -145,9 +127,9 @@ class Palto
             $layout = 'registration.php';
         } elseif ($isRegionPage || $isCategoryPage) {
             $layout = 'list.php';
-        } elseif ($this->adId && $this->ad && !$this->ad['deleted_time']) {
+        } elseif ($this->getRouter()->getAdId() && $this->ad && !$this->ad['deleted_time']) {
             $layout = 'ad.php';
-        } elseif ($this->adId) {
+        } elseif ($this->getRouter()->getAdId()) {
             $this->addFlashMessage('The ad was deleted.');
             $this->redirect($this->generateCategoryUrl($this->category));
             $layout = '404.php';
@@ -280,19 +262,6 @@ class Palto
         }
 
         return $this->getDb()->query($query, $values);
-    }
-
-    public static function getIP(): string
-    {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        return $ip;
     }
 
     public function getCurrentAd(): ?array
@@ -455,20 +424,20 @@ class Palto
             for ($pageNumber = 1; $pageNumber <= $this->pagesCount; $pageNumber++) {
                 $urls[] = [
                     'title' => $pageNumber,
-                    'url' => $this->pageNumber == $pageNumber
+                    'url' => $this->getRouter()->getPageNumber() == $pageNumber
                         ? ''
                         : $this->getPageUrl($pageNumber),
                 ];
             }
         } else {
             $sliderPages = array_values(array_filter([
-                                                         $this->pageNumber - 1,
-                                                         $this->pageNumber,
-                                                         $this->pageNumber + 1
+                $this->getRouter()->getPageNumber() - 1,
+                $this->getRouter()->getPageNumber(),
+                $this->getRouter()->getPageNumber() + 1
                                                      ], function ($pageNumber) {
                 return $pageNumber >= 1 && $pageNumber <= $this->pagesCount;
             }));
-            $hasLeftDots = $this->pageNumber >= 4;
+            $hasLeftDots = $this->getRouter()->getPageNumber() >= 4;
             $hasRightDots = $this->pagesCount - $this->getPageNumber() >= 3;
             if ($hasLeftDots) {
                 $urls[] = [
@@ -484,7 +453,7 @@ class Palto
             foreach ($sliderPages as $sliderPage) {
                 $urls[] = [
                     'title' => $sliderPage,
-                    'url' => $this->pageNumber == $sliderPage
+                    'url' => $this->getRouter()->getPageNumber() == $sliderPage
                         ? ''
                         : $this->getPageUrl($sliderPage),
                 ];
@@ -497,7 +466,7 @@ class Palto
                 ];
                 $urls[] = [
                     'title' => $this->pagesCount,
-                    'url' => $this->pageNumber == $this->pagesCount
+                    'url' => $this->getRouter()->getPageNumber() == $this->pagesCount
                         ? ''
                         : $this->getPageUrl($this->pagesCount),
                 ];
@@ -576,11 +545,15 @@ class Palto
         return array_values($extendedAds);
     }
 
-    public function loadLayout(string $layout)
+    public function loadLayout()
     {
-        require_once $this->layoutDirectory . $layout;
-        if ($this->isDebug() && !$this->isCli()) {
-            $this->showInfo();
+        if ($this->getRouter()->getLayoutName()) {
+            require_once $this->rootDirectory . '/' . $this->layoutDirectory . $this->getRouter()->getLayoutName();
+            if ($this->isDebug() && !$this->isCli()) {
+                $this->showInfo();
+            }
+        } else {
+            $this->getRouter()->setNotFoundLayout();
         }
     }
 
@@ -592,10 +565,11 @@ class Palto
 
         echo 'Info:' . PHP_EOL;
         print_r([
-            'layout' => $this->getLayout(),
-            'region_url' => $this->getRegionUrl(),
-            'category_url' => $this->getCategoryUrl(),
-            'ad_id' => $this->getAdId(),
+            'layout' => $this->getRouter()->getLayoutName(),
+            'region_url' => $this->getRouter()->getRegionUrl(),
+            'category_url' => $this->getRouter()->getCategoryUrl(),
+            'categories_urls' => $this->getRouter()->getCategoriesUrls(),
+            'ad_id' => $this->getRouter()->getAdId(),
             'page_number' => $this->getPageNumber(),
             'region' => $this->getCurrentRegion(),
             'category' => $this->getCurrentCategory(),
@@ -637,15 +611,7 @@ class Palto
      */
     public function getLayoutDirectory(): string
     {
-        return $this->layoutDirectory;
-    }
-
-    /**
-     * @param string $layoutDirectory
-     */
-    public function setLayoutDirectory(string $layoutDirectory): void
-    {
-        $this->layoutDirectory = $layoutDirectory;
+        return $this->rootDirectory . '/' . $this->layoutDirectory;
     }
 
     public function getSearchQuery(): string
@@ -665,22 +631,22 @@ class Palto
 
     public function getNextPageNumber(): int
     {
-        return $this->pageNumber + 1;
+        return $this->getRouter()->getPageNumber() + 1;
     }
 
     public function hasNextPage(int $count): bool
     {
-        return $count == $this->getAdsLimit();
+        return $count <= $this->getAdsLimit();
     }
 
     public function getPageNumber(): int
     {
-        return $this->pageNumber;
+        return $this->getRouter()->getPageNumber();
     }
 
     public function getPreviousPageNumber(): int
     {
-        return $this->pageNumber - 1;
+        return $this->getRouter()->getPageNumber() - 1;
     }
 
     public function getPageUrl(int $pageNumber): string
@@ -709,11 +675,6 @@ class Palto
         return $param ? trim(strip_tags(htmlentities($param))) : '';
     }
 
-    public function getCategoryUrl(): string
-    {
-        return $this->categoryUrl;
-    }
-
     public function generateAdUrl(array $ad): string
     {
         $category = $this->getCategory($ad['category_id']);
@@ -730,7 +691,7 @@ class Palto
     public function partial(string $file, array $variables = [])
     {
         $this->partialVariables = $variables;
-        require $this->getLayoutDirectory() . '/partials/' . $file;
+        require $this->getLayoutDirectory() . 'partials/' . $file;
     }
 
     public function getPartialVariable(string $name)
@@ -752,25 +713,9 @@ class Palto
             );
     }
 
-    /**
-     * @return string
-     */
-    public function getRegionUrl(): string
-    {
-        return $this->regionUrl;
-    }
-
     public function getPublicDirectory(): string
     {
         return $this->rootDirectory . '/public';
-    }
-
-    /**
-     * @return int
-     */
-    public function getAdId(): int
-    {
-        return $this->adId;
     }
 
     /**
@@ -781,20 +726,9 @@ class Palto
         return $this->env;
     }
 
-    public function sendEmail(string $toEmail, string $subject, string $body): int
+    public function sendEmail(string $toEmail, string $subject, string $body)
     {
         $env = $this->getEnv();
-//        $transport = (new \Swift_SmtpTransport($env['SMTP_HOST'], $env['SMTP_PORT'], $env['SMTP_ENCRYPTION']))
-//            ->setUsername($env['SMTP_EMAIL'])
-//            ->setPassword($env['SMTP_PASSWORD']);
-//        $mailer = new \Swift_Mailer($transport);
-//        $message = (new \Swift_Message($subject))
-//            ->setContentType("text/html")
-//            ->setFrom([$env['SMTP_EMAIL'] => $env['SMTP_FROM']])
-//            ->setTo([$toEmail])
-//            ->setBody($body);
-//
-//        return $mailer->send($message);
         $login = explode('@', $env['SMTP_EMAIL'])[0];
         $dsn = "smtp://$login:{$env['SMTP_PASSWORD']}@{$env['SMTP_HOST']}:{$env['SMTP_PORT']}";
         $transport = Transport::fromDsn($dsn);
@@ -804,7 +738,6 @@ class Palto
             ->to($toEmail)
             ->subject($subject)
             ->html($body);
-
         $mailer->send($email);
     }
 
@@ -828,16 +761,26 @@ class Palto
         return max(ceil($count / $this->adsLimit), 1);
     }
 
+    /**
+     * Previous and next
+     *
+     * @param bool $hasNextPage
+     * @return void
+     */
     public function initPager(bool $hasNextPage): void
     {
-        $this->initCurrentPage();
-        $this->pagesCount = $hasNextPage ? $this->pageNumber + 1 : $this->pageNumber;
+        $this->pagesCount = $hasNextPage ? $this->router->getPageNumber() + 1 : $this->router->getPageNumber();
         $this->initPages();
     }
 
+    /**
+     * 1,2,3...
+     *
+     * @param int $count
+     * @return void
+     */
     public function initPagination(int $count): void
     {
-        $this->initCurrentPage();
         $this->pagesCount = $this->calculatePagesCount($count);
         $this->initPages();
     }
@@ -853,23 +796,6 @@ class Palto
     public function getDb(): MeekroDB
     {
         return $this->db;
-    }
-
-    private function getCategoriesUrls(): array
-    {
-        $parts = $this->getUrlParts();
-        if (count($parts) >= 2) {
-            $lastPart = $parts[count($parts) - 1] ?? '';
-            if ($this->isPageUrlPart($lastPart) || $this->isAdUrlPart($lastPart)) {
-                unset($parts[count($parts) - 1]);
-            }
-
-            unset($parts[0]);
-
-            return array_values($parts);
-        }
-
-        return [];
     }
 
     public function getRootDirectory(): string
@@ -889,18 +815,6 @@ class Palto
         return $childrenIds
             ? $this->getDb()->query('SELECT * FROM categories WHERE id IN %ld', $childrenIds)
             : [];
-    }
-
-    public static function dump($data, string $name = '', string $ip = '')
-    {
-        if (!$ip || $ip == self::getIP()) {
-            echo '<pre>';
-            if ($name) {
-                var_dump($name);
-            }
-
-            var_dump($data);
-        }
     }
 
     public function getParentCategories(array $category): array
@@ -1119,6 +1033,11 @@ class Palto
         }
     }
 
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
     private function isPageUrlPart(string $urlPart): bool
     {
         return is_numeric($urlPart);
@@ -1138,27 +1057,18 @@ class Palto
         );
     }
 
-    private function initAdId()
-    {
-        $parts = $this->getUrlParts();
-        $lastPart = $parts[count($parts) - 1] ?? '';
-        if ($this->isAdUrlPart($lastPart)) {
-            $this->adId = intval(substr($lastPart, 2));
-        }
-    }
-
     private function initAd()
     {
-        if ($this->adId) {
-            $this->ad = $this->getAd($this->adId);
-        }
-    }
+        if ($this->getRouter()->getAdId()) {
+            $this->ad = $this->getAd($this->getRouter()->getAdId());
+            if (!$this->ad) {
+                $this->addFlashMessage('The ad was deleted.');
+                if ($this->category) {
+                    $this->redirect($this->generateCategoryUrl($this->category));
+                }
 
-    private function initRegionUrl()
-    {
-        $parts = $this->getUrlParts();
-        if (isset($parts[0]) && !in_array($parts[0], ['registration', 'regions', 'categories', 'search'])) {
-            $this->regionUrl = $parts[0];
+                $this->getRouter()->setNotFoundLayout();
+            }
         }
     }
 
@@ -1170,29 +1080,26 @@ class Palto
 
     private function initRegion()
     {
-        if ($this->regionUrl == $this->defaultRegionUrl || !$this->regionUrl) {
+        if ($this->getRouter()->getRegionUrl() == $this->defaultRegionUrl
+            || !$this->getRouter()->getRegionUrl()
+        ) {
             $this->region = $this->getDefaultRegion();
         } else {
-            $this->region = $this->db->queryFirstRow('SELECT * FROM regions WHERE url = %s', $this->regionUrl);
+            $this->region = $this->db->queryFirstRow('SELECT * FROM regions WHERE url = %s', $this->getRouter()->getRegionUrl());
             if ($this->region) {
                 $this->region['parents'] = $this->getParentsRegions($this->region);
+            } else {
+                $this->addFlashMessage('Region not found.');
+                $this->redirect($this->generateRegionUrl($this->getDefaultRegion()));
+                $this->getRouter()->setNotFoundLayout();
             }
-        }
-    }
-
-    private function initCategoriesUrls()
-    {
-        $this->categoriesUrls = $this->getCategoriesUrls();
-        if ($this->categoriesUrls) {
-            $this->categoryUrl = $this->categoriesUrls[count($this->categoriesUrls) - 1];
-            $this->categoryLevel = count($this->categoriesUrls);
         }
     }
 
     private function initCategory()
     {
-        if ($this->categoryUrl) {
-            $this->category = $this->getUrlCategory($this->categoryUrl, $this->categoryLevel);
+        if ($this->getRouter()->getCategoryUrl()) {
+            $this->category = $this->getUrlCategory($this->getRouter()->getCategoryUrl(), $this->getRouter()->getCategoryLevel());
             if ($this->category) {
                 $this->category['parents'] = $this->getParentCategories($this->category);
                 $this->category['titles'] = array_filter(
@@ -1205,6 +1112,12 @@ class Palto
                     )
                 );
                 $this->category['children'] = $this->getChildCategories($this->category);
+            } elseif ($this->region) {
+                $this->addFlashMessage('Category not found.');
+                $this->redirect($this->generateRegionUrl($this->region));
+                $this->getRouter()->setNotFoundLayout();
+            } else {
+                $this->getRouter()->setNotFoundLayout();
             }
         }
     }
@@ -1364,14 +1277,14 @@ class Palto
         return Status::getPhpCommandPid(self::PARSE_ADS_SCRIPT, $this->getProjectName());
     }
 
+    public function isCli(): bool
+    {
+        return php_sapi_name() === 'cli';
+    }
+
     private function isCron(): bool
     {
         return $this->isCli() && !isset($_SERVER['TERM']);
-    }
-
-    private function isCli(): bool
-    {
-        return php_sapi_name() === 'cli';
     }
 
     private function getParentsRegions(array $region): array
@@ -1452,23 +1365,14 @@ class Palto
         header("Location: " . $categoryUrl,true,301);
     }
 
-    private function initCurrentPage(): int
-    {
-        $parts = $this->getUrlParts();
-        $lastPart = $parts[count($parts) - 1] ?? '';
-        $this->pageNumber = $this->isPageUrlPart($lastPart) ? intval($lastPart) : 1;
-
-        return $this->pageNumber;
-    }
-
     private function initPages()
     {
-        if ($this->pageNumber + 1 <= $this->pagesCount) {
-            $this->nextPageUrl = $this->getPageUrl($this->pageNumber + 1);
+        if ($this->getRouter()->getPageNumber() + 1 <= $this->pagesCount) {
+            $this->nextPageUrl = $this->getPageUrl($this->getRouter()->getPageNumber() + 1);
         }
 
-        if ($this->pageNumber > 1) {
-            $this->previousPageUrl = $this->getPageUrl($this->pageNumber - 1);
+        if ($this->getRouter()->getPageNumber() > 1) {
+            $this->previousPageUrl = $this->getPageUrl($this->getRouter()->getPageNumber() - 1);
         }
     }
 
@@ -1481,5 +1385,13 @@ class Palto
         }
 
         return $mergedIds;
+    }
+
+    /**
+     * @return Router
+     */
+    public function getRouter(): Router
+    {
+        return $this->router;
     }
 }

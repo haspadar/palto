@@ -1,11 +1,12 @@
 <?php
 
+use Palto\IP;
 use Palto\Palto;
 
 $rootDirectory = require_once 'autoload.php';
 
 $palto = new Palto($rootDirectory);
-if ($palto->getEnv()['AUTH'] && Palto::getIP() != '127.0.0.1') {
+if ($palto->getEnv()['AUTH'] && !IP::isLocal()) {
     $palto->checkAuth();
     ini_set('display_errors', true);
     ini_set('display_startup_errors', true);
@@ -15,4 +16,4 @@ if ($palto->getEnv()['AUTH'] && Palto::getIP() != '127.0.0.1') {
     $palto->getDb()->query('SET SESSION query_cache_type=0;');
 }
 
-$palto->loadLayout($palto->getLayout());
+$palto->loadLayout();

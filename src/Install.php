@@ -1,4 +1,5 @@
 <?php
+
 namespace Palto;
 
 use Bramus\Monolog\Formatter\ColoredLineFormatter;
@@ -39,10 +40,31 @@ class Install
         $this->updateSystemConfigs();
         $this->updateEnvOptions();
         $this->updateProjectConfigs();
-        $this->logger->info('Installing Sphinx config');
-        (new Sphinx())->install('/var/www/');
+        $this->updateSphinx();
         $this->updatePermissions();
         $this->showWelcome();
+    }
+
+    public function update(string $projectPath)
+    {
+        $this->projectPath = $projectPath;
+        if (!$this->databaseName || !$this->databasePassword) {
+            $this->logger->warning('Extracting DB credentials from ' . $this->projectPath . '/.env');
+            $databaseCredentials = Palto::extractDatabaseCredentials(
+                file_get_contents($this->projectPath . '/.env')
+            );
+            $this->databaseName = $databaseCredentials['DB_NAME'];
+            $this->databasePassword = $databaseCredentials['DB_PASSWORD'];
+        }
+
+        $this->runCommands($this->getCopyStructureCommands());
+        $this->updateCron();
+        $this->updateHost();
+        $this->updateSystemConfigs();
+        $this->updateProjectConfigs();
+        $this->updateSphinx();
+        $this->updatePermissions();
+        $this->logger->info('Updated successfully');
     }
 
     public function updateSystemConfigs()
@@ -56,15 +78,6 @@ class Install
 
     public function updateProjectConfigs()
     {
-        if (!$this->databaseName || !$this->databasePassword) {
-            $this->logger->warning('Extracting DB credentials from ' . $this->projectPath . '/.env');
-            $databaseCredentials = Palto::extractDatabaseCredentials(
-                file_get_contents($this->projectPath . '/.env')
-            );
-            $this->databaseName = $databaseCredentials['DB_NAME'];
-            $this->databasePassword = $databaseCredentials['DB_PASSWORD'];
-        }
-
         $this->updatePhinx();
         $this->runCommands([
             $this->getReplaceCrunzCommand(),
@@ -98,27 +111,36 @@ class Install
         $paltoPath = $this->paltoPath;
         $databaseName = $this->databaseName;
 
+        return array_merge([
+            "mkdir $projectPath/public"
+        ],
+            $this->getCopyStructureCommands(), [
+                "ln -s $paltoPath/structure/public/js $projectPath/public/",
+                "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
+                "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
+                "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
+                "ln -s $paltoPath/tasks $projectPath/",
+                "cp -n $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
+                "cp -n $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
+                "cp $paltoPath/structure/" . Palto::SHOW_ERRORS_SCRIPT . " $projectPath/",
+                "cp $paltoPath/structure/" . Palto::ROUTES_SCRIPT . " $projectPath/",
+                "ln -s $paltoPath/db $projectPath/",
+                'mysql -e "' . $this->getMySqlSystemQuery() . '"',
+                "mysql $databaseName < $paltoPath" . '/db/palto.sql',
+                "mkdir $projectPath/logs"
+            ]
+        );
+    }
+
+    private function getCopyStructureCommands(): array
+    {
+        $projectPath = $this->projectPath;
+        $paltoPath = $this->paltoPath;
+
         return [
-            "cp -R $paltoPath/structure/layouts $projectPath/",
-//            "cp -R -n $paltoPath/sphinx /var/www/",
-//            "cp -R -n $paltoPath/structure/sphinx $projectPath",
-            "mkdir $projectPath/public",
+            "cp -R -n $paltoPath/structure/layouts $projectPath",
             "cp -R $paltoPath/structure/public/css $projectPath/public/",
             "cp -R $paltoPath/structure/public/img $projectPath/public/",
-            "ln -s $paltoPath/structure/public/js $projectPath/public/",
-            "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
-            "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
-            "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
-            "ln -s $paltoPath/tasks $projectPath/",
-            "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
-            "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
-            "cp $paltoPath/structure/" . Palto::SHOW_ERRORS_SCRIPT . " $projectPath/",
-//            "cp $paltoPath/structure/" . Sphinx::REINDEX_SCRIPT . " $projectPath/",
-            "cp $paltoPath/structure/" . Palto::ROUTES_SCRIPT . " $projectPath/",
-            "ln -s $paltoPath/db $projectPath/",
-            'mysql -e "' . $this->getMySqlSystemQuery() . '"',
-            "mysql $databaseName < $paltoPath" . '/db/palto.sql',
-            "mkdir $projectPath/logs"
         ];
     }
 
@@ -192,18 +214,11 @@ class Install
     {
         if ($this->isMac()) {
             $commands = [
-//                'brew install mariadb',
                 'brew install sphinx'
             ];
         } elseif ($this->isLinux()) {
             $projectName = $this->projectName;
-//            $phpMinorVersion = $this->getLinuxLastPhpVersion();
-//            $phpFullVersion = 'php' . $phpMinorVersion;
             $commands = [
-//                'apt-get install mariadb-server',
-//                'apt-get install nginx',
-//                "apt install $phpFullVersion-fpm $phpFullVersion-cli $phpFullVersion-mysql $phpFullVersion-xml $phpFullVersion-curl $phpFullVersion-zip $phpFullVersion-iconv",
-//                'apt-get install sphinxsearch',
                 $this->getReplaceNginxMainConfigCommand(),
                 $this->getReplaceNginxDomainConfigCommand(),
                 "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName",
@@ -224,13 +239,13 @@ class Install
         $password = $this->databasePassword;
 
         return implode(
-            '',[
-                  "DROP DATABASE IF EXISTS $name;",
-                  "CREATE DATABASE $name CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;",
-                  "DROP USER IF EXISTS '$name'@'localhost';",
-                  "CREATE USER '$name'@'localhost' IDENTIFIED BY '$password';",
-                  "GRANT ALL PRIVILEGES ON *.* TO '$name'@'localhost';"
-              ]
+            '', [
+                "DROP DATABASE IF EXISTS $name;",
+                "CREATE DATABASE $name CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;",
+                "DROP USER IF EXISTS '$name'@'localhost';",
+                "CREATE USER '$name'@'localhost' IDENTIFIED BY '$password';",
+                "GRANT ALL PRIVILEGES ON *.* TO '$name'@'localhost';"
+            ]
         );
     }
 
@@ -238,7 +253,7 @@ class Install
     {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-        return substr(str_shuffle($chars),0, $length);
+        return substr(str_shuffle($chars), 0, $length);
     }
 
     private function updateHost()
@@ -390,5 +405,11 @@ class Install
     {
         $this->runCommands(['`sudo chown -R "km":www-data /var/www/`;']);
 
+    }
+
+    private function updateSphinx()
+    {
+        $this->logger->info('Installing Sphinx config');
+        (new Sphinx())->install('/var/www/');
     }
 }

@@ -42,6 +42,7 @@ class Sphinx
         $globalSphinxConfig = file_get_contents($paltoSphinxDirectory . '/sphinx.conf');
         foreach ($this->getPaltoProjects($projectsPath) as $projectName) {
             echo 'Found palto project ' . $projectName . PHP_EOL;
+            echo 'Extracting DB credentials from ' . $projectsPath . $projectName . '/.env' . PHP_EOL;
             $response = file_get_contents($projectsPath . $projectName . '/.env');
             $databaseCredentials = Palto::extractDatabaseCredentials($response);
             $indexName = str_replace('.', '_', $projectName);

@@ -1,8 +1,1 @@
-<?php
-
-use Palto\Sphinx;
-
-require_once 'vendor/autoload.php';
-
-$sphinx = new Sphinx();
-$sphinx->install('/var/www/');
+structure/update_sphinx_config.php

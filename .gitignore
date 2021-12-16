@@ -1,5 +1,5 @@
 /.env
-/phinx.php
+/structure/phinx.php
 /vendor/
 /.idea/
 /logs/
@@ -12,6 +12,6 @@
 /sphinx/data/*
 /sphinx/query.log
 /sphinx/searchd.log
-/crunz.yml
+/structure/crunz.yml
 /backups/*
 /*.lock

@@ -105,7 +105,7 @@ class Install
             "cp $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::SHOW_ERRORS_SCRIPT . " $projectPath/",
-            "cp $paltoPath/structure/" . Sphinx::REINDEX_SCRIPT . " $projectPath/",
+//            "cp $paltoPath/structure/" . Sphinx::REINDEX_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::ROUTES_SCRIPT . " $projectPath/",
             "ln -s $paltoPath/db $projectPath/",
             'mysql -e "' . $this->getMySqlSystemQuery() . '"',
@@ -257,7 +257,7 @@ class Install
                 '* * * * * root cd ' . $this->projectPath . ' && vendor/bin/crunz schedule:run'
             ],
             '#Every 12 hours' => [
-                '0 */12 * * * root cd ' . Sphinx::SPHINX_GLOBAL_DIRECTORY . ' && ' . Sphinx::REINDEX_SCRIPT . ' && searchd'
+                '0 */12 * * * root cd ' . Sphinx::SPHINX_GLOBAL_DIRECTORY . ' && ' . Sphinx::REINDEX_COMMAND,
             ]
         ];
         foreach ($commands as $comment => $commentCommands) {

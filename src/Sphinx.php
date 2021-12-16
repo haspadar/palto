@@ -7,7 +7,7 @@ class Sphinx
     const SPHINX_GLOBAL_DIRECTORY = '/var/www/sphinx/';
     const SPHINX_GLOBAL_CONFIG = self::SPHINX_GLOBAL_DIRECTORY . 'sphinx.conf';
     const SPHINX_LOCAL_CONFIG = 'sphinx_source_index.conf';
-    public const REINDEX_SCRIPT = 'reindex.php';
+    public const REINDEX_COMMAND = 'indexer --all --rotate && searchd';
 
     public function addConfig(string $localConfigsPath, string $databaseName, string $databasePassword)
     {

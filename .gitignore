@@ -12,6 +12,5 @@
 /sphinx/data/*
 /sphinx/query.log
 /sphinx/searchd.log
-/structure/crunz.yml
 /backups/*
 /*.lock

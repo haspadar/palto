@@ -57,6 +57,7 @@ class Install
     public function updateProjectConfigs()
     {
         if (!$this->databaseName || !$this->databasePassword) {
+            $this->logger->warning('Extracting DB credentials from ' . $this->projectPath . '/.env');
             $databaseCredentials = Palto::extractDatabaseCredentials(
                 file_get_contents($this->projectPath . '/.env')
             );

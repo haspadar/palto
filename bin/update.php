@@ -5,5 +5,5 @@ use Palto\Install;
 
 require_once 'vendor/autoload.php';
 
-$install = new Install();
-$install->update('../..');
+$install = new Install('../..', true);
+$install->run();

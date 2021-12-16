@@ -16,20 +16,31 @@ class Install
     private string $paltoPath;
     private string $configsPath;
     private Logger $logger;
+    private bool $isUpdateOnly;
 
-    public function __construct()
+    public function __construct(string $projectPath = '', bool $isUpdateOnly = false)
     {
-        $this->projectPath = trim(`pwd`);
+        $this->isUpdateOnly = $isUpdateOnly;
+        $this->projectPath = $projectPath ?: trim(`pwd`);
         $this->paltoPath = $this->projectPath . '/vendor/haspadar/palto';
         $this->configsPath = $this->paltoPath . '/configs';
         $pathParts = explode('/', $this->projectPath);
         $this->projectName = $pathParts[count($pathParts) - 1];
-        $this->databaseName = str_replace('.', '_', $this->projectName);
-        $this->databasePassword = $this->generatePassword(12);
         $this->logger = new Logger('install');
         $handler = new StreamHandler('php://stdout');
         $handler->setFormatter(new ColoredLineFormatter());
         $this->logger->pushHandler($handler);
+        if ($this->isUpdateOnly) {
+            $this->logger->warning('Extracting DB credentials from ' . $this->projectPath . '/.env');
+            $databaseCredentials = Palto::extractDatabaseCredentials(
+                file_get_contents($this->projectPath . '/.env')
+            );
+            $this->databaseName = $databaseCredentials['DB_NAME'];
+            $this->databasePassword = $databaseCredentials['DB_PASSWORD'];
+        } else {
+            $this->databaseName = str_replace('.', '_', $this->projectName);
+            $this->databasePassword = $this->generatePassword(12);
+        }
     }
 
     public function run()
@@ -37,43 +48,11 @@ class Install
         $this->runCommands(array_merge($this->getOSCommands(), $this->getLocalCommands()));
         $this->updateCron();
         $this->updateHost();
-        $this->updateSystemConfigs();
         $this->updateEnvOptions();
         $this->updateProjectConfigs();
         $this->updateSphinx();
         $this->updatePermissions();
         $this->showWelcome();
-    }
-
-    public function update(string $projectPath)
-    {
-        $this->projectPath = $projectPath;
-        if (!$this->databaseName || !$this->databasePassword) {
-            $this->logger->warning('Extracting DB credentials from ' . $this->projectPath . '/.env');
-            $databaseCredentials = Palto::extractDatabaseCredentials(
-                file_get_contents($this->projectPath . '/.env')
-            );
-            $this->databaseName = $databaseCredentials['DB_NAME'];
-            $this->databasePassword = $databaseCredentials['DB_PASSWORD'];
-        }
-
-        $this->runCommands($this->getCopyStructureCommands());
-        $this->updateCron();
-        $this->updateHost();
-        $this->updateSystemConfigs();
-        $this->updateProjectConfigs();
-        $this->updateSphinx();
-        $this->updatePermissions();
-        $this->logger->info('Updated successfully');
-    }
-
-    public function updateSystemConfigs()
-    {
-        $this->logger->info('Updating system configs: nginx, php');
-        $this->runCommands([
-            $this->getReplaceNginxMainConfigCommand(),
-            $this->getReplaceNginxPhpFpmConfigCommand()
-        ]);
     }
 
     public function updateProjectConfigs()
@@ -110,26 +89,29 @@ class Install
         $projectPath = $this->projectPath;
         $paltoPath = $this->paltoPath;
         $databaseName = $this->databaseName;
-
-        return array_merge([
-            "mkdir $projectPath/public"
-        ],
-            $this->getCopyStructureCommands(), [
-                "ln -s $paltoPath/structure/public/js $projectPath/public/",
-                "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
-                "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
-                "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
-                "ln -s $paltoPath/tasks $projectPath/",
-                "cp -n $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
-                "cp -n $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
-                "cp $paltoPath/structure/" . Palto::SHOW_ERRORS_SCRIPT . " $projectPath/",
-                "cp $paltoPath/structure/" . Palto::ROUTES_SCRIPT . " $projectPath/",
-                "ln -s $paltoPath/db $projectPath/",
-                'mysql -e "' . $this->getMySqlSystemQuery() . '"',
-                "mysql $databaseName < $paltoPath" . '/db/palto.sql',
-                "mkdir $projectPath/logs"
-            ]
-        );
+        if ($this->isUpdateOnly) {
+            return $this->getCopyStructureCommands();
+        } else {
+            return array_merge([
+                "mkdir $projectPath/public"
+            ],
+                $this->getCopyStructureCommands(), [
+                    "ln -s $paltoPath/structure/public/js $projectPath/public/",
+                    "ln -s $paltoPath/structure/public/moderate $projectPath/public/",
+                    "ln -s $paltoPath/structure/public/*.php $projectPath/public/",
+                    "ln -s $paltoPath/structure/" . Sitemap::GENERATE_SCRIPT . " $projectPath/",
+                    "ln -s $paltoPath/tasks $projectPath/",
+                    "cp -n $paltoPath/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $projectPath/",
+                    "cp -n $paltoPath/structure/" . Palto::PARSE_ADS_SCRIPT . " $projectPath/",
+                    "cp $paltoPath/structure/" . Palto::SHOW_ERRORS_SCRIPT . " $projectPath/",
+                    "cp $paltoPath/structure/" . Palto::ROUTES_SCRIPT . " $projectPath/",
+                    "ln -s $paltoPath/db $projectPath/",
+                    'mysql -e "' . $this->getMySqlSystemQuery() . '"',
+                    "mysql $databaseName < $paltoPath" . '/db/palto.sql',
+                    "mkdir $projectPath/logs"
+                ]
+            );
+        }
     }
 
     private function getCopyStructureCommands(): array

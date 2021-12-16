@@ -37,6 +37,7 @@ class Install
         $this->updateCron();
         $this->updateHost();
         $this->updateSystemConfigs();
+        $this->updateEnvOptions();
         $this->updateProjectConfigs();
         $this->logger->info('Installing Sphinx config');
         (new Sphinx())->install('/var/www/');
@@ -47,7 +48,6 @@ class Install
     public function updateSystemConfigs()
     {
         $this->logger->info('Updating system configs: nginx, php');
-//        $this->updateSphinx();
         $this->runCommands([
             $this->getReplaceNginxMainConfigCommand(),
             $this->getReplaceNginxPhpFpmConfigCommand()
@@ -56,7 +56,14 @@ class Install
 
     public function updateProjectConfigs()
     {
-        $this->updateEnvOptions();
+        if (!$this->databaseName || !$this->databasePassword) {
+            $databaseCredentials = Palto::extractDatabaseCredentials(
+                file_get_contents($this->projectPath . '/.env')
+            );
+            $this->databaseName = $databaseCredentials['DB_NAME'];
+            $this->databasePassword = $databaseCredentials['DB_PASSWORD'];
+        }
+
         $this->updatePhinx();
         $this->runCommands([
             $this->getReplaceCrunzCommand(),

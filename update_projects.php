@@ -1,1 +1,0 @@
-structure/update_projects.php

@@ -22,6 +22,6 @@
             "Palto\\": "src/"
         }
     },
-    "bin": ["bin/install.php"],
+    "bin": ["bin/install.php", "bin/update.php"],
     "minimum-stability": "dev"
 }

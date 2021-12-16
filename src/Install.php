@@ -256,7 +256,7 @@ class Install
                 '* * * * * root cd ' . $this->projectPath . ' && vendor/bin/crunz schedule:run'
             ],
             '#Every 12 hours' => [
-                '0 */12 * * * root cd ' . Sphinx::SPHINX_GLOBAL_DIRECTORY . ' && ' . Sphinx::REINDEX_COMMAND . ' && searchd'
+                '0 */12 * * * root cd ' . Sphinx::SPHINX_GLOBAL_DIRECTORY . ' && ' . Sphinx::REINDEX_SCRIPT . ' && searchd'
             ]
         ];
         foreach ($commands as $comment => $commentCommands) {

@@ -40,6 +40,7 @@ class Install
         $this->updateProjectConfigs();
         $this->logger->info('Installing Sphinx config');
         (new Sphinx())->install('/var/www/');
+        $this->updatePermissions();
         $this->showWelcome();
     }
 
@@ -375,5 +376,11 @@ class Install
         $projectPath = $this->projectPath;
 
         return "cp -R $configsPath/.htpasswd $projectPath/";
+    }
+
+    private function updatePermissions()
+    {
+        $this->runCommands(['`sudo chown -R "km":www-data /var/www/`;']);
+
     }
 }

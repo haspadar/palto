@@ -312,7 +312,8 @@ class Install
             strtr(file_get_contents($this->configsPath . '/' . Palto::PHINX_CONFIG), [
                 'production_db' => $this->databaseName,
                 'production_user' => $this->databaseName,
-                'production_pass' => $this->databasePassword
+                'production_pass' => $this->databasePassword,
+                '%%PHINX_CONFIG_DIR%%' => 'vendor/haspadar/palto'
             ])
         );
     }

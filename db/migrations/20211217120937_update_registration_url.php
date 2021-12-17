@@ -18,19 +18,19 @@ final class UpdateRegistrationUrl extends AbstractMigration
      */
     public function change(): void
     {
+        $projectDirectory = realpath(__DIR__ . '/../../../../../');
+        $layoutsDirectory = $projectDirectory . '/layouts';
         $layouts = [];
-        `pwd`;
-        exit;
-        foreach (scandir('layouts') as $file) {
+        foreach (scandir($layoutsDirectory) as $file) {
             if (!in_array($file, ['.', '..'])) {
-                if (is_dir('layouts/' . $file)) {
-                    foreach (scandir('layouts/' . $file) as $partialFile) {
+                if (is_dir($layoutsDirectory . '/' . $file)) {
+                    foreach (scandir($layoutsDirectory . '/' . $file) as $partialFile) {
                         if (!in_array($partialFile, ['.', '..'])) {
-                            $layouts[] = 'layouts/' . $file . '/' . $partialFile;
+                            $layouts[] = $layoutsDirectory . '/' . $file . '/' . $partialFile;
                         }
                     }
                 } else {
-                    $layouts[] = 'layouts/' . $file;
+                    $layouts[] = $layoutsDirectory . '/' . $file;
                 }
             }
         }

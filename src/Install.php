@@ -286,13 +286,21 @@ class Install
     private function updateEnvOptions()
     {
         $this->logger->info('Updating env options');
+        $replaces = [
+            'DB_USER=' => 'DB_USER=' . $this->databaseName,
+            'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->databasePassword,
+            'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
+        ];
+        $isAuthDisabled = $this->isUpdateOnly
+            && file_exists($this->projectPath . '/.env')
+            && mb_strpos(file_get_contents($this->projectPath . '/.env'), 'AUTH=0') !== false;
+        if ($isAuthDisabled) {
+            $replaces['AUTH=1'] = 'AUTH=0';
+        }
+
         file_put_contents(
             $this->projectPath . '/.env',
-            strtr(file_get_contents($this->configsPath . '/.env'), [
-                'DB_USER=' => 'DB_USER=' . $this->databaseName,
-                'DB_PASSWORD=' => 'DB_PASSWORD=' . $this->databasePassword,
-                'DB_NAME=' => 'DB_NAME=' . $this->databaseName,
-            ])
+            strtr(file_get_contents($this->configsPath . '/.env'), $replaces)
         );
     }
 
@@ -354,13 +362,6 @@ class Install
         $phpMajorVersion = $this->getPhpMajorVersion();
         $nginxDomainConfig = $this->getNginxDomainConfig($phpMajorVersion);
         $projectName = $this->projectName;
-        if ($this->isUpdateOnly
-            && file_exists("/etc/nginx/sites-available/$projectName")
-            && mb_strpos($nginxDomainConfig, 'AUTH=1') !== false
-        ) {
-            $nginxDomainConfig = str_replace('AUTH=1', 'AUTH=0', $nginxDomainConfig);
-        }
-
         if ($this->isUpdateOnly
             && file_exists("/etc/nginx/sites-available/$projectName")
             && mb_strpos($nginxDomainConfig, 'set $no_cache 0;#disable cache') !== false

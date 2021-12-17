@@ -19,6 +19,8 @@ final class UpdateRegistrationUrl extends AbstractMigration
     public function change(): void
     {
         $layouts = [];
+        `pwd`;
+        exit;
         foreach (scandir('layouts') as $file) {
             if (!in_array($file, ['.', '..'])) {
                 if (is_dir('layouts/' . $file)) {

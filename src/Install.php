@@ -48,7 +48,10 @@ class Install
         $this->runCommands(array_merge($this->getOSCommands(), $this->getLocalCommands()));
         $this->updateCron();
         $this->updateHost();
-        $this->updateEnvOptions();
+        if (!$this->isUpdateOnly) {
+            $this->updateEnvOptions();
+        }
+
         $this->updateProjectConfigs();
         $this->updateSphinx();
         $this->updatePermissions();

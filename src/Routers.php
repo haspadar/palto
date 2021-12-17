@@ -57,7 +57,7 @@ class Routers
     private static function getPath(string $url): string
     {
         $path = parse_url($url)['path'];
-        if (mb_substr($path, -1) == '/') {
+        if (mb_substr($path, -1) == '/' && $path != '/') {
             $path = mb_substr($path, 0, -1);
         }
 
@@ -65,7 +65,7 @@ class Routers
             $path = self::withoutPageNumber($path);
         }
 
-        return '/' . $path;
+        return $path;
     }
 
     private static function getAdId(string $path): int

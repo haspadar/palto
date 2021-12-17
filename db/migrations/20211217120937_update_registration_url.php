@@ -37,7 +37,7 @@ final class UpdateRegistrationUrl extends AbstractMigration
 
         foreach ($layouts as $layout) {
             $layoutContent = file_get_contents($layout);
-            if (mb_strpos($layout, '/all/registration') !== false) {
+            if (mb_strpos($layoutContent, '/all/registration') !== false) {
                 $layoutContent = str_replace('/all/registration', '/registration', $layoutContent);
                 file_put_contents($layout, $layoutContent);
                 echo 'Updated registration url in ' . $layout . PHP_EOL;

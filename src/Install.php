@@ -119,8 +119,8 @@ class Install
 
         return [
             "cp -R -n $paltoPath/structure/layouts $projectPath",
-            "cp -R $paltoPath/structure/public/css $projectPath/public/",
-            "cp -R $paltoPath/structure/public/img $projectPath/public/",
+            "cp -R -n $paltoPath/structure/public/css $projectPath/public/",
+            "cp -R -n $paltoPath/structure/public/img $projectPath/public/",
             "cp $paltoPath/structure/" . Palto::SHOW_ERRORS_SCRIPT . " $projectPath/",
             "cp $paltoPath/structure/" . Palto::ROUTES_SCRIPT . " $projectPath/",
         ];

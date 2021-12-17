@@ -354,6 +354,23 @@ class Install
         $phpMajorVersion = $this->getPhpMajorVersion();
         $nginxDomainConfig = $this->getNginxDomainConfig($phpMajorVersion);
         $projectName = $this->projectName;
+        if ($this->isUpdateOnly
+            && file_exists("/etc/nginx/sites-available/$projectName")
+            && mb_strpos($nginxDomainConfig, 'AUTH=1') !== false
+        ) {
+            $nginxDomainConfig = str_replace('AUTH=1', 'AUTH=0', $nginxDomainConfig);
+        }
+
+        if ($this->isUpdateOnly
+            && file_exists("/etc/nginx/sites-available/$projectName")
+            && mb_strpos($nginxDomainConfig, 'set $no_cache 0;#disable cache') !== false
+        ) {
+            $nginxDomainConfig = str_replace(
+                'set $no_cache 0;#disable cache',
+                'set $no_cache 1;#disable cache',
+                $nginxDomainConfig
+            );
+        }
 
         return "echo '$nginxDomainConfig' > /etc/nginx/sites-available/$projectName";
     }

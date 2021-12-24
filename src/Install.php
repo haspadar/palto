@@ -53,7 +53,6 @@ class Install
         }
 
         $this->updateProjectConfigs();
-//        $this->updateSphinx();
         $this->updatePermissions();
         $this->showWelcome();
     }
@@ -407,7 +406,7 @@ class Install
 
     private function updatePermissions()
     {
-        $this->runCommands(['`sudo chown -R "km":www-data /var/www/`;']);
-
+        $projectPath = $this->projectPath;
+        $this->runCommands(["sudo chown -R \"km\":www-data $projectPath"]);
     }
 }

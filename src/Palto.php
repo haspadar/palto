@@ -855,7 +855,7 @@ class Palto
         ]];
 
         return array_merge(
-            $urls,
+            array_unique($urls),
             $this->getCategoryBreadcrumbUrls(
                 array_merge($this->getCurrentCategory()['parents'], [$this->getCurrentCategory()]),
                 $this->getCurrentRegion()

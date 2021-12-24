@@ -53,7 +53,7 @@ class Install
         }
 
         $this->updateProjectConfigs();
-        $this->updateSphinx();
+//        $this->updateSphinx();
         $this->updatePermissions();
         $this->showWelcome();
     }
@@ -409,11 +409,5 @@ class Install
     {
         $this->runCommands(['`sudo chown -R "km":www-data /var/www/`;']);
 
-    }
-
-    private function updateSphinx()
-    {
-        $this->logger->info('Installing Sphinx config');
-        (new Sphinx())->install('/var/www/');
     }
 }

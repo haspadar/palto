@@ -1,13 +1,13 @@
 <?php
 
-use Palto\Palto;
+use Dotenv\Dotenv;
 
 $rootDirectory = require_once 'autoload.php';
-$palto = new Palto($rootDirectory);
+$dotenv = Dotenv::createImmutable($rootDirectory);
 if (isset($_GET['query']) && $_GET['query']) {
     $query = $_GET['query'];
     $query = str_replace('Cruisecontrol', 'Cruise control', $query);
-    $html = download('https://www.youtube.com/results?search_query=' . urlencode($query), getProxy($palto->getEnv()));
+    $html = download('https://www.youtube.com/results?search_query=' . urlencode($query), getProxy($dotenv->load()));
     $videoId = parseVideoId($html);
     echo json_encode(['video_id' => $videoId]);
 }

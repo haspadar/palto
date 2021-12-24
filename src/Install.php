@@ -53,7 +53,10 @@ class Install
         }
 
         $this->updateProjectConfigs();
-        $this->updatePermissions();
+        if (!$this->isUpdateOnly) {
+            $this->updatePermissions();
+        }
+        
         $this->showWelcome();
     }
 

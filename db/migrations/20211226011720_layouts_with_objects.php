@@ -8,7 +8,7 @@ final class LayoutsWithObjects extends AbstractMigration
     public function change(): void
     {
         $replaces = [
-            'apola/layouts/list.php' => [
+            'layouts/list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$categoryWithChildrenIds = ...' => '$this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [];',
                 '$ads = $this->getAds(...' => '$ads = $this->getAds();',
@@ -26,7 +26,7 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$this->getCurrentCategory()[\'title\']' => '$this->getCategory()->getTitle()',
                 '$this->getCurrentCategory()[\'id\']' => '$this->getCategory()->getId()',
             ],
-            'apola/layouts/index.php' => [
+            'layouts/index.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '[\'icon_url\']' => '->getIconUrl()',
                 '[\'icon_text\']' => '->getIconText()',
@@ -62,7 +62,7 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$this->getNextPageUrl()' => '$pager->getNextPageUrl()',
         '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()'
             ],
-            'apola/layouts/partials/ad_in_list.inc' => [
+            'layouts/partials/ad_in_list.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$ad[\'images\']' => '$ad->getImages()',
                 '$ad[\'title\']' => '$ad->getTitle()',
@@ -73,22 +73,22 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$ad[\'price\']' => '$ad->getPrice()',
                 '$ad[\'currency\']' => '$ad->getCurrency()'
             ],
-            'apola/layouts/partials/pager.inc' => [
+            'layouts/partials/pager.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->previousPageUrl' => '$this->getPartialVariable(\'previousPageUrl\')',
             ],
-            'apola/layouts/partials/header.inc' => [
+            'layouts/partials/header.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getWithAdsCategories(5)' => '$this->getWithAdsCategories(0, 1, 5)'
             ],
-            'apola/layouts/regions-list.php' => [
+            'layouts/regions-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getRegions(0, 1)' => '$this->getWithAdsRegions()',
                 '$level1Region[\'title\']' => '$level1Region->getTitle()',
                 '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region->getId())',
                 '$level2Region[\'title\']' => '$level2Region->getTitle()'
             ],
-            'apola/layouts/categories-list.php' => [
+            'layouts/categories-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()',
                 '$level1Category[\'title\']' => '$level1Category->getTitle()',
@@ -97,7 +97,7 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$level2Category[\'id\']' => '$level2Category->getId()',
                 '$level3Category[\'title\']' => '$level3Category->getTitle()'
             ],
-            'apola/layouts/ad.php' => [
+            'layouts/ad.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getCurrentAd()[\'title\']' => '$this->getAd()->getTitle()',
                 '$this->getCurrentCategory()[\'titles\']' => '$this->getAd()->getCategory()->getWithParentsTitles()',
@@ -127,7 +127,7 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$this->getAds($this->getCurrentCategory()[\'id\'], $this->getCurrentRegion()[\'id\'], 6)' => '$this->getSimilarAds()',
                 '$similarAd[\'id\']' => '$similarAd->getId()',
             ],
-            'apola/layouts/404.php' => [
+            'layouts/404.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getCurrentAd()' => '$this->getAd()',
                 'getWithAdsCategories(0, 1)' => 'getWithAdsCategories()',
@@ -135,7 +135,7 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$level1Category[\'icon_text\']' => '$level1Category->getIconText()',
                 '$level1Category[\'title\']' => '$level1Category->getTitle()',
             ],
-            'apola/layouts/registration.php' => [
+            'layouts/registration.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout'
             ]
         ];

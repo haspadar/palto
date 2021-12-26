@@ -1,25 +1,27 @@
 <?php
-use Palto\Moderation;
-use Palto\Palto;
 
-$rootDirectory = require_once 'autoload.php';
-$palto = new Palto($rootDirectory);
-if ($palto->getEnv()['AUTH']) {
-    $palto->checkAuth();
+use Palto\Auth;
+use Palto\Config;
+use Palto\IP;
+use Palto\Moderation;
+
+require_once 'autoload.php';
+if (Config::get('AUTH') && !IP::isLocal()) {
+    Auth::check();
 }
 
-$email = $palto->filterString($_POST['email']);
-$message = $palto->filterString($_POST['message']);
+$email = Palto\Filter::get($_POST['email']);
+$message = Palto\Filter::get($_POST['message']);
 $adId = intval($_POST['ad_id']);
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $response = 'Is not email';
 } elseif (!$message) {
     $response = 'Message is empty';
-} elseif (!Moderation::getSmtpEmail($palto)) {
+} elseif (!Moderation::getSmtpEmail()) {
     $response = 'Smtp email is empty';
 } else {
     Moderation::addComplaint(
-        $palto, [
+        [
             'email' => $email,
             'message' => $message,
             'ad_id' => $adId,

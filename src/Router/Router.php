@@ -1,17 +1,19 @@
 <?php
 namespace Palto\Router;
 
-use Palto\Debug;
+use Palto\Url;
 
 abstract class Router
 {
     protected string $layoutName = NOT_FOUND_LAYOUT;
-    protected int $pageNumber = 1;
     protected array $queryParams = [];
     protected string $path;
-    protected string $regionUrl = '';
-    protected array $categoriesUrls = [];
-    protected int $adId = 0;
+    private Url $url;
+
+    public function __construct(Url $url)
+    {
+        $this->url = $url;
+    }
 
     /**
      * @return string
@@ -26,7 +28,7 @@ abstract class Router
      */
     public function getPageNumber(): int
     {
-        return $this->pageNumber;
+        return $this->url->getPageNumber();
     }
 
     public function setNotFoundLayout()
@@ -37,9 +39,19 @@ abstract class Router
     /**
      * @return array
      */
-    public function getQueryParams(): array
+    public function getQueryParameters(): array
     {
         return $this->queryParams;
+    }
+
+    public function getSearchQueryParameter(): string
+    {
+        return $this->getQueryParameter('query');
+    }
+
+    public function getQueryParameter(string $name): string
+    {
+        return $this->queryParams[$name] ?? '';
     }
 
     /**
@@ -55,7 +67,7 @@ abstract class Router
      */
     public function getRegionUrl(): string
     {
-        return $this->regionUrl;
+        return $this->url->getRegionUrl();
     }
 
     /**
@@ -63,24 +75,31 @@ abstract class Router
      */
     public function getCategoriesUrls(): array
     {
-        return $this->categoriesUrls;
+        return $this->url->getCategoriesUrls();
     }
 
     public function getCategoryUrl(): string
     {
-        return $this->categoriesUrls[count($this->categoriesUrls) - 1] ?? '';
+        $categoriesUrls = $this->getCategoriesUrls();
+
+        return $categoriesUrls[count($categoriesUrls) - 1] ?? '';
     }
 
     public function getCategoryLevel(): int
     {
-        return count($this->categoriesUrls);
+        return count($this->getCategoriesUrls());
+    }
+
+    public function getAdId(): int
+    {
+        return $this->url->getAdId();
     }
 
     /**
-     * @return int
+     * @return Url
      */
-    public function getAdId(): int
+    public function getUrl(): Url
     {
-        return $this->adId;
+        return $this->url;
     }
 }

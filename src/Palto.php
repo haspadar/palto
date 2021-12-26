@@ -50,6 +50,7 @@ class Palto
         $this->router = Routers::create($this->getUrl(), $this->getStandardRoutes());
         $this->initLogger();
         $this->initDb();
+
         $this->initDefaultRegion();
         $this->initRegion();
         $this->initCategory();

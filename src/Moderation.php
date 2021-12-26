@@ -1,18 +1,18 @@
 <?php
 namespace Palto;
 
+use Palto\Model\Complaints;
+
 class Moderation
 {
-    public static function ignoreComplaint(\MeekroDB $db, int $id) 
+    public static function ignoreComplaint(int $id)
     {
-        $db->update('complaints', [
-            'ignore_time' => (new \DateTime())->format('Y-m-d H:i:s')
-        ], "id = %d", $id);
+        Complaints::updateIgnoreTime($id);
     }
 
-    public static function sendRemovedComplaintMail(Palto $palto, int $id)
+    public static function sendRemovedComplaintMail(int $id)
     {
-        $complaint = self::getComplaint($palto->getDb(), $id);
+        $complaint = self::getComplaint($id);
         $subject = 'Your ad was removed';
         $body = 'Your <a target="_blank" href="'
             . $complaint['domain']
@@ -20,55 +20,42 @@ class Moderation
             . '">ad</a> was removed.<br><br>Your report: : "'
             . $complaint['message']
             . '"';
-        $palto->sendEmail($complaint['email'], $subject, $body);
-        $palto->getDb()->update('complaints', [
-            'response_time' => (new \DateTime())->format('Y-m-d H:i:s')
-        ], "id = %d", $id);
+        Email::send($complaint['email'], $subject, $body);
+        Complaints::updateResponseTime($id);
     }
 
-    public static function getComplaint(\MeekroDB $db, $id) 
+    public static function getComplaint($id)
     {
-        return $db->queryFirstRow('SELECT * FROM complaints WHERE id=%d', $id);
+        return Complaints::getComplaint($id);
     }
     
-    public static function removeComplaintUser(\MeekroDB $db, $id) 
+    public static function removeComplaintUser($id)
     {
-        $complaint = self::getComplaint($db, $id);
+        $complaint = self::getComplaint($id);
         if ($complaint['ad_id']) {
-            $db->update('ads', [
-                'deleted_time' => (new \DateTime())->format('Y-m-d H:i:s')
-            ], "id = %d", $complaint['ad_id']);
+            Ads::markAsDelete($complaint['ad_id']);
         }
     }
 
-    public static function getActualComplaints(\MeekroDB $db): array
+    public static function getActualComplaints(): array
     {
-        return $db->query("SELECT * FROM complaints WHERE response_time IS NULL AND ignore_time IS NULL");
+        return Complaints::getActualComplaints();
     }
 
-    public static function getSmtpEmail(Palto $palto): string
+    public static function getSmtpEmail(): string
     {
-        return $palto->getEnv()['SMTP_EMAIL'];
+        return Config::get('SMTP_EMAIL');
     }
 
-    public static function addComplaint(Palto $palto, array $complaint)
+    public static function addComplaint(array $complaint)
     {
         $subject = 'Пришла жалоба';
         $body = 'Текст жалобы: "'. $complaint['message'] . '"<br><a target="_blank" href="'
             . $complaint['domain']
             . '/moderate/'
             . '">Зайти в админку</a>';
-        $palto->sendEmail(self::getSmtpEmail($palto), $subject, $body);
-        $palto->getDb()->insert('complaints', $complaint);
-    }
 
-    private static function getIp(): string
-    {
-        return isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']
-            ? $_SERVER['HTTP_X_FORWARDED_FOR']
-            : (isset($_SERVER['REMOTE_ADDR'])
-                ? $_SERVER['REMOTE_ADDR']
-                : ''
-            );
+        Email::send(Config::get('SMTP_EMAIL'), $subject, $body);
+        Complaints::add($complaint);
     }
 }

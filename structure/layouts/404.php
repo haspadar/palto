@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Palto
+ * @var $this \Palto\Layout
  */
 $this->partial('header.inc', [
     'title' => '404',
@@ -9,24 +9,24 @@ $this->partial('header.inc', [
 ]);
 ?>
     <br/>
-<?php if ($this->getCurrentAd()) :?>
+<?php if ($this->getAd()) :?>
     <h1>Ad was deleted</h1>
 <?php else :?>
     <h1>Not found</h1>
 <?php endif;?>
 
 
-    <h2>Categories</h2>
-<?php foreach ($this->getWithAdsCategories(0, 1) as $level1Category) :?>
+<h2>Categories</h2>
+<?php foreach ($this->getWithAdsCategories() as $level1Category) :?>
     <div class="span-d">
         <p>
             <a href="<?=$this->generateCategoryUrl($level1Category)?>">
-                <?php if ($level1Category['icon_url']) :?>
-                    <img src="<?=$level1Category['icon_url']?>"
-                         title="<?=$level1Category['icon_text']?>"
+                <?php if ($level1Category->getIconUrl()) :?>
+                    <img src="<?=$level1Category->getIconUrl()?>"
+                         title="<?=$level1Category->getIconText()?>"
                          class="icm" />
                 <?php endif?>
-                <strong> <?=$level1Category['title']?></strong>
+                <strong> <?=$level1Category->getTitle()?></strong>
             </a>
         </p>
     </div>

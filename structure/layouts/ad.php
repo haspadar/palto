@@ -1,22 +1,20 @@
 <?php
 /**
- * @var $this \Palto\Palto
+ * @var $this \Palto\Layout
  */
 $this->partial('header.inc', [
-    'title' => $this->getCurrentAd()['title']
+    'title' => $this->getAd()->getTitle()
         . ': '
         . implode(
             ' - ',
             array_filter(array_merge(
-                $this->getCurrentCategory()['titles'],
-                [$this->getCurrentAd()['address']],
-                ['Ogłoszenia w ' . $this->getCurrentRegion()['title']],
+                $this->getAd()->getCategory()->getWithParentsTitles(),
+                [$this->getAd()->getAddress()],
+                ['Ogłoszenia w ' . $this->getRegion()->getTitle()],
             ))
         ),
-    'description' => $this->generateShortText($this->getCurrentAd()['text']),
-    'nextPageUrl' => $this->getNextPageUrl(),
-    'previousPageUrl' => $this->getPreviousPageUrl(),
-    'css' => $this->getCurrentAd()['coordinates'] ? [
+    'description' => \Palto\Filter::shortText($this->getAd()->getText()),
+    'css' => $this->getAd()->getCoordinates() ? [
         [
             'href' => 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css',
             'integrity' => 'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
@@ -26,16 +24,16 @@ $this->partial('header.inc', [
 ]);
 ?>
     <div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getAdBreadcrumbUrls()]);?>
+        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     </div>
-    <h1><?=$this->getCurrentAd()['title']?> <span style="color:#999"> in <?=$this->getCurrentAd()['address'] ? $this->getCurrentAd()['address'] . ', ' : ''?><?=$this->getCurrentRegion()['title']?> from craigslist</span></h1>
-<?php if ($this->getCurrentAd()['images']) :?>
+    <h1><?=$this->getAd()->getTitle()?> <span style="color:#999"> in <?=$this->getAd()->getAddress() ? $this->getAd()->getAddress() . ', ' : ''?><?=$this->getRegion()->getTitle()?> from craigslist</span></h1>
+<?php if ($this->getAd()->getImages()) :?>
     <!-- Slideshow container -->
     <div class="slideshow-container">
         <!-- Full-width images with number and caption text -->
-        <?php foreach ($this->getCurrentAd()['images'] as $key => $image) :?>
+        <?php foreach ($this->getAd()->getImages() as $key => $image) :?>
             <div class="mySlides fade">
-                <div class="numbertext"><?=$key + 1?> / <?=count($this->getCurrentAd()['images'])?></div>
+                <div class="numbertext"><?=$key + 1?> / <?=count($this->getAd()->getImages())?></div>
                 <img src="<?=$image['small']?>;s=640x640" style="width:100%" loading="lazy">
             </div>
         <?php endforeach;?>
@@ -48,7 +46,7 @@ $this->partial('header.inc', [
 
     <!-- The dots/circles -->
     <div style="text-align:center;">
-        <?php foreach ($this->getCurrentAd()['images'] as $key => $image) :?>
+        <?php foreach ($this->getAd()->getImages() as $key => $image) :?>
             <span class="dot" onclick="currentSlide(<?=$key + 1?>)"></span>
         <?php endforeach;?>
     </div>
@@ -56,44 +54,44 @@ $this->partial('header.inc', [
 <?php endif;?>
 
     <br>
-    <div class="youtube myvideo" data-url="<?=$this->getDomainUrl() . '/youtube.php?query=' . urlencode($this->getCurrentAd()['title'])?>" style="text-align: center">
+    <div class="youtube myvideo" data-url="<?=\Palto\Config::getDomainUrl() . '/youtube.php?query=' . urlencode($this->getAd()->getTitle())?>" style="text-align: center">
         <img src="/img/loading.gif" alt="loading">
     </div>
     <hr />
-<?php if ($this->getCurrentAd()['details']) :?>
+<?php if ($this->getAd()->getDetails()) :?>
     <ul class="details">
-        <?php foreach ($this->getCurrentAd()['details'] as $field => $value) :?>
+        <?php foreach ($this->getAd()->getDetails() as $field => $value) :?>
             <li>➡️ <?=$field?>: <?=$value?></li>
         <?php endforeach;?>
     </ul>
 <?php endif;?>
-    <div class="description"> <?=urldecode($this->getCurrentAd()['text'])?> </div>
-<?php if ($this->getCurrentAd()['price'] > 0) :?>
+    <div class="description"> <?=urldecode($this->getAd()->getText())?> </div>
+<?php if ($this->getAd()->getPrice() > 0) :?>
     <div class="price">
-        🏷 <?=$this->getCurrentAd()['currency']?><?=number_format($this->getCurrentAd()['price'])?></span>
+        🏷 <?=$this->getAd()->getCurrency()?><?=number_format($this->getAd()->getPrice())?>
     </div>
 <?php endif;?>
 
-    <div><?=$this->getCurrentAd()['seller_postfix'] ?? ''?></div>
-<?php if ($this->getCurrentAd()['address']) :?>
-    <div class="adress">📍Address: <?=$this->getCurrentAd()['address']?></div>
+    <div><?=$this->getAd()->getSellerPostfix()?></div>
+<?php if ($this->getAd()->getAddress()) :?>
+    <div class="adress">📍Address: <?=$this->getAd()->getAddress()?></div>
 <?php endif;?>
 
-<?php if ($this->getCurrentAd()['coordinates']) :?>
+<?php if ($this->getAd()->getCoordinates()) :?>
     <div id="map"
-         data-latitude="<?=$this->getLatitude()?>"
-         data-longitude="<?=$this->getLongitute()?>"
+         data-latitude="<?=$this->getAd()->getLatitude()?>"
+         data-longitude="<?=$this->getAd()->getLongitute()?>"
          data-accuracy="15"
     ></div>
 <?php endif;?>
-    Region: <a href="<?=$this->generateRegionUrl($this->getCurrentAd()['region'])?>"><?=$this->getCurrentAd()['region']['title']?></a>
-<?php if (trim($this->getCurrentAd()['seller_name'])) :?>
-    <div class="seller">💁‍♂️ <?=$this->getCurrentAd()['seller_name']?></div>
+    Region: <a href="<?=$this->generateRegionUrl($this->getAd()->getRegion())?>"><?=$this->getAd()->getRegion()->getTitle()?></a>
+<?php if (trim($this->getAd()->getSellerName())) :?>
+    <div class="seller">💁‍♂️ <?=$this->getAd()->getSellerName()?></div>
 <?php endif;?>
 
-<?php if ($this->getCurrentAd()['seller_phone']) :?>
-    <div class="phone">📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getCurrentAd()['seller_phone']?>" href="tel:<?=$this->getCurrentAd()['seller_phone']?>">
-            <?php if ($this->getCurrentAd()['seller_phone']) :?>
+<?php if ($this->getAd()->getSellerPhone()) :?>
+    <div class="phone">📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getAd()->getSellerPhone()?>" href="tel:<?=$this->getAd()->getSellerPhone()?>">
+            <?php if ($this->getAd()->getSellerPhone()) :?>
                 Show Phone
             <?php else :?>
                 No Phone
@@ -101,10 +99,10 @@ $this->partial('header.inc', [
     </div>
 <?php endif;?>
 
-    <div class="reply"><a class="reply_link" href="<?=$this->getCurrentAd()['url']?>" target="_blank" rel="nofollow">🤙 Reply</a></div>
-    <div class="create_time">⏱ Post time: <?=(new DateTime($this->getCurrentAd()['create_time']))->format('d.m.Y')?> </div>
+    <div class="reply"><a class="reply_link" href="<?=$this->getAd()->getUrl()?>" target="_blank" rel="nofollow">🤙 Reply</a></div>
+    <div class="create_time">⏱ Post time: <?=$this->getAd()->getCreateTime()->format('d.m.Y')?> </div>
     <div class="report"><a class="report_link" href="javascript:void(0);" id="send-abuse">⚠️ Report this ad</a></div>
-    <div id="send-abuse-modal" class="modal" data-url="<?=$this->getDomainUrl()?>/send-feedback.php">
+    <div id="send-abuse-modal" class="modal" data-url="<?=\Palto\Config::getDomainUrl()?>/send-feedback.php">
         <!-- Modal content -->
         <div class="modal-content">
             <div class="modal-header">
@@ -118,7 +116,7 @@ $this->partial('header.inc', [
                         <td><input type="email" name="email" required></td>
                     </tr>
                     <tr>
-                        <td class="td_report"><input type="hidden" name="ad_id" value="<?=$this->getCurrentAd()['id']?>"><label>Report:</label></td>
+                        <td class="td_report"><input type="hidden" name="ad_id" value="<?=$this->getAd()->getId()?>"><label>Report:</label></td>
                         <td><textarea name="message" rows="3" width="200px"></textarea></td>
                     </tr>
                     <tr>
@@ -135,15 +133,15 @@ $this->partial('header.inc', [
     <br />
     <h2>Similar ads</h2>
     <table class="serp">
-        <?php foreach ($this->getAds($this->getCurrentCategory()['id'], $this->getCurrentRegion()['id'], 6) as $similarAd) :?>
-            <?php if ($similarAd['id'] != $this->getCurrentAd()['id']) :?>
+        <?php foreach ($this->getSimilarAds() as $similarAd) :?>
+            <?php if ($similarAd->getId() != $this->getAd()->getId()) :?>
                 <?php $this->partial('ad_in_list.inc', ['ad' => $similarAd])?>
             <?php endif;?>
         <?php endforeach;?>
     </table>
 
 <?php $this->partial('footer.inc', [
-    'js' => $this->getCurrentAd()['coordinates'] ? [
+    'js' => $this->getAd()->getCoordinates() ? [
         [
             'src' => 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
             'integrity' => 'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Palto
+ * @var $this \Palto\Layout
  */
 $this->partial('header.inc', [
     'title' => 'Regions',
@@ -9,12 +9,12 @@ $this->partial('header.inc', [
 ]);
 ?>
 <h1>Regions</h1>
-<?php foreach ($this->getRegions(0, 1) as $level1Region) :?>
-    <div class="span-d regions"><a href="<?=$this->generateRegionUrl($level1Region)?>"><strong> <?=$level1Region['title']?></strong></a>
-        <?php if ($level2Regions = $this->getRegions($level1Region['id'])) :?>
+<?php foreach ($this->getWithAdsRegions() as $level1Region) :?>
+    <div class="span-d regions"><a href="<?=$this->generateRegionUrl($level1Region)?>"><strong> <?=$level1Region->getTitle()?></strong></a>
+        <?php if ($level2Regions = $this->getWithAdsRegions($level1Region->getId())) :?>
             <ul>
                 <?php foreach ($level2Regions as  $level2Region) :?>
-                    <li><a href="<?=$this->generateRegionUrl($level2Region)?>"><?=$level2Region['title']?></a></li>
+                    <li><a href="<?=$this->generateRegionUrl($level2Region)?>"><?=$level2Region->getTitle()?></a></li>
                 <?php endforeach;?>
             </ul>
 

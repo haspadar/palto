@@ -2,13 +2,13 @@
 
 namespace Palto\Router;
 
+use Palto\Url;
+
 class Standard extends Router
 {
-    public function __construct(string $path, string $layoutName, int $pageNumber, array $queryParams)
+    public function __construct(Url $url, string $layoutName)
     {
+        parent::__construct($url);
         $this->layoutName = $layoutName;
-        $this->pageNumber = $pageNumber;
-        $this->queryParams = $queryParams;
-        $this->path = $path;
     }
 }

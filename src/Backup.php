@@ -19,17 +19,6 @@ class Backup
         return false;
     }
 
-    public static function createConfigArchive(): string
-    {
-        $archiveName = 'backups/.env.zip';
-        $isBackupCreated = Backup::createArchive($archiveName, self::getConfigFiles());
-        if ($isBackupCreated) {
-            return $archiveName;
-        }
-
-        return '';
-    }
-
     public static function createSundukArchive(string $projectName): string
     {
         $files = self::getSundukFiles($projectName);
@@ -66,8 +55,6 @@ class Backup
         return array_merge([
             Palto::PARSE_CATEGORIES_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_CATEGORIES_SCRIPT,
             Palto::PARSE_ADS_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_ADS_SCRIPT,
-            'logs/parser-' . (new \DateTime())->modify('-1 DAY')->format('Y-m-d') =>
-                $archiveDirectory . '/logs/parser-' . (new \DateTime())->modify('-1 DAY')->format('Y-m-d'),
         ], $layoutFiles);
     }
 

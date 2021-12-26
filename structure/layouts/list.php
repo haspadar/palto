@@ -1,71 +1,56 @@
 <?php
 
-$flashMessage = $this->getFlashMessage();
+$flashMessage = \Palto\Flash::get();
 /**
- * @var $this \Palto\Palto
+ * @var $this \Palto\Layout
  */
-$categoryWithChildrenIds = $this->getCurrentCategory()['id']
-    ? array_merge(
-        [$this->getCurrentCategory()['id']],
-        array_column($this->getCurrentCategory()['children'], 'id')
-    ) : [];
-$ads = $this->getAds(
-    $categoryWithChildrenIds,
-    $this->getCurrentRegion()['id'],
-    $this->getAdsLimit(),
-    $this->getAdsOffset()
-);
-$this->initPager($this->hasNextPage(count($ads)));
-$categoriesTitle = implode(' - ', $this->getCurrentCategory()['titles']);
+$categoryWithChildrenIds = $this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [];
+$ads = $this->getAds();
+$pager = new \Palto\Pager($this->getDispatcher());
+$categoriesTitle = $this->getCategory() ? implode(' - ', $this->getCategory()->getWithParentsTitles()) : '';
+
 $this->partial('header.inc', [
     'title' => ($categoriesTitle ? $categoriesTitle . ' - ' : $categoriesTitle)
         . 'Ogłoszenia w '
-        . $this->getCurrentRegion()['title'],
+        . $this->getRegion()->getTitle(),
     'description' => 'Agregator wszystkich tablic ogłoszeniowych w '
-        . implode(
-            ' - ',
-            array_filter(array_merge(
-                array_column($this->getCurrentCategory()['parents'], 'title'),
-                [$this->getCurrentCategory()['title']],
-                [$this->getCurrentRegion()['title']]
-            ))
-        ),
-    'nextPageUrl' => $this->getNextPageUrl(),
-    'previousPageUrl' => $this->getPreviousPageUrl(),
+        . ($this->getCategory() ? implode(' - ', $this->getCategory()->getWithParentsTitles([$this->getRegion()->getTitle()])) : $this->getRegion()->getTitle()),
+    'nextPageUrl' => $pager->getNextPageUrl(),
+    'previousPageUrl' => $pager->getPreviousPageUrl(),
 ]);
 ?>
     <div class="bread"
          itemscope
          itemtype="http://schema.org/BreadcrumbList"
     >
-        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getListBreadcrumbUrls()]);?>
+        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     </div>
-    <h1><?php if ($this->getCurrentCategory()['title']) :?>
-            <?= $this->getCurrentCategory()['title']?> w
+    <h1><?php if ($this->getCategory()) :?>
+            <?= $this->getCategory()->getTitle()?> w
         <?php endif;?>
-        <?= $this->getCurrentRegion()['title'] == 'Polska'
+        <?= $this->getRegion()->getTitle() == 'Polska'
             ? 'Polske'
-            : $this->getCurrentRegion()['title']
+            : $this->getRegion()->getTitle()
         ?>: Ogłoszenia drobne z OLX
     </h1>
 <?php if ($flashMessage) :?>
     <div class="alert"><?=$flashMessage?></div>
 <?php endif;?>
 
-<?php $categories = $this->getCurrentCategory()['id']
-    ? $this->getWithAdsCategories($this->getCurrentCategory()['id'])
-    : $this->getWithAdsCategories(0, 1)
+<?php $categories = $this->getCategory()
+    ? $this->getWithAdsCategories($this->getCategory()->getId())
+    : $this->getWithAdsCategories()
 ?>
 <?php if ($categories) :?>
     <ul class="sub_cat">
 
         <?php foreach ($categories as $childCategory) :?>
-            <li><a href="<?=$this->generateCategoryUrl($childCategory)?>"><?=$childCategory['title']?></a></li>
+            <li><a href="<?=$this->generateCategoryUrl($childCategory)?>"><?=$childCategory->getTitle()?></a></li>
         <?php endforeach?>
     </ul>
 <?php endif;?>
 
-    <div class="region_cat"><b>Region:</b> <?= $this->getCurrentRegion()['title'] ?></div>
+    <div class="region_cat"><b>Region:</b> <?= $this->getRegion()->getTitle() ?></div>
     <table class="serp">
         <?php foreach ($ads as $adIndex => $ad) :?>
             <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
@@ -78,9 +63,9 @@ $this->partial('header.inc', [
         <?php endforeach;?>
     </table>
 <?php $this->partial('pager.inc', [
-    'pageNumber' => $this->getPageNumber(),
-    'nextPageUrl' => $this->getNextPageUrl(),
-    'previousPageUrl' => $this->getPreviousPageUrl(),
+    'pageNumber' => $pager->getPageNumber(),
+    'nextPageUrl' => $pager->getNextPageUrl(),
+    'previousPageUrl' => $pager->getPreviousPageUrl(),
 ])?>
 
 <?php $this->partial('footer.inc');

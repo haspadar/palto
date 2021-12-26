@@ -9,16 +9,16 @@ $palto->checkAuth();
 
 if (is_numeric($_POST['id'])) {
     $id = intval($_POST['id']);
-    Moderation::sendRemovedComplaintMail($palto, $id);
-    Moderation::removeComplaintUser($palto->getDb(), $id);
+    Moderation::sendRemovedComplaintMail($id);
+    Moderation::removeComplaintUser($id);
     echo true;
 } else {
     $ids = explode(',', $_POST['id']);
     $lastResponse = true;
     foreach ($ids as $id) {
         $id = intval($id);
-        Moderation::sendRemovedComplaintMail($palto, $id);
-        Moderation::removeComplaintUser($palto->getDb(), $id);
+        Moderation::sendRemovedComplaintMail($id);
+        Moderation::removeComplaintUser($id);
     }
 
     echo true;

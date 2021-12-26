@@ -1,11 +1,9 @@
 <?php
 
 use Palto\Moderation;
-use Palto\Palto;
 
-$rootDirectory = require_once '../autoload.php';
-$palto = new Palto($rootDirectory);
-$palto->checkAuth();
+require_once '../autoload.php';
+\Palto\Auth::check();
 ?>
 <html>
 <head>
@@ -29,7 +27,7 @@ $palto->checkAuth();
             </tr>
         </thead>
         <tbody>
-            <?php $actualComplaints = Moderation::getActualComplaints($palto->getDb());
+            <?php $actualComplaints = Moderation::getActualComplaints();
             foreach ($actualComplaints as $actualComplaint) :?>
                 <tr>
                     <td height="30" style="border-bottom:#CCC solid 1px; padding-left:10px">
@@ -45,7 +43,7 @@ $palto->checkAuth();
                         <a href="<?=$actualComplaint['domain']?><?=$actualComplaint['page']?>" target="_blank"><?=$actualComplaint['domain']?><?=$actualComplaint['page']?></a>
                     </td>
                     <td style="border-bottom:#CCC solid 1px">
-                        <?php if ($actualComplaint['avatar']) :?>
+                        <?php if ($actualComplaint['avatar'] ?? '') :?>
                             <a href="<?=$actualComplaint['avatar']?>" target="_blank">IMG</a>
                         <?php endif;?>
                     </td>
@@ -53,11 +51,11 @@ $palto->checkAuth();
                         <?=$actualComplaint['ip']?>
                     </td>
                     <td style="border-bottom:#CCC solid 1px">
-                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="ignore-profile" data-url="<?=$palto->getDomainUrl()?>/moderate/ignore.php">
+                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="ignore-profile" data-url="<?=\Palto\Config::getDomainUrl()?>/moderate/ignore.php">
                             Игнорировать жалобу
                         </a>
 
-                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="remove-profile" data-url="<?=$palto->getDomainUrl()?>/moderate/remove.php">
+                        <a href="javascript:void(0);" data-id="<?=$actualComplaint['id']?>" class="remove-profile" data-url="<?=\Palto\Config::getDomainUrl()?>/moderate/remove.php">
                             Удалить анкету
                         </a>
                     </td>
@@ -69,7 +67,7 @@ $palto->checkAuth();
         <a href="javascript:void(0);"
            data-id="<?=implode(',', array_column($actualComplaints, 'id'))?>"
            class="ignore-profile"
-           data-url="<?=$palto->getDomainUrl()?>/moderate/ignore.php"
+           data-url="<?=\Palto\Config::getDomainUrl()?>/moderate/ignore.php"
         >
             <br/><br/><div style="padding-left:10px">Игнорировать все жалобы</div>
         </a>

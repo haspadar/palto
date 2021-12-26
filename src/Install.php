@@ -3,7 +3,6 @@
 namespace Palto;
 
 use Bramus\Monolog\Formatter\ColoredLineFormatter;
-use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 

@@ -2,7 +2,7 @@
 <html lang="en-US">
 <?php 
 /**
- * @var $this \Palto\Palto
+ * @var $this \Palto\Layout
  */
 $title = $this->getPartialVariable('title');
 $description = $this->getPartialVariable('description');
@@ -54,8 +54,8 @@ $description = $this->getPartialVariable('description');
                                 <table class="tbl_menu">
                                     <tr>
                                         <td>
-                                            <?php foreach ($this->getWithAdsCategories(0, 1, 5) as $popularLevel1Category) :?>
-                                                <a class="menu" href="<?=$this->generateCategoryUrl($popularLevel1Category)?>" rel="nofollow"><?=$popularLevel1Category['title']?></a> <span class="whitem">|</span>
+                                            <?php foreach ($this->getWithAdsCategories( 0, 1, 5) as $popularLevel1Category) :?>
+                                                <a class="menu" href="<?=$this->generateCategoryUrl($popularLevel1Category)?>" rel="nofollow"><?=$popularLevel1Category->getTitle()?></a> <span class="whitem">|</span>
                                             <?php endforeach;?>
 
                                         </td>

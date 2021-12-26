@@ -5,5 +5,4 @@ while (!file_exists($path . '/vendor') && $path != '/') {
 }
 
 require_once $path . '/vendor/autoload.php';
-
-return $path;
+\Palto\Directory::setRootDirectory($path);

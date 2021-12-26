@@ -1,1 +1,0 @@
-structure/show_errors.php

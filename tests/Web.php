@@ -8,13 +8,10 @@ use Palto\Logger;
 use Palto\Model\Categories;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 abstract class Web extends TestCase
 {
-    private static \MeekroDB $db;
-
-    const DATABASE = 'palto_test';
-
     public function __construct(string $name)
     {
         parent::__construct($name);
@@ -22,17 +19,7 @@ abstract class Web extends TestCase
         ini_set('display_startup_errors', true);
     }
 
-    protected function download(string $url)
-    {
-        return file_get_contents($this->getDomainUrl() . $url);
-    }
-
-    protected function getDomainUrl(): string
-    {
-        return Config::get('DOMAIN_URL');
-    }
-
-    protected function checkPhpErrors(string $content): bool
+    public function checkPhpErrors(Response $response)
     {
         $patterns = [
             '<b>Notice</b>: ',
@@ -41,16 +28,43 @@ abstract class Web extends TestCase
             '<b>Parse error</b>:'
         ];
         foreach ($patterns as $pattern) {
-            $start = mb_strpos($content, $pattern);
+            $start = mb_strpos($response->getHtml(), $pattern);
             if ($start !== false) {
-                $finish = mb_strpos($content, '<br>', $start);
-                $notification = mb_substr($content, $start, $finish - $start);
+                $finish = mb_strpos($response->getHtml(), '<br>', $start);
+                $notification = mb_substr($response->getHtml(), $start, $finish - $start);
 
                 throw new Exception('Found Php Notification Text: ' . $notification);
             }
         }
 
-        return true;
+//        $this->expectNotToPerformAssertions();
+    }
+
+    protected function checkLinks(Response $response)
+    {
+        $categoryDocument = new Crawler($response->getHtml());
+        $links = $categoryDocument->filter('.table_main a');
+        $this->assertTrue($links->count() > 0);
+        $this->assertTrue($response->getHttpCode() == 200);
+    }
+
+    protected function download(string $url)
+    {
+        Logger::debug('Downloading url ' . $url);
+        $ch = \curl_init();
+        \curl_setopt($ch, CURLOPT_URL,$this->getDomainUrl() . $url);
+        \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+        \curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 0);
+        $result = \curl_exec($ch);
+        $info = curl_getinfo($ch);
+        \curl_close ($ch);
+
+        return new Response($result, $info['http_code'], $info['redirect_url']);
+    }
+
+    protected function getDomainUrl(): string
+    {
+        return Config::get('DOMAIN_URL');
     }
 
     protected function assertUrl(string $href, string $urlWithText, string $haystack)

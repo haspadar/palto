@@ -35,7 +35,7 @@ class Url
     {
         $parts = self::getUrlParts($this->path);
 
-        return $parts[0];
+        return $parts[0] ?? '';
     }
 
     public function getCategoriesUrls(): array
@@ -131,7 +131,7 @@ class Url
     {
         $parts = $this->getUrlParts($path);
 
-        return $parts[count($parts) - 1];
+        return $parts[count($parts) - 1] ?? '';
     }
 
     private function getUrlParts(string $url): array

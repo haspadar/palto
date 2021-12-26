@@ -5,7 +5,6 @@ use Dotenv\Dotenv;
 
 class Config
 {
-    private static ?Directory $rootDirectory = null;
     /**
      * @var null[]|string[]
      */
@@ -31,9 +30,10 @@ class Config
         return $domainUrl;
     }
 
-    public static function setRootDirectory(Directory $rootDirectory)
+    public static function setEnv(string $name, string $value)
     {
-        self::$rootDirectory = $rootDirectory;
+        self::getEnv();
+        self::$env[$name] = $value;
     }
 
     private static function getEnv(): array

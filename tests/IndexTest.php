@@ -1,14 +1,32 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Test;
 
-class IndexTest extends WebTest
+use Palto\Config;
+use Palto\Debug;
+use Palto\Directory;
+use Palto\Model\Categories;
+use Symfony\Component\DomCrawler\Crawler;
+
+class IndexTest extends Web
 {
-    public function testIndex()
+    public function testDomainUrl()
     {
-        $content = $this->download('http://localhost:8002');
-        \Palto\Debug::dump($content);
-        \Palto\Debug::dump(str_contains($content, 'Warning: '));exit;
-        $this->assertFalse(str_contains($content, 'Warning: '));
+        $this->assertNotEmpty($this->getDomainUrl());
+    }
+
+    public function testPhpErrors()
+    {
+        $content = $this->download('/');
+        $this->checkPhpErrors($content);
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testListWithAds()
+    {
+        $content = $this->download('/');
+        $categoryDocument = new Crawler($content);
+        $links = $categoryDocument->filter('.table_main p a');
+        $this->assertTrue($links->count() > 0);
     }
 }

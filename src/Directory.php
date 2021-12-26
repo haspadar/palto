@@ -25,6 +25,11 @@ class Directory
         return self::$rootDirectory;
     }
 
+    public static function getDbDirectory(): string
+    {
+        return self::getRootDirectory() . '/db';
+    }
+
     public static function getPublicDirectory(): string
     {
         return self::getRootDirectory() . '/public';

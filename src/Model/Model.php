@@ -4,6 +4,7 @@ namespace Palto\Model;
 
 use Palto\Cli;
 use Palto\Config;
+use Palto\Debug;
 use Palto\Logger;
 
 class Model

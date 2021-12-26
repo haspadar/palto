@@ -19,7 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Palto\\": "src/"
+            "Palto\\": "src/",
+            "Test\\": "tests/"
         }
     },
     "bin": ["bin/install.php", "bin/update.php"],

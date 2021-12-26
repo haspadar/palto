@@ -7,11 +7,13 @@ class Response
     private string $html;
     private int $httpCode;
     private string $redirectUrl;
+    private string $url;
 
-    public function __construct(string $html, int $httpCode, string $redirectUrl)
+    public function __construct(string $html, int $httpCode, string $url, string $redirectUrl)
     {
         $this->html = $html;
         $this->httpCode = $httpCode;
+        $this->url = $url;
         $this->redirectUrl = $redirectUrl;
     }
 
@@ -34,5 +36,13 @@ class Response
     public function getRedirectUrl(): string
     {
         return $this->redirectUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
     }
 }

@@ -79,7 +79,12 @@ class Ad
      */
     public function getDetails(): array
     {
-        return $this->details;
+        $parsed = [];
+        foreach ($this->details as $detail) {
+            $parsed[$detail['field']] = $detail['value'];
+        }
+
+        return $parsed;
     }
 
     public function getUrl(): string

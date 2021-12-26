@@ -9,7 +9,7 @@ use Palto\Directory;
 use Palto\Model\Categories;
 use Symfony\Component\DomCrawler\Crawler;
 
-class RegionsAds extends Web
+class RegionsTest extends Web
 {
     protected string $url = '/regions';
 

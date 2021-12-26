@@ -33,11 +33,9 @@ abstract class Web extends TestCase
                 $finish = mb_strpos($response->getHtml(), '<br>', $start);
                 $notification = mb_substr($response->getHtml(), $start, $finish - $start);
 
-                throw new Exception('Found Php Notification Text: ' . $notification);
+                throw new Exception('Found Php Notification Text: ' . $notification . ' on page ' . $response->getUrl());
             }
         }
-
-//        $this->expectNotToPerformAssertions();
     }
 
     protected function checkLinks(Response $response)
@@ -50,7 +48,6 @@ abstract class Web extends TestCase
 
     protected function download(string $url)
     {
-        Logger::debug('Downloading url ' . $url);
         $ch = \curl_init();
         \curl_setopt($ch, CURLOPT_URL,$this->getDomainUrl() . $url);
         \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -59,7 +56,7 @@ abstract class Web extends TestCase
         $info = curl_getinfo($ch);
         \curl_close ($ch);
 
-        return new Response($result, $info['http_code'], $info['redirect_url']);
+        return new Response($result, $info['http_code'], $this->getDomainUrl() . $url, $info['redirect_url']);
     }
 
     protected function getDomainUrl(): string

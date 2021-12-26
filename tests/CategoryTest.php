@@ -9,13 +9,16 @@ use Palto\Directory;
 use Palto\Model\Categories;
 use Symfony\Component\DomCrawler\Crawler;
 
-class CategoriesAds extends Web
+class CategoryTest extends Web
 {
     protected string $url = '/categories';
 
-    public function testCategories()
+    public function testCategory()
     {
-        $response = $this->download($this->url);
+        $categoriesResponse = $this->download($this->url);
+        $crawler = new Crawler($categoriesResponse->getHtml());
+        $firstCategoryUrl = $crawler->filter('.table_main a')->attr('href');
+        $response = $this->download($firstCategoryUrl);
         $this->checkPhpErrors($response);
         $this->checkLinks($response);
     }

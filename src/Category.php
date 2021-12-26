@@ -81,11 +81,11 @@ class Category
     public function generateUrl(Region $region): Url
     {
         $parents = $this->getParents();
-        $parts = array_merge(
+        $parts = array_filter(array_merge(
             [$region->getUrl()],
             array_map(fn (Category $category) => $category->getUrl(), $parents),
             [$this->getUrl()]
-        );
+        ));
 
         return new Url('/' . implode('/', $parts));
     }

@@ -143,4 +143,9 @@ class Ad
     {
         return new \DateTime($this->ad['create_time']);
     }
+
+    public function getPostTime(): \DateTime
+    {
+        return new \DateTime($this->ad['post_time']);
+    }
 }

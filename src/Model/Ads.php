@@ -2,7 +2,9 @@
 
 namespace Palto\Model;
 
+use Palto\Category;
 use Palto\Debug;
+use Palto\Region;
 
 class Ads extends Model
 {
@@ -13,10 +15,10 @@ class Ads extends Model
         return self::getDb()->queryFirstRow($query . ' WHERE a.id = %d', $adId);//        return self::addAdData($ad);
     }
 
-    public static function getAds(array $regionsIds, array $categoriesIds, int $limit, int $offset = 0, int $excludeId = 0): array
+    public static function getAds(?Region $region, ?Category $category, int $limit, int $offset = 0, int $excludeId = 0): array
     {
         $query = self::getAdsQuery();
-        [$where, $values] = self::getAdsWhere($regionsIds, $categoriesIds, $excludeId);
+        [$where, $values] = self::getAdsWhere($region, $category, $excludeId);
         $query .= $where;
         $query .= ' ORDER BY create_time DESC LIMIT %d_limit OFFSET %d_offset';
         $values['limit'] = $limit;
@@ -90,22 +92,22 @@ class Ads extends Model
         );
     }
 
-    private static function getAdsWhere(array $regionsId, array $categoriesId, int $excludeId): array
+    private static function getAdsWhere(?Region $region, ?Category $category, int $excludeId): array
     {
         $query = ' WHERE ';
         $values = [];
         $where = [];
-        if ($categoriesId) {
-            $values['category'] = $categoriesId;
-            $where[] = 'a.category_id IN %ld_category';
+        if ($category) {
+            $where[] = 'a.category_level_' . $category->getLevel() . '_id = %d_category';
+            $values['category'] = $category->getId();
         }
 
-        if ($regionsId) {
-            $values['region'] = $regionsId;
-            $where[] = 'a.region_id IN %ld_region';
+        if ($region) {
+            $where[] = 'a.region_level_' . $region->getLevel() . '_id = %d_region';
+            $values['region'] = $region->getId();
         }
 
-        $where[] = 'a.deleted_time IS NULL';
+//        $where[] = 'a.deleted_time IS NULL';
         $values['exclude'] = $excludeId;
         $where[] = 'a.id <> %d_exclude';
         $query .= implode(' AND ', $where);

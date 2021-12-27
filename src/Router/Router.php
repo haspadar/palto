@@ -6,7 +6,6 @@ use Palto\Url;
 abstract class Router
 {
     protected string $layoutName = NOT_FOUND_LAYOUT;
-    protected array $queryParams = [];
     protected string $path;
     private Url $url;
 
@@ -41,7 +40,7 @@ abstract class Router
      */
     public function getQueryParameters(): array
     {
-        return $this->queryParams;
+        return $this->url->getQueryParameters();
     }
 
     public function getSearchQueryParameter(): string
@@ -51,7 +50,9 @@ abstract class Router
 
     public function getQueryParameter(string $name): string
     {
-        return $this->queryParams[$name] ?? '';
+        $parameters = $this->url->getQueryParameters();
+
+        return $parameters[$name] ?? '';
     }
 
     /**

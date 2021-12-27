@@ -38,7 +38,7 @@ $this->partial('header.inc', [
 <?php endif;?>
 
 <?php $categories = $this->getCategory()
-    ? $this->getWithAdsCategories($this->getCategory()->getId())
+    ? $this->getWithAdsCategories($this->getCategory())
     : $this->getWithAdsCategories()
 ?>
 <?php if ($categories) :?>

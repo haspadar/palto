@@ -33,7 +33,9 @@ abstract class Web extends TestCase
                 $finish = mb_strpos($response->getHtml(), '<br>', $start);
                 $notification = mb_substr($response->getHtml(), $start, $finish - $start);
 
-                throw new Exception('Found Php Notification Text: ' . $notification . ' on page ' . $response->getUrl());
+                throw new Exception(
+                    'Found Php Notification Text: ' . $notification . ' on page ' . $response->getUrl()
+                );
             }
         }
     }
@@ -42,13 +44,12 @@ abstract class Web extends TestCase
     {
         $categoryDocument = new Crawler($response->getHtml());
         $links = $categoryDocument->filter('.table_main a');
-        $this->assertTrue($links->count() > 0);
-        $this->assertTrue($response->getHttpCode() == 200);
+        $this->assertTrue($links->count() > 0, 'Page hasn\'t links: ' . $response->getUrl());
+        $this->assertTrue($response->getHttpCode() == 200, 'Http response code: ' . $response->getHttpCode());
     }
 
     protected function download(string $url)
     {
-        Logger::debug('Download ' . $url);
         $ch = \curl_init();
         \curl_setopt($ch, CURLOPT_URL,$this->getDomainUrl() . $url);
         \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -56,6 +57,9 @@ abstract class Web extends TestCase
         $result = \curl_exec($ch);
         $info = curl_getinfo($ch);
         \curl_close ($ch);
+        if ($info['total_time'] > 3) {
+            Logger::warning('Long time request: ' . $info['total_time'] . ' seconds for ' . $this->getDomainUrl() . $url);
+        }
 
         return new Response($result, $info['http_code'], $this->getDomainUrl() . $url, $info['redirect_url']);
     }

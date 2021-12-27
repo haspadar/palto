@@ -4,14 +4,9 @@ namespace Palto;
 
 class Regions
 {
-    public static function getWithAdsRegions(int $parentCategoryId): array
+    public static function getWithAdsRegions(?Region $parentRegion = null): array
     {
-        $unfiltered = \Palto\Model\Regions::getRegions($parentCategoryId);
-        $regions = array_filter($unfiltered, function (array $region) {
-            $childrenIds = array_merge([$region['id']], array_column(self::getChildRegions($region), 'id'));
-
-            return \Palto\Ads::getRegionsAdsCount($childrenIds) > 0;
-        });
+        $regions = \Palto\Model\Regions::getWithAdsRegions($parentRegion);
 
         return array_map(fn($region) => new Region($region), $regions);
     }

@@ -13,14 +13,19 @@ class NextPageTest extends Web
 {
     public function testNextPage()
     {
-        $categoriesResponse = $this->download('/' . Config::get('DEFAULT_REGION_URL'));
-        $crawler = new Crawler($categoriesResponse->getHtml());
-        $this->checkPhpErrors($categoriesResponse);
-        $this->checkLinks($categoriesResponse);
+        $mainRegionResponse = $this->download('/' . Config::get('DEFAULT_REGION_URL'));
+        $crawler = new Crawler($mainRegionResponse->getHtml());
+        $this->checkPhpErrors($mainRegionResponse);
+        $this->checkLinks($mainRegionResponse);
         $nextPage = $crawler->filter('link[rel=next]');
-        $firstPageAdUrl = $crawler->filter('.serp a')->attr('href');
+        $firstPageAd = $crawler->filter('.serp a');
+        $this->assertTrue(
+            $firstPageAd->count() > 0,
+            'Main Region Page hasn\'t ads: ' . $mainRegionResponse->getUrl()
+        );
+        $firstPageAdUrl = $firstPageAd->attr('href');
         if ($nextPage) {
-            $nextUrl = $crawler->filter('link[rel=next]')->attr('href');
+            $nextUrl = $nextPage->attr('href');
             $nextPageResponse = $this->download($nextUrl);
             $crawler = new Crawler($nextPageResponse->getHtml());
             $secondPageAdUrl = $crawler->filter('.serp a')->attr('href');

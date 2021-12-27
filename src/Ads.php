@@ -29,11 +29,11 @@ class Ads
             : 0;
     }
 
-    public static function getAds(array $regionsIds, array $categoriesIds, int $limit = self::LIMIT, int $offset = 0, int $excludeId = 0): array
+    public static function getAds(?Region $region, ?Category $category, int $limit = self::LIMIT, int $offset = 0, int $excludeId = 0): array
     {
         $ads = Model\Ads::getAds(
-            array_filter($regionsIds),
-            array_filter($categoriesIds),
+            $region,
+            $category,
             $limit,
             $offset,
             $excludeId

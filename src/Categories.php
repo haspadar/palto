@@ -4,6 +4,13 @@ namespace Palto;
 
 class Categories
 {
+    public static function getById(int $id): ?Category
+    {
+        $category = \Palto\Model\Categories::getById($id);
+
+        return $category ? new Category($category) : null;
+    }
+
     public static function getByUrl(string $categoryUrl, int $level): ?Category
     {
         $category = \Palto\Model\Categories::getByUrl($categoryUrl, $level);
@@ -11,16 +18,11 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
-    public static function getWithAdsCategories(int $parentCategoryId = 0, $level = 1): array
+    public static function getWithAdsCategories(?Category $parentCategory = null, $count = 0): array
     {
-        $unfiltered = \Palto\Model\Categories::getCategories($parentCategoryId, $level, 0);
-        $categories = array_filter($unfiltered, function (array $category) {
-            $childrenIds = array_merge([$category['id']], array_column(self::getChildCategories($category), 'id'));
+        $categories = \Palto\Model\Categories::getWithAdsCategories($parentCategory, $count);
 
-            return \Palto\Ads::getCategoriesAdsCount($childrenIds) > 0;
-        });
-
-        return array_map(fn ($category) => new Category($category), $categories);
+        return array_map(fn($category) => new Category($category), $categories);
     }
 
     private static function getChildCategories(array $category): array

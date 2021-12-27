@@ -11,7 +11,7 @@ $this->partial('header.inc', [
 <h1>Categories</h1>
 <?php foreach ($this->getWithAdsCategories() as $level1Category) :?>
     <div class="span-d regions"><a href="<?=$this->generateCategoryUrl($level1Category)?>"><strong> <?=$level1Category->getTitle()?></strong></a>
-        <?php if ($level2Categories = $this->getWithAdsCategories($level1Category->getId())) :?>
+        <?php if ($level2Categories = $this->getWithAdsCategories($level1Category)) :?>
             <ul>
                 <?php foreach ($level2Categories as $level2Category) :?>
                     <li>
@@ -19,7 +19,7 @@ $this->partial('header.inc', [
                             <a href="<?=$this->generateCategoryUrl($level2Category)?>">
                                 <?=$level2Category->getTitle()?>
                             </a>
-                            <?php if ($level3Categories = $this->getWithAdsCategories($level2Category->getId())) :?>
+                            <?php if ($level3Categories = $this->getWithAdsCategories($level2Category)) :?>
                                 <ul>
                                 <?php foreach ($level3Categories as $level3Category) :?>
                                     <li>

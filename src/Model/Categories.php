@@ -2,6 +2,7 @@
 
 namespace Palto\Model;
 
+use Palto\Category;
 use Palto\Debug;
 
 class Categories extends Model
@@ -27,22 +28,15 @@ class Categories extends Model
         );
     }
 
-    public static function getCategories(int $parentId, int $level = 0, int $limit = 0, $offset = 0, $orderBy = ''): array
+    public static function getWithAdsCategories(?Category $parentCategory, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
         $query = 'SELECT * FROM categories';
         $values = [];
-        if ($parentId || $level) {
-            $query .= ' WHERE ';
-        }
-
-        if ($parentId) {
-            $query .= 'parent_id = %d_parent_id';
-            $values['parent_id'] = $parentId;
-        }
-
-        if ($level) {
-            $query .= ($parentId ? ' AND ' : '') . 'level = %d_level';
-            $values['level'] = $level;
+        $adsFieldCategory = 'category_level_' . ($parentCategory ? $parentCategory->getLevel() + 1 : 1) . '_id';
+        $query .= " WHERE id IN (SELECT $adsFieldCategory FROM ads)";
+        if ($parentCategory) {
+            $query .= ' AND parent_id = %d_parent_id';
+            $values['parent_id'] = $parentCategory->getId();
         }
 
         if ($orderBy) {

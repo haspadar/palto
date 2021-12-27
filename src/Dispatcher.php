@@ -18,6 +18,8 @@ class Dispatcher
 
     public function run()
     {
+        $executionTime = new ExecutionTime();
+        $executionTime->start();
         if (Config::get('AUTH') && !IP::isLocal()) {
             Auth::check();
             ini_set('display_errors', true);
@@ -41,8 +43,9 @@ class Dispatcher
         $this->checkPageExists();
         $layout = new Layout($this->getRouter()->getLayoutName(), $this);
         $layout->load();
+        $executionTime->end();
         if (Config::isDebug() && !Cli::isCli()) {
-            $this->showInfo();
+            $this->showInfo($executionTime);
         }
     }
 //
@@ -122,7 +125,7 @@ class Dispatcher
 //        }
 //    }
 
-    private function showInfo()
+    private function showInfo(ExecutionTime $executionTime)
     {
         echo '<pre>Info:' . PHP_EOL;
         print_r([
@@ -134,7 +137,8 @@ class Dispatcher
             'page_number' => $this->getRouter()->getPageNumber(),
             'region' => $this->region,
             'category' => $this->category,
-            'ad' => $this->ad
+            'ad' => $this->ad,
+            'execution_time' => $executionTime->get()
         ]);
     }
 //

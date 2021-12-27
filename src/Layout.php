@@ -97,8 +97,8 @@ class Layout
     public function getSimilarAds(int $count = 5): array
     {
         return \Palto\Ads::getAds(
-            $this->getRegion() ? $this->getRegion()->getWithChildrenIds() : [],
-            $this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [],
+            $this->getRegion(),
+            $this->getCategory(),
             $count,
             0
         );
@@ -107,8 +107,8 @@ class Layout
     public function getAds(): array
     {
         return \Palto\Ads::getAds(
-            $this->getRegion() ? $this->getRegion()->getWithChildrenIds() : [],
-            $this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [],
+            $this->getRegion(),
+            $this->getCategory(),
             \Palto\Ads::LIMIT,
             ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * \Palto\Ads::LIMIT
         );
@@ -135,19 +135,18 @@ class Layout
     }
 
     /**
-     * @param int $parentRegionId
      * @return Region[]
      */
-    public function getWithAdsRegions(int $parentRegionId = 0): array
+    public function getWithAdsRegions(?Region $parentRegion = null): array
     {
-        return Regions::getWithAdsRegions($parentRegionId);
+        return Regions::getWithAdsRegions($parentRegion);
     }
 
     /**
      * @return Category[]
      */
-    public function getWithAdsCategories(int $parentCategoryId = 0, $level = 1): array
+    public function getWithAdsCategories(?Category $parentCategory = null, int $count = 0): array
     {
-        return \Palto\Categories::getWithAdsCategories($parentCategoryId, $level);
+        return \Palto\Categories::getWithAdsCategories($parentCategory, $count);
     }
 }

@@ -41,7 +41,9 @@ class Update
                     $start = mb_strpos($content, mb_substr($from, 0, -3));
                     $finish = mb_strpos($content, ';', $start);
                     if ($start !== false && $finish !== false) {
-                        $content = mb_strpos($content, 0, $start) . $to . mb_strpos($content, $finish + 1);
+                        $content = mb_substr($content, 0, $start)
+                            . $to
+                            . mb_substr($content, $finish + 1);
                     }
 
                 } else {

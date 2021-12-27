@@ -7,24 +7,49 @@ final class LayoutsWithObjects extends AbstractMigration
 {
     public function change(): void
     {
+//        $this->execute('ALTER TABLE `ads`
+//ADD `category_level_3_id` int(11) unsigned NULL AFTER `category_id`,
+//ADD `category_level_2_id` int(11) unsigned NULL AFTER `category_level_3_id`,
+//ADD `category_level_1_id` int(11) unsigned NULL AFTER `category_level_2_id`,
+//ADD FOREIGN KEY (`category_level_3_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+//ADD FOREIGN KEY (`category_level_2_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+//ADD FOREIGN KEY (`category_level_1_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE;');
+//
+
+        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id LEFT JOIN categories AS c2 ON c.parent_id = c2.id SET a.category_level_3_id=a.category_id, a.category_level_2_id=c.parent_id, a.category_level_1_id=c2.parent_id WHERE c.level=3');
+        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=a.category_id, a.category_level_1_id=c.parent_id WHERE c.level=2');
+        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=NULL, a.category_level_1_id=a.category_id WHERE c.level=1');
+
+        $this->execute('ALTER TABLE `ads`
+ADD `region_level_2_id` int(11) unsigned NULL AFTER `region_id`,
+ADD `region_level_1_id` int(11) unsigned NULL AFTER `region_level_2_id`,
+ADD FOREIGN KEY (`region_level_2_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
+ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE;');
+        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=a.region_id, a.region_level_1_id = r.parent_id WHERE r.level=2');
+        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=NULL, a.region_level_1_id = a.region_id WHERE r.level=1');
+
         $replaces = [
             'layouts/list.php' => [
+                '$flashMessage = $this->getFlashMessage();' => '$flashMessage = \Palto\Flash::get();',
                 '$this \Palto\Palto' => '$this \Palto\Layout',
-                '$categoryWithChildrenIds = ...' => '$this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [];',
+                '$categoryWithChildrenIds = ...' => '$categoryWithChildrenIds = $this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [];',
                 '$ads = $this->getAds(...' => '$ads = $this->getAds();',
                 '$this->initPager($this->hasNextPage(count($ads)))' => '$pager = new \Palto\Pager($this->getDispatcher());',
-                '$categoriesTitle = implode(\' - \', $this->getCurrentCategory()[\'titles\']);' => '$categoriesTitle = implode(\' - \', $this->getCategory()->getWithParentsTitles());',
+                '$categoriesTitle = implode(\' - \', $this->getCurrentCategory()[\'titles\']);' => '$categoriesTitle = $this->getCategory() ? implode(\' - \', $this->getCategory()->getWithParentsTitles()); : ""',
                 '$this->getCurrentRegion()[\'title\']' => '$this->getRegion()->getTitle()',
                 'array_filter(array_merge(
-                    array_column($this->getCurrentCategory()[\'parents\'], \'title\'),
-                    [$this->getCurrentCategory()[\'title\']],
-                    [$this->getCurrentRegion()[\'title\']]
-                ))' => '$this->getCategory()->getWithParentsTitles([$this->getCurrentRegion()[\'title\']])',
+                array_column($this->getCurrentCategory()[\'parents\'], \'title\'),
+                [$this->getCategory()->getTitle()],
+                [$this->getRegion()->getTitle()]
+            ))' => '($this->getCategory() ? $this->getCategory()->getWithParentsTitles([$this->getRegion()->getTitle()]) : $this->getRegion()->getTitle())',
                 '$this->getNextPageUrl()' => '$pager->getNextPageUrl()',
                 '$this->getPreviousPageUrl()' => '$pager->getPreviousPageUrl()',
                 '$this->getListBreadcrumbUrls()' => '$this->getBreadcrumbUrls()',
-                '$this->getCurrentCategory()[\'title\']' => '$this->getCategory()->getTitle()',
-                '$this->getCurrentCategory()[\'id\']' => '$this->getCategory()->getId()',
+                '$this->getCurrentCategory()[\'title\']' => '$this->getCategory()',
+                '$this->getCurrentCategory()[\'id\']' => '$this->getCategory()',
+                '$this->getPageNumber()' => '$pager->getPageNumber()',
+                '$this->getNextPageUrl()' => '$pager->getNextPageUrl()',
+                '$childCategory[\'title\']' => '$childCategory->getTitle()'
             ],
             'layouts/index.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -60,7 +85,7 @@ final class LayoutsWithObjects extends AbstractMigration
         : $this->getWithAdsCategories())',
                 '$this->getPageNumber()' => '$pager->getPageNumber()',
                 '$this->getNextPageUrl()' => '$pager->getNextPageUrl()',
-        '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()'
+                '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()'
             ],
             'layouts/partials/ad_in_list.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -68,7 +93,7 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$ad[\'title\']' => '$ad->getTitle()',
                 '$this->generateShortText($ad[\'text\'])' => '\Palto\Filter::shortText($ad->getText())',
                 '$this->getListAdBreadcrumbUrls($ad)' => '$this->getBreadcrumbUrls()',
-                '$this->generateRegionUrl($ad[\'region\'])' => '$this->generateRegionUrl($ad->getRegion()))',
+                '$this->generateRegionUrl($ad[\'region\'])' => '$this->generateRegionUrl($ad->getRegion())',
                 '$ad[\'region\'][\'title\']' => '$ad->getRegion()->getTitle()',
                 '$ad[\'price\']' => '$ad->getPrice()',
                 '$ad[\'currency\']' => '$ad->getCurrency()'
@@ -76,10 +101,12 @@ final class LayoutsWithObjects extends AbstractMigration
             'layouts/partials/pager.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->previousPageUrl' => '$this->getPartialVariable(\'previousPageUrl\')',
+                '$this->nextPageUrl' => '$this->getPartialVariable(\'nextPageUrl\')',
             ],
             'layouts/partials/header.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
-                '$this->getWithAdsCategories(5)' => '$this->getWithAdsCategories(0, 1, 5)'
+                '$this->getWithAdsCategories(5)' => '$this->getWithAdsCategories(0, 1, 5)',
+                '$popularLevel1Category[\'title\']' => '$popularLevel1Category->getTitle()'
             ],
             'layouts/regions-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -126,6 +153,7 @@ final class LayoutsWithObjects extends AbstractMigration
                 '$this->getCurrentAd()[\'id\']' => '$this->getAd()->getId()',
                 '$this->getAds($this->getCurrentCategory()[\'id\'], $this->getCurrentRegion()[\'id\'], 6)' => '$this->getSimilarAds()',
                 '$similarAd[\'id\']' => '$similarAd->getId()',
+                '(new DateTime($this->getCurrentAd()[\'post_time\']))' => '$this->getAd()->getPostTime()'
             ],
             'layouts/404.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -137,6 +165,17 @@ final class LayoutsWithObjects extends AbstractMigration
             ],
             'layouts/registration.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout'
+            ],
+            'parse_ads.php' => [
+                '$ad = [' => '$level2 = \Palto\Categories::getById($level3[\'parent_id\']);
+            $ad = [',
+                '\'category_id\' => $level3[\'id\'],' => '\'category_id\' => $level3[\'id\'],
+                \'category_level_1_id\' => $level2[\'parent_id\'],
+                \'category_level_2_id\' => $level3[\'parent_id\'],
+                \'category_level_3_id\' => $level3[\'id\'],',
+                '\'region_id\' => $regionLevel2Id,' => '\'region_id\' => $regionLevel2Id,
+                \'region_level_1_id\' => $regionLevel1Id,
+                \'region_level_2_id\' => $regionLevel2Id,'
             ]
         ];
         $rootDirectory = realpath('.');
@@ -146,6 +185,7 @@ final class LayoutsWithObjects extends AbstractMigration
         \Palto\Directory::setRootDirectory($rootDirectory);
         $update = new \Palto\Update();
         $update->replaceCode($replaces);
-        echo 'done';exit;
+        echo 'done';
+        exit;
     }
 }

@@ -131,15 +131,21 @@ function parseAd(Palto $palto, $adUrl, $level3)
                 ? $adDocument->filter('h3')->text()
                 : '';
             list($price, $currency) = Parser::filterPriceCurrency($priceWithCurrency);
+            $level2 = \Palto\Categories::getById($level3['parent_id']);
             $ad = [
                 'title' => $title,
                 'url' => $adUrl,
                 'category_id' => $level3['id'],
+                'category_level_1_id' => $level2['parent_id'],
+                'category_level_2_id' => $level3['parent_id'],
+                'category_level_3_id' => $level3['id'],
                 'text' => $html,
                 'address' => '',
                 'coordinates' => '',
                 'post_time' => null,
                 'region_id' => $regionLevel2Id,
+                'region_level_1_id' => $regionLevel1Id,
+                'region_level_2_id' => $regionLevel2Id,
                 'price' => $price,
                 'currency' => $currency,
                 'seller_name' => $adDocument->filter('h2')->text(),

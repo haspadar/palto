@@ -18,8 +18,8 @@ class Pager
         $pageNumber = $dispatcher->getRouter()->getPageNumber();
         $offset = $pageNumber * Ads::LIMIT;
         $nextPageAds =  \Palto\Ads::getAds(
-            $dispatcher->getRegion() ? $dispatcher->getRegion()->getWithChildrenIds() : [],
-            $dispatcher->getCategory() ? $dispatcher->getCategory()->getWithChildrenIds() : [],
+            $dispatcher->getRegion(),
+            $dispatcher->getCategory(),
             1,
             $offset
         );

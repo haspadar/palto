@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class RegionsTest extends Web
 {
-    protected string $url = '/regions';
+    protected string $url = '/regions?limit=10';
 
     public function testRegions()
     {

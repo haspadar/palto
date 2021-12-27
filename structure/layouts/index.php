@@ -18,7 +18,7 @@ $this->partial('header.inc', [
                 <strong> <?=$level1Category->getTitle()?></strong>
             </a>
         </p>
-        <?php if ($level2Categories = $this->getWithAdsCategories($level1Category->getId())) :?>
+        <?php if ($level2Categories = $this->getWithAdsCategories($level1Category)) :?>
             <ul>
                 <?php foreach ($level2Categories as  $level2Category) :?>
                     <li><a href="<?=$this->generateCategoryUrl($level2Category)?>"><?=$level2Category->getTitle()?></a></li>

@@ -3,6 +3,7 @@
 namespace Palto\Model;
 
 use Palto\Debug;
+use Palto\Region;
 
 class Regions extends Model
 {
@@ -33,17 +34,15 @@ class Regions extends Model
         );
     }
 
-    public static function getRegions(int $parentId, int $limit = 0, $offset = 0, $orderBy = ''): array
+    public static function getWithAdsRegions(?Region $parentRegion, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
         $query = 'SELECT * FROM regions';
         $values = [];
-        if ($parentId) {
-            $query .= ' WHERE ';
-        }
-
-        if ($parentId) {
-            $query .= 'parent_id = %d_parent_id';
-            $values['parent_id'] = $parentId;
+        $adsFieldRegion = 'region_level_' . ($parentRegion ? $parentRegion->getLevel() + 1 : 1) . '_id';
+        $query .= " WHERE id IN (SELECT $adsFieldRegion FROM ads)";
+        if ($parentRegion) {
+            $query .= ' AND parent_id = %d_parent_id';
+            $values['parent_id'] = $parentRegion->getId();
         }
 
         if ($orderBy) {

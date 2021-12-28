@@ -2,6 +2,8 @@
 
 namespace Test;
 
+use mysql_xdevapi\TableInsert;
+
 class Response
 {
     private string $html;
@@ -22,9 +24,14 @@ class Response
         return $this->html;
     }
 
+    public function getJson()
+    {
+        return json_decode($this->getHtml());
+    }
+
     public function isJson(): bool
     {
-        json_decode($this->getHtml());
+        self::getJson();
 
         return json_last_error() === JSON_ERROR_NONE;
     }

@@ -11,5 +11,6 @@ class StatusTest extends Web
     {
         $jsonResponse = $this->download($this->url);
         $this->assertTrue($jsonResponse->isJson());
+        $this->assertTrue(strlen($jsonResponse->getJson()->disk_mysql_used) > 0);
     }
 }

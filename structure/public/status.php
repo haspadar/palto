@@ -4,7 +4,7 @@ use Palto\Palto;
 use Palto\Status;
 
 require_once '../vendor/autoload.php';
-$parserPid = Status::getPhpCommandPid(\Palto\Directory::PARSE_ADS_SCRIPT, $this->getProjectName());
+$parserPid = Status::getPhpCommandPid(\Palto\Directory::PARSE_ADS_SCRIPT, \Palto\Directory::getProjectName());
 echo json_encode([
     'disk_mysql_used' => Status::getDirectoryUsePercent(
         Status::getMySqlDirectory(\Palto\Model\Ads::getDb())

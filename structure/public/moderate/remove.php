@@ -3,9 +3,8 @@
 use Palto\Moderation;
 use Palto\Palto;
 
-$rootDirectory = require_once '../autoload.php';
-$palto = new Palto($rootDirectory);
-$palto->checkAuth();
+require_once '../../vendor/autoload.php';
+\Palto\Auth::check();
 
 if (is_numeric($_POST['id'])) {
     $id = intval($_POST['id']);

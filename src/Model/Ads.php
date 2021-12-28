@@ -92,6 +92,11 @@ class Ads extends Model
         );
     }
 
+    public static function getAdLastTime(): ?string
+    {
+        return self::getDb()->queryFirstField("SELECT MAX(create_time) FROM ads");
+    }
+
     private static function getAdsWhere(?Region $region, ?Category $category, int $excludeId): array
     {
         $query = ' WHERE ';

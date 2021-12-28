@@ -26,6 +26,8 @@ class Install
             'Link Sitemap Script' => Cli::safeLinkSitemapScript(),
             'Copy Crunz' => Cli::copyCrunz(),
             Cli::safeLinkCrunzTasks(),
+            'Update PhpUnit' => Cli::safeLinkPhpUnit(),
+            Cli::safeLinkTests(),
             'Copy Parse Scripts' => Cli::safeCopyParseScripts(),
             'Link Migrations' => Cli::safeLinkMigrations(),
             'Create Database' => Cli::createDatabase($databaseName, $databaseUsername, $databasePassword),

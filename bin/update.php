@@ -3,7 +3,7 @@
 
 use Palto\Update;
 
-require_once dirname(__DIR__) . '/public/autoload.php';
+require_once '../vendor/autoload.php';
 
 $update = new Update();
 $update->run();

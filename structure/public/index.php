@@ -4,7 +4,7 @@ use Palto\Dispatcher;
 use Palto\Routers;
 use Palto\Url;
 
-require_once 'autoload.php';
+require_once '../vendor/autoload.php';
 
 $url = new Url();
 $router = Routers::create($url);

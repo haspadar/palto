@@ -4,11 +4,15 @@ namespace Palto;
 
 class Directory
 {
-    const ROUTES_SCRIPT = 'routes.php';
+    public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
+
+    public const PARSE_ADS_SCRIPT = 'parse_ads.php';
+
+    public const ROUTES_SCRIPT = 'routes.php';
 
     const VENDOR_HASPADAR_PALTO = 'vendor/haspadar/palto';
 
-    private static string $rootDirectory = '';
+    private static string $rootDirectory;
 
     private static array $standardRoutes = [];
 
@@ -41,6 +45,15 @@ class Directory
 
     public static function getRootDirectory(): string
     {
+        if (!isset(self::$rootDirectory)) {
+            $path = __DIR__;
+            while (!file_exists($path . '/vendor') && $path != '/') {
+                $path = dirname($path);
+            }
+
+            self::$rootDirectory = $path;
+        }
+
         return self::$rootDirectory;
     }
 

@@ -21,7 +21,7 @@ class Backup
 
     public static function createSundukArchive(string $projectName): string
     {
-        $files = self::getSundukFiles($projectName);
+        $files = self::getFiles($projectName);
         $time = (new \DateTime())->format('Y-m-d');
         $archiveName = 'backups/' . $projectName . '-' . $time . '.zip';
         $isBackupCreated = Backup::createArchive($archiveName, $files);
@@ -46,7 +46,7 @@ class Backup
         return $result;
     }
 
-    private static function getSundukFiles(string $projectName): array
+    private static function getFiles(string $projectName): array
     {
         $time = (new \DateTime())->format('Y-m-d');
         $archiveDirectory = $projectName . '-' . $time;

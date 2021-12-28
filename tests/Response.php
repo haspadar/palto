@@ -22,6 +22,13 @@ class Response
         return $this->html;
     }
 
+    public function isJson(): bool
+    {
+        json_decode($this->getHtml());
+
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+
     /**
      * @return int
      */

@@ -2,7 +2,7 @@
 
 use Palto\Moderation;
 
-require_once '../autoload.php';
+require_once '../../vendor/autoload.php';
 \Palto\Auth::check();
 ?>
 <html>

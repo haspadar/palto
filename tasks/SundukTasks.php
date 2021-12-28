@@ -2,30 +2,30 @@
 
 use Crunz\Schedule;
 use Palto\Backup;
-use Palto\Palto;
+use Palto\Config;
+use Palto\Logger;
 
+//require_once realpath(__DIR__ . '/../../../../public/autoload.php');
+\Palto\Debug::dump(\Palto\Directory::getProjectName());exit;
 $schedule = new Schedule();
-
 $task = $schedule->run(function () {
-    $palto = new Palto();
-    $backupName = Backup::createSundukArchive($palto->getProjectName());
-    $logger = $palto->getLogger();
+    $backupName = Backup::createSundukArchive(\Palto\Directory::getProjectName());
     if ($backupName) {
-        $logger->info('Sunduk backup ' . $backupName . ' created');
+        Logger::info('Sunduk backup ' . $backupName . ' created');
     } else {
-        $logger->error('Can\'t create Sunduk archive');
+        Logger::error('Can\'t create Sunduk archive');
     }
 
-    if (isset($palto->getEnv()['SUNDUK_URL']) && $palto->getEnv()['SUNDUK_URL']) {
-        $isSent = Backup::sendSundukArchive($backupName, $palto->getEnv()['SUNDUK_URL']);
+    if (Config::get('SUNDUK_URL')) {
+        $isSent = Backup::sendSundukArchive($backupName, Config::get('SUNDUK_URL'));
         if ($isSent) {
-            $logger->info('Sent Sunduk archive successfully');
+            Logger::info('Sent Sunduk archive successfully');
         } else {
-            $logger->error('Can\'t send Sunduk archive');
+            Logger::error('Can\'t send Sunduk archive');
         }
 
     } else {
-        $logger->error('Can\'t send Sunduk archive – SUNDUK_URL is empty');
+        Logger::error('Can\'t send Sunduk archive – SUNDUK_URL is empty');
     }
 });
 $task

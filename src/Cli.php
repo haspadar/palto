@@ -13,6 +13,22 @@ class Cli
         return php_sapi_name() === 'cli';
     }
 
+    public static function safeLinkTests(): string
+    {
+        $paltoDirectory = Directory::getPaltoDirectory();
+        $rootDirectory = Directory::getRootDirectory();
+
+        return self::asUser("ln -s $paltoDirectory/tests $rootDirectory/");
+    }
+
+    public static function safeLinkPhpUnit(): string
+    {
+        $paltoDirectory = Directory::getPaltoDirectory();
+        $rootDirectory = Directory::getRootDirectory();
+
+        return self::asUser("ln -s $paltoDirectory/phpunit.xml $rootDirectory/");
+    }
+
     public static function copyCrunz(): string
     {
         $rootDirectory = Directory::getRootDirectory();

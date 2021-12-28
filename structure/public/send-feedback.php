@@ -5,7 +5,7 @@ use Palto\Config;
 use Palto\IP;
 use Palto\Moderation;
 
-require_once 'autoload.php';
+require_once '../vendor/autoload.php';
 if (Config::get('AUTH') && !IP::isLocal()) {
     Auth::check();
 }

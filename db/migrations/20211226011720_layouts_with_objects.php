@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Palto\Backup;
 use Palto\Update;
 use Phinx\Migration\AbstractMigration;
 
@@ -28,6 +29,7 @@ final class LayoutsWithObjects extends AbstractMigration
 //        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=a.region_id, a.region_level_1_id = r.parent_id WHERE r.level=2');
 //        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=NULL, a.region_level_1_id = a.region_id WHERE r.level=1');
 
+        Backup::createArchive();
         $replaces = [
             'layouts/list.php' => [
                 '$flashMessage = $this->getFlashMessage();' => '$flashMessage = \Palto\Flash::get();',

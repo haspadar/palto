@@ -10,10 +10,14 @@ class Backup
         $archiveName = Directory::getRootDirectory() . '/backups/' . Directory::getProjectName() . '-' . $time . '.zip';
         $isBackupCreated = Backup::createFilesArchive($archiveName, $files);
         if ($isBackupCreated) {
-            return $archiveName;
-        }
+            Logger::info('Backup ' . $archiveName . ' created');
 
-        return '';
+            return $archiveName;
+        } else {
+            Logger::error('Can\'t create archive');
+
+            return '';
+        }
     }
 
     private static function createFilesArchive(string $archiveName, array $files): bool

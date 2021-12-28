@@ -9,7 +9,7 @@ use Palto\Logger;
 \Palto\Debug::dump(\Palto\Directory::getProjectName());exit;
 $schedule = new Schedule();
 $task = $schedule->run(function () {
-    $backupName = Backup::createSundukArchive(\Palto\Directory::getProjectName());
+    $backupName = Backup::createArchive(\Palto\Directory::getProjectName());
     if ($backupName) {
         Logger::info('Sunduk backup ' . $backupName . ' created');
     } else {

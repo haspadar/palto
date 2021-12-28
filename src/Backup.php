@@ -3,7 +3,20 @@ namespace Palto;
 
 class Backup
 {
-    public static function createArchive(string $archiveName, array $files): bool
+    public static function createArchive(): string
+    {
+        $files = self::getFiles();
+        $time = (new \DateTime())->format('Y-m-d');
+        $archiveName = Directory::getRootDirectory() . '/backups/' . Directory::getProjectName() . '-' . $time . '.zip';
+        $isBackupCreated = Backup::createFilesArchive($archiveName, $files);
+        if ($isBackupCreated) {
+            return $archiveName;
+        }
+
+        return '';
+    }
+
+    private static function createFilesArchive(string $archiveName, array $files): bool
     {
         $zip = new \ZipArchive;
         if ($zip->open($archiveName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
@@ -17,19 +30,6 @@ class Backup
         }
 
         return false;
-    }
-
-    public static function createSundukArchive(string $projectName): string
-    {
-        $files = self::getFiles($projectName);
-        $time = (new \DateTime())->format('Y-m-d');
-        $archiveName = 'backups/' . $projectName . '-' . $time . '.zip';
-        $isBackupCreated = Backup::createArchive($archiveName, $files);
-        if ($isBackupCreated) {
-            return $archiveName;
-        }
-
-        return '';
     }
 
     public static function sendSundukArchive(string $backupName, string $url)
@@ -46,15 +46,15 @@ class Backup
         return $result;
     }
 
-    private static function getFiles(string $projectName): array
+    private static function getFiles(): array
     {
         $time = (new \DateTime())->format('Y-m-d');
-        $archiveDirectory = $projectName . '-' . $time;
-        $layoutFiles = self::getDirectoryFiles('layouts/*', $archiveDirectory . '/');
+        $archiveDirectory = Directory::getProjectName() . '-' . $time;
+        $layoutFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/layouts/*', $archiveDirectory . '/');
 
         return array_merge([
-            Palto::PARSE_CATEGORIES_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_CATEGORIES_SCRIPT,
-            Palto::PARSE_ADS_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_ADS_SCRIPT,
+            Directory::getRootDirectory() . '/' . Palto::PARSE_CATEGORIES_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_CATEGORIES_SCRIPT,
+            Directory::getRootDirectory() . '/' . Palto::PARSE_ADS_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_ADS_SCRIPT,
         ], $layoutFiles);
     }
 

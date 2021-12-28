@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Palto\Update;
 use Phinx\Migration\AbstractMigration;
 
 final class LayoutsWithObjects extends AbstractMigration
@@ -15,18 +16,17 @@ final class LayoutsWithObjects extends AbstractMigration
 //ADD FOREIGN KEY (`category_level_2_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
 //ADD FOREIGN KEY (`category_level_1_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE;');
 //
-
-        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id LEFT JOIN categories AS c2 ON c.parent_id = c2.id SET a.category_level_3_id=a.category_id, a.category_level_2_id=c.parent_id, a.category_level_1_id=c2.parent_id WHERE c.level=3');
-        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=a.category_id, a.category_level_1_id=c.parent_id WHERE c.level=2');
-        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=NULL, a.category_level_1_id=a.category_id WHERE c.level=1');
-
-        $this->execute('ALTER TABLE `ads`
-ADD `region_level_2_id` int(11) unsigned NULL AFTER `region_id`,
-ADD `region_level_1_id` int(11) unsigned NULL AFTER `region_level_2_id`,
-ADD FOREIGN KEY (`region_level_2_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
-ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE;');
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=a.region_id, a.region_level_1_id = r.parent_id WHERE r.level=2');
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=NULL, a.region_level_1_id = a.region_id WHERE r.level=1');
+//        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id LEFT JOIN categories AS c2 ON c.parent_id = c2.id SET a.category_level_3_id=a.category_id, a.category_level_2_id=c.parent_id, a.category_level_1_id=c2.parent_id WHERE c.level=3');
+//        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=a.category_id, a.category_level_1_id=c.parent_id WHERE c.level=2');
+//        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=NULL, a.category_level_1_id=a.category_id WHERE c.level=1');
+//
+//        $this->execute('ALTER TABLE `ads`
+//ADD `region_level_2_id` int(11) unsigned NULL AFTER `region_id`,
+//ADD `region_level_1_id` int(11) unsigned NULL AFTER `region_level_2_id`,
+//ADD FOREIGN KEY (`region_level_2_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
+//ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE;');
+//        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=a.region_id, a.region_level_1_id = r.parent_id WHERE r.level=2');
+//        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=NULL, a.region_level_1_id = a.region_id WHERE r.level=1');
 
         $replaces = [
             'layouts/list.php' => [
@@ -48,7 +48,6 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
                 '$this->getCurrentCategory()[\'title\']' => '$this->getCategory()',
                 '$this->getCurrentCategory()[\'id\']' => '$this->getCategory()',
                 '$this->getPageNumber()' => '$pager->getPageNumber()',
-                '$this->getNextPageUrl()' => '$pager->getNextPageUrl()',
                 '$childCategory[\'title\']' => '$childCategory->getTitle()'
             ],
             'layouts/index.php' => [
@@ -85,7 +84,9 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
         : $this->getWithAdsCategories())',
                 '$this->getPageNumber()' => '$pager->getPageNumber()',
                 '$this->getNextPageUrl()' => '$pager->getNextPageUrl()',
-                '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()'
+                '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()',
+                'getWithAdsCategories($level1Category->getId())' => 'getWithAdsCategories($level1Category)',
+                '$this->getWithAdsCategories($this->getCategory()->getId())' => '$this->getWithAdsCategories($this->getCategory())',
             ],
             'layouts/partials/ad_in_list.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -106,13 +107,14 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
             'layouts/partials/header.inc' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getWithAdsCategories(5)' => '$this->getWithAdsCategories(0, 1, 5)',
-                '$popularLevel1Category[\'title\']' => '$popularLevel1Category->getTitle()'
+                '$popularLevel1Category[\'title\']' => '$popularLevel1Category->getTitle()',
+                'getWithAdsCategories(0, 1, 5)' => 'getWithAdsCategories(null, 5)'
             ],
             'layouts/regions-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
-                '$this->getRegions(0, 1)' => '$this->getWithAdsRegions()',
+                '$this->getRegions(0, 1)' => '$this->getWithAdsRegions(0, intval($this->getParameter(\'limit\')))',
                 '$level1Region[\'title\']' => '$level1Region->getTitle()',
-                '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region->getId())',
+                '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region->getId(), intval($this->getParameter(\'limit\')))',
                 '$level2Region[\'title\']' => '$level2Region->getTitle()'
             ],
             'layouts/categories-list.php' => [
@@ -122,7 +124,8 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
                 '$level1Category[\'id\']' => '$level1Category->getId()',
                 '$level2Category[\'title\']' => '$level2Category->getTitle()',
                 '$level2Category[\'id\']' => '$level2Category->getId()',
-                '$level3Category[\'title\']' => '$level3Category->getTitle()'
+                '$level3Category[\'title\']' => '$level3Category->getTitle()',
+                '$this->getWithAdsCategories($level1Category->getId())' => '$this->getWithAdsCategories($level1Category)'
             ],
             'layouts/ad.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -165,17 +168,6 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
             ],
             'layouts/registration.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout'
-            ],
-            'parse_ads.php' => [
-                '$ad = [' => '$level2 = \Palto\Categories::getById($level3[\'parent_id\']);
-            $ad = [',
-                '\'category_id\' => $level3[\'id\'],' => '\'category_id\' => $level3[\'id\'],
-                \'category_level_1_id\' => $level2[\'parent_id\'],
-                \'category_level_2_id\' => $level3[\'parent_id\'],
-                \'category_level_3_id\' => $level3[\'id\'],',
-                '\'region_id\' => $regionLevel2Id,' => '\'region_id\' => $regionLevel2Id,
-                \'region_level_1_id\' => $regionLevel1Id,
-                \'region_level_2_id\' => $regionLevel2Id,'
             ]
         ];
         $rootDirectory = realpath('.');
@@ -183,9 +175,7 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
             $rootDirectory = realpath('..');
         }
         \Palto\Directory::setRootDirectory($rootDirectory);
-        $update = new \Palto\Update();
-        $update->replaceCode($replaces);
-        echo 'done';
-        exit;
+        Update::replaceCode($replaces);
+        echo 'done';exit;
     }
 }

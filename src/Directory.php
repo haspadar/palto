@@ -6,6 +6,8 @@ class Directory
 {
     const ROUTES_SCRIPT = 'routes.php';
 
+    const VENDOR_HASPADAR_PALTO = 'vendor/haspadar/palto';
+
     private static string $rootDirectory = '';
 
     private static array $standardRoutes = [];
@@ -15,9 +17,26 @@ class Directory
         self::$rootDirectory = $rootDirectory;
     }
 
+    public static function getProjectName(): string
+    {
+        $pathParts = explode('/', self::getRootDirectory());
+
+        return $pathParts[count($pathParts) - 1];
+    }
+
+    public static function getConfigsDirectory(): string
+    {
+        return self::getRootDirectory() . '/configs';
+    }
+
     public static function getLayoutsDirectory(): string
     {
         return self::getRootDirectory() . '/layouts';
+    }
+
+    public static function getPaltoDirectory(): string
+    {
+        return self::getRootDirectory() . '/' . self::VENDOR_HASPADAR_PALTO;
     }
 
     public static function getRootDirectory(): string
@@ -51,12 +70,5 @@ class Directory
         }
 
         return self::$standardRoutes;
-    }
-
-    public static function getProjectName(): string
-    {
-        $pathParts = explode('/', self::getRootDirectory());
-
-        return $pathParts[count($pathParts) - 1];
     }
 }

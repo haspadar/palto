@@ -102,7 +102,7 @@ class Ads extends Model
             $values['category'] = $category->getId();
         }
 
-        if ($region) {
+        if ($region && $region->getId()) {
             $where[] = 'a.region_level_' . $region->getLevel() . '_id = %d_region';
             $values['region'] = $region->getId();
         }

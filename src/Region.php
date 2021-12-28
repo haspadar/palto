@@ -44,7 +44,7 @@ class Region
 
     public function getLevel(): int
     {
-        return $this->region['level'] ?? 0;
+        return $this->region['level'] ?? 1;
     }
 
     public function getId(): int

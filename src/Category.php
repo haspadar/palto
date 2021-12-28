@@ -50,7 +50,7 @@ class Category
 
     public function getLevel(): int
     {
-        return $this->category['level'] ?? 0;
+        return $this->category['level'] ?? 1;
     }
 
     public function getId(): int

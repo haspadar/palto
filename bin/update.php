@@ -1,8 +1,9 @@
 #!/usr/bin/php
 <?php
 
-use Palto\Install;
+use Palto\Update;
 
-require_once 'vendor/autoload.php';
-$install = new Install(realpath('.'), true);
-$install->run();
+require_once dirname(__DIR__) . '/public/autoload.php';
+
+$update = new Update();
+$update->run();

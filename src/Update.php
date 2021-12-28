@@ -2,36 +2,25 @@
 
 namespace Palto;
 
-use Bramus\Monolog\Formatter\ColoredLineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-
 class Update
 {
-    /**
-     * @var mixed
-     */
-    private string $databaseName;
-    /**
-     * @var mixed
-     */
-    private string $databasePassword;
-    private Logger $logger;
-
-    public function __construct()
+    public static function run()
     {
-        $this->logger = new Logger('update');
-        $handler = new StreamHandler('php://stdout');
-        $handler->setFormatter(new ColoredLineFormatter());
-        $this->logger->pushHandler($handler);
-        $databaseCredentials = Palto::extractDatabaseCredentials(
-            file_get_contents(Directory::getRootDirectory() . '/.env')
-        );
-        $this->databaseName = $databaseCredentials['DB_NAME'];
-        $this->databasePassword = $databaseCredentials['DB_PASSWORD'];
+        $databaseName = Config::get('DB_NAME');
+        $databaseUsername = Config::get('DB_USER');
+        $databasePassword = Config::get('DB_PASSWORD');
+        Cli::runCommands([
+            'Copy Layouts' => Cli::safeCopyLayouts(),
+            'Copy CSS' => Cli::safeCopyCss(),
+            'Copy Images' => Cli::safeCopyImg(),
+            'Copy Crunz' => Cli::copyCrunz(),
+            'Add Cron' => Cli::safeAddCron(),
+            'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
+            'Download Adminer' => Cli::downloadAdminer(),
+        ]);
     }
 
-    public function replaceCode(array $replaces)
+    public static function replaceCode(array $replaces)
     {
         foreach ($replaces as $file => $fileReplaces) {
             $content = file_get_contents(Directory::getRootDirectory() . '/' . $file);
@@ -52,7 +41,7 @@ class Update
             }
 
             file_put_contents(Directory::getRootDirectory() . '/' . $file, $content);
-            $this->logger->info('Replaced ' . $file);
+            Logger::info('Replaced ' . $file);
         }
     }
 

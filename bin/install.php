@@ -3,7 +3,6 @@
 
 use Palto\Install;
 
-require_once 'vendor/autoload.php';
+require_once dirname(__DIR__) . '/public/autoload.php';
 
-$install = new Install();
-$install->run();
+Install::run();

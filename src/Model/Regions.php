@@ -38,8 +38,9 @@ class Regions extends Model
     {
         $query = 'SELECT * FROM regions';
         $values = [];
-        $adsFieldRegion = 'region_level_' . ($parentRegion ? $parentRegion->getLevel() + 1 : 1) . '_id';
-        $query .= " WHERE id IN (SELECT $adsFieldRegion FROM ads)";
+        $level = $parentRegion && $parentRegion->getId() ? $parentRegion->getLevel() + 1 : 1;
+        $adsFieldRegion = "region_level_{$level}_id";
+        $query .= " WHERE level=$level AND id IN (SELECT $adsFieldRegion FROM ads)";
         if ($parentRegion) {
             $query .= ' AND parent_id = %d_parent_id';
             $values['parent_id'] = $parentRegion->getId();

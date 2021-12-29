@@ -43,6 +43,11 @@ class Directory
         return self::getRootDirectory() . '/' . self::VENDOR_HASPADAR_PALTO;
     }
 
+    public static function getTestsDirectory(): string
+    {
+        return self::getRootDirectory() . '/tests';
+    }
+
     public static function getRootDirectory(): string
     {
         if (!isset(self::$rootDirectory)) {

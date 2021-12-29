@@ -134,12 +134,17 @@ class Layout
         return Directory::getPublicDirectory();
     }
 
+    public function getParameter(string $name): string
+    {
+        return $this->getDispatcher()->getRouter()->getQueryParameter($name);
+    }
+
     /**
      * @return Region[]
      */
-    public function getWithAdsRegions(?Region $parentRegion = null): array
+    public function getWithAdsRegions(?Region $parentRegion = null, int $limit = 0): array
     {
-        return Regions::getWithAdsRegions($parentRegion);
+        return Regions::getWithAdsRegions($parentRegion, $limit);
     }
 
     /**

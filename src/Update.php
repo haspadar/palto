@@ -48,6 +48,27 @@ class Update
         }
     }
 
+    public static function check()
+    {
+        if (Config::get('CODE_WARNINGS_EMAIL')) {
+            $command = Directory::getRootDirectory()
+                . '/vendor/bin/phpunit '
+                . Directory::getTestsDirectory();
+            $response = `$command`;
+            $responseRows = array_values(array_filter(explode(PHP_EOL, $response)));
+            $responseLastRow = $responseRows[count($responseRows) - 1];
+            $isSuccess = mb_substr($responseLastRow, 0, 2) == 'OK';
+            if (!$isSuccess) {
+                Email::send(Config::get('CODE_WARNINGS_EMAIL'), 'Ошибка на ' . Directory::getProjectName(), $response);
+                Logger::error($response);
+            } else {
+                Logger::info($responseLastRow);
+            }
+        } else {
+            Logger::error('Укажите настройку CODE_WARNINGS_EMAIL');
+        }
+    }
+
     private function getReplaceBeforeSemicolon(string $file, string $from)
     {
         $content = file_get_contents(Directory::getRootDirectory() . '/' . $file);

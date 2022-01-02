@@ -179,6 +179,6 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
         }
         \Palto\Directory::setRootDirectory($rootDirectory);
         Update::replaceCode($replaces);
-        echo 'done';exit;
+        Update::check();
     }
 }

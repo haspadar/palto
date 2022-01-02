@@ -9,7 +9,6 @@
         "haspadar/pylesos": "9999999-dev",
         "monolog/monolog": "2.x-dev",
         "sergeytsalkov/meekrodb": "9999999-dev",
-        "swiftmailer/swiftmailer": "^6.0",
         "symfony/dom-crawler": "5.4.x-dev",
         "symfony/css-selector": "5.3.x-dev",
         "robmorgan/phinx": "dev-master",

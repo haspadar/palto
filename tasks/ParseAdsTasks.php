@@ -9,6 +9,6 @@ $task = $schedule->run(PHP_BINARY . ' ' . Palto::PARSE_ADS_SCRIPT);
 $task
     ->hourly()
     ->description('Ads parser')
-    ->preventOverlapping();;
+    ->preventOverlapping();
 
 return $schedule;

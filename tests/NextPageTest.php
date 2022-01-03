@@ -26,13 +26,12 @@ class NextPageTest extends Web
         $firstPageAdUrl = $firstPageAd->attr('href');
         if ($nextPage) {
             $nextUrl = $nextPage->attr('href');
-            Debug::dump($nextUrl);
             $nextPageResponse = $this->download($nextUrl);
             $crawler = new Crawler($nextPageResponse->getHtml());
             $secondPageAdUrl = $crawler->filter('.serp a')->attr('href');
             $this->assertTrue(
                 $secondPageAdUrl != $firstPageAdUrl,
-                'Second page url ' . $secondPageAdUrl . ' is equal to ' . $firstPageAdUrl . ' on page ' . '/' . Config::get('DEFAULT_REGION_URL')
+                'Ad url ' . $secondPageAdUrl . ' on second page is equal to ad url '  . $firstPageAdUrl . ' on first page: ' . '/' . Config::get('DEFAULT_REGION_URL')
             );
         }
     }

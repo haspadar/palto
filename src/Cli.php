@@ -110,6 +110,7 @@ class Cli
             'DB_USER=' => 'DB_USER=' . $databaseUser,
             'DB_PASSWORD=' => 'DB_PASSWORD=' . $databasePassword,
             'DB_NAME=' => 'DB_NAME=' . $databaseName,
+            'DOMAIN_URL=' => 'DOMAIN_URL=https://www.' . Directory::getProjectName()
         ];
         $content = strtr(
             file_get_contents(Directory::getConfigsDirectory() . '/.env'),

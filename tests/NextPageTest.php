@@ -31,7 +31,7 @@ class NextPageTest extends Web
             $secondPageAdUrl = $crawler->filter('.serp a')->attr('href');
             $this->assertTrue(
                 $secondPageAdUrl != $firstPageAdUrl,
-                'Second page url ' . $secondPageAdUrl . ' is equal to ' . $firstPageAdUrl
+                'Second page url ' . $secondPageAdUrl . ' is equal to ' . $firstPageAdUrl . ' on page ' . '/' . Config::get('DEFAULT_REGION_URL')
             );
         }
     }

@@ -63,7 +63,12 @@ abstract class Web extends TestCase
             Logger::warning('Long time request: ' . $info['total_time'] . ' seconds for ' . $this->getDomainUrl() . $url);
         }
 
-        return new Response($result, $info['http_code'], $this->getDomainUrl() . $url, $info['redirect_url']);
+        $response = new Response($result, $info['http_code'], $this->getDomainUrl() . $url, $info['redirect_url']);
+        if ($info['http_code'] != 200) {
+            Logger::debug($response);
+        }
+
+        return $response;
     }
 
     protected function getDomainUrl(): string

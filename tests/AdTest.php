@@ -22,6 +22,7 @@ class AdTest extends Web
             $firstCategory->count() > 0,
             'Categories page hasn\'t ads: ' . $categoriesResponse->getUrl()
         );
+        Debug::dump();
         $firstCategoryUrl = $firstCategory->attr('href');
         $categoryResponse = $this->download($firstCategoryUrl);
         $crawler = new Crawler($categoryResponse->getHtml());

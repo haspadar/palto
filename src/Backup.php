@@ -1,4 +1,5 @@
 <?php
+
 namespace Palto;
 
 class Backup
@@ -44,12 +45,12 @@ class Backup
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'file' => new \CurlFile($backupName, 'application/zip')
         ]);
-        $result = curl_exec ($ch);
-        curl_close ($ch);
+        $result = curl_exec($ch);
+        curl_close($ch);
 
         return $result;
     }
@@ -59,18 +60,17 @@ class Backup
         $time = (new \DateTime())->format('Y-m-d');
         $archiveDirectory = Directory::getProjectName() . '-' . $time;
         $layoutFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/layouts/*', $archiveDirectory . '/');
+        $cssFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/css/*', $archiveDirectory . '/');
+        $imgFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/img/*', $archiveDirectory . '/');
 
         return array_merge([
             Directory::getRootDirectory() . '/' . Palto::PARSE_CATEGORIES_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_CATEGORIES_SCRIPT,
             Directory::getRootDirectory() . '/' . Palto::PARSE_ADS_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_ADS_SCRIPT,
-        ], $layoutFiles);
-    }
-
-    private static function getConfigFiles(): array
-    {
-        $archiveDirectory = 'backup-env-' . (new \DateTime())->format('Y-m-d');
-
-        return ['.env' => $archiveDirectory . '/.env'];
+        ],
+            $layoutFiles,
+            $cssFiles,
+            $imgFiles
+        );
     }
 
     private static function getDirectoryFiles(string $directory, string $prefixPath = ''): array
@@ -82,10 +82,16 @@ class Backup
             } elseif (is_dir($file)) {
                 foreach (glob($file . '/*') as $directoryFile) {
                     if (file_exists($directoryFile) && is_file($directoryFile)) {
-                        $files[$directoryFile] = $prefixPath . $directoryFile;
+                        $files[$directoryFile] = $directoryFile;
                     }
                 }
             }
+        }
+
+        foreach ($files as &$file) {
+            $file = $prefixPath . strtr($file, [
+                Directory::getRootDirectory() . '/' => ''
+            ]);
         }
 
         return $files;

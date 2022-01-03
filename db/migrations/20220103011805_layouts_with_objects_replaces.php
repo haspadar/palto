@@ -26,7 +26,7 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$categoryWithChildrenIds = ...' => '$categoryWithChildrenIds = $this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [];',
                 '$ads = $this->getAds(...' => '$ads = $this->getAds();',
                 '$this->initPager($this->hasNextPage(count($ads)))' => '$pager = new \Palto\Pager($this->getDispatcher());',
-                '$categoriesTitle = implode(\' - \', $this->getCurrentCategory()[\'titles\']);' => '$categoriesTitle = $this->getCategory() ? implode(\' - \', $this->getCategory()->getWithParentsTitles()); : ""',
+                '$categoriesTitle = implode(\' - \', $this->getCurrentCategory()[\'titles\']);' => '$categoriesTitle = $this->getCategory() ? implode(\' - \', $this->getCategory()->getWithParentsTitles()) : "";',
                 '$this->getCurrentRegion()[\'title\']' => '$this->getRegion()->getTitle()',
                 'array_filter(array_merge(
                 array_column($this->getCurrentCategory()[\'parents\'], \'title\'),
@@ -39,7 +39,12 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$this->getCurrentCategory()[\'title\']' => '$this->getCategory()',
                 '$this->getCurrentCategory()[\'id\']' => '$this->getCategory()',
                 '$this->getPageNumber()' => '$pager->getPageNumber()',
-                '$childCategory[\'title\']' => '$childCategory->getTitle()'
+                '$childCategory[\'title\']' => '$childCategory->getTitle()',
+                'array_column($this->getCurrentCategory()[\'parents\'], \'title\'),
+                [$this->getCategory()],' => '$this->getCategory()->getWithParentsTitles(),',
+                '<?= $this->getCategory()?>' => '<?= $this->getCategory()->getTitle()?>',
+                'getWithAdsCategories(0' => 'getWithAdsCategories(null',
+                '$this->getCategory()->getWithParentsTitles()' => '($this->getCategory() ? $this->getCategory()->getWithParentsTitles() : [])'
             ],
             'layouts/index.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',

@@ -56,7 +56,7 @@ class Update
                 . Directory::getTestsDirectory();
             $response = `$command`;
             $responseRows = array_values(array_filter(explode(PHP_EOL, $response)));
-            $responseLastRow = $responseRows[count($responseRows) - 1];
+            $responseLastRow = $responseRows ? $responseRows[count($responseRows) - 1] : '';
             $isSuccess = mb_substr($responseLastRow, 0, 2) == 'OK';
             if (!$isSuccess) {
                 Email::send(Config::get('CODE_WARNINGS_EMAIL'), 'Ошибка на ' . Directory::getProjectName(), $response);

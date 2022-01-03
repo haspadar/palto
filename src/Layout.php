@@ -2,10 +2,6 @@
 
 namespace Palto;
 
-use Palto\Model\Ads;
-use Palto\Model\Categories;
-use Palto\Router\Router;
-
 class Layout
 {
     private string $name;
@@ -90,7 +86,7 @@ class Layout
 
         return array_filter(
             $urls,
-            fn ($url) => $url != $this->getDispatcher()->getRouter()->getUrl()->getPath()
+            fn($url) => $url != $this->getDispatcher()->getRouter()->getUrl()->getPath()
         );
     }
 
@@ -112,6 +108,42 @@ class Layout
             \Palto\Ads::LIMIT,
             ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * \Palto\Ads::LIMIT
         );
+    }
+
+    public function generateHtmlTitle(string $prefix = ''): string
+    {
+        if ($this->getAd()) {
+            return $this->getAd()->getTitle()
+                . ': '
+                . implode(
+                    ' - ',
+                    array_filter(array_merge(
+                        $this->getAd()->getCategory()->getWithParentsTitles(),
+                        [$this->getAd()->getAddress()],
+                        [$prefix . $this->getRegion()->getTitle()],
+                    ))
+                );
+        } else {
+            $categoriesTitle = $this->getCategory()
+                ? implode(' - ', $this->getCategory()->getWithParentsTitles())
+                : '';
+
+            return ($categoriesTitle ? $categoriesTitle . ' - ' : $categoriesTitle)
+                . $prefix
+                . $this->getRegion()->getTitle();
+        }
+    }
+
+    public function generateHtmlDescription(string $prefix = ''): string
+    {
+        return $prefix
+            . implode(
+                ' - ',
+                array_filter(array_merge(
+                    ($this->getCategory() ? $this->getCategory()->getWithParentsTitles() : []),
+                    [$this->getRegion()->getTitle()]
+                ))
+            );
     }
 
     public function generateRegionUrl(Region $region): string

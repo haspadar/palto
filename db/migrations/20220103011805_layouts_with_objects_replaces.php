@@ -44,7 +44,18 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 [$this->getCategory()],' => '$this->getCategory()->getWithParentsTitles(),',
                 '<?= $this->getCategory()?>' => '<?= $this->getCategory()->getTitle()?>',
                 'getWithAdsCategories(0' => 'getWithAdsCategories(null',
-                '$this->getCategory()->getWithParentsTitles()' => '($this->getCategory() ? $this->getCategory()->getWithParentsTitles() : [])'
+                '$this->getCategory()->getWithParentsTitles()' => '($this->getCategory() ? $this->getCategory()->getWithParentsTitles() : [])',
+                '
+        . $this->getRegion()->getTitle()' => ')',
+                '\'title\' => ($categoriesTitle ? $categoriesTitle . \' - \' : $categoriesTitle)
+        . ' => '\'title\' => $this->generateHtmlTitle(',
+                '\'description\' => \'' => '\'description\' => $this->generateHtmlDescription(\'',
+                '
+        . implode(...\'nextPageUrl\'' => '),
+    ',
+                '$categoriesTitle = ...$this->partial' => '',
+                '<div class="bread"...
+<h1>' => '<?php $this->partial(\'breadcrumb.inc\', [\'breadcrumbUrls\' => $this->getBreadcrumbUrls()]);?>'
             ],
             'layouts/index.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -106,6 +117,12 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$popularLevel1Category[\'title\']' => '$popularLevel1Category->getTitle()',
                 'getWithAdsCategories(0, 1, 5)' => 'getWithAdsCategories(null, 5)'
             ],
+            'layouts/partials/breadcrumb.inc' => [
+                '<?php $breadcrumbUrls' => '<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+<?php $breadcrumbUrls',
+                '<?php endforeach;' => '<?php endforeach;?>
+</div>'
+            ],
             'layouts/regions-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getRegions(0, 1)' => '$this->getWithAdsRegions(0, intval($this->getParameter(\'limit\')))',
@@ -155,7 +172,23 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$this->getCurrentAd()[\'id\']' => '$this->getAd()->getId()',
                 '$this->getAds($this->getCurrentCategory()[\'id\'], $this->getCurrentRegion()[\'id\'], 6)' => '$this->getSimilarAds()',
                 '$similarAd[\'id\']' => '$similarAd->getId()',
-                '(new DateTime($this->getCurrentAd()[\'post_time\']))' => '$this->getAd()->getPostTime()'
+                '(new DateTime($this->getCurrentAd()[\'post_time\']))' => '$this->getAd()->getPostTime()',
+                '<div class="bread"...
+<h1>' => '<?php $this->partial(\'breadcrumb.inc\', [\'breadcrumbUrls\' => $this->getBreadcrumbUrls()]);?>',
+                '$this->getAd()->getTitle()
+        . \': \'
+        . implode(
+            \' - \',
+            array_filter(array_merge(
+                $this->getAd()->getCategory()->getWithParentsTitles(),
+                [$this->getAd()->getAddress()],
+                [' => '$this->generateHtmlTitle(',
+                ' . $this->getRegion()->getTitle()],
+            ))
+        ),' => '),',
+                '
+    
+    ' => ''
             ],
             'layouts/404.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -176,7 +209,7 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
 
         \Palto\Directory::setRootDirectory($rootDirectory);
         \Palto\Update::replaceCode($replaces);
-        \Palto\Update::check();
+//        \Palto\Update::check();
         exit;
     }
 }

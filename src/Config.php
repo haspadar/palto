@@ -15,6 +15,11 @@ class Config
         return self::getEnv()[$name] ?? '';
     }
 
+    public static function withErrors(): bool
+    {
+        return ($_GET['errors'] ?? 0);
+    }
+
     public static function isDebug(): bool
     {
         return self::get('DEBUG') || ($_GET['debug'] ?? 0);

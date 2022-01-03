@@ -107,7 +107,8 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$level1Region[\'title\']' => '$level1Region->getTitle()',
                 '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region->getId(), intval($this->getParameter(\'limit\')))',
                 '$level2Region[\'title\']' => '$level2Region->getTitle()',
-                '$this->getWithAdsRegions($level1Region->getId())' => '$this->getWithAdsRegions($level1Region)'
+                '$this->getWithAdsRegions($level1Region->getId()' => '$this->getWithAdsRegions($level1Region',
+                '$this->getWithAdsRegions(0' => '$this->getWithAdsRegions(null'
             ],
             'layouts/categories-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -117,7 +118,8 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$level2Category[\'title\']' => '$level2Category->getTitle()',
                 '$level2Category[\'id\']' => '$level2Category->getId()',
                 '$level3Category[\'title\']' => '$level3Category->getTitle()',
-                '$this->getWithAdsCategories($level1Category->getId())' => '$this->getWithAdsCategories($level1Category)'
+                '$this->getWithAdsCategories($level1Category->getId())' => '$this->getWithAdsCategories($level1Category)',
+                'getWithAdsCategories($level2Category->getId())' => 'getWithAdsCategories($level2Category)'
             ],
             'layouts/ad.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',

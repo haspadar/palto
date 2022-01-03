@@ -7,6 +7,10 @@ class Backup
     {
         $files = self::getFiles();
         $time = (new \DateTime())->format('Y-m-d');
+        if (!file_exists(Directory::getRootDirectory() . '/backups/')) {
+            mkdir(Directory::getRootDirectory() . '/backups/');
+        }
+
         $archiveName = Directory::getRootDirectory() . '/backups/' . Directory::getProjectName() . '-' . $time . '.zip';
         $isBackupCreated = Backup::createFilesArchive($archiveName, $files);
         if ($isBackupCreated) {

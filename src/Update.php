@@ -21,6 +21,7 @@ class Update
             'Add Cron' => Cli::safeAddCron(),
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Download Adminer' => Cli::downloadAdminer(),
+            'Update Htpasswd' => Cli::updateHtpasswd(),
         ]);
     }
 

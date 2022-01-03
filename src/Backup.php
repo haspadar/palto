@@ -41,18 +41,20 @@ class Backup
         return false;
     }
 
-    public static function sendSundukArchive(string $backupName, string $url)
+    public static function sendSundukArchive()
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'file' => new \CurlFile($backupName, 'application/zip')
-        ]);
-        $result = curl_exec($ch);
-        curl_close($ch);
+        if (Config::get('SUNDUK_URL')) {
+            $backupName = Backup::createArchive();
+            $response = self::sendFile($backupName, Config::get('SUNDUK_URL'));
+            if ($response == 'File is uploaded successfully.') {
+                Logger::info($response);
+            } else {
+                Logger::error($response);
+            }
 
-        return $result;
+        } else {
+            Logger::error('SUNDUK_URL is empty');
+        }
     }
 
     private static function getFiles(string $archiveName): array
@@ -95,8 +97,18 @@ class Backup
         return $files;
     }
 
-    private function generateTime()
+    private static function sendFile(string $backupName, string $url): string|bool
     {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'file' => new \CurlFile($backupName, 'application/zip')
+        ]);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        $result = curl_exec($ch);
+        curl_close($ch);
 
+        return $result;
     }
 }

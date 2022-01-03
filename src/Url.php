@@ -79,11 +79,11 @@ class Url
 
         return new self(
             '/'
-                . implode('/', $parts)
-                . ($this->getQueryParameters()
-                    ? '?' . http_build_query($this->getQueryParameters())
-                    : ''
-                )
+            . implode('/', $parts)
+            . ($this->getQueryParameters()
+                ? '?' . http_build_query($this->getQueryParameters())
+                : ''
+            )
         );
     }
 
@@ -97,7 +97,9 @@ class Url
     public function getPageNumber(): int
     {
         if ($this->hasUrlPageNumber()) {
-            return $this->getLastPart($this->url);
+            $withoutQueryUrl = parse_url($this->url)['path'];
+
+            return $this->getLastPart($withoutQueryUrl);
         }
 
         return 1;
@@ -122,7 +124,8 @@ class Url
 
     private function hasUrlPageNumber(): bool
     {
-        $parts = self::getUrlParts($this->url);
+        $withoutQueryUrl = parse_url($this->url)['path'];
+        $parts = self::getUrlParts($withoutQueryUrl);
 
         return isset($parts[count($parts) - 1]) && is_numeric($parts[count($parts) - 1]);
     }

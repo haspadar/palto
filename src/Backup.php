@@ -6,7 +6,7 @@ class Backup
 {
     public static function createArchive(): string
     {
-        $archiveName = Directory::getProjectName() . '-' . (new \DateTime())->format('Y-m-dTH:i:s');
+        $archiveName = Directory::getProjectName() . '-' . (new \DateTime())->format('Y-m-d\TH:i:s');
         $files = self::getFiles($archiveName);
         if (!file_exists(Directory::getRootDirectory() . '/backups/')) {
             mkdir(Directory::getRootDirectory() . '/backups/');

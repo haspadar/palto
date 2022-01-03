@@ -56,7 +56,7 @@ abstract class Web extends TestCase
         } else {
             $url .= '&errors=1';
         }
-        
+
         \curl_setopt($ch, CURLOPT_URL,$this->getDomainUrl() . $url);
         \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
         \curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 0);
@@ -68,13 +68,7 @@ abstract class Web extends TestCase
             Logger::warning('Long time request: ' . $info['total_time'] . ' seconds for ' . $this->getDomainUrl() . $url);
         }
 
-        $response = new Response($result, $info['http_code'], $this->getDomainUrl() . $url, $info['redirect_url']);
-        if ($info['http_code'] != 200) {
-            Debug::dump($info, '$info');
-            Debug::dump($result, '$result');
-        }
-
-        return $response;
+        return new Response($result, $info['http_code'], $this->getDomainUrl() . $url, $info['redirect_url']);
     }
 
     protected function getDomainUrl(): string

@@ -41,6 +41,22 @@ class Region
         return $this->region['parent_id'] ?? 0;
     }
 
+    public function getParents(): array
+    {
+        if (!isset($this->parents)) {
+            $parents = [];
+            $region = $this;
+            while ($region->getParentId()) {
+                $region = new self(Regions::getById($region->getParentId()));
+                $parents[] = $region;
+            }
+
+            $this->parents = array_reverse($parents);
+        }
+
+        return $this->parents;
+    }
+
     public function getLevel(): int
     {
         return $this->region['level'] ?? 1;

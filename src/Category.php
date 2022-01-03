@@ -32,7 +32,7 @@ class Category
             $parents = [];
             $category = $this;
             while ($category->getParentId()) {
-                $category = new self(Categories::getCategory($category->getParentId()));
+                $category = new self(Categories::getById($category->getParentId()));
                 $parents[] = $category;
             }
 

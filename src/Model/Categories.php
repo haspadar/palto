@@ -3,13 +3,12 @@
 namespace Palto\Model;
 
 use Palto\Category;
-use Palto\Debug;
 
 class Categories extends Model
 {
-    public static function getCategory(int $categoryId): array
+    public static function getById(int $id): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $categoryId);
+        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id);
     }
 
     public static function getCategoriesByIds(array $categoryIds): array
@@ -68,10 +67,5 @@ class Categories extends Model
         }
 
         return [];
-    }
-
-    public static function getById(int $id): array
-    {
-        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id);
     }
 }

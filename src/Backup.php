@@ -6,13 +6,13 @@ class Backup
 {
     public static function createArchive(): string
     {
-        $files = self::getFiles();
-        $time = (new \DateTime())->format('Y-m-d');
+        $archiveName = Directory::getProjectName() . '-' . (new \DateTime())->format('Y-m-dTH:i:s');
+        $files = self::getFiles($archiveName);
         if (!file_exists(Directory::getRootDirectory() . '/backups/')) {
             mkdir(Directory::getRootDirectory() . '/backups/');
         }
 
-        $archiveName = Directory::getRootDirectory() . '/backups/' . Directory::getProjectName() . '-' . $time . '.zip';
+        $archiveName = Directory::getRootDirectory() . '/backups/' . $archiveName . '.zip';
         $isBackupCreated = Backup::createFilesArchive($archiveName, $files);
         if ($isBackupCreated) {
             Logger::info('Backup ' . $archiveName . ' created');
@@ -55,17 +55,15 @@ class Backup
         return $result;
     }
 
-    private static function getFiles(): array
+    private static function getFiles(string $archiveName): array
     {
-        $time = (new \DateTime())->format('Y-m-dTH:i:s');
-        $archiveDirectory = Directory::getProjectName() . '-' . $time;
-        $layoutFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/layouts/*', $archiveDirectory . '/');
-        $cssFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/css/*', $archiveDirectory . '/');
-        $imgFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/img/*', $archiveDirectory . '/');
+        $layoutFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/layouts/*', $archiveName . '/');
+        $cssFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/css/*', $archiveName . '/');
+        $imgFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/img/*', $archiveName . '/');
 
         return array_merge([
-            Directory::getRootDirectory() . '/' . Directory::PARSE_CATEGORIES_SCRIPT => $archiveDirectory . '/' . Directory::PARSE_CATEGORIES_SCRIPT,
-            Directory::getRootDirectory() . '/' . Directory::PARSE_ADS_SCRIPT => $archiveDirectory . '/' . Directory::PARSE_ADS_SCRIPT,
+            Directory::getRootDirectory() . '/' . Directory::PARSE_CATEGORIES_SCRIPT => $archiveName . '/' . Directory::PARSE_CATEGORIES_SCRIPT,
+            Directory::getRootDirectory() . '/' . Directory::PARSE_ADS_SCRIPT => $archiveName . '/' . Directory::PARSE_ADS_SCRIPT,
         ],
             $layoutFiles,
             $cssFiles,
@@ -95,5 +93,10 @@ class Backup
         }
 
         return $files;
+    }
+
+    private function generateTime()
+    {
+
     }
 }

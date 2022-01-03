@@ -51,14 +51,19 @@ abstract class Web extends TestCase
     protected function download(string $url)
     {
         $ch = \curl_init();
-        $url .= '?errors=1';
+        if (strpos($url, '?') === false) {
+            $url .= '?errors=1';
+        } else {
+            $url .= '&errors=1';
+        }
+        
         \curl_setopt($ch, CURLOPT_URL,$this->getDomainUrl() . $url);
         \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
         \curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 0);
         \curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
         $result = \curl_exec($ch);
         $info = curl_getinfo($ch);
-        \curl_close ($ch);
+        \curl_close($ch);
         if ($info['total_time'] > 3) {
             Logger::warning('Long time request: ' . $info['total_time'] . ' seconds for ' . $this->getDomainUrl() . $url);
         }

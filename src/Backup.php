@@ -57,7 +57,7 @@ class Backup
 
     private static function getFiles(): array
     {
-        $time = (new \DateTime())->format('Y-m-d');
+        $time = (new \DateTime())->format('Y-m-dTH:i:s');
         $archiveDirectory = Directory::getProjectName() . '-' . $time;
         $layoutFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/layouts/*', $archiveDirectory . '/');
         $cssFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/css/*', $archiveDirectory . '/');

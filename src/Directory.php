@@ -30,7 +30,7 @@ class Directory
 
     public static function getConfigsDirectory(): string
     {
-        return self::getRootDirectory() . '/configs';
+        return self::getPaltoDirectory() . '/configs';
     }
 
     public static function getLayoutsDirectory(): string

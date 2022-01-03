@@ -124,7 +124,11 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '<?php $breadcrumbUrls' => '<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
 <?php $breadcrumbUrls',
                 '<?php endforeach;' => '<?php endforeach;?>
-</div>'
+</div>',
+                '<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
+<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">' => '<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">',
+                '</div>?>
+</div>' => '</div>'
             ],
             'layouts/regions-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -133,7 +137,10 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region->getId(), intval($this->getParameter(\'limit\')))',
                 '$level2Region[\'title\']' => '$level2Region->getTitle()',
                 '$this->getWithAdsRegions($level1Region->getId()' => '$this->getWithAdsRegions($level1Region',
-                '$this->getWithAdsRegions(0' => '$this->getWithAdsRegions(null'
+                '$this->getWithAdsRegions(0' => '$this->getWithAdsRegions(null',
+                'getRegions($level2Region[\'id\'])' => 'getWithAdsRegions($level2Region)',
+                'Region[\'id\']' => 'Region->getId()',
+                'Region[\'title\']' => 'Region->getTitle()',
             ],
             'layouts/categories-list.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',
@@ -192,8 +199,9 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '
     
     ' => '',
-                '$this->getRegionById($level3Region[\'parent_id\'])' => '$level3Region->getParents()[1]',
-                '$this->getRegionById($level2Region[\'parent_id\'])' => '$level3Region->getParents()[0]'
+                '$this->getRegionById($level3Region[\'parent_id\'])' => '$level3Region->getParents()[1] ?? null',
+                '$this->getRegionById($level2Region[\'parent_id\'])' => '$level3Region->getParents()[0]',
+                'Region[\'title\']' => 'Region->getTitle()'
             ],
             'layouts/404.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',

@@ -8,13 +8,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {
-        "haspadar/palto": "@dev"
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../palto"
-        }
-    ]
+    "require-dev": {
+        "phpunit/phpunit": "10.0.x-dev"
+    }
 }

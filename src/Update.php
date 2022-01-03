@@ -15,6 +15,7 @@ class Update
             'Copy Images' => Cli::safeCopyImg(),
             'Copy Crunz' => Cli::copyCrunz(),
             Cli::safeLinkCrunzTasks(),
+            'Copy composer.json' => Cli::copyComposerJson(),
             'Update PhpUnit' => Cli::safeLinkPhpUnit(),
             Cli::safeLinkTests(),
             'Add Cron' => Cli::safeAddCron(),

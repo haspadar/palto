@@ -211,6 +211,14 @@ class Cli
         return "mkdir $rootDirectory/public";
     }
 
+    public static function copyComposerJson(): string
+    {
+        $rootDirectory = Directory::getRootDirectory();
+        $configsDirectory = Directory::getConfigsDirectory();
+
+        return "cp $configsDirectory/composer.json $rootDirectory";
+    }
+
     public static function safeCopyLayouts(): string
     {
         $rootDirectory = Directory::getRootDirectory();

@@ -26,6 +26,7 @@ class Install
             'Link Sitemap Script' => Cli::safeLinkSitemapScript(),
             'Copy Crunz' => Cli::copyCrunz(),
             Cli::safeLinkCrunzTasks(),
+            'Copy composer.json' => Cli::copyComposerJson(),
             'Update PhpUnit' => Cli::safeLinkPhpUnit(),
             Cli::safeLinkTests(),
             'Copy Parse Scripts' => Cli::safeCopyParseScripts(),

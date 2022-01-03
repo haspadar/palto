@@ -26,6 +26,7 @@ class NextPageTest extends Web
         $firstPageAdUrl = $firstPageAd->attr('href');
         if ($nextPage) {
             $nextUrl = $nextPage->attr('href');
+            Debug::dump($nextUrl);
             $nextPageResponse = $this->download($nextUrl);
             $crawler = new Crawler($nextPageResponse->getHtml());
             $secondPageAdUrl = $crawler->filter('.serp a')->attr('href');

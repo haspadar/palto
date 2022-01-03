@@ -17,7 +17,12 @@ class AdTest extends Web
     {
         $categoriesResponse = $this->download($this->url);
         $crawler = new Crawler($categoriesResponse->getHtml());
-        $firstCategoryUrl = $crawler->filter('.table_main a')->attr('href');
+        $firstCategory = $crawler->filter('.table_main a');
+        $this->assertTrue(
+            $firstCategory->count() > 0,
+            'Categories page hasn\'t ads: ' . $categoriesResponse->getUrl()
+        );
+        $firstCategoryUrl = $firstCategory->attr('href');
         $categoryResponse = $this->download($firstCategoryUrl);
         $crawler = new Crawler($categoryResponse->getHtml());
         $firstAd = $crawler->filter('.serp a');

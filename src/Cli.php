@@ -130,7 +130,7 @@ class Cli
             '%%PHINX_CONFIG_DIR%%' => Directory::VENDOR_HASPADAR_PALTO
         ]);
 
-        return "echo \"$content\" >> " . Directory::getRootDirectory() . '/phinx.php';
+        return "echo \"$content\" > " . Directory::getRootDirectory() . '/phinx.php';
     }
 
     public static function updateNginx(): string

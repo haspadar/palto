@@ -29,19 +29,34 @@ class Update
         foreach ($replaces as $file => $fileReplaces) {
             $content = file_get_contents(Directory::getRootDirectory() . '/' . $file);
             foreach ($fileReplaces as $from => $to) {
-                $isReplaceBeforeSemicolon = mb_substr($from, -3) == '...';
-                if ($isReplaceBeforeSemicolon) {
-                    $start = mb_strpos($content, mb_substr($from, 0, -3));
-                    $finish = mb_strpos($content, ';', $start);
+                $dotsParts = explode('...', $from);
+                $isReplacedByDots = count($dotsParts) == 2;
+                if ($isReplacedByDots) {
+                    $beforeDotsPart = $dotsParts[0];
+                    $afterDotsPart = $dotsParts[1] ?: ';';
+                    $start = mb_strpos($content, $beforeDotsPart);
+                    $finish = mb_strpos($content, $afterDotsPart, $start);
                     if ($start !== false && $finish !== false) {
                         $content = mb_substr($content, 0, $start)
                             . $to
-                            . mb_substr($content, $finish + 1);
+                            . mb_substr($content, $finish);
                     }
-
                 } else {
                     $content = str_replace($from, $to, $content);
                 }
+//                $isReplaceBeforeSemicolon = mb_substr($from, -3) == '...';
+//                if ($isReplaceBeforeSemicolon) {
+//                    $start = mb_strpos($content, mb_substr($from, 0, -3));
+//                    $finish = mb_strpos($content, ';', $start);
+//                    if ($start !== false && $finish !== false) {
+//                        $content = mb_substr($content, 0, $start)
+//                            . $to
+//                            . mb_substr($content, $finish + 1);
+//                    }
+//
+//                } else {
+//                    $content = str_replace($from, $to, $content);
+//                }
             }
 
             file_put_contents(Directory::getRootDirectory() . '/' . $file, $content);

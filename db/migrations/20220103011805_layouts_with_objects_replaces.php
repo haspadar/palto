@@ -19,7 +19,6 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
     public function change(): void
     {
         \Palto\Backup::createArchive();
-        \Palto\Update::run();
         $replaces = [
             'layouts/list.php' => [
                 '$flashMessage = $this->getFlashMessage();' => '$flashMessage = \Palto\Flash::get();',

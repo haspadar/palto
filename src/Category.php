@@ -9,10 +9,9 @@ class Category
     /**
      * @var Category[]
      */
-    private static array $parents;
-    private static array $children;
-    private static array $childrenIds;
-
+    private array $parents;
+    private array $children;
+    private array $childrenIds;
     private array $category;
 
     public function __construct(array $category)
@@ -29,7 +28,7 @@ class Category
 
     public function getParents(): array
     {
-        if (!isset(self::$parents)) {
+        if (!isset($this->parents)) {
             $parents = [];
             $category = $this;
             while ($category->getParentId()) {
@@ -37,10 +36,10 @@ class Category
                 $parents[] = $category;
             }
 
-            self::$parents = array_reverse($parents);
+            $this->parents = array_reverse($parents);
         }
 
-        return self::$parents;
+        return $this->parents;
     }
 
     public function getParentId(): int
@@ -92,7 +91,7 @@ class Category
 
     public function getChildrenIds(): array
     {
-        if (!isset(self::$childrenIds)) {
+        if (!isset($this->childrenIds)) {
             $childrenIds = [];
             $nextLevelCategoriesIds = [$this->getId()];
             $level = $this->getLevel();
@@ -100,10 +99,10 @@ class Category
                 $childrenIds = array_merge($nextLevelCategoriesIds, $childrenIds);
             }
 
-            self::$childrenIds = $childrenIds;
+            $this->childrenIds = $childrenIds;
         }
 
-        return self::$childrenIds;
+        return $this->childrenIds;
     }
 
     public function getWithParentsTitles(array $addTitles = []): array
@@ -137,11 +136,11 @@ class Category
      */
     public function getChildren(): array
     {
-        if (!isset(self::$children)) {
+        if (!isset($this->children)) {
             $childrenIds = $this->getChildrenIds();
-            self::$children = Categories::getCategoriesByIds($childrenIds);
+            $this->children = Categories::getCategoriesByIds($childrenIds);
         }
 
-        return self::$children;
+        return $this->children;
     }
 }

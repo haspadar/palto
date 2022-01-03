@@ -30,26 +30,30 @@ class Categories extends Model
 
     public static function getWithAdsCategories(?Category $parentCategory, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
-        $query = 'SELECT * FROM categories';
-        $values = [];
-        $adsFieldCategory = 'category_level_' . ($parentCategory ? $parentCategory->getLevel() + 1 : 1) . '_id';
-        $query .= " WHERE id IN (SELECT $adsFieldCategory FROM ads)";
-        if ($parentCategory) {
-            $query .= ' AND parent_id = %d_parent_id';
-            $values['parent_id'] = $parentCategory->getId();
-        }
+        if (!$parentCategory || $parentCategory->getLevel() < 3) {
+            $query = 'SELECT * FROM categories';
+            $values = [];
+            $adsFieldCategory = 'category_level_' . ($parentCategory ? $parentCategory->getLevel() + 1 : 1) . '_id';
+            $query .= " WHERE id IN (SELECT $adsFieldCategory FROM ads)";
+            if ($parentCategory) {
+                $query .= ' AND parent_id = %d_parent_id';
+                $values['parent_id'] = $parentCategory->getId();
+            }
 
-        if ($orderBy) {
-            $query .= ' ORDER BY ' .$orderBy;
-        }
+            if ($orderBy) {
+                $query .= ' ORDER BY ' .$orderBy;
+            }
 
-        if ($limit) {
-            $query .= ' LIMIT %d_limit OFFSET %d_offset';
-            $values['limit'] = $limit;
-            $values['offset'] = $offset;
-        }
+            if ($limit) {
+                $query .= ' LIMIT %d_limit OFFSET %d_offset';
+                $values['limit'] = $limit;
+                $values['offset'] = $offset;
+            }
 
-        return self::getDb()->query($query, $values);
+            return self::getDb()->query($query, $values);
+        } else {
+            return [];
+        }
     }
     
     public static function getByUrl(string $url, int $level, int $excludeId = 0): array

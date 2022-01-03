@@ -9,10 +9,9 @@ use Palto\Router\Router;
 class Region
 {
     private array $region;
-
-    private static array $parents;
-    private static array $children;
-    private static array $childrenIds;
+    private array $parents;
+    private array $children;
+    private array $childrenIds;
 
     public function __construct(array $region)
     {
@@ -54,17 +53,17 @@ class Region
 
     public function getChildrenIds(): array
     {
-        if (!isset(self::$childrenIds)) {
+        if (!isset($this->childrenIds)) {
             $childrenIds = [];
             $nextLevelRegionsIds = [$this->getId()];
             while ($nextLevelRegionsIds = Regions::getChildRegionsIds($nextLevelRegionsIds)) {
                 $childrenIds = array_merge($nextLevelRegionsIds, $childrenIds);
             }
 
-            self::$childrenIds = $childrenIds;
+            $this->childrenIds = $childrenIds;
         }
 
-        return self::$childrenIds;
+        return $this->childrenIds;
     }
 
     public function getWithChildrenIds(): array
@@ -80,11 +79,11 @@ class Region
      */
     public function getChildren(): array
     {
-        if (!isset(self::$children)) {
+        if (!isset($this->children)) {
             $childrenIds = $this->getChildrenIds();
-            self::$children = Categories::getCategoriesByIds($childrenIds);
+            $this->children = Categories::getCategoriesByIds($childrenIds);
         }
 
-        return self::$children;
+        return $this->children;
     }
 }

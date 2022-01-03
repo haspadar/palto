@@ -64,8 +64,8 @@ class Backup
         $imgFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/img/*', $archiveDirectory . '/');
 
         return array_merge([
-            Directory::getRootDirectory() . '/' . Palto::PARSE_CATEGORIES_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_CATEGORIES_SCRIPT,
-            Directory::getRootDirectory() . '/' . Palto::PARSE_ADS_SCRIPT => $archiveDirectory . '/' . Palto::PARSE_ADS_SCRIPT,
+            Directory::getRootDirectory() . '/' . Directory::PARSE_CATEGORIES_SCRIPT => $archiveDirectory . '/' . Directory::PARSE_CATEGORIES_SCRIPT,
+            Directory::getRootDirectory() . '/' . Directory::PARSE_ADS_SCRIPT => $archiveDirectory . '/' . Directory::PARSE_ADS_SCRIPT,
         ],
             $layoutFiles,
             $cssFiles,

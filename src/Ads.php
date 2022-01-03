@@ -6,13 +6,16 @@ class Ads
 {
     const LIMIT = 30;
 
-    public static function getById(int $adId)
+    public static function getById(int $adId): ?Ad
     {
-        return new Ad(
-            \Palto\Model\Ads::getById($adId),
-            \Palto\Model\Ads::getAdsImages([$adId]),
-            \Palto\Model\Ads::getAdsDetails([$adId])
-        );
+        $row = \Palto\Model\Ads::getById($adId);
+
+        return $row
+            ? new Ad(
+                \Palto\Model\Ads::getById($adId),
+                \Palto\Model\Ads::getAdsImages([$adId]),
+                \Palto\Model\Ads::getAdsDetails([$adId])
+            ) : null;
     }
 
     public static function getRegionsAdsCount(array $regionsIds): int

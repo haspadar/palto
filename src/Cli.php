@@ -249,7 +249,7 @@ class Cli
         $rootDirectory = Directory::getRootDirectory();
         $paltoDirectory = Directory::getPaltoDirectory();
 
-        return self::asUser("ln -s $paltoDirectory/structure/" . Palto::ROUTES_SCRIPT . " $rootDirectory/");
+        return self::asUser("ln -s $paltoDirectory/structure/" . Directory::ROUTES_SCRIPT . " $rootDirectory/");
     }
 
     public static function safeLinkJs(): string
@@ -297,8 +297,8 @@ class Cli
         $rootDirectory = Directory::getRootDirectory();
         $paltoDirectory = Directory::getPaltoDirectory();
 
-        return self::asUser("cp -n $paltoDirectory/structure/" . Palto::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
-            . " && cp -n $paltoDirectory/structure/" . Palto::PARSE_ADS_SCRIPT . " $rootDirectory/");
+        return self::asUser("cp -n $paltoDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
+            . " && cp -n $paltoDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
     }
 
     public static function safeLinkMigrations(): string

@@ -209,7 +209,6 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
 
         \Palto\Directory::setRootDirectory($rootDirectory);
         \Palto\Update::replaceCode($replaces);
-//        \Palto\Update::check();
-        exit;
+        \Palto\Update::check();
     }
 }

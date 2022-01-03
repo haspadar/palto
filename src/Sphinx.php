@@ -44,7 +44,7 @@ class Sphinx
             echo 'Found palto project ' . $projectName . PHP_EOL;
             echo 'Extracting DB credentials from ' . $projectsPath . $projectName . '/.env' . PHP_EOL;
             $response = file_get_contents($projectsPath . $projectName . '/.env');
-            $databaseCredentials = Palto::extractDatabaseCredentials($response);
+            $databaseCredentials = Cli::extractDatabaseCredentials($response);
             $indexName = str_replace('.', '_', $projectName);
             $localConfig = strtr($localConfigPattern, [
                 '[DB_USER]' => $databaseCredentials['DB_USER'],

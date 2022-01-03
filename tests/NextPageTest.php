@@ -29,7 +29,10 @@ class NextPageTest extends Web
             $nextPageResponse = $this->download($nextUrl);
             $crawler = new Crawler($nextPageResponse->getHtml());
             $secondPageAdUrl = $crawler->filter('.serp a')->attr('href');
-            $this->assertTrue($secondPageAdUrl != $firstPageAdUrl);
+            $this->assertTrue(
+                $secondPageAdUrl != $firstPageAdUrl,
+                'Second page url ' . $secondPageAdUrl . ' is equal to ' . $firstPageAdUrl
+            );
         }
     }
 }

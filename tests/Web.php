@@ -65,7 +65,8 @@ abstract class Web extends TestCase
 
         $response = new Response($result, $info['http_code'], $this->getDomainUrl() . $url, $info['redirect_url']);
         if ($info['http_code'] != 200) {
-            Debug::dump($response);
+            Debug::dump($info, '$info');
+            Debug::dump($result, '$result');
         }
 
         return $response;

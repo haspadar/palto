@@ -51,7 +51,7 @@ abstract class Web extends TestCase
     protected function download(string $url)
     {
         $ch = \curl_init();
-        \curl_setopt($ch, CURLOPT_URL,$this->getDomainUrl() . $url);
+        \curl_setopt($ch, CURLOPT_URL,$this->getDomainUrl() . $url . '?debug=1');
         \curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
         \curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 0);
         $result = \curl_exec($ch);

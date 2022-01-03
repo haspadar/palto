@@ -178,7 +178,7 @@ ADD FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASC
             while (!file_exists($rootDirectory . '/.env')) {
                 $rootDirectory = realpath('..');
             }
-            
+
             \Palto\Directory::setRootDirectory($rootDirectory);
             Update::replaceCode($replaces);
         } catch (Exception $e) {

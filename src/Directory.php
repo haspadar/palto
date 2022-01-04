@@ -62,6 +62,21 @@ class Directory
         return self::$rootDirectory;
     }
 
+    public static function getDirectoryFilesRecursive(string $directory): array
+    {
+        $rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory));
+        $files = array();
+        foreach ($rii as $file) {
+            if ($file->isDir()){
+                continue;
+            }
+
+            $files[] = $file->getPathname();
+        }
+
+        return $files;
+    }
+
     public static function getDbDirectory(): string
     {
         return self::getRootDirectory() . '/db';

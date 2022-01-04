@@ -20,28 +20,27 @@ final class CraigsListLayoutsReplaces extends AbstractMigration
     {
         \Palto\Backup::createArchive();
         $replaces = [
-            'layouts/index.php' => [
+            'layouts/*' => [
+                '$this \Palto\Palto' => '$this \Palto\Layout',
+
                 '$this->getRegions(0, 1)' => '$this->getWithAdsRegions()',
                 '$this->getRegions($level1Region->getId())' => '$this->getWithAdsRegions($level1Region)',
+                '$this->getRegions($level1Region)' => '$this->getWithAdsRegions($level1Region)',
+                '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region)',
+
                 'getCategories(0, 1)' => 'getWithAdsCategories()',
-                'getCategories($level1Category->getId())' => 'getWithAdsCategories($level1Category)'
-            ],
-            'layouts/categories-list.php' => [
                 '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()',
-                '$this \Palto\Palto' => '$this \Palto\Layout',
-                'getWithAdsCategories($level2Category[\'id\'])' => 'getWithAdsCategories($level2Category)',
                 'getWithAdsCategories($level1Category[\'id\'])' => 'getWithAdsCategories($level1Category)',
+                'getWithAdsCategories($level2Category[\'id\'])' => 'getWithAdsCategories($level2Category)',
+
                 'Category[\'id\']' => 'Category->getId()',
                 'Category[\'title\']' => 'Category->getTitle()',
-            ],
-            'layouts/regions-list.php' => [
-                '$this \Palto\Palto' => '$this \Palto\Layout',
-                '$this->getRegions(0, 1)' => '$this->getWithAdsRegions()',
-                '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region)',
+
                 'Region[\'title\']' => 'Region->getTitle()',
-                '$this->getRegions($level1Region)' => '$this->getWithAdsRegions($level1Region)'
+                'Region[\'id\']' => 'Region->getId()',
             ]
         ];
+
         $rootDirectory = realpath('.');
         while (!file_exists($rootDirectory . '/.env')) {
             $rootDirectory = realpath('..');

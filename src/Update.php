@@ -27,28 +27,40 @@ class Update
 
     public static function replaceCode(array $replaces)
     {
-        foreach ($replaces as $file => $fileReplaces) {
-            $content = file_get_contents(Directory::getRootDirectory() . '/' . $file);
-            foreach ($fileReplaces as $from => $to) {
-                $dotsParts = explode('...', $from);
-                $isReplacedByDots = count($dotsParts) == 2;
-                if ($isReplacedByDots) {
-                    $beforeDotsPart = $dotsParts[0];
-                    $afterDotsPart = $dotsParts[1] ?: ';';
-                    $start = mb_strpos($content, $beforeDotsPart);
-                    $finish = mb_strpos($content, $afterDotsPart, $start);
-                    if ($start !== false && $finish !== false) {
-                        $content = mb_substr($content, 0, $start)
-                            . $to
-                            . mb_substr($content, $finish);
-                    }
-                } else {
-                    $content = str_replace($from, $to, $content);
+        foreach ($replaces as $fileMask => $fileReplaces) {
+            if (str_ends_with($fileMask, '*')) {
+                $files = Directory::getDirectoryFilesRecursive(substr($fileMask, 0, -2));
+                foreach ($files as $file) {
+                    self::replaceFileCode($file, $fileReplaces);
                 }
+            } else {
+                self::replaceFileCode($fileMask, $fileReplaces);
             }
-
-            file_put_contents(Directory::getRootDirectory() . '/' . $file, $content);
-            Logger::info('Replaced ' . $file);
         }
+    }
+
+    private static function replaceFileCode(string $file, array $fileReplaces)
+    {
+        $content = file_get_contents(Directory::getRootDirectory() . '/' . $file);
+        foreach ($fileReplaces as $from => $to) {
+            $dotsParts = explode('...', $from);
+            $isReplacedByDots = count($dotsParts) == 2;
+            if ($isReplacedByDots) {
+                $beforeDotsPart = $dotsParts[0];
+                $afterDotsPart = $dotsParts[1] ?: ';';
+                $start = mb_strpos($content, $beforeDotsPart);
+                $finish = mb_strpos($content, $afterDotsPart, $start);
+                if ($start !== false && $finish !== false) {
+                    $content = mb_substr($content, 0, $start)
+                        . $to
+                        . mb_substr($content, $finish);
+                }
+            } else {
+                $content = str_replace($from, $to, $content);
+            }
+        }
+
+        file_put_contents(Directory::getRootDirectory() . '/' . $file, $content);
+        Logger::info('Replaced ' . $file);
     }
 }

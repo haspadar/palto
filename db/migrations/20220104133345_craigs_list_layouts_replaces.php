@@ -35,9 +35,11 @@ final class CraigsListLayoutsReplaces extends AbstractMigration
                 'Category[\'title\']' => 'Category->getTitle()',
             ],
             'layouts/regions-list.php' => [
+                '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getRegions(0, 1)' => '$this->getWithAdsRegions()',
-                '$this->getRegions($level1Region[\'id\'])' => '$this->getRegions($level1Region)',
-                'Region[\'title\']' => 'Region->getTitle()'
+                '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region)',
+                'Region[\'title\']' => 'Region->getTitle()',
+                '$this->getRegions($level1Region)' => '$this->getWithAdsRegions($level1Region)'
             ]
         ];
         $rootDirectory = realpath('.');

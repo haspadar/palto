@@ -118,7 +118,8 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$this \Palto\Palto' => '$this \Palto\Layout',
                 '$this->getWithAdsCategories(5)' => '$this->getWithAdsCategories(0, 1, 5)',
                 '$popularLevel1Category[\'title\']' => '$popularLevel1Category->getTitle()',
-                'getWithAdsCategories(0, 1, 5)' => 'getWithAdsCategories(null, 5)'
+                'getWithAdsCategories(0, 1, 5)' => 'getWithAdsCategories(null, 5)',
+                '$this->getCategories(0, 1, 5)' => '$this->getWithAdsCategories(null, 5)'
             ],
             'layouts/partials/breadcrumb.inc' => [
                 '<?php $breadcrumbUrls' => '<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">

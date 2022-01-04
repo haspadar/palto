@@ -29,6 +29,8 @@ final class CraigsListLayoutsReplaces extends AbstractMigration
                 '$this->getRegions($level1Region[\'id\'])' => '$this->getWithAdsRegions($level1Region)',
 
                 'getCategories(0, 1)' => 'getWithAdsCategories()',
+                '$this->getCategories($level1Category->getId())' => '$this->getWithAdsCategories($level1Category)',
+                '$this->getCategories($level2Category->getId())' => '$this->getWithAdsCategories($level2Category)',
                 '$this->getWithAdsCategories(0, 1)' => '$this->getWithAdsCategories()',
                 'getWithAdsCategories($level1Category[\'id\'])' => 'getWithAdsCategories($level1Category)',
                 'getWithAdsCategories($level2Category[\'id\'])' => 'getWithAdsCategories($level2Category)',

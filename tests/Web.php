@@ -73,7 +73,7 @@ abstract class Web extends TestCase
 
     protected function getDomainUrl(): string
     {
-        return Config::get('DOMAIN_URL') ?: 'https://www.' . Directory::getProjectName();
+        return 'http://' . Directory::getProjectName();
     }
 
     protected function assertUrl(string $href, string $urlWithText, string $haystack)

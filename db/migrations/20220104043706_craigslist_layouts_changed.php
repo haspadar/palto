@@ -18,7 +18,7 @@ final class CraigslistLayoutsChanged extends AbstractMigration
      */
     public function change(): void
     {
-//        \Palto\Backup::createArchive();
+        \Palto\Backup::createArchive();
         $replaces = [
             'layouts/list.php' => [
                 '\'title\' => implode(... . \'' => '\'title\' => $this->generateHtmlTitle() ',
@@ -26,9 +26,10 @@ final class CraigslistLayoutsChanged extends AbstractMigration
                 '$this->getCategories(0, 1)' => '$this->getWithAdsCategories()'
             ],
             'layouts/ad.php' => [
-                '\'title\' => implode(...
-    \'description\'' => '\'title\' => $this->generateHtmlTitle()',
-                ''
+                '\'title\' => ...
+    \'description\'' => '\'title\' => $this->generateHtmlTitle(),',
+                'getPrice() > )' => 'getPrice() > 0)',
+                '🏷 <?=$this->getAd()->getCurrency()?><?=number_format($this->getAd()->getPrice())?></span>' => '🏷 <?=$this->getAd()->getCurrency()?><?=number_format($this->getAd()->getPrice())?>'
             ]
         ];
         $rootDirectory = realpath('.');
@@ -38,7 +39,5 @@ final class CraigslistLayoutsChanged extends AbstractMigration
 
         \Palto\Directory::setRootDirectory($rootDirectory);
         \Palto\Update::replaceCode($replaces);
-
-        exit;
     }
 }

@@ -97,6 +97,8 @@ class Cli
             $isCommandExists = mb_strpos($cronFileContent, $command) !== false;
             if (!$isCommandExists) {
                 return "echo '$commandComment\n$command\n' >> $cronFilePath";
+            } else {
+                return '';
             }
         }
 
@@ -124,7 +126,7 @@ class Cli
         $tmp = '/tmp/install_' . md5(time());
         file_put_contents($tmp, $content);
 
-        return self::asUser("cp $tmp " . Directory::getRootDirectory() . '/.env2');
+        return self::asUser("cp $tmp " . Directory::getRootDirectory() . '/.env');
     }
 
     public static function updatePhinx(string $databaseName, string $databaseUser, string $databasePassword): string
@@ -337,7 +339,6 @@ class Cli
             if ($hasComment && $command == Cli::ignoreMac()) {
                 Logger::warning(`$command`);
             } elseif ($command != Cli::ignoreMac()) {
-//                Logger::debug($command);
                 Logger::debug(`$command`);
             }
         }
@@ -360,6 +361,19 @@ class Cli
     private static function isLinux(): bool
     {
         return PHP_OS == 'Linux';
+    }
+
+    public static function updateHost(): string
+    {
+        $hostsFilePath = '/etc/hosts';
+        $hostLine = '127.0.0.1 ' . Directory::getProjectName();
+        $hostsContent = file_get_contents($hostsFilePath);
+        $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
+        if (!$isHostExists) {
+            return "echo '$hostLine\n' >> $hostLine";
+        }
+
+        return '';
     }
 
     private static function isMac(): bool

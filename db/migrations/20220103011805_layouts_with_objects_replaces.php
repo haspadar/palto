@@ -173,8 +173,8 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '$this->getCurrentAd()[\'seller_postfix\'] ?? \'\'' => '$this->getAd()->getSellerPostfix()',
                 '$this->getLatitude()' => '$this->getAd()->getLatitude()',
                 '$this->getLongitute()' => '$this->getAd()->getLongitute()',
-                '$this->getCurrentAd()[\'region\'][\'title\']' => '$this->getAd()->getRegion()->getTitle()',
-                '$this->getCurrentAd()[\'region\']' => '$this->getAd()->getRegion()',
+                '$this->getCurrentAd()[\'region\'][\'title\']' => '$this->getRegion()->getTitle()',
+                '$this->getCurrentAd()[\'region\']' => '$this->getRegion()',
                 '$this->getCurrentAd()[\'seller_name\']' => '$this->getAd()->getSellerName()',
                 '$this->getCurrentAd()[\'seller_phone\']' => '$this->getAd()->getSellerPhone()',
                 '$this->getCurrentAd()[\'url\']' => '$this->getAd()->getUrl()',
@@ -199,9 +199,12 @@ final class LayoutsWithObjectsReplaces extends AbstractMigration
                 '
     
     ' => '',
-                '$this->getRegionById($level3Region[\'parent_id\'])' => '$level3Region->getParents()[1] ?? null',
-                '$this->getRegionById($level2Region[\'parent_id\'])' => '$level3Region->getParents()[0]',
-                'Region[\'title\']' => 'Region->getTitle()'
+                '$this->getRegionById($level3Region[\'parent_id\'])' => '',
+                '$this->getRegionById($level2Region[\'parent_id\'])' => '',
+                'Region[\'title\']' => 'Region->getTitle()',
+                '<a href="<?=$this->generateRegionUrl($level1Region)?>"><?=$level1Region->getTitle()?></a>,
+    <a href="<?=$this->generateRegionUrl($level2Region)?>"><?=$level2Region->getTitle()?></a>,
+    <a href="<?=$this->generateRegionUrl($level3Region)?>"><?=$level3Region->getTitle()?></a>' => '<?=$this->getRegionsLinks()?>'
             ],
             'layouts/404.php' => [
                 '$this \Palto\Palto' => '$this \Palto\Layout',

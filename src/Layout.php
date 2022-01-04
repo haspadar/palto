@@ -20,6 +20,18 @@ class Layout
         require_once Directory::getLayoutsDirectory() . '/' . $this->name;
     }
 
+    public function getRegionsLinks(): string
+    {
+        $region = $this->getRegion();
+        $regions = array_merge([$region], $region->getParents());
+        $links = [];
+        foreach ($regions as $region) {
+            $links[] = '<a href="' . $this->generateRegionUrl($region) . '">' . $region->getTitle() . '</a>';
+        }
+
+        return implode(',', $links);
+    }
+
     public function partial(string $file, array $variables = [])
     {
         $this->partialVariables = $variables;

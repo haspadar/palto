@@ -65,7 +65,7 @@ abstract class AdsParser
         Logger::info('Found ' . count($ads) . ' ads', $extendedLogContext);
         $addedAdsCount = 0;
         $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $category) {
-            $adUrl = $this->findAdUrl($resultRow);
+            $adUrl = $this->findAdUrl($resultRow, $category);
             if (!$adUrl) {
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
             } elseif (!Ads::getByUrl($adUrl)) {

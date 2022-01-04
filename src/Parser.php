@@ -23,17 +23,6 @@ class Parser
         return min($filtered, 99999999.99);
     }
 
-    public static function getDonorUrl(): string
-    {
-        if (isset($_SERVER['argv'][1])) {
-            $parsed = parse_url($_SERVER['argv'][1]);
-
-            return $parsed['scheme'] . '://' . $parsed['host'];
-        }
-
-        return '';
-    }
-
     public static function upperCaseEveryWord(string $text): string
     {
         $words = explode(' ', $text);
@@ -99,27 +88,34 @@ class Parser
         return $_SERVER['argv'][1];
     }
 
-    public static function findSelectorWithContent(Crawler $adDocument, array $selectors): array
+    public static function findSelectorWith(Crawler $adDocument, array $selectors): array
     {
         foreach ($selectors as $selector) {
             if ($adDocument->filter($selector)->count() > 0) {
-                return [$selector, $adDocument->filter($selector)->html()];
+                return [$selector, $adDocument->filter($selector)];
             }
         }
 
-        return ['', ''];
+        return ['', null];
     }
 
-    public static function findContent(Crawler $adDocument, array $selectors): string
+    public static function findText(Crawler $adDocument, array $selectors): string
     {
-        list($_, $content) = self::findSelectorWithContent($adDocument, $selectors);
+        list($_, $content) = self::findSelectorWith($adDocument, $selectors);
 
-        return $content;
+        return $content ? $content->text() : '';
+    }
+    
+    public static function findHtml(Crawler $adDocument, array $selectors): string
+    {
+        list($_, $content) = self::findSelectorWith($adDocument, $selectors);
+
+        return $content ? $content->html() : '';
     }
 
     public static function findSelector(Crawler $adDocument, array $selectors): string
     {
-        list($selector, $_) = self::findSelectorWithContent($adDocument, $selectors);
+        list($selector, $_) = self::findSelectorWith($adDocument, $selectors);
 
         return $selector;
     }

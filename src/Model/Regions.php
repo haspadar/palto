@@ -9,7 +9,7 @@ class Regions extends Model
 {
     public static function getById(int $id): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $id);
+        return self::getDb()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $id) ?: [];
     }
 
     public static function getByUrl(string $url): array
@@ -61,5 +61,17 @@ class Regions extends Model
         } else {
             return [];
         }
+    }
+
+    public static function getMaxTreeId(): int
+    {
+        return self::getDb()->queryFirstField('SELECT MAX(tree_id) FROM regions') ?: 0;
+    }
+
+    public static function add(array $region): int
+    {
+        self::getDb()->insert('regions', $region);
+
+        return self::getDb()->insertId();
     }
 }

@@ -13,6 +13,11 @@ class Cli
         return php_sapi_name() === 'cli';
     }
 
+    public static function isCron(): bool
+    {
+        return self::isCli() && !isset($_SERVER['TERM']);
+    }
+
     public static function safeLinkTests(): string
     {
         $paltoDirectory = Directory::getPaltoDirectory();

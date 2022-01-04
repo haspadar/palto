@@ -45,56 +45,10 @@ class Update
                 } else {
                     $content = str_replace($from, $to, $content);
                 }
-//                $isReplaceBeforeSemicolon = mb_substr($from, -3) == '...';
-//                if ($isReplaceBeforeSemicolon) {
-//                    $start = mb_strpos($content, mb_substr($from, 0, -3));
-//                    $finish = mb_strpos($content, ';', $start);
-//                    if ($start !== false && $finish !== false) {
-//                        $content = mb_substr($content, 0, $start)
-//                            . $to
-//                            . mb_substr($content, $finish + 1);
-//                    }
-//
-//                } else {
-//                    $content = str_replace($from, $to, $content);
-//                }
             }
 
             file_put_contents(Directory::getRootDirectory() . '/' . $file, $content);
             Logger::info('Replaced ' . $file);
         }
-    }
-
-    public static function check()
-    {
-        if (Config::get('CODE_WARNINGS_EMAIL')) {
-            $command = Directory::getRootDirectory()
-                . '/vendor/bin/phpunit '
-                . Directory::getTestsDirectory();
-            $response = `$command`;
-            $responseRows = array_values(array_filter(explode(PHP_EOL, $response)));
-            if ($responseRows) {
-                $responseLastRow = $responseRows ? $responseRows[count($responseRows) - 1] : '';
-                $isSuccess = mb_substr($responseLastRow, 0, 2) == 'OK';
-                if (!$isSuccess) {
-                    Email::send(Config::get('CODE_WARNINGS_EMAIL'), 'Ошибка на ' . Directory::getProjectName(), $response);
-                    Logger::error($response);
-                } else {
-                    Logger::info($responseLastRow);
-                }
-            } else {
-                Logger::error($response);
-            }
-
-        } else {
-            Logger::error('Укажите настройку CODE_WARNINGS_EMAIL');
-        }
-    }
-
-    private function getReplaceBeforeSemicolon(string $file, string $from)
-    {
-        $content = file_get_contents(Directory::getRootDirectory() . '/' . $file);
-        $start = mb_strpos($content, $from);
-        $finish = mb_strpos($content, ';', $start);
     }
 }

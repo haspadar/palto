@@ -143,4 +143,14 @@ class Category
 
         return $this->children;
     }
+
+    public function getTreeId(): int
+    {
+        return $this->category['tree_id'] ?? 0;
+    }
+
+    public function getDonorUrl(): Url
+    {
+        return new Url($this->category['donor_url']);
+    }
 }

@@ -8,7 +8,7 @@ class Categories extends Model
 {
     public static function getById(int $id): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id);
+        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id) ?: [];
     }
 
     public static function getCategoriesByIds(array $categoryIds): array
@@ -63,6 +63,33 @@ class Categories extends Model
                 $url,
                 $level,
                 $excludeId
+            ) ?: [];
+        }
+
+        return [];
+    }
+
+    public static function getLeafs(): array
+    {
+        return self::getDb()->query(
+            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
+        );
+    }
+
+    public static function add(array $category): int
+    {
+        self::getDb()->insert('categories', $category);
+
+        return self::getDb()->insertId();
+    }
+
+    public static function getByDonorUrl(string $donorUrl, int $level): array
+    {
+        if ($donorUrl) {
+            return self::getDb()->queryFirstRow(
+                'SELECT * FROM categories WHERE donor_url = %s AND level = %d',
+                $donorUrl,
+                $level
             ) ?: [];
         }
 

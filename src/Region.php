@@ -102,4 +102,9 @@ class Region
 
         return $this->children;
     }
+
+    public function getTreeId(): int
+    {
+        return $this->region['tree_id'] ?? 0;
+    }
 }

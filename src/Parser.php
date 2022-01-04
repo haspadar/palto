@@ -2,6 +2,7 @@
 
 namespace Palto;
 
+use Cocur\Slugify\Slugify;
 use Symfony\Component\DomCrawler\Crawler;
 
 class Parser
@@ -33,14 +34,60 @@ class Parser
         return '';
     }
 
-    public static function hasNextPageLinkTag($categoryDocument): bool
+    public static function upperCaseEveryWord(string $text): string
+    {
+        $words = explode(' ', $text);
+        foreach ($words as &$word) {
+            $word = ucfirst($word);
+        }
+
+        return implode(' ', $words);
+    }
+
+    public static function safeTransaction(Callable $function)
+    {
+        try {
+            \Palto\Model\Ads::getDb()->startTransaction();
+            $return = $function();
+            \Palto\Model\Ads::getDb()->commit();
+
+            return $return;
+        } catch (\Exception $e) {
+            \Palto\Model\Ads::getDb()->rollback();
+            Logger::error($e->getMessage());
+            Logger::error($e->getTraceAsString());
+            if (!Cli::isCron() && Cli::isCli()) {
+                exit;
+            }
+        }
+    }
+
+    public static function hasNextPageLinkTag(Crawler $categoryDocument): bool
     {
         return $categoryDocument->filter('link[rel=next]')->count() > 0;
     }
 
-    public static function getNextPageUrl($categoryDocument): string
+    public static function getNextPageNumber(Crawler $categoryDocument): int
     {
-        return $categoryDocument->filter('link[rel=next]')->attr('href');
+        $url = self::getNextPageUrl($categoryDocument)->getFull();
+        if (self::getLastSymbol($url) == '/') {
+            $url = self::removeLastSymbol($url);
+        }
+
+        $pageNumberSymbols = [];
+        while ($url && is_numeric(self::getLastSymbol($url))) {
+            $pageNumberSymbols[] = self::getLastSymbol($url);
+            $url = self::removeLastSymbol($url);
+        }
+
+        return implode('', array_reverse($pageNumberSymbols));
+    }
+
+    public static function getNextPageUrl(Crawler $categoryDocument): ?Url
+    {
+        $url = $categoryDocument->filter('link[rel=next]')->attr('href');
+
+        return $url ? new Url($url) : null;
     }
 
     public static function checkDonorUrl(): string
@@ -97,5 +144,15 @@ class Parser
         );
 
         return $foundVariable ?? [];
+    }
+
+    private static function removeLastSymbol(string $string): string
+    {
+        return substr($string, 0, -1);
+    }
+
+    private static function getLastSymbol(string $string): string
+    {
+        return substr($string, -1);
     }
 }

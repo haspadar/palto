@@ -365,6 +365,7 @@ class Palto
 
     public function addAd(array $ad, array $images, array $details): int
     {
+        $ad = $this->addLevels($ad);
         $this->getDb()->insert('ads', $ad);
         $adId = $this->getDb()->insertId();
         foreach ($images as $image) {
@@ -1394,5 +1395,22 @@ class Palto
     public function getRouter(): Router
     {
         return $this->router;
+    }
+
+    private function addLevels(array &$ad): array
+    {
+        $category = Categories::getById($ad['category_id']);
+        while ($category) {
+            $ad['category_level_' . $category->getLevel() . '_id'] = $category->getId();
+            $category = Categories::getById($category->getParentId());
+        }
+
+        $region = Regions::getById($ad['region_id']);
+        while ($region) {
+            $ad['region_level_' . $region->getLevel() . '_id'] = $region->getId();
+            $region = Regions::getById($region->getParentId());
+        }
+
+        return $ad;
     }
 }

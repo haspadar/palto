@@ -41,7 +41,7 @@ class Config
         self::$env[$name] = $value;
     }
 
-    private static function getEnv(): array
+    public static function getEnv(): array
     {
         if (!isset(self::$env)) {
             $dotenv = Dotenv::createImmutable(Directory::getRootDirectory());

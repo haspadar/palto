@@ -2,33 +2,44 @@
 
 namespace Palto;
 
+use DateTime;
+use Palto\Model\AdsDetails;
+use Palto\Model\AdsImages;
+use Palto\Model\DetailsFields;
+
 class Ads
 {
     const LIMIT = 30;
 
     public static function getById(int $adId): ?Ad
     {
-        $row = \Palto\Model\Ads::getById($adId);
+        $row = Model\Ads::getById($adId);
 
         return $row
-            ? new Ad(
-                \Palto\Model\Ads::getById($adId),
-                \Palto\Model\Ads::getAdsImages([$adId]),
-                \Palto\Model\Ads::getAdsDetails([$adId])
-            ) : null;
+            ? new Ad($row, AdsImages::getAdsImages([$adId]), AdsDetails::getAdsDetails([$adId]))
+            : null;
+    }
+
+    public static function getByUrl(Url $adUrl): ?Ad
+    {
+        $row = Model\Ads::getByUrl($adUrl);
+
+        return $row
+            ? new Ad($row, AdsImages::getAdsImages([$row['id']]), AdsDetails::getAdsDetails([$row['id']]))
+            : null;
     }
 
     public static function getRegionsAdsCount(array $regionsIds): int
     {
         return $regionsIds
-            ? \Palto\Model\Ads::getRegionsAdsCount($regionsIds)
+            ? Model\Ads::getRegionsAdsCount($regionsIds)
             : 0;
     }
 
     public static function getCategoriesAdsCount(array $categoriesIds): int
     {
         return $categoriesIds
-            ? \Palto\Model\Ads::getCategoriesAdsCount($categoriesIds)
+            ? Model\Ads::getCategoriesAdsCount($categoriesIds)
             : 0;
     }
 
@@ -51,10 +62,46 @@ class Ads
         );
     }
 
+    public static function markAsDelete(int $adId)
+    {
+        Model\Ads::markAsDeleted($adId);
+    }
+
+    public static function add(array $ad, array $images = [], array $details = []): int
+    {
+        if ($ad['title'] && $ad['text']) {
+            $ad['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
+            $ad = self::addLevels($ad);
+            $adId = Model\Ads::add($ad);
+            foreach ($images as $image) {
+                AdsImages::add([
+                    'small' => $image['small'],
+                    'big' => $image['big'],
+                    'ad_id' => $adId,
+                ]);
+            }
+
+            foreach ($details as $detailField => $detailValue) {
+                $fieldId = DetailsFields::getDetailsFieldId($ad['category_id'], $detailField);
+                AdsDetails::add([
+                    'details_field_id' => $fieldId,
+                    'ad_id' => $adId,
+                    'value' => $detailValue
+                ]);
+            }
+
+            return $adId;
+        } else {
+            Logger::debug('Ignored ad ' . $ad['url'] . ': empty ' . (!$ad['title'] ? 'title' : 'text'));
+
+            return 0;
+        }
+    }
+
     private static function getAdsImages(array $adIds): array
     {
         if ($adIds) {
-            $images = \Palto\Model\Ads::getAdsImages($adIds);
+            $images = AdsImages::getAdsImages($adIds);
 
             return self::groupByField($images, 'ad_id');
         }
@@ -65,7 +112,7 @@ class Ads
     private static function getAdsDetails(array $adIds): array
     {
         if ($adIds) {
-            $details = \Palto\Model\Ads::getAdsDetails($adIds);
+            $details = AdsDetails::getAdsDetails($adIds);
             $groupedByAdId = self::groupByField($details, 'ad_id');
             $groupedWithDetails = [];
             foreach ($groupedByAdId as $adId => $adDetails) {
@@ -92,8 +139,24 @@ class Ads
         return $grouped;
     }
 
-    public static function markAsDelete(int $adId)
+    private static function addLevels(array &$ad): array
     {
-        \Palto\Model\Ads::markAsDeleted($adId);
+        if (isset($ad['category_id']) && $ad['category_id']) {
+            $category = Categories::getById($ad['category_id']);
+            while ($category) {
+                $ad['category_level_' . $category->getLevel() . '_id'] = $category->getId();
+                $category = $category->getParentId() ? Categories::getById($category->getParentId()) : null;
+            }
+        }
+
+        if (isset($ad['region_id']) && $ad['region_id']) {
+            $region = Regions::getById($ad['region_id']);
+            while ($region) {
+                $ad['region_level_' . $region->getLevel() . '_id'] = $region->getId();
+                $region = $region->getParentId() ? Regions::getById($region->getParentId()) : null;
+            }
+        }
+
+        return $ad;
     }
 }

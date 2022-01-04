@@ -38,11 +38,11 @@ class Categories
     /**
      * @return Category[]
      */
-    public static function getLeafs(): array
+    public static function getLeafs(int $limit = 0): array
     {
         return array_map(
             fn($category) => new Category($category),
-            Model\Categories::getLeafs()
+            Model\Categories::getLeafs($limit)
         );
     }
 

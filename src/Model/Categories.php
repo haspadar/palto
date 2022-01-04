@@ -69,11 +69,14 @@ class Categories extends Model
         return [];
     }
 
-    public static function getLeafs(): array
+    public static function getLeafs(int $limit): array
     {
-        return self::getDb()->query(
-            "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)"
-        );
+        $query = "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)";
+        if ($limit) {
+            $query .= " LIMIT $limit";
+        }
+
+        return self::getDb()->query($query);
     }
 
     public static function add(array $category): int

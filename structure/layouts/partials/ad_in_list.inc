@@ -18,7 +18,7 @@ $ad = $this->getPartialVariable('ad');
         <div><?= \Palto\Filter::shortText($ad->getText()) ?></div>
         <div class="serp_bread">
             <?php foreach ($this->getBreadcrumbUrls() as $breadcrumbKey => $breadcrumbItem) :?>
-<!--            --><?php //foreach ($this->getListAdBreadcrumbUrls($ad) as $breadcrumbKey => $breadcrumbItem) :?>
+<!--            --><?php //foreach ($this->getBreadcrumbUrls() as $breadcrumbKey => $breadcrumbItem) :?>
                 <?php if ($breadcrumbKey) :?>
                     <span class="sep">»</span>
                 <?php endif;?>

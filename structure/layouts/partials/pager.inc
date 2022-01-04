@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $this \Palto\Palto
+ * @var $this \Palto\Layout
  */
 ?>
 <?php if ($this->getPartialVariable('previousPageUrl')) : ?>

@@ -24,9 +24,11 @@ class Url
     public function getDomain(): string
     {
         $parsed = parse_url($this->url);
+        if (isset($parsed['scheme']) && isset($parsed['host'])) {
+            return $parsed['scheme'] . '://' . $parsed['host'];
+        }
 
-
-        return $parsed['scheme'] . '://' . $parsed['host'];
+        return '';
     }
 
     public function getFull(): string

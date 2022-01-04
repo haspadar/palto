@@ -1,3 +1,4 @@
+<div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
 <?php $breadcrumbUrls = $this->getPartialVariable('breadcrumbUrls')?>
 <?php foreach ($breadcrumbUrls as $breadcrumbKey => $breadcrumbItem) :?>
     <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
@@ -16,4 +17,5 @@
         <span class="sep">»</span>
     <?php endif;?>
 
-<?php endforeach;
+<?php endforeach;?>
+</div>

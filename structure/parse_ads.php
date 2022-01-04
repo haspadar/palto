@@ -77,7 +77,7 @@ require 'vendor/autoload.php';
         return isset($adUrl) ? new Url($adUrl) : null;
     }
 
-    private function getDetails($adDocument): array
+    private function getDetails(Crawler $adDocument): array
     {
         $translates = Parser::getJsVariable($adDocument, 'window.__INIT_CONFIG__');
         $locale = $translates['locale'] ?? '';
@@ -98,7 +98,7 @@ require 'vendor/autoload.php';
         return $details;
     }
 
-    private function getImages($adDocument): array
+    private function getImages(Crawler $adDocument): array
     {
         $mainImage = $adDocument->filter('img[src]')->attr('src');
         $otherImages = $adDocument->filter('img[data-srcset]')->each(

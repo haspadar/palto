@@ -3,16 +3,7 @@
  * @var $this \Palto\Layout
  */
 $this->partial('header.inc', [
-    'title' => $this->getAd()->getTitle()
-        . ': '
-        . implode(
-            ' - ',
-            array_filter(array_merge(
-                $this->getAd()->getCategory()->getWithParentsTitles(),
-                [$this->getAd()->getAddress()],
-                ['Ogłoszenia w ' . $this->getRegion()->getTitle()],
-            ))
-        ),
+    'title' => $this->generateHtmlTitle(),
     'description' => \Palto\Filter::shortText($this->getAd()->getText()),
     'css' => $this->getAd()->getCoordinates() ? [
         [

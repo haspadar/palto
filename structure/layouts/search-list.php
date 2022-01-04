@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Palto
+ * @var $this \Palto\Layout
  */
 
 use Palto\Search;

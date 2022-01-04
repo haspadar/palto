@@ -66,7 +66,7 @@ require 'vendor/autoload.php';
         return $ads;
     }
 
-    protected function findAdUrl(Crawler $resultRow): ?Url
+    protected function findAdUrl(Crawler $resultRow, Category $category): ?Url
     {
         if ($resultRow->filter('h3 a')->count() > 0) {
             $adUrl = $resultRow->filter('h3 a')->attr('href');

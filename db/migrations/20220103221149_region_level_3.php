@@ -18,15 +18,19 @@ final class RegionLevel3 extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute('ALTER TABLE `ads`
+        try {
+            $this->execute('ALTER TABLE `ads`
 ADD `region_level_3_id` int(11) unsigned NULL AFTER `region_level_2_id`,
 ADD FOREIGN KEY (`region_level_3_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE;');
-        
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id LEFT JOIN regions AS r2 ON r.parent_id = r2.id SET a.region_level_3_id=a.region_id, a.region_level_2_id=r.parent_id, a.region_level_1_id=r2.parent_id WHERE r.level=3');
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_3_id=NULL, a.region_level_2_id=a.region_id, a.region_level_1_id=r.parent_id WHERE r.level=2');
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_3_id=NULL, a.region_level_2_id=NULL, a.region_level_1_id=a.region_id WHERE r.level=1');
 
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=a.region_id, a.region_level_1_id = r.parent_id WHERE r.level=2');
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=NULL, a.region_level_1_id = a.region_id WHERE r.level=1');
+            $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id LEFT JOIN regions AS r2 ON r.parent_id = r2.id SET a.region_level_3_id=a.region_id, a.region_level_2_id=r.parent_id, a.region_level_1_id=r2.parent_id WHERE r.level=3');
+            $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_3_id=NULL, a.region_level_2_id=a.region_id, a.region_level_1_id=r.parent_id WHERE r.level=2');
+            $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_3_id=NULL, a.region_level_2_id=NULL, a.region_level_1_id=a.region_id WHERE r.level=1');
+
+            $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=a.region_id, a.region_level_1_id = r.parent_id WHERE r.level=2');
+            $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=NULL, a.region_level_1_id = a.region_id WHERE r.level=1');
+        } catch (Exception $e) {
+            \Palto\Logger::error($e->getTraceAsString());
+        }
     }
 }

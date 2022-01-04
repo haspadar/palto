@@ -114,12 +114,12 @@ class Ad
 
     private function getCategoryId(): int
     {
-        return $this->ad['category_id'];
+        return $this->ad['category_id'] ?: 0;
     }
 
     private function getRegionId(): int
     {
-        return $this->ad['region_id'];
+        return $this->ad['region_id'] ?: 0;
     }
 
     public function getLatitude()

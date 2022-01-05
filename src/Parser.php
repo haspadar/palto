@@ -104,21 +104,21 @@ class Parser
         return $adDocument->count() ? $adDocument->attr($attribute) : '';
     }
 
-    public static function findText(Crawler $adDocument, array $selectors): string
+    public static function getText(Crawler $adDocument, array $selectors): string
     {
         list($_, $content) = self::findSelectorWith($adDocument, $selectors);
 
         return $content ? $content->text() : '';
     }
     
-    public static function findHtml(Crawler $adDocument, array $selectors): string
+    public static function getHtml(Crawler $adDocument, array $selectors): string
     {
         list($_, $content) = self::findSelectorWith($adDocument, $selectors);
 
         return $content ? $content->html() : '';
     }
 
-    public static function findSelector(Crawler $adDocument, array $selectors): string
+    public static function getSelector(Crawler $adDocument, array $selectors): string
     {
         list($selector, $_) = self::findSelectorWith($adDocument, $selectors);
 

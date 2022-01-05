@@ -69,20 +69,20 @@ abstract class AdsParser
             if (!$adUrl) {
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
             } elseif (!Ads::getByUrl($adUrl)) {
-                $isAdded = Parser::safeTransaction(function () use ($category, $adUrl) {
+                $adId = Parser::safeTransaction(function () use ($category, $adUrl) {
                     $adResponse = PylesosService::get($adUrl, [], Config::getEnv());
                     $adDocument = new Crawler($adResponse->getResponse());
 
                     return $this->parseAd($adDocument, $category, $adUrl);
                 });
 
-                if (!is_bool($isAdded)) {
+                if ($adId) {
+                    Logger::debug('Added ad with id=' . $adUrl);
+                    $addedAdsCount++;
+                } else {
                     Logger::debug('Skipped wrong ad with url ' . $adUrl->getFull());
                 }
 
-                if ($isAdded) {
-                    $addedAdsCount++;
-                }
             } else {
                 Logger::debug('Ad with url ' . $adUrl . ' already exists');
             }

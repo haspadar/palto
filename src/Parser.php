@@ -99,6 +99,11 @@ class Parser
         return ['', null];
     }
 
+    public static function getAttribute(Crawler $adDocument, string $attribute): string
+    {
+        return $adDocument->count() ? $adDocument->attr($attribute) : '';
+    }
+
     public static function findText(Crawler $adDocument, array $selectors): string
     {
         list($_, $content) = self::findSelectorWith($adDocument, $selectors);

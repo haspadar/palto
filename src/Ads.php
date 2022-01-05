@@ -70,6 +70,8 @@ class Ads
     public static function add(array $ad, array $images = [], array $details = []): int
     {
         if ($ad['title'] && $ad['text']) {
+            $ad['title'] = Filter::get($ad['title']);
+            $ad['text'] = Filter::get($ad['text']);
             $ad['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
             $ad = self::addLevels($ad);
             $adId = Model\Ads::add($ad);

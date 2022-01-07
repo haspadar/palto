@@ -10,7 +10,10 @@ $pager = new \Palto\Pager($this->getDispatcher());
 $this->partial('header.inc', [
     'title' => $this->generateHtmlTitle('Ogłoszenia w '),
     'description' => $this->generateHtmlDescription('Agregator wszystkich tablic ogłoszeniowych w '
-        . ($this->getCategory() ? implode(' - ', $this->getCategory()->getWithParentsTitles([$this->getRegion()->getTitle()])) : $this->getRegion()->getTitle()),
+        . ($this->getCategory()
+            ? implode(' - ', $this->getCategory()->getWithParentsTitles([$this->getRegion()->getTitle()]))
+            : $this->getRegion()->getTitle()
+        )),
     'nextPageUrl' => $pager->getNextPageUrl(),
     'previousPageUrl' => $pager->getPreviousPageUrl(),
 ]);

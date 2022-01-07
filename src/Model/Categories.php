@@ -33,7 +33,7 @@ class Categories extends Model
             $query = 'SELECT * FROM categories';
             $values = [];
             $adsFieldCategory = 'category_level_' . ($parentCategory ? $parentCategory->getLevel() + 1 : 1) . '_id';
-            $query .= " WHERE id IN (SELECT $adsFieldCategory FROM ads)";
+            $query .= " WHERE id IN (SELECT DISTINCT $adsFieldCategory FROM ads)";
             if ($parentCategory) {
                 $query .= ' AND parent_id = %d_parent_id';
                 $values['parent_id'] = $parentCategory->getId();

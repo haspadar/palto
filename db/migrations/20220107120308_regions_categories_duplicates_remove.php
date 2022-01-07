@@ -7,7 +7,21 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
 {
     public function change(): void
     {
-        $this->execute("DELETE r1 FROM regions r1 INNER JOIN regions r2 WHERE r1.id < r2.id AND r1.donor_url = r2.donor_url;");
-        $this->execute("DELETE c1 FROM categories r1 INNER JOIN categories c2 WHERE c1.id < c2.id AND c1.donor_url = c2.donor_url;");
+        $minRegionRow = $this->fetchRow("SELECT MIN(create_time) as create_time from regions where url like '%-1' or url like '%-2' or url like '%-3';");
+        $minCategoryRow = $this->fetchRow("SELECT MIN(create_time) as create_time from categories where url like '%-1' or url like '%-2' or url like '%-3';");
+        if ($minRegionRow && $minCategoryRow) {
+            $minDate = min(new DateTime($minRegionRow['create_time']), new DateTime($minCategoryRow['create_time']));
+        } elseif ($minRegionRow) {
+            $minDate = new DateTime($minRegionRow['create_time']);
+        } elseif ($minCategoryRow) {
+            $minDate = new DateTime($minCategoryRow['create_time']);
+        }
+
+        if (isset($minDate)) {
+            echo 'Found min create_time=' . $minDate->format('Y-m-d H:i:s') . PHP_EOL;
+            $this->execute("DELETE FROM regions WHERE create_time >= %s", $minDate->format('Y-m-d H:i:s'));
+            $this->execute("DELETE FROM categories WHERE create_time >= %s", $minDate->format('Y-m-d H:i:s'));
+            $this->execute("DELETE FROM ads WHERE create_time >= %s", $minDate->format('Y-m-d H:i:s'));
+        }
     }
 }

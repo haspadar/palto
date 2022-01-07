@@ -15,6 +15,7 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
             unset($parts[count($parts) - 1]);
             $url = implode('-', $parts);
             $original = $this->fetchRow('select * from regions where url="' . $url . '"');
+            echo 'Original for "' . $regionsDuplicate['url'] . '" is "' . $url . '" (id=' . $original['id'] , ')' . PHP_EOL;
             if ($original) {
                 $this->execute("UPDATE ads SET region_id=" . $original['id'] . " WHERE region_id=" . $regionsDuplicate['id']);
             }
@@ -29,6 +30,7 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
             unset($parts[count($parts) - 1]);
             $url = implode('-', $parts);
             $original = $this->fetchRow('select * from categories where url="' . $url . '"');
+            echo 'Original for "' . $categoriesDuplicate['url'] . '" is "' . $url . '" (id=' . $original['id'] , ')' . PHP_EOL;
             if ($original) {
                 $this->execute("UPDATE ads SET category_id=" . $original['id'] . " WHERE category_id=" . $categoriesDuplicate['id']);
             }

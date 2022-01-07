@@ -21,7 +21,7 @@ class Ad
 
     public function getTitle(): string
     {
-        return $this->ad['title'];
+        return !$this->isDeleted() ? $this->ad['title'] : '';
     }
 
     public function getCurrency(): string
@@ -36,7 +36,7 @@ class Ad
 
     public function getText(): string
     {
-        return $this->ad['text'];
+        return !$this->isDeleted() ? $this->ad['text'] : '';
     }
 
     public function getCategory(): Category
@@ -66,12 +66,17 @@ class Ad
         return $this->ad['id'];
     }
 
+    public function isDeleted(): bool
+    {
+        return $this->ad['deleted_time'] != null;
+    }
+
     /**
      * @return array
      */
     public function getImages(): array
     {
-        return $this->images;
+        return !$this->isDeleted() ? $this->images : [];
     }
 
     /**

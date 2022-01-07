@@ -104,7 +104,7 @@ class Layout
 
     public function getSimilarAds(int $count = 5): array
     {
-        return \Palto\Ads::getAds(
+        return Ads::getAds(
             $this->getRegion(),
             $this->getCategory(),
             $count,
@@ -114,11 +114,11 @@ class Layout
 
     public function getAds(): array
     {
-        return \Palto\Ads::getAds(
+        return Ads::getAds(
             $this->getRegion(),
             $this->getCategory(),
-            \Palto\Ads::LIMIT,
-            ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * \Palto\Ads::LIMIT
+            Ads::LIMIT,
+            ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * Ads::LIMIT
         );
     }
 
@@ -196,6 +196,6 @@ class Layout
      */
     public function getWithAdsCategories(?Category $parentCategory = null, int $count = 0): array
     {
-        return \Palto\Categories::getWithAdsCategories($parentCategory, $count);
+        return Categories::getWithAdsCategories($parentCategory, $count);
     }
 }

@@ -13,19 +13,17 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
         $regionIds = $this->replaceDuplicates($regionsDuplicates, $regionsOriginals, 'region');
         if ($regionIds) {
             echo 'Try remove empty regions' . PHP_EOL;
-//            $this->execute('DELETE from regions where id IN(' . implode(',', $regionIds) . ')');
+            $this->execute('DELETE from regions where id IN(' . implode(',', $regionIds) . ')');
         }
 
-//        $categoriesOriginals = $this->fetchAll("select * from categories where url not REGEXP '[[:digit:]]$'");
-//        $categoriesDuplicates = $this->fetchAll("select * from categories where url REGEXP '[[:digit:]]$'");
-//        echo 'Found ' . count($categoriesDuplicates) . ' $categoriesDuplicates' . PHP_EOL;
-//        $categoryIds = $this->replaceDuplicates($categoriesDuplicates, $categoriesOriginals, 'category');
-//        if ($categoryIds) {
-//            echo 'Try remove empty categories' . PHP_EOL;
-////            $this->execute('DELETE from categories where id IN(' . implode(',', $categoryIds) . ') AND');
-//        }
-
-        exit;
+        $categoriesOriginals = $this->fetchAll("select * from categories where url not REGEXP '[[:digit:]]$'");
+        $categoriesDuplicates = $this->fetchAll("select * from categories where url REGEXP '[[:digit:]]$'");
+        echo 'Found ' . count($categoriesDuplicates) . ' $categoriesDuplicates' . PHP_EOL;
+        $categoryIds = $this->replaceDuplicates($categoriesDuplicates, $categoriesOriginals, 'category');
+        if ($categoryIds) {
+            echo 'Try remove empty categories' . PHP_EOL;
+            $this->execute('DELETE from categories where id IN(' . implode(',', $categoryIds) . ') AND');
+        }
     }
 
     private function replaceDuplicates(array $duplicates, array $originals, string $singleName): array
@@ -38,8 +36,6 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
             unset($parts[count($parts) - 1]);
             $url = implode('-', $parts);
             $original = $groupedByUrl[$url] ?? [];
-            \Palto\Debug::dump($url, '$url');
-            \Palto\Debug::dump($original['id'], 'Original[id]');
             if ($original) {
                 list($level1Id, $level2Id, $level3Id) = $this->getLevels($original, $groupedById);
                 $this->execute("UPDATE ads SET {$singleName}_id=" . $original['id'] . ",{$singleName}_level_1_id=$level1Id,{$singleName}_level_2_id=$level2Id,{$singleName}_level_3_id=$level3Id  WHERE {$singleName}_id=" . $duplicate['id']);

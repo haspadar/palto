@@ -19,12 +19,12 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
 
         if (isset($minDate)) {
             echo 'Found min create_time=' . $minDate->format('Y-m-d H:i:s') . PHP_EOL;
+            $this->execute("DELETE FROM ads WHERE create_time >= '" . $minDate->format('Y-m-d H:i:s') . "'");
+            echo 'Removed ads' . PHP_EOL;
             $this->execute("DELETE FROM regions WHERE create_time >= '" . $minDate->format('Y-m-d H:i:s') . "'");
             echo 'Removed regions' . PHP_EOL;
             $this->execute("DELETE FROM categories WHERE create_time >= '" . $minDate->format('Y-m-d H:i:s') . "'");
             echo 'Removed categories' . PHP_EOL;
-            $this->execute("DELETE FROM ads WHERE create_time >= '" . $minDate->format('Y-m-d H:i:s') . "'");
-            echo 'Removed ads' . PHP_EOL;
         }
     }
 }

@@ -7,51 +7,65 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
 {
     public function change(): void
     {
+        $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '-[[:digit:]]$'");
         $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '-[[:digit:]]$'");
         echo 'Found ' . count($regionsDuplicates) . ' $regionsDuplicates' . PHP_EOL;
-        foreach ($regionsDuplicates as $key => $regionsDuplicate) {
-            echo ($key + 1) . '/' . count($regionsDuplicates) . ' regions' . PHP_EOL;
-            $parts = explode('-', $regionsDuplicate['url']);
-            unset($parts[count($parts) - 1]);
-            $url = implode('-', $parts);
-            $original = $this->fetchRow('select * from regions where url="' . $url . '"');
-            echo 'Original for "' . $regionsDuplicate['url'] . '" is "' . $url . '" (id=' . $original['id'] , ')' . PHP_EOL;
-            if ($original) {
-                $this->execute("UPDATE ads SET region_id=" . $original['id'] . " WHERE region_id=" . $regionsDuplicate['id']);
-            }
-
+        $regionIds = $this->replaceDuplicates($regionsDuplicates, $regionsOriginals, 'region');
+        if ($regionIds) {
+            echo 'Try remove empty regions' . PHP_EOL;
+            $this->execute('DELETE from regions where id IN(' . implode(',', $regionIds) . ')');
         }
 
+        $categoriesOriginals = $this->fetchAll("select * from categories where url not REGEXP '-[[:digit:]]$'");
         $categoriesDuplicates = $this->fetchAll("select * from categories where url REGEXP '-[[:digit:]]$'");
         echo 'Found ' . count($categoriesDuplicates) . ' $categoriesDuplicates' . PHP_EOL;
-        foreach ($categoriesDuplicates as $key => $categoriesDuplicate) {
-            echo ($key + 1) . '/' . count($categoriesDuplicates) . ' categories' . PHP_EOL;
-            $parts = explode('-', $categoriesDuplicate['url']);
+        $categoryIds = $this->replaceDuplicates($categoriesDuplicates, $categoriesOriginals, 'category');
+        if ($categoryIds) {
+            echo 'Try remove empty categories' . PHP_EOL;
+            $this->execute('DELETE from categories where id IN(' . implode(',', $categoryIds) . ')');
+        }
+    }
+
+    private function replaceDuplicates(array $duplicates, array $originals, string $singleName): array
+    {
+        $groupedById = $this->groupBy($originals, 'id');
+        $groupedByUrl = $this->groupBy($originals, 'url');
+        $removableIds = [];
+        foreach ($duplicates as $duplicate) {
+            $parts = explode('-', $duplicate['url']);
             unset($parts[count($parts) - 1]);
             $url = implode('-', $parts);
-            $original = $this->fetchRow('select * from categories where url="' . $url . '"');
-            echo 'Original for "' . $categoriesDuplicate['url'] . '" is "' . $url . '" (id=' . $original['id'] , ')' . PHP_EOL;
+            $original = $groupedByUrl[$url] ?? [];
             if ($original) {
-                $this->execute("UPDATE ads SET category_id=" . $original['id'] . " WHERE category_id=" . $categoriesDuplicate['id']);
+                list($level1Id, $level2Id, $level3Id) = $this->getLevels($original, $groupedById);
+                $this->execute("UPDATE ads SET {$singleName}_id=" . $original['id'] . ",{$singleName}_level_1_id=$level1Id,{$singleName}_level_2_id=$level2Id,{$singleName}_level_3_id=$level3Id  WHERE {$singleName}_id=" . $duplicate['id']);
+                $removableIds[] = $duplicate['id'];
             }
-
         }
 
-        echo 'Update 1' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id LEFT JOIN regions AS r2 ON r.parent_id = r2.id SET a.region_level_3_id=a.region_id, a.region_level_2_id=r.parent_id, a.region_level_1_id=r2.parent_id WHERE r.level=3');
-        echo 'Update 2' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_3_id=NULL, a.region_level_2_id=a.region_id, a.region_level_1_id=r.parent_id WHERE r.level=2');
-        echo 'Update 3' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_3_id=NULL, a.region_level_2_id=NULL, a.region_level_1_id=a.region_id WHERE r.level=1');
-        echo 'Update 4' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=a.region_id, a.region_level_1_id = r.parent_id WHERE r.level=2');
-        echo 'Update 5' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN regions AS r ON a.region_id=r.id SET a.region_level_2_id=NULL, a.region_level_1_id = a.region_id WHERE r.level=1');
-        echo 'Update 6' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id LEFT JOIN categories AS c2 ON c.parent_id = c2.id SET a.category_level_3_id=a.category_id, a.category_level_2_id=c.parent_id, a.category_level_1_id=c2.parent_id WHERE c.level=3');
-        echo 'Update 7' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=a.category_id, a.category_level_1_id=c.parent_id WHERE c.level=2');
-        echo 'Update 8' . PHP_EOL;
-        $this->execute('UPDATE ads AS a INNER JOIN categories AS c ON a.category_id=c.id SET a.category_level_3_id=NULL, a.category_level_2_id=NULL, a.category_level_1_id=a.category_id WHERE c.level=1');
+        return $removableIds;
+    }
+
+    private function groupBy(array $data, string $groupField)
+    {
+        $grouped = [];
+        foreach ($data as $value) {
+            $grouped[$value[$groupField]] = $value;
+        }
+
+        return $grouped;
+    }
+
+    private function getLevels(mixed $original, array $groupedById): array
+    {
+        $level1Id = $level2Id = $level3Id = 'null';
+        $level = $original['level'];
+        while ($level >= 1 && $original) {
+            ${'level' . $level . 'Id'} = $original['id'];
+            $level--;
+            $original = $original['parent_id'] ? $groupedById[$original['parent_id']] : [];
+        }
+
+        return [$level1Id, $level2Id, $level3Id];
     }
 }

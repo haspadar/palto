@@ -7,8 +7,8 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
 {
     public function change(): void
     {
-        $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '-[[:digit:]]$'");
-        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '-[[:digit:]]$'");
+        $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '[[:digit:]]$'");
+        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '[[:digit:]]$'");
         echo 'Found ' . count($regionsDuplicates) . ' $regionsDuplicates' . PHP_EOL;
         $regionIds = $this->replaceDuplicates($regionsDuplicates, $regionsOriginals, 'region');
         if ($regionIds) {
@@ -16,8 +16,8 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
 //            $this->execute('DELETE from regions where id IN(' . implode(',', $regionIds) . ')');
         }
 
-        $categoriesOriginals = $this->fetchAll("select * from categories where url not REGEXP '-[[:digit:]]$'");
-        $categoriesDuplicates = $this->fetchAll("select * from categories where url REGEXP '-[[:digit:]]$'");
+        $categoriesOriginals = $this->fetchAll("select * from categories where url not REGEXP '[[:digit:]]$'");
+        $categoriesDuplicates = $this->fetchAll("select * from categories where url REGEXP '[[:digit:]]$'");
         echo 'Found ' . count($categoriesDuplicates) . ' $categoriesDuplicates' . PHP_EOL;
         $categoryIds = $this->replaceDuplicates($categoriesDuplicates, $categoriesOriginals, 'category');
         if ($categoryIds) {

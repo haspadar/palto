@@ -3,6 +3,7 @@
 use Crunz\Schedule;
 use Palto\Directory;
 use Palto\Palto;
+use Symfony\Component\Lock\Store\FlockStore;
 
 $schedule = new Schedule();
 
@@ -10,6 +11,6 @@ $task = $schedule->run(PHP_BINARY . ' ' . Directory::PARSE_ADS_SCRIPT);
 $task
     ->hourly()
     ->description('Ads parser')
-    ->preventOverlapping();
+    ->preventOverlapping(new FlockStore(__DIR__ . '/locks'));
 
 return $schedule;

@@ -7,8 +7,8 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
 {
     public function change(): void
     {
-        $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '[[:digit:]]$' AND donor_url='/wst/'");
-        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '[[:digit:]]$' AND donor_url='/wst/' and id<100");
+        $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '[[:digit:]]$'");
+        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '[[:digit:]]$'");
         echo 'Found ' . count($regionsDuplicates) . ' $regionsDuplicates' . PHP_EOL;
         $regionIds = $this->replaceDuplicates($regionsDuplicates, $regionsOriginals, 'region');
         if ($regionIds) {
@@ -22,7 +22,7 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
         $categoryIds = $this->replaceDuplicates($categoriesDuplicates, $categoriesOriginals, 'category');
         if ($categoryIds) {
             echo 'Try remove empty categories' . PHP_EOL;
-            $this->execute('DELETE from categories where id IN(' . implode(',', $categoryIds) . ') AND');
+            $this->execute('DELETE from categories where id IN(' . implode(',', $categoryIds) . ')');
         }
     }
 

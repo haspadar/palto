@@ -69,7 +69,9 @@ class Ads
 
     public static function add(array $ad, array $images = [], array $details = []): int
     {
-        if ($ad['title'] && $ad['text']) {
+        if (isset($ad['donor_url']) && ($found = self::getByDonorUrl($ad['donor_url']))) {
+            return $found->getId();
+        } elseif ($ad['title'] && $ad['text']) {
             $ad['title'] = Filter::get($ad['title']);
             $ad['text'] = Filter::get($ad['text']);
             $ad['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
@@ -160,5 +162,14 @@ class Ads
         }
 
         return $ad;
+    }
+
+    private static function getByDonorUrl(string $donorUrl): ?Ad
+    {
+        $row = Model\Ads::getByDonorUrl($donorUrl);
+
+        return $row
+            ? new Ad($row, AdsImages::getAdsImages([$row['id']]), AdsDetails::getAdsDetails([$row['id']]))
+            : null;
     }
 }

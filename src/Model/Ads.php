@@ -98,4 +98,11 @@ class Ads extends Model
 
         return self::getDb()->insertId();
     }
+
+    public static function getByDonorUrl(string $donorUrl)
+    {
+        $query = self::getAdsQuery();
+
+        return self::getDb()->queryFirstRow($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
+    }
 }

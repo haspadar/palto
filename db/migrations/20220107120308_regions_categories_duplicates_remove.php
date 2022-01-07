@@ -7,8 +7,8 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
 {
     public function change(): void
     {
-        $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '[[:digit:]]$'");
-        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '[[:digit:]]$'");
+        $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '[[:digit:]]$' AND donor_url='/wst/'");
+        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '[[:digit:]]$' AND donor_url='/wst/'");
         echo 'Found ' . count($regionsDuplicates) . ' $regionsDuplicates' . PHP_EOL;
         $regionIds = $this->replaceDuplicates($regionsDuplicates, $regionsOriginals, 'region');
         if ($regionIds) {
@@ -38,6 +38,8 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
             unset($parts[count($parts) - 1]);
             $url = implode('-', $parts);
             $original = $groupedByUrl[$url] ?? [];
+            \Palto\Debug::dump($url, '$url');
+            \Palto\Debug::dump($original, 'Original');
             if ($original) {
                 list($level1Id, $level2Id, $level3Id) = $this->getLevels($original, $groupedById);
                 $this->execute("UPDATE ads SET {$singleName}_id=" . $original['id'] . ",{$singleName}_level_1_id=$level1Id,{$singleName}_level_2_id=$level2Id,{$singleName}_level_3_id=$level3Id  WHERE {$singleName}_id=" . $duplicate['id']);

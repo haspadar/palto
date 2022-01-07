@@ -75,7 +75,11 @@ $this->partial('header.inc', [
          data-accuracy="15"
     ></div>
 <?php endif;?>
+
+<?php if ($this->getAd()->getRegion()):?>
     Region: <a href="<?=$this->generateRegionUrl($this->getAd()->getRegion())?>"><?=$this->getAd()->getRegion()->getTitle()?></a>
+<?php endif;?>
+
 <?php if (trim($this->getAd()->getSellerName())) :?>
     <div class="seller">💁‍♂️ <?=$this->getAd()->getSellerName()?></div>
 <?php endif;?>

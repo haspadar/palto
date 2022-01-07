@@ -10,13 +10,15 @@ if (Config::get('AUTH') && !IP::isLocal()) {
     Auth::check();
 }
 
-$email = Palto\Filter::get($_POST['email']);
-$message = Palto\Filter::get($_POST['message']);
-$adId = intval($_POST['ad_id']);
+$email = Palto\Filter::get($_POST['email'] ?? '');
+$message = Palto\Filter::get($_POST['message'] ?? '');
+$adId = intval($_POST['ad_id'] ?? '');
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $response = 'Is not email';
 } elseif (!$message) {
     $response = 'Message is empty';
+} elseif (!$adId) {
+    $response = 'Ad id is empty';
 } elseif (!Moderation::getSmtpEmail()) {
     $response = 'Smtp email is empty';
 } else {

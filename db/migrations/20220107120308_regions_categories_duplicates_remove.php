@@ -30,7 +30,7 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
             $url = implode('-', $parts);
             $original = $this->fetchRow('select * from categories where url="' . $url . '"');
             if ($original) {
-                $this->execute("UPDATE ads SET category_id=" . $original['id'] . " WHERE region_id=" . $categoriesDuplicate['id']);
+                $this->execute("UPDATE ads SET category_id=" . $original['id'] . " WHERE category_id=" . $categoriesDuplicate['id']);
             }
 
         }

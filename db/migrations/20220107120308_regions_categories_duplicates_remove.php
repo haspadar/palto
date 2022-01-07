@@ -8,7 +8,7 @@ final class RegionsCategoriesDuplicatesRemove extends AbstractMigration
     public function change(): void
     {
         $regionsOriginals = $this->fetchAll("select * from regions where url not REGEXP '[[:digit:]]$' AND donor_url='/wst/'");
-        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '[[:digit:]]$' AND donor_url='/wst/'");
+        $regionsDuplicates = $this->fetchAll("select * from regions where url REGEXP '[[:digit:]]$' AND donor_url='/wst/' and id<100");
         echo 'Found ' . count($regionsDuplicates) . ' $regionsDuplicates' . PHP_EOL;
         $regionIds = $this->replaceDuplicates($regionsDuplicates, $regionsOriginals, 'region');
         if ($regionIds) {

@@ -21,7 +21,7 @@ class Ad
 
     public function getTitle(): string
     {
-        return !$this->isDeleted() ? $this->ad['title'] : '';
+        return !$this->isDeleted() ? $this->ad['title'] : '[DELETED]';
     }
 
     public function getCurrency(): string
@@ -36,7 +36,7 @@ class Ad
 
     public function getText(): string
     {
-        return !$this->isDeleted() ? $this->ad['text'] : '';
+        return !$this->isDeleted() ? $this->ad['text'] : 'Deleted';
     }
 
     public function getCategory(): Category

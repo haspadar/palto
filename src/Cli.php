@@ -13,6 +13,11 @@ class Cli
         return php_sapi_name() === 'cli';
     }
 
+    public static function isSudo(): bool
+    {
+        return posix_getuid() == 0;
+    }
+
     public static function isCron(): bool
     {
         return self::isCli() && !isset($_SERVER['TERM']);
@@ -336,7 +341,9 @@ class Cli
                 Logger::info($comment);
             }
 
-            if ($hasComment && $command == Cli::ignoreMac()) {
+            if (!$command) {
+                Logger::warning("Ignored empty command");
+            } elseif ($hasComment && $command == Cli::ignoreMac()) {
                 Logger::warning(`$command`);
             } elseif ($command != Cli::ignoreMac()) {
                 Logger::debug(`$command`);
@@ -374,6 +381,15 @@ class Cli
         }
 
         return '';
+    }
+
+    public static function checkSudo()
+    {
+        if (!self::isSudo()) {
+            Logger::error('Run with sudo');
+
+            exit;
+        }
     }
 
     private static function isMac(): bool

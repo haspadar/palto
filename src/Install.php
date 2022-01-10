@@ -6,6 +6,7 @@ class Install
 {
     public static function run()
     {
+        Cli::checkSudo();
         $databaseName = str_replace('.', '_', Directory::getProjectName());
         $databaseUsername = $databaseName;
         $databasePassword = Cli::generatePassword();

@@ -22,7 +22,6 @@
             "Test\\": "tests/"
         }
     },
-    "bin": ["bin/install.php", "bin/update.php", "bin/backup.php", "bin/sunduk.php"],
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "10.0.x-dev"

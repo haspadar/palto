@@ -6,7 +6,6 @@ class Install
 {
     public static function run()
     {
-        Cli::checkSudo();
         $databaseName = str_replace('.', '_', Directory::getProjectName());
         $databaseUsername = $databaseName;
         $databasePassword = Cli::generatePassword();
@@ -39,7 +38,8 @@ class Install
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Download Adminer' => Cli::downloadAdminer(),
             'Update Htpasswd' => Cli::updateHtpasswd(),
-            'Update Host' => Cli::updateHost()
+            'Update Host' => Cli::updateHost(),
+            'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory())
         ]);
     }
 }

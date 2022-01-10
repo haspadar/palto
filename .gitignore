@@ -8,3 +8,4 @@
 /backups/*
 /*.lock
 /phinx.php
+/.phpunit.result.cache

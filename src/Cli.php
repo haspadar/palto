@@ -353,7 +353,11 @@ class Cli
 
     public static function updatePermissions(string $path): string
     {
-        return "chown -R \"km\" $path";
+        if (self::isLinux()) {
+            return "chown -R \"km\" $path";
+        } else {
+            return "chown -R \"haspadar\" $path";
+        }
     }
 
     private static function getPhpVersion(): string

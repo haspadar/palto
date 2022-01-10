@@ -4,7 +4,7 @@
 use Palto\Config;
 use Palto\Sitemap;
 
-require_once 'safe_require_composer.php';
+require_once __DIR__ . '/../safe_require_composer.php';
 
 $path = Config::get('SITEMAP_PATH');
 if (!$path) {

@@ -6,7 +6,7 @@ use Palto\Install;
 
 $autoloadFile = __DIR__ . '/../vendor/autoload.php';
 if (!is_dir($autoloadFile)) {
-    echo 'Run `composer update first`' . PHP_EOL;
+    echo 'Run `composer update` first' . PHP_EOL;
 
     exit;
 }

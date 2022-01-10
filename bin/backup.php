@@ -2,8 +2,7 @@
 <?php
 
 use Palto\Backup;
-use Palto\Install;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once 'safe_require_composer.php';
 
 $backupName = Backup::createArchive();

@@ -3,6 +3,6 @@
 
 use Palto\Backup;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once 'safe_require_composer.php';
 
 Backup::sendSundukArchive();

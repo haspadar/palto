@@ -1,8 +1,8 @@
 /.env
 /vendor/
 /.idea/
-/logs/
-/layouts/
+/logs/*
+/layouts/*
 /parse_ads.php
 /parse_categories.php
 /backups/*

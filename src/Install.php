@@ -19,7 +19,6 @@ class Install
             'Copy CSS' => Cli::safeCopyCss(),
             'Copy Images' => Cli::safeCopyImg(),
             'Create Database' => Cli::createDatabase($databaseName, $databaseUsername, $databasePassword),
-            Cli::safeCreateLogs(),
             'Add Cron' => Cli::safeAddCron(),
             'Generate Env' => Cli::generateEnv($databaseName, $databaseUsername, $databasePassword),
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),

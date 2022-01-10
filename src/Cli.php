@@ -213,14 +213,7 @@ class Cli
 
         return "cp -R -n $rootDirectory/structure/public/img $rootDirectory/public/";
     }
-
-    public static function safeCreateLogs(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-
-        return self::asUser("mkdir $rootDirectory/logs");
-    }
-
+    
     public static function ignoreMac(): string
     {
         return 'echo "Ignored for Mac"';
@@ -274,7 +267,7 @@ class Cli
         $hostsContent = file_get_contents($hostsFilePath);
         $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
         if (!$isHostExists) {
-            return "echo '$hostLine\n' >> $hostLine";
+            return "echo '$hostLine\n' >> $hostsFilePath";
         }
 
         return '';

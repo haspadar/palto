@@ -5,7 +5,7 @@ use Palto\Backup;
 use Palto\Update;
 
 $autoloadFile = __DIR__ . '/../vendor/autoload.php';
-if (!is_dir($autoloadFile)) {
+if (!is_file($autoloadFile)) {
     echo 'Run `composer update` first' . PHP_EOL;
 
     exit;

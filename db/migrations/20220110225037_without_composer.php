@@ -20,19 +20,16 @@ final class WithoutComposer extends AbstractMigration
      */
     public function change(): void
     {
-        $hasComposerStructure = is_dir(DIRECTORY_SEPARATOR . '/vendor/haspadar/palto');
+        $hasComposerStructure = is_dir(\Palto\Directory::getRootDirectory() . '/vendor/haspadar/palto');
         if ($hasComposerStructure) {
-            $wwwDirectory = \Palto\Directory::getRootDirectory() . '/..';
+            $wwwDirectory = dirname(\Palto\Directory::getRootDirectory());
             $projectNewName = \Palto\Directory::getProjectName() . '_without_composer';
             $projectNewTmpName = \Palto\Directory::getProjectName() . '_with_composer';
             $projectNewTmpDirectory = $wwwDirectory . '/' . $projectNewTmpName;
             $projectNewDirectory = $wwwDirectory . '/' . $projectNewName;
             $projectOldDirectory = \Palto\Directory::getRootDirectory();
-            $databaseName = Config::get('DB_NAME');
-            $databaseUsername = Config::get('DB_USER');
-            $databasePassword = Config::get('DB_PASSWORD');
             \Palto\Cli::runCommands([
-                "cd $wwwDirectory && git clone https://github.com/haspadar/palto.git $projectNewName && cd $projectNewName && composer update",
+                "cd $wwwDirectory && git clone https://github.com/haspadar/palto.git $projectNewName && cd $projectNewName && git checkout without_composer && composer update",
                 "cp -R $projectOldDirectory/backups/* $projectNewDirectory/backups",
                 "cp -R $projectOldDirectory/layouts/* $projectNewDirectory/layouts",
                 "cp -R $projectOldDirectory/logs/* $projectNewDirectory/logs",
@@ -46,12 +43,14 @@ final class WithoutComposer extends AbstractMigration
                 "cp -R $projectOldDirectory/parse_categories.php $projectNewDirectory/",
                 "cp -R $projectOldDirectory/parse_ads.php $projectNewDirectory/",
                 "cp -R $projectOldDirectory/phinx.php $projectNewDirectory/",
-                'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
+            ]);
+            file_put_contents("$projectOldDirectory/phinx.php", strtr("$projectOldDirectory/phinx.php", [
+                'vendor/haspadar/palto' => '%%PHINX_CONFIG_DIR%%'
+            ]));
+            \Palto\Cli::runCommands([
                 "mv $projectOldDirectory $projectNewTmpDirectory",
                 "mv $projectNewDirectory $projectOldDirectory"
             ]);
         }
-
-        exit;
     }
 }

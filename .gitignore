@@ -9,3 +9,4 @@
 /*.lock
 /phinx.php
 /.phpunit.result.cache
+/.htpasswd

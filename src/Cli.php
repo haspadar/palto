@@ -213,7 +213,7 @@ class Cli
 
         return "cp -R -n $rootDirectory/structure/public/img $rootDirectory/public/";
     }
-    
+
     public static function ignoreMac(): string
     {
         return 'echo "Ignored for Mac"';
@@ -262,15 +262,19 @@ class Cli
 
     public static function updateHost(): string
     {
-        $hostsFilePath = '/etc/hosts';
-        $hostLine = '127.0.0.1 ' . Directory::getProjectName();
-        $hostsContent = file_get_contents($hostsFilePath);
-        $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
-        if (!$isHostExists) {
-            return "echo '$hostLine\n' >> $hostsFilePath";
-        }
+        if (self::isLinux()) {
+            $hostsFilePath = '/etc/hosts';
+            $hostLine = '127.0.0.1 ' . Directory::getProjectName();
+            $hostsContent = file_get_contents($hostsFilePath);
+            $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
+            if (!$isHostExists) {
+                return "echo '$hostLine\n' >> $hostsFilePath";
+            }
 
-        return '';
+            return '';
+        } else {
+            return self::ignoreMac();
+        }
     }
 
     public static function checkSudo()

@@ -22,6 +22,7 @@ class Update
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Download Adminer' => Cli::downloadAdminer(),
             'Update Htpasswd' => Cli::updateHtpasswd(),
+            'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory())
         ]);
     }
 

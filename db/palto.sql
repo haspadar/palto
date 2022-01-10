@@ -183,4 +183,16 @@ CREATE TABLE `translates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+INSERT INTO `phinxlog` (`version`, `migration_name`, `start_time`, `end_time`, `breakpoint`) VALUES
+                                                                                                 (20210917121732,	'IncreaseComplaintDomainLength',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
+                                                                                                 (20211216220534,	'UpdateStructure',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
+                                                                                                 (20211217120937,	'UpdateRegistrationUrl',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
+                                                                                                 (20211226011720,	'LayoutsWithObjects',	'2022-01-03 04:09:41',	'2022-01-03 04:09:41',	0),
+                                                                                                 (20220103011805,	'LayoutsWithObjectsReplaces',	'2022-01-03 21:03:04',	'2022-01-03 21:03:11',	0),
+                                                                                                 (20220103221149,	'RegionLevel3',	'2022-01-04 02:25:03',	'2022-01-04 02:29:43',	0),
+                                                                                                 (20220104043706,	'CraigslistLayoutsChanged',	'2022-01-04 09:30:03',	'2022-01-04 09:30:03',	0),
+                                                                                                 (20220104133345,	'CraigsListLayoutsReplaces',	'2022-01-04 18:25:03',	'2022-01-04 18:25:03',	0),
+                                                                                                 (20220104152745,	'DonorUrlComplete',	'2022-01-04 19:40:03',	'2022-01-04 19:40:03',	0),
+                                                                                                 (20220107120308,	'RegionsCategoriesDuplicatesRemove',	'2022-01-07 23:26:03',	'2022-01-07 23:26:09',	0);
+
 -- 2022-01-10 20:57:19

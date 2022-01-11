@@ -13,40 +13,14 @@ class Cli
         return php_sapi_name() === 'cli';
     }
 
+    public static function isSudo(): bool
+    {
+        return posix_getuid() == 0;
+    }
+
     public static function isCron(): bool
     {
         return self::isCli() && !isset($_SERVER['TERM']);
-    }
-
-    public static function safeLinkTests(): string
-    {
-        $paltoDirectory = Directory::getPaltoDirectory();
-        $rootDirectory = Directory::getRootDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/tests $rootDirectory/");
-    }
-
-    public static function safeLinkPhpUnit(): string
-    {
-        $paltoDirectory = Directory::getPaltoDirectory();
-        $rootDirectory = Directory::getRootDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/phpunit.xml $rootDirectory/");
-    }
-
-    public static function copyCrunz(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $configsDirectory = Directory::getConfigsDirectory();
-
-        return self::asUser("cp $configsDirectory/crunz.yml" . " $rootDirectory/");
-    }
-
-    public static function downloadAdminer(): string
-    {
-        $publicDirectory = Directory::getPublicDirectory();
-
-        return self::asUser("wget -O $publicDirectory/adminer.php https://www.adminer.org/latest-mysql-en.php");
     }
 
     public static function reloadNginx(): string
@@ -135,7 +109,6 @@ class Cli
             'production_db' => $databaseName,
             'production_user' => $databaseUser,
             'production_pass' => $databasePassword,
-            '%%PHINX_CONFIG_DIR%%' => Directory::VENDOR_HASPADAR_PALTO
         ]);
 
         return "echo \"$content\" > " . Directory::getRootDirectory() . '/phinx.php';
@@ -212,13 +185,6 @@ class Cli
         return self::ignoreMac();
     }
 
-    public static function safeCreatePublicDirectory(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-
-        return "mkdir $rootDirectory/public";
-    }
-
     public static function copyComposerJson(): string
     {
         $rootDirectory = Directory::getRootDirectory();
@@ -230,97 +196,22 @@ class Cli
     public static function safeCopyLayouts(): string
     {
         $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
 
-        return "cp -R -n $paltoDirectory/structure/layouts $rootDirectory";
+        return "cp -R -n $rootDirectory/structure/layouts $rootDirectory";
     }
 
     public static function safeCopyCss(): string
     {
         $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
 
-        return "cp -R -n $paltoDirectory/structure/public/css $rootDirectory/public/";
+        return "cp -R -n $rootDirectory/structure/public/css $rootDirectory/public/";
     }
 
     public static function safeCopyImg(): string
     {
         $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
 
-        return "cp -R -n $paltoDirectory/structure/public/img $rootDirectory/public/";
-    }
-
-    public static function safeLinkRoutes(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/structure/" . Directory::ROUTES_SCRIPT . " $rootDirectory/");
-    }
-
-    public static function safeLinkJs(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/structure/public/js $rootDirectory/public/");
-    }
-
-    public static function safeLinkModerate(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/structure/public/moderate $rootDirectory/public/");
-    }
-
-    public static function safeLinkPublicPhpScripts(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/structure/public/*.php $rootDirectory/public/");
-    }
-
-    public static function safeLinkSitemapScript(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/structure/" . Sitemap::GENERATE_SCRIPT . " $rootDirectory/");
-    }
-
-    public static function safeLinkCrunzTasks(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/tasks $rootDirectory/");
-    }
-
-    public static function safeCopyParseScripts(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("cp -n $paltoDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
-            . " && cp -n $paltoDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
-    }
-
-    public static function safeLinkMigrations(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-        $paltoDirectory = Directory::getPaltoDirectory();
-
-        return self::asUser("ln -s $paltoDirectory/db $rootDirectory/");
-    }
-
-    public static function safeCreateLogs(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-
-        return self::asUser("mkdir $rootDirectory/logs");
+        return "cp -R -n $rootDirectory/structure/public/img $rootDirectory/public/";
     }
 
     public static function ignoreMac(): string
@@ -336,7 +227,9 @@ class Cli
                 Logger::info($comment);
             }
 
-            if ($hasComment && $command == Cli::ignoreMac()) {
+            if (!$command) {
+                Logger::warning("Ignored empty command");
+            } elseif ($hasComment && $command == Cli::ignoreMac()) {
                 Logger::warning(`$command`);
             } elseif ($command != Cli::ignoreMac()) {
                 Logger::debug(`$command`);
@@ -346,7 +239,11 @@ class Cli
 
     public static function updatePermissions(string $path): string
     {
-        return "chown -R \"km\" $path";
+        if (self::isLinux()) {
+            return "chown -R \"km\" $path";
+        } else {
+            return "chown -R \"haspadar\" $path";
+        }
     }
 
     private static function getPhpVersion(): string
@@ -365,15 +262,36 @@ class Cli
 
     public static function updateHost(): string
     {
-        $hostsFilePath = '/etc/hosts';
-        $hostLine = '127.0.0.1 ' . Directory::getProjectName();
-        $hostsContent = file_get_contents($hostsFilePath);
-        $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
-        if (!$isHostExists) {
-            return "echo '$hostLine\n' >> $hostLine";
-        }
+        if (self::isLinux()) {
+            $hostsFilePath = '/etc/hosts';
+            $hostLine = '127.0.0.1 ' . Directory::getProjectName();
+            $hostsContent = file_get_contents($hostsFilePath);
+            $isHostExists = mb_strpos($hostsContent, $hostLine) !== false;
+            if (!$isHostExists) {
+                return "echo '$hostLine\n' >> $hostsFilePath";
+            }
 
-        return '';
+            return '';
+        } else {
+            return self::ignoreMac();
+        }
+    }
+
+    public static function safeCopyParseScripts(): string
+    {
+        $rootDirectory = Directory::getRootDirectory();
+
+        return self::asUser("cp -n $rootDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
+            . " && cp -n $rootDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
+    }
+
+    public static function checkSudo()
+    {
+        if (!self::isSudo()) {
+            Logger::error('Run with sudo');
+
+            exit;
+        }
     }
 
     private static function isMac(): bool

@@ -3,16 +3,14 @@ namespace Palto;
 
 class Sitemap
 {
-    const GENERATE_SCRIPT = 'generate_sitemap.php';
+    const GENERATE_SCRIPT = 'bin/generate_sitemap.php';
     private string $domainUrl;
     private string $path;
-    private Palto $palto;
 
-    public function __construct(string $domainUrl, string $path, Palto $palto)
+    public function __construct(string $domainUrl, string $path)
     {
         $this->domainUrl = $domainUrl;
         $this->path = $path;
-        $this->palto = $palto;
     }
 
     public function generate()
@@ -20,17 +18,21 @@ class Sitemap
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $groupedRegions = $this->groupTrees(
-            $this->palto->getRegions(0, 0, 0, 0, 'tree_id, level')
+            array_map(fn ($region) => new Region($region),
+                \Palto\Model\Regions::getDb()->query('SELECT * FROM regions ORDER BY tree_id, level')
+            )
         );
-        $groupedRegions[0][] = $this->palto->getDefaultRegion();
+        $groupedRegions[0][] = new Region([]);
         $groupedCategories = $this->groupTrees(
-            $this->palto->getWithAdsCategories(0, 0, 0, 0, 'tree_id, level')
+            array_map(fn ($category) => new Category($category),
+                \Palto\Model\Categories::getDb()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_level_1_id FROM ads) ORDER BY tree_id, level')
+            )
         );
         $this->generateRegionsFiles('/regions', $groupedRegions);
         foreach ($groupedRegions as $regionTree) {
-            $regionTreeUrl = $regionTree[0]['url'];
+            $regionTreeUrl = $regionTree[0]->getUrl();
             foreach ($groupedCategories as $categoryTree) {
-                $categoryTreeUrl = $categoryTree[0]['url'];
+                $categoryTreeUrl = $categoryTree[0]->getUrl();
                 $this->generateCategoriesFiles(
                     '/' . $regionTreeUrl . '-' . $categoryTreeUrl,
                     $regionTree,
@@ -41,16 +43,18 @@ class Sitemap
 
         $siteMapIndexUrl = $this->generateIndexes();
         $executionTime->end();
-        $this->palto->getLogger()->info(
-            'Generated sitemap ' . $siteMapIndexUrl . ' for ' . $executionTime->get()
-        );
+        Logger::info('Generated sitemap ' . $siteMapIndexUrl . ' for ' . $executionTime->get());
     }
 
+    /**
+     * @param Category[]|Region[] $leaves
+     * @return array
+     */
     private function groupTrees(array $leaves): array
     {
         $trees = [];
         foreach ($leaves as $leaf) {
-            $trees[$leaf['tree_id']][] = $leaf;
+            $trees[$leaf->getTreeId()][] = $leaf;
         }
 
         return $trees;
@@ -60,8 +64,11 @@ class Sitemap
     {
         $urls = [];
         foreach ($groupedRegions as $regionTree) {
+            /**
+             * @var $region Region
+             */
             foreach ($regionTree as $region) {
-                $urls[] = $this->palto->generateRegionUrl($region);
+                $urls[] = $region->generateUrl();
             }
         }
 
@@ -71,13 +78,19 @@ class Sitemap
         }
     }
 
+    /**
+     * @param string $regionTreePath
+     * @param Region[] $regions
+     * @param Category[] $categories
+     * @return void
+     */
     private function generateCategoriesFiles(string $regionTreePath, array $regions, array $categories)
     {
         $urls = [];
         foreach ($regions as $region) {
             foreach ($categories as $category) {
-                if ($this->palto->hasAds($category['id'], $region['id'])) {
-                    $urls[] = $this->palto->generateCategoryUrl($category, $region);
+                if ($this->hasAds($category->getId(), $region->getId())) {
+                    $urls[] = $category->generateUrl($region);
                 }
             }
         }
@@ -88,10 +101,19 @@ class Sitemap
         }
     }
 
+    private function hasAds(int $categoryId, ?int $regionId): bool
+    {
+        return \Palto\Model\Ads::getDb()->queryFirstField(
+                "SELECT id FROM ads WHERE (category_level_1_id=$categoryId OR category_level_2_id=$categoryId OR category_level_3_id)=$categoryId"
+                . ($regionId ? : " AND (region_level_1_id=$regionId OR region_level_2_id=$regionId OR region_level_3_id=$regionId)")
+                . ' LIMIT 1'
+            ) > 1;
+    }
+
     private function saveUrls(string $path, string $fileName, array $urls, bool $checkSize = true)
     {
-        if (!file_exists($this->palto->getPublicDirectory() . $path)) {
-            mkdir($this->palto->getPublicDirectory() . $path, 0777, true);
+        if (!file_exists(Directory::getPublicDirectory() . $path)) {
+            mkdir(Directory::getPublicDirectory() . $path, 0777, true);
         }
 
         $xml = new \SimpleXMLElement(
@@ -104,9 +126,9 @@ class Sitemap
             $element->addChild('changefreq', 'daily');
         }
 
-        $fullFilePath = $this->palto->getPublicDirectory() . $path . '/' . $fileName . '.xml';
+        $fullFilePath = Directory::getPublicDirectory() . $path . '/' . $fileName . '.xml';
         $xml->saveXML($fullFilePath);
-        $this->palto->getLogger()->debug('Saved ' . count($urls) . ' urls to ' . $fullFilePath);
+        Logger::debug('Saved ' . count($urls) . ' urls to ' . $fullFilePath);
         if ($checkSize) {
             if ($this->getFileSizeInMb($fullFilePath) > $this->getMaxFileSizeMb()) {
                 $chunksCount = ceil($this->getFileSizeInMb($fullFilePath) / $this->getMaxFileSizeMb());
@@ -115,9 +137,9 @@ class Sitemap
                     $this->saveUrls($path, $fileName . '-' . ($chunkKey + 1), $chunk);
                 }
 
-                $this->palto->getLogger()->debug('Split file ' . $fullFilePath . ' to ' . $chunksCount . ' files');
+                Logger::debug('Split file ' . $fullFilePath . ' to ' . $chunksCount . ' files');
                 unlink($fullFilePath);
-                $this->palto->getLogger()->debug('Removed ' . $fullFilePath . ' file');
+                Logger::debug('Removed ' . $fullFilePath . ' file');
             }
         }
     }
@@ -163,13 +185,13 @@ class Sitemap
         $fileNameParts = array_values(array_filter(explode('/', $this->path)));
         $fileName = $fileNameParts[count($fileNameParts) - 1];
         $filesUrls = $this->getFilesUrls(
-            $this->getDirectoryRecursiveFiles($this->palto->getPublicDirectory() . $this->path),
+            $this->getDirectoryRecursiveFiles(Directory::getPublicDirectory() . $this->path),
             ['/' . $fileName . '.xml']
         );
 
         $this->saveUrls($this->path, $fileName, $filesUrls);
         $indexesUrls = $this->getFilesUrls(
-            $this->getDirectoryFiles($this->palto->getPublicDirectory() . $this->path),
+            $this->getDirectoryFiles(Directory::getPublicDirectory() . $this->path),
             ['/' . $fileName . '.xml']
         );
         if (count($indexesUrls) > 1) {
@@ -196,11 +218,11 @@ class Sitemap
 
     private function getMaxFileLinks(): int
     {
-        return intval($this->palto->getEnv()['SITEMAP_MAX_FILE_LINKS'] ?? 0) ?: 40000;
+        return intval(Config::get('SITEMAP_MAX_FILE_LINKS') ?: 0) ?: 40000;
     }
 
     private function getMaxFileSizeMb(): float
     {
-        return intval($this->palto->getEnv()['SITEMAP_MAX_FILE_SIZE_MB'] ?? 0) ?: 40;
+        return intval(Config::get('SITEMAP_MAX_FILE_SIZE_MB') ?: 0) ?: 40;
     }
 }

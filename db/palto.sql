@@ -1,142 +1,198 @@
-CREATE TABLE `regions`
-(
-    `id`        int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `title`     varchar(200)     NOT NULL DEFAULT '',
-    `parent_id` int(11) unsigned          DEFAULT NULL,
-    `url`       varchar(200)     NOT NULL DEFAULT '',
-    `donor_url`   varchar(500)     NOT NULL DEFAULT '',
-    `icon_url`    varchar(1024)    NOT NULL DEFAULT '',
-    `icon_text`   text                      DEFAULT NULL,
-    `create_time` timestamp        NULL     DEFAULT NULL,
-    `level`     int(10) unsigned NOT NULL DEFAULT 1,
-    `tree_id`     INT  UNSIGNED  NULL  DEFAULT '1',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `url` (`url`),
-    KEY `title` (`title`),
-    KEY `parent_id` (`parent_id`),
-    INDEX (`tree_id`),
-    CONSTRAINT `regions_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
-CREATE TABLE `categories`
-(
-    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `parent_id`   int(11) unsigned          DEFAULT NULL,
-    `level`       int(11) unsigned NOT NULL DEFAULT 1,
-    `tree_id`     INT  UNSIGNED  NULL  DEFAULT '1',
-    `title`       varchar(255)     NOT NULL DEFAULT '',
-    `emoji`       varchar(255) COLLATE 'utf8mb4_bin' NOT NULL DEFAULT '',
-    `url`         varchar(255)     NOT NULL DEFAULT '',
-    `donor_url`   varchar(500)     NOT NULL DEFAULT '',
-    `icon_url`    varchar(1024)    NOT NULL DEFAULT '',
-    `icon_text`   text                      DEFAULT NULL,
-    `create_time` timestamp        NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `url_level` (`url`, `level`),
-    KEY `title` (`title`),
-    KEY `parent_id` (`parent_id`),
-    KEY `url` (`url`),
-    KEY `level` (`level`),
-    INDEX (`tree_id`),
-CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+SET NAMES utf8mb4;
 
-CREATE TABLE `ads`
-(
-    `id`    int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `url`            varchar(600)                             NOT NULL DEFAULT '',
-    `category_id`    int(11) unsigned                                  DEFAULT NULL,
-    `region_id`      int(11) unsigned                                  DEFAULT NULL,
-    `title`          varchar(1000)                            NOT NULL DEFAULT '',
-    `text`           text                                              DEFAULT NULL,
-    `address`        varchar(1000)                            NOT NULL DEFAULT '',
-    `coordinates`    varchar(1000)                            NOT NULL DEFAULT '',
-    `post_time`      timestamp                                NULL     DEFAULT NULL,
-    `price`          decimal(10, 2) unsigned                  NOT NULL DEFAULT '0',
-    `currency`       varchar(20) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '',
-    `seller_name`    VARCHAR(100)                             NOT NULL DEFAULT '',
-    `seller_postfix` VARCHAR(100)                             NOT NULL DEFAULT '',
-    `seller_phone`   VARCHAR(100)                             NOT NULL DEFAULT '',
-    `deleted_time`   TIMESTAMP  NULL,
-    `create_time`      timestamp                                NULL     DEFAULT NULL,
-PRIMARY KEY (`id`),
-    UNIQUE KEY `url` (`url`),
-    KEY `category_id` (`category_id`),
-    KEY `region_id` (`region_id`),
-    INDEX (`create_time`),
-    INDEX (`post_time`),
-    INDEX (`deleted_time`),
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE `categories` (
+                              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                              `parent_id` int(11) unsigned DEFAULT NULL,
+                              `level` int(11) unsigned NOT NULL DEFAULT 1,
+                              `tree_id` int(10) unsigned DEFAULT 1,
+                              `title` varchar(255) NOT NULL DEFAULT '',
+                              `url` varchar(255) NOT NULL DEFAULT '',
+                              `donor_url` varchar(500) NOT NULL DEFAULT '',
+                              `icon_url` varchar(1024) NOT NULL DEFAULT '',
+                              `icon_text` text DEFAULT NULL,
+                              `create_time` timestamp NULL DEFAULT NULL,
+                              PRIMARY KEY (`id`),
+                              UNIQUE KEY `url_level` (`url`,`level`),
+                              KEY `title` (`title`),
+                              KEY `parent_id` (`parent_id`),
+                              KEY `url` (`url`),
+                              KEY `level` (`level`),
+                              KEY `tree_id` (`tree_id`),
+                              CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CONSTRAINT `ads_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `ads_ibfk_4` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+DROP TABLE IF EXISTS `regions`;
+CREATE TABLE `regions` (
+                           `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                           `title` varchar(200) NOT NULL DEFAULT '',
+                           `parent_id` int(11) unsigned DEFAULT NULL,
+                           `url` varchar(200) NOT NULL DEFAULT '',
+                           `donor_url` varchar(500) NOT NULL DEFAULT '',
+                           `icon_url` varchar(1024) NOT NULL DEFAULT '',
+                           `icon_text` text DEFAULT NULL,
+                           `create_time` timestamp NULL DEFAULT NULL,
+                           `level` int(10) unsigned NOT NULL DEFAULT 1,
+                           `tree_id` int(10) unsigned DEFAULT 1,
+                           PRIMARY KEY (`id`),
+                           UNIQUE KEY `url` (`url`),
+                           KEY `title` (`title`),
+                           KEY `parent_id` (`parent_id`),
+                           KEY `tree_id` (`tree_id`),
+                           CONSTRAINT `regions_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `ads_images`
-(
-    `id`    int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `ad_id` int(11) unsigned DEFAULT NULL,
-    `big`   varchar(1000)    NOT NULL DEFAULT '',
-    `small` varchar(1000)    NOT NULL DEFAULT '',
-    PRIMARY KEY (`id`),
-    KEY `ad_id` (`ad_id`),
-    CONSTRAINT `ads_images_ibfk_1` FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE `details_fields`
-(
-    `id`          int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `category_id` int(11) unsigned                DEFAULT NULL,
-    `field`       varchar(100)  DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `category_field` (`category_id`, `field`),
-    CONSTRAINT `details_fields_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE `ads_details`
-(
-    `id`               int(11)                 NOT NULL AUTO_INCREMENT,
-    `details_field_id` int(11) unsigned                 DEFAULT NULL,
-    `ad_id`            int(11) unsigned                 DEFAULT NULL,
-    `value`            text  NOT NULL DEFAULT '',
-    PRIMARY KEY (`id`),
-    KEY `details_field_id` (`details_field_id`),
-    KEY `ad_id` (`ad_id`),
-    CONSTRAINT `ads_details_ibfk_1` FOREIGN KEY (`details_field_id`) REFERENCES `details_fields` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `ads_details_ibfk_2` FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+DROP TABLE IF EXISTS `ads`;
+CREATE TABLE `ads` (
+                       `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                       `url` varchar(600) NOT NULL DEFAULT '',
+                       `category_id` int(11) unsigned DEFAULT NULL,
+                       `category_level_3_id` int(11) unsigned DEFAULT NULL,
+                       `category_level_2_id` int(11) unsigned DEFAULT NULL,
+                       `category_level_1_id` int(11) unsigned DEFAULT NULL,
+                       `region_id` int(11) unsigned DEFAULT NULL,
+                       `region_level_2_id` int(11) unsigned DEFAULT NULL,
+                       `region_level_3_id` int(11) unsigned DEFAULT NULL,
+                       `region_level_1_id` int(11) unsigned DEFAULT NULL,
+                       `title` varchar(1000) NOT NULL DEFAULT '',
+                       `text` text DEFAULT NULL,
+                       `address` varchar(1000) NOT NULL DEFAULT '',
+                       `coordinates` varchar(1000) NOT NULL DEFAULT '',
+                       `post_time` timestamp NULL DEFAULT NULL,
+                       `price` decimal(10,2) unsigned NOT NULL DEFAULT 0.00,
+                       `currency` varchar(20) NOT NULL DEFAULT '',
+                       `seller_name` varchar(100) NOT NULL DEFAULT '',
+                       `seller_postfix` varchar(100) NOT NULL DEFAULT '',
+                       `seller_phone` varchar(100) NOT NULL DEFAULT '',
+                       `deleted_time` timestamp NULL DEFAULT NULL,
+                       `create_time` timestamp NULL DEFAULT NULL,
+                       PRIMARY KEY (`id`),
+                       UNIQUE KEY `url` (`url`),
+                       KEY `category_id` (`category_id`),
+                       KEY `region_id` (`region_id`),
+                       KEY `create_time` (`create_time`),
+                       KEY `post_time` (`post_time`),
+                       KEY `deleted_time` (`deleted_time`),
+                       KEY `category_level_3_id` (`category_level_3_id`),
+                       KEY `category_level_2_id` (`category_level_2_id`),
+                       KEY `category_level_1_id` (`category_level_1_id`),
+                       KEY `region_level_2_id` (`region_level_2_id`),
+                       KEY `region_level_1_id` (`region_level_1_id`),
+                       KEY `region_level_3_id` (`region_level_3_id`),
+                       CONSTRAINT `ads_ibfk_10` FOREIGN KEY (`region_level_3_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
+                       CONSTRAINT `ads_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+                       CONSTRAINT `ads_ibfk_4` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
+                       CONSTRAINT `ads_ibfk_5` FOREIGN KEY (`category_level_3_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+                       CONSTRAINT `ads_ibfk_6` FOREIGN KEY (`category_level_2_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+                       CONSTRAINT `ads_ibfk_7` FOREIGN KEY (`category_level_1_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+                       CONSTRAINT `ads_ibfk_8` FOREIGN KEY (`region_level_2_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE,
+                       CONSTRAINT `ads_ibfk_9` FOREIGN KEY (`region_level_1_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+DROP TABLE IF EXISTS `ads_details`;
+CREATE TABLE `ads_details` (
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `details_field_id` int(11) unsigned DEFAULT NULL,
+                               `ad_id` int(11) unsigned DEFAULT NULL,
+                               `value` text NOT NULL DEFAULT '',
+                               PRIMARY KEY (`id`),
+                               KEY `details_field_id` (`details_field_id`),
+                               KEY `ad_id` (`ad_id`),
+                               CONSTRAINT `ads_details_ibfk_1` FOREIGN KEY (`details_field_id`) REFERENCES `details_fields` (`id`) ON DELETE CASCADE,
+                               CONSTRAINT `ads_details_ibfk_2` FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS `ads_images`;
+CREATE TABLE `ads_images` (
+                              `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                              `ad_id` int(11) unsigned DEFAULT NULL,
+                              `big` varchar(1000) NOT NULL DEFAULT '',
+                              `small` varchar(1000) NOT NULL DEFAULT '',
+                              PRIMARY KEY (`id`),
+                              KEY `ad_id` (`ad_id`),
+                              CONSTRAINT `ads_images_ibfk_1` FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+DROP TABLE IF EXISTS `complaints`;
 CREATE TABLE `complaints` (
                               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                              `email` varchar(200)  NOT NULL DEFAULT '',
-                              `message` text ,
-                              `ad_id` int(11) unsigned NULL,
+                              `email` varchar(200) NOT NULL DEFAULT '',
+                              `message` text DEFAULT NULL,
+                              `ad_id` int(11) unsigned DEFAULT NULL,
                               `response_time` timestamp NULL DEFAULT NULL,
                               `ignore_time` timestamp NULL DEFAULT NULL,
-                              `ip` varchar(20)  NOT NULL DEFAULT '',
-                              `domain` varchar(30)  NOT NULL DEFAULT '',
-                              `page` varchar(100)  NOT NULL DEFAULT '',
+                              `ip` varchar(20) NOT NULL DEFAULT '',
+                              `domain` varchar(100) NOT NULL DEFAULT '',
+                              `page` varchar(100) NOT NULL DEFAULT '',
                               `create_time` timestamp NULL DEFAULT NULL,
                               PRIMARY KEY (`id`),
                               KEY `create_time` (`create_time`),
                               KEY `ip` (`ip`),
                               KEY `domain` (`domain`),
                               KEY `page` (`page`),
-                              FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE,
-                              KEY `response_time_ignore_time` (`response_time`,`ignore_time`)
+                              KEY `ad_id` (`ad_id`),
+                              KEY `response_time_ignore_time` (`response_time`,`ignore_time`),
+                              CONSTRAINT `complaints_ibfk_1` FOREIGN KEY (`ad_id`) REFERENCES `ads` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+DROP TABLE IF EXISTS `details_fields`;
+CREATE TABLE `details_fields` (
+                                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                                  `category_id` int(11) unsigned DEFAULT NULL,
+                                  `field` varchar(100) DEFAULT NULL,
+                                  PRIMARY KEY (`id`),
+                                  UNIQUE KEY `category_field` (`category_id`,`field`),
+                                  CONSTRAINT `details_fields_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS `phinxlog`;
+CREATE TABLE `phinxlog` (
+                            `version` bigint(20) NOT NULL,
+                            `migration_name` varchar(100) DEFAULT NULL,
+                            `start_time` timestamp NULL DEFAULT NULL,
+                            `end_time` timestamp NULL DEFAULT NULL,
+                            `breakpoint` tinyint(1) NOT NULL DEFAULT 0,
+                            PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+DROP TABLE IF EXISTS `translates`;
 CREATE TABLE `translates` (
-                              `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                               `from_code` varchar(8) NOT NULL DEFAULT '',
                               `to_code` varchar(8) NOT NULL DEFAULT '',
-                              `from_text` longtext NULL,
-                              `to_text` longtext NULL,
-                              `create_time` timestamp NULL,
-                              INDEX `from_code_to_code` (`from_code`, `to_code`)
+                              `from_text` longtext DEFAULT NULL,
+                              `to_text` longtext DEFAULT NULL,
+                              `create_time` timestamp NULL DEFAULT NULL,
+                              PRIMARY KEY (`id`),
+                              KEY `from_code_to_code` (`from_code`,`to_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+INSERT INTO `phinxlog` (`version`, `migration_name`, `start_time`, `end_time`, `breakpoint`) VALUES
+                                                                                                 (20210917121732,	'IncreaseComplaintDomainLength',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
+                                                                                                 (20211216220534,	'UpdateStructure',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
+                                                                                                 (20211217120937,	'UpdateRegistrationUrl',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
+                                                                                                 (20211226011720,	'LayoutsWithObjects',	'2022-01-03 04:09:41',	'2022-01-03 04:09:41',	0),
+                                                                                                 (20220103011805,	'LayoutsWithObjectsReplaces',	'2022-01-03 21:03:04',	'2022-01-03 21:03:11',	0),
+                                                                                                 (20220103221149,	'RegionLevel3',	'2022-01-04 02:25:03',	'2022-01-04 02:29:43',	0),
+                                                                                                 (20220104043706,	'CraigslistLayoutsChanged',	'2022-01-04 09:30:03',	'2022-01-04 09:30:03',	0),
+                                                                                                 (20220104133345,	'CraigsListLayoutsReplaces',	'2022-01-04 18:25:03',	'2022-01-04 18:25:03',	0),
+                                                                                                 (20220104152745,	'DonorUrlComplete',	'2022-01-04 19:40:03',	'2022-01-04 19:40:03',	0),
+                                                                                                 (20220107120308,	'RegionsCategoriesDuplicatesRemove',	'2022-01-07 23:26:03',	'2022-01-07 23:26:09',	0);
+
+-- 2022-01-10 20:57:19

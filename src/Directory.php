@@ -10,8 +10,6 @@ class Directory
 
     public const ROUTES_SCRIPT = 'routes.php';
 
-    const VENDOR_HASPADAR_PALTO = 'vendor/haspadar/palto';
-
     private static string $rootDirectory;
 
     private static array $standardRoutes = [];
@@ -30,17 +28,12 @@ class Directory
 
     public static function getConfigsDirectory(): string
     {
-        return self::getPaltoDirectory() . '/configs';
+        return self::getRootDirectory() . '/configs';
     }
 
     public static function getLayoutsDirectory(): string
     {
         return self::getRootDirectory() . '/layouts';
-    }
-
-    public static function getPaltoDirectory(): string
-    {
-        return self::getRootDirectory() . '/' . self::VENDOR_HASPADAR_PALTO;
     }
 
     public static function getTestsDirectory(): string

@@ -13,15 +13,11 @@ class Update
             'Copy Layouts' => Cli::safeCopyLayouts(),
             'Copy CSS' => Cli::safeCopyCss(),
             'Copy Images' => Cli::safeCopyImg(),
-            'Copy Crunz' => Cli::copyCrunz(),
-            Cli::safeLinkCrunzTasks(),
             'Copy composer.json' => Cli::copyComposerJson(),
-            'Update PhpUnit' => Cli::safeLinkPhpUnit(),
-            Cli::safeLinkTests(),
             'Add Cron' => Cli::safeAddCron(),
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
-            'Download Adminer' => Cli::downloadAdminer(),
             'Update Htpasswd' => Cli::updateHtpasswd(),
+            'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory())
         ]);
     }
 

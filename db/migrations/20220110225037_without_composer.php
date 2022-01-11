@@ -31,7 +31,7 @@ final class WithoutComposer extends AbstractMigration
             \Palto\Cli::runCommands([
                 "cd $wwwDirectory && git clone https://github.com/haspadar/palto.git $projectNewName && cd $projectNewName && git checkout without_composer && composer update",
                 "cp -R $projectOldDirectory/backups/* $projectNewDirectory/backups",
-                "cp -R $projectOldDirectory/layouts/* $projectNewDirectory/layouts",
+                "cp -R $projectOldDirectory/layouts $projectNewDirectory",
                 "cp -R $projectOldDirectory/logs/* $projectNewDirectory/logs",
                 "cp -R $projectOldDirectory/public/css $projectNewDirectory/public/",
                 "cp -R $projectOldDirectory/public/img $projectNewDirectory/public/",

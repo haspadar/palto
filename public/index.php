@@ -9,3 +9,4 @@ require_once '../vendor/autoload.php';
 $url = new Url();
 $router = Routers::create($url);
 $dispatcher = new Dispatcher($router);
+$dispatcher->run();

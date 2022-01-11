@@ -11,6 +11,7 @@
 /.phpunit.result.cache
 /.htpasswd
 /public/css/
+/public/*.xml
 /public/*.html
 /public/img/
 /public/sitemaps/

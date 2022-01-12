@@ -18,8 +18,7 @@ final class LayoutsAssetsRestore extends AbstractMigration
      */
     public function change(): void
     {
-        $rootDirectory = dirname(Palto\Directory::getRootDirectory());
-        $projectNewTmpName = $rootDirectory . '/' . \Palto\Directory::getProjectName() . '_with_composer';
+        $projectNewTmpName = '/var/www/' . \Palto\Directory::getProjectName() . '_with_composer';
         $projectDirectory = Palto\Directory::getRootDirectory();
         \Palto\Cli::runCommands([
             "cp -r $projectNewTmpName/layouts $projectDirectory",

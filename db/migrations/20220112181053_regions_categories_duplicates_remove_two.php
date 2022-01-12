@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class RegionsCategoriesDuplicatesRemove2 extends AbstractMigration
+final class RegionsCategoriesDuplicatesRemoveTwo extends AbstractMigration
 {
     public function change(): void
     {

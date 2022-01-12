@@ -58,6 +58,11 @@ class Categories
             $category['tree_id'] = $parent->getTreeId();
         }
 
+        $found = self::getByUrl($category['url'], $category['level']);
+        if ($found && $found->getId()) {
+            return $found;
+        }
+
         $id = Model\Categories::add($category);
 
         return new Category(Model\Categories::getById($id));

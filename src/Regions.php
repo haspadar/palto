@@ -3,12 +3,13 @@
 namespace Palto;
 
 use Cocur\Slugify\Slugify;
+use DateTime;
 
 class Regions
 {
     public static function getWithAdsRegions(?Region $parentRegion, $limit): array
     {
-        $regions = \Palto\Model\Regions::getWithAdsRegions($parentRegion, $limit);
+        $regions = Model\Regions::getWithAdsRegions($parentRegion, $limit);
 
         return array_map(fn($region) => new Region($region), $regions);
     }
@@ -17,7 +18,7 @@ class Regions
     public static function getRegionsByIds(array $ids): array
     {
         if ($ids) {
-            $regions = \Palto\Model\Regions::getRegionsByIds($ids);
+            $regions = Model\Regions::getRegionsByIds($ids);
 
             return $regions;
         }
@@ -27,7 +28,7 @@ class Regions
 
     public static function getById(int $regionId): Region
     {
-        $region = \Palto\Model\Regions::getById($regionId);
+        $region = Model\Regions::getById($regionId);
 
         return new Region($region);
     }
@@ -35,13 +36,13 @@ class Regions
     public static function getByUrl(string $regionUrl): Region
     {
         return $regionUrl
-            ? new Region(\Palto\Model\Regions::getByUrl($regionUrl))
+            ? new Region(Model\Regions::getByUrl($regionUrl))
             : new Region([]);
     }
 
     public static function safeAdd(array $region): Region
     {
-        $region['create_time'] = (new \DateTime())->format('Y-m-d H:i:s');
+        $region['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         if (!isset($region['parent_id']) || !$region['parent_id']) {
             $region['level'] = 1;
             $region['tree_id'] = self::getMaxTreeId() + 1;
@@ -51,9 +52,14 @@ class Regions
             $region['tree_id'] = $parent->getTreeId();
         }
 
-        $id = \Palto\Model\Regions::add($region);
+        $found = self::getByUrl($region['url']);
+        if ($found && $found->getId()) {
+            return $found;
+        }
 
-        return new Region(\Palto\Model\Regions::getById($id));
+        $id = Model\Regions::add($region);
+
+        return new Region(Model\Regions::getById($id));
     }
 
     public static function generateUrl(string $title): string
@@ -61,7 +67,7 @@ class Regions
         $urlPattern = (new Slugify())->slugify($title);
         $url = $urlPattern;
         $counter = 0;
-        while (\Palto\Model\Regions::getByUrl($url)) {
+        while (Model\Regions::getByUrl($url)) {
             $url = $urlPattern . '-' . (++$counter);
         }
 
@@ -70,7 +76,7 @@ class Regions
 
     public static function getMaxTreeId(): int
     {
-        return \Palto\Model\Regions::getMaxTreeId();
+        return Model\Regions::getMaxTreeId();
     }
 
     private static function groupByField(array $unGrouped, string $field): array
@@ -87,10 +93,10 @@ class Regions
     {
         $childrenIds = [];
         $nextLevelRegionsIds = [$region['id']];
-        while ($nextLevelRegionsIds = \Palto\Model\Regions::getChildRegionsIds($nextLevelRegionsIds)) {
+        while ($nextLevelRegionsIds = Model\Regions::getChildRegionsIds($nextLevelRegionsIds)) {
             $childrenIds = array_merge($nextLevelRegionsIds, $childrenIds);
         }
 
-        return $childrenIds ? \Palto\Model\Regions::getRegionsByIds($childrenIds) : [];
+        return $childrenIds ? Model\Regions::getRegionsByIds($childrenIds) : [];
     }
 }

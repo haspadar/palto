@@ -2,7 +2,7 @@
 /vendor/
 /.idea/
 /logs/*
-/layouts/*
+/layouts/
 /parse_ads.php
 /parse_categories.php
 /backups/*

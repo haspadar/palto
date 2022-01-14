@@ -1313,7 +1313,7 @@ class Palto
             $this->env['DB_PASSWORD'],
             $this->env['DB_NAME'],
             $this->env['DB_PORT'] ?? 3306,
-            'utf8'
+            'utf8mb4'
         );
         if ($this->isDebug() && !$this->isCli()) {
             $this->getDb()->debugMode();

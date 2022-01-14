@@ -76,7 +76,15 @@ class Ads
             $ad['text'] = Filter::get($ad['text']);
             $ad['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
             $ad = self::addLevels($ad);
-            $adId = Model\Ads::add($ad);
+            try {
+                $adId = Model\Ads::add($ad);
+            } catch (\Exception $e) {
+                Logger::error(var_export($ad, true));
+                Logger::error($e->getTraceAsString());
+
+                return 0;
+            }
+
             foreach ($images as $image) {
                 AdsImages::add([
                     'small' => $image['small'],

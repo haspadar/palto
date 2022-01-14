@@ -10,11 +10,19 @@ abstract class AdsParser
 {
     protected const IS_PROXY_REQUIRED = true;
 
+    protected const IS_GLOBAL_DISABLED = true;
+
     abstract protected function findAds(Crawler $categoryDocument);
     abstract protected function findAdUrl(Crawler $resultRow, Category $category): ?Url;
 
     public function run(string $file)
     {
+        if (self::IS_GLOBAL_DISABLED) {
+            Logger::error('Is global disabled');
+
+            exit;
+        }
+
         if (static::IS_PROXY_REQUIRED && !Config::get('ROTATOR_URL')) {
             Logger::error('Env option ROTATOR_URL is empty');
 

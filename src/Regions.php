@@ -52,8 +52,8 @@ class Regions
             $region['tree_id'] = $parent->getTreeId();
         }
 
-        $regionUrl = self::generateUrl($region['title']);
-        $found = self::getByUrl($regionUrl);
+        $region['url'] = self::generateUrl($region['title']);
+        $found = self::getByUrl($region['url']);
         if ($found->getId()) {
             return $found;
         }

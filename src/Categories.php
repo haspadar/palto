@@ -58,8 +58,8 @@ class Categories
             $category['tree_id'] = $parent->getTreeId();
         }
 
-        $categoryUrl = self::generateUrl($category['title'], $category['level']);
-        $found = self::getByUrl($categoryUrl, $category['level']);
+        $category['url'] = self::generateUrl($category['title'], $category['level']);
+        $found = self::getByUrl($category['url'], $category['level']);
         if ($found && $found->getId()) {
             return $found;
         }

@@ -10,7 +10,7 @@ abstract class AdsParser
 {
     protected const IS_PROXY_REQUIRED = true;
 
-    protected const IS_CRON_DISABLED = true;
+    protected const IS_CRON_DISABLED = false;
 
     abstract protected function findAds(Crawler $categoryDocument);
     abstract protected function findAdUrl(Crawler $resultRow, Category $category): ?Url;

@@ -41,6 +41,19 @@ class Url
         return $this->path;
     }
 
+//    public static function normalizeRelative(string $url): string
+//    {
+//        if (mb_substr($url, 0, 1) != '/') {
+//            $url = '/' . $url;
+//        }
+//
+//        if (mb_substr($url, -1) == '/') {
+//            $url = mb_substr($url, 0, -1);
+//        }
+//
+//        return $url;
+//    }
+
     public function getRegionUrl(): string
     {
         $parts = self::getUrlParts($this->path);
@@ -115,18 +128,6 @@ class Url
         return 1;
     }
 
-    public function withoutPageNumber(string $path): string
-    {
-        if ($this->hasUrlPageNumber()) {
-            $parts = $this->getUrlParts($path);
-            array_pop($parts);
-
-            return implode('/', array_filter($parts));
-        }
-
-        return $path;
-    }
-
     private function getParts(): array
     {
         return array_values(array_filter(explode('/', $this->path)));
@@ -161,6 +162,18 @@ class Url
 
         if ($this->hasUrlPageNumber()) {
             $path = $this->withoutPageNumber($path);
+        }
+
+        return $path;
+    }
+
+    private function withoutPageNumber(string $path): string
+    {
+        if ($this->hasUrlPageNumber()) {
+            $parts = $this->getUrlParts($path);
+            array_pop($parts);
+
+            return '/' . implode('/', array_filter($parts));
         }
 
         return $path;

@@ -86,26 +86,30 @@ class Ads
             }
 
             foreach ($images as $image) {
-                AdsImages::add([
-                    'small' => $image['small'],
-                    'big' => $image['big'],
-                    'ad_id' => $adId,
-                ]);
+                if ($image['small'] || $image['big']) {
+                    AdsImages::add([
+                        'small' => $image['small'],
+                        'big' => $image['big'],
+                        'ad_id' => $adId,
+                    ]);
+                }
             }
 
             foreach ($details as $detailField => $detailValue) {
-                $fieldId = DetailsFields::getDetailsFieldId($ad['category_id'], $detailField);
-                try {
-                    AdsDetails::add([
-                        'details_field_id' => $fieldId,
-                        'ad_id' => $adId,
-                        'value' => Filter::get($detailValue)
-                    ]);
-                } catch (\Exception $e) {
-                    Logger::error(var_export($ad, true));
-                    Logger::error($e->getTraceAsString());
+                if ($detailField && $detailValue) {
+                    $fieldId = DetailsFields::getDetailsFieldId($ad['category_id'], $detailField);
+                    try {
+                        AdsDetails::add([
+                            'details_field_id' => $fieldId,
+                            'ad_id' => $adId,
+                            'value' => Filter::get($detailValue)
+                        ]);
+                    } catch (\Exception $e) {
+                        Logger::error(var_export($ad, true));
+                        Logger::error($e->getTraceAsString());
 
-                    return $adId;
+                        return $adId;
+                    }
                 }
             }
 

@@ -20,7 +20,7 @@ class Model
                 Config::get('DB_PASSWORD'),
                 Config::get('DB_NAME'),
                 Config::get('DB_PORT') ?? 3306,
-                'utf8'
+                'utf8mb4'
             );
             if (Config::isDebug() && !Cli::isCli()) {
                 self::$db->debugMode();

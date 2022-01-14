@@ -1,7 +1,6 @@
 <?php
 
 use Palto\Moderation;
-use Palto\Palto;
 
 require_once '../../vendor/autoload.php';
 \Palto\Auth::check();

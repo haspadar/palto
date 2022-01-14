@@ -1,6 +1,5 @@
 <?php
 
-use Palto\Palto;
 use Palto\Status;
 
 require_once '../vendor/autoload.php';

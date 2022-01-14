@@ -53,7 +53,7 @@ class Regions
         }
 
         $found = self::getByUrl($region['url']);
-        if ($found && $found->getId()) {
+        if ($found->getId()) {
             return $found;
         }
 

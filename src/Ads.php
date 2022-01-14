@@ -95,11 +95,18 @@ class Ads
 
             foreach ($details as $detailField => $detailValue) {
                 $fieldId = DetailsFields::getDetailsFieldId($ad['category_id'], $detailField);
-                AdsDetails::add([
-                    'details_field_id' => $fieldId,
-                    'ad_id' => $adId,
-                    'value' => $detailValue
-                ]);
+                try {
+                    AdsDetails::add([
+                        'details_field_id' => $fieldId,
+                        'ad_id' => $adId,
+                        'value' => Filter::get($detailValue)
+                    ]);
+                } catch (\Exception $e) {
+                    Logger::error(var_export($ad, true));
+                    Logger::error($e->getTraceAsString());
+
+                    return $adId;
+                }
             }
 
             return $adId;

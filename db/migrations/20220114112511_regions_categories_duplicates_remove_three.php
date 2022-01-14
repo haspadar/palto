@@ -33,12 +33,6 @@ final class RegionsCategoriesDuplicatesRemoveThree extends AbstractMigration
         $categoriesDuplicates = $this->fetchAll("select * from categories where url REGEXP '[[:digit:]]$'");
         echo 'Found ' . count($categoriesDuplicates) . ' $categoriesDuplicates' . PHP_EOL;
         $categoryIds = $this->replaceDuplicates($categoriesDuplicates, $categoriesOriginals, 'category');
-        if ($categoryIds) {
-            echo 'Try remove empty categories' . PHP_EOL;
-            foreach (array_chunk($categoryIds, 100) as $categoryChunk) {
-                $this->execute('DELETE from categories where id IN(' . implode(',', $categoryChunk) . ')');
-            }
-        }
     }
 
     private function replaceDuplicates(array $duplicates, array $originals, string $singleName): array

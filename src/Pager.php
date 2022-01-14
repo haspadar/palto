@@ -37,8 +37,7 @@ class Pager
         $withoutPageNumberPath = $url->getPath();
 
         return $withoutPageNumberPath
-            . '/'
-            . $pageNumber
+            . ($pageNumber > 1 ? '/' . $pageNumber : '')
             . ($this->dispatcher->getRouter()->getQueryParameters()
                 ? '?' . http_build_query($this->dispatcher->getRouter()->getQueryParameters())
                 : ''

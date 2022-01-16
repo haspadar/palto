@@ -1,7 +1,6 @@
 <?php
 namespace Palto\Layout;
 
-use Palto\Debug;
 use Palto\Directory;
 use Palto\Dispatcher\Dispatcher;
 
@@ -43,7 +42,11 @@ abstract class Layout
     {
         $this->partialVariables = $variables;
 
-        require Directory::getLayoutsDirectory() . '/client/partials/' . $file;
+        require Directory::getLayoutsDirectory()
+            . '/'
+            . $this->getDispatcher()->getModuleName()
+            . '/partials/'
+            . $file;
     }
 
     public function getPartialVariable(string $name)

@@ -3,7 +3,7 @@
 use Palto\Auth;
 use Palto\Config;
 use Palto\IP;
-use Palto\Moderation;
+use Palto\Complaints;
 
 require_once '../vendor/autoload.php';
 if (Config::get('AUTH') && !IP::isLocal()) {
@@ -19,10 +19,10 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $response = 'Message is empty';
 } elseif (!$adId) {
     $response = 'Ad id is empty';
-} elseif (!Moderation::getSmtpEmail()) {
+} elseif (!Complaints::getSmtpEmail()) {
     $response = 'Smtp email is empty';
 } else {
-    Moderation::addComplaint(
+    Complaints::addComplaint(
         [
             'email' => $email,
             'message' => $message,

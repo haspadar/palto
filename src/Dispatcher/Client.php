@@ -89,11 +89,6 @@ class Client extends Dispatcher
         ]);
     }
 
-    private function redirect(string $categoryUrl)
-    {
-        header("Location: " . $categoryUrl,true,301);
-    }
-
     private function checkPageExists()
     {
         if ($this->getRouter() instanceof Router\Ad && !$this->ad) {
@@ -144,14 +139,19 @@ class Client extends Dispatcher
             $layoutName = Directory::LAYOUT_404;
         }
 
-        return 'client/' . $layoutName;
+        return $this->getModuleName() . '/' . $layoutName;
     }
 
     private function getStaticLayout(Url $url): string
     {
         $path = $url->getPath();
         if (isset($this->staticLayouts[$path])
-            && file_exists(Directory::getLayoutsDirectory() . '/client/static/' . $this->staticLayouts[$path])
+            && file_exists(Directory::getLayoutsDirectory()
+                . '/'
+                . $this->getModuleName()
+                . '/static/'
+                . $this->staticLayouts[$path]
+            )
         ) {
             return $this->staticLayouts[$path];
         }

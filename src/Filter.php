@@ -15,6 +15,24 @@ class Filter
         return $short;
     }
 
+    public static function getIntArray(array $values): array
+    {
+        foreach ($values as &$value) {
+            $value = intval($value);
+        }
+
+        return array_filter($values);
+    }
+
+    public static function getArray(array $values): array
+    {
+        foreach ($values as &$value) {
+            $value = self::get($value);
+        }
+
+        return $values;
+    }
+
     public static function get(string $value)
     {
         return trim(strip_tags(htmlentities(self::removeEmoji($value))));

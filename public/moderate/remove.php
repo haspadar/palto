@@ -1,6 +1,6 @@
 <?php
 
-use Palto\Moderation;
+use Palto\Complaints;
 use Palto\Palto;
 
 require_once '../../vendor/autoload.php';
@@ -8,16 +8,14 @@ require_once '../../vendor/autoload.php';
 
 if (is_numeric($_POST['id'])) {
     $id = intval($_POST['id']);
-    Moderation::sendRemovedComplaintMail($id);
-    Moderation::removeComplaintUser($id);
+    Complaints::removeAd($id);
     echo true;
 } else {
     $ids = explode(',', $_POST['id']);
     $lastResponse = true;
     foreach ($ids as $id) {
         $id = intval($id);
-        Moderation::sendRemovedComplaintMail($id);
-        Moderation::removeComplaintUser($id);
+        Complaints::removeAd($id);
     }
 
     echo true;

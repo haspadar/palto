@@ -7,17 +7,21 @@ use Palto\Layouts;
 
 class Karman extends Dispatcher
 {
-    private const DEFAULT_CONTROLLER_PATH = 'summary';
+    private const INDEX_ACTION_PATH = 'index';
 
-    private const DEFAULT_ACTION_PATH = 'index';
+    private const GET_ACTION_PATH = 'get';
 
     public function run()
     {
+        ini_set('display_errors', true);
+        ini_set('display_startup_errors', true);
         Auth::check();
-        if ($this->isAjax()) {
-            $controllerName = $this->getControllerName();
+        if (!$this->getControllerName()) {
+            $this->redirect('/' . $this->getModuleName() . '/complaints');
+        } elseif ($this->getRouter()->isAjax()) {
+            $controllerName = $this->createCamelCase($this->getControllerName());
             $controller = new ('\Palto\Controller\\' . $controllerName)($this);
-            $actionName = $this->getActionName();
+            $actionName = lcfirst($this->createCamelCase($this->getActionName()));
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode($controller->{$actionName}());
         } else {
@@ -26,16 +30,11 @@ class Karman extends Dispatcher
         }
     }
 
-    private function getControllerNamePath(): string
+    private function getControllerName(): string
     {
         $parts = $this->getRouter()->getUrl()->getParts();
 
-        return strtolower($parts[1] ?? self::DEFAULT_CONTROLLER_PATH);
-    }
-
-    private function getControllerName(): string
-    {
-        return $this->createCamelCase($this->getControllerNamePath());
+        return strtolower($parts[1] ?? '');
     }
 
     private function createCamelCase(string $name): string
@@ -45,25 +44,23 @@ class Karman extends Dispatcher
         return implode('', array_map(fn($part) => ucfirst($part), $parts));
     }
 
-    private function getActionNamePath(): string
+    private function getActionName(): string
     {
         $parts = $this->getRouter()->getUrl()->getParts();
 
-        return strtolower($parts[2] ?? self::DEFAULT_ACTION_PATH);
-    }
-
-    private function getActionName(): string
-    {
-        return lcfirst($this->createCamelCase($this->getActionNamePath()));
+        return strtolower($parts[2] ?? '');
     }
 
     private function getLayoutName(): string
     {
-        return 'karman/' . $this->getControllerNamePath() . '/' . $this->getActionNamePath() . '.php';
-    }
+        $actionNamePath = $this->getActionName();
+        $hasIdQueryParameter = $this->getRouter()->getQueryParameter('id');
 
-    private function isAjax(): bool
-    {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        return $this->getModuleName()
+            . '/'
+            . $this->getControllerName()
+            . '/'
+            . ($actionNamePath ? $actionNamePath : ($hasIdQueryParameter ? 'get' : 'index'))
+            . '.php';
     }
 }

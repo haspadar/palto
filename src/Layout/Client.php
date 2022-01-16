@@ -44,7 +44,7 @@ class Client extends Layout
         return $this->dispatcher->getCategory();
     }
 
-    public function getBreadcrumbUrls()
+    public function getBreadcrumbUrls(): array
     {
         $defaultRegion = new Region([]);
         $urls = [[

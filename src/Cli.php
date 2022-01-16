@@ -150,10 +150,21 @@ class Cli
                 $projectName
             );
 
-            return "echo '$nginxDomain' > /etc/nginx/sites-available/$projectName";
+            $filename = self::getNginxDomainFilename();
+
+            return "echo '$nginxDomain' > $filename";
         }
 
         return self::ignoreMac();
+    }
+
+    public static function getNginxDomainFilename(): string
+    {
+        if (self::isLinux()) {
+            return '/etc/nginx/sites-available/' . Directory::getProjectName();
+        }
+
+        return '';
     }
 
     public static function updateNginxPhpFpm(): string

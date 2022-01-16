@@ -16,3 +16,5 @@
 /public/img/
 /public/sitemaps/
 /tasks/locks/
+/.DS_Store
+/public/.DS_Store

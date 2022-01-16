@@ -17,26 +17,26 @@ $this->partial('header.inc', [
 ?>
 
     <dl>
-        <dt>Сообщение</dt>
+        <dt>Сообщение:</dt>
         <dd><?=$complaint['message']?></dd>
-        <dt>Объяление</dt>
+        <dt>Объяление:</dt>
         <dd>
             <a href="<?=$ad->generateUrl()?>" target="_blank">
                 <?=\Palto\Filter::shortText($ad->getTitle(), 100)?>
             </a>
         </dd>
-        <dt>Почта</dt>
+        <dt>Почта:</dt>
         <dd>
             <span id="email"><?=$complaint['email']?></span>
             <button class="btn btn-outline-secondary btn-sm copy" data-text="<?=$complaint['email']?>">Скопировать</button>
         </dd>
-        <dt>Время</dt>
+        <dt>Время:</dt>
         <dd>
             <?php $createTime = new DateTime($complaint['create_time'])?>
             <?=$createTime->format('d')?> <?=\Palto\Time::russianMonth($createTime->format('m'))?>
             <small class="text-muted"><?=$createTime->format('H:i')?></small>
         </dd>
-        <dt>IP</dt>
+        <dt>IP:</dt>
         <dd><?=$complaint['ip']?></dd>
     </dl>
 

@@ -23,26 +23,18 @@
 
 <div class="container-fluid">
     <div class="row">
-        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
             <div class="navbar-brand col-md-3 col-lg-2 me-0 px-3">Karman</div>
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">
-                            <span data-feather="home"></span>
+                        <a class="nav-link <?php if ($this->getUrl() == '/karman/status') :?>fw-bold<?php endif;?>" aria-current="page" href="/karman/status">
                             Статус
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file"></span>
+                        <a class="nav-link <?php if ($this->getUrl() == '/karman/complaints') :?>fw-bold<?php endif;?>" href="/karman/complaints">
                             Жалобы
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="shopping-cart"></span>
-                            Кэш
                         </a>
                     </li>
                 </ul>
@@ -61,6 +53,7 @@
                         <?php endforeach;?>
                     </ol>
                 </nav>
+
             <?php endif;?>
 
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">

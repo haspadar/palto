@@ -3,6 +3,7 @@ namespace Palto\Layout;
 
 use Palto\Directory;
 use Palto\Dispatcher\Dispatcher;
+use Palto\Url;
 
 abstract class Layout
 {
@@ -36,6 +37,11 @@ abstract class Layout
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getUrl(): Url
+    {
+        return $this->getDispatcher()->getRouter()->getUrl();
     }
 
     public function partial(string $file, array $variables = [])

@@ -9,7 +9,7 @@ $this->partial('header.inc', [
 ?>
 
 <table class="table table-striped">
-    <thead class="thead-dark">
+    <thead>
     <tr>
         <th>Сообщение</th>
         <th>Дата</th>

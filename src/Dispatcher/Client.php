@@ -144,7 +144,7 @@ class Client extends Dispatcher
             $layoutName = Directory::LAYOUT_404;
         }
 
-        return '/client/' . $layoutName;
+        return 'client/' . $layoutName;
     }
 
     private function getStaticLayout(Url $url): string

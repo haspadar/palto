@@ -20,7 +20,7 @@ abstract class Layout
 
     public function load(string $name)
     {
-        require_once Directory::getLayoutsDirectory() . $name;
+        require_once Directory::getLayoutsDirectory() . '/' . $name;
     }
 
     /**

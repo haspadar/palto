@@ -18,8 +18,6 @@ class Directory
 
     private static string $rootDirectory;
 
-    private static array $staticLayouts = [];
-
     public static function setRootDirectory(string $rootDirectory)
     {
         self::$rootDirectory = $rootDirectory;

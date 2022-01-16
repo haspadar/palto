@@ -81,7 +81,7 @@ class Url
 
     public function isKarmanPage(): bool
     {
-        return $this->getParts() == self::KARMAN;
+        return ($this->getParts()[0] ?? '') == self::KARMAN;
     }
 
     public function isDefaultRegionPage(): bool
@@ -144,7 +144,7 @@ class Url
         return $path;
     }
 
-    private function getParts(): array
+    public function getParts(): array
     {
         return array_values(array_filter(explode('/', $this->path)));
     }

@@ -21,7 +21,7 @@ $this->partial('header.inc', [
         <dd><?=$complaint['message']?></dd>
         <dt>Объяление:</dt>
         <dd>
-            <a href="<?=$ad->generateUrl()?>" target="_blank">
+            <a href="<?=$ad->generateUrl()?>" target="_blank" class="text-decoration-none">
                 <?=\Palto\Filter::shortText($ad->getTitle(), 100)?>
             </a>
         </dd>

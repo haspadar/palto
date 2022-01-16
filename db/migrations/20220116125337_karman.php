@@ -33,7 +33,6 @@ final class Karman extends AbstractMigration
             'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/*-list.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
             'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/index.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
             'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/registration.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
-//            'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/404.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
         ]);
     }
 }

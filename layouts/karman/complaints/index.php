@@ -21,7 +21,7 @@ $this->partial('header.inc', [
     <?php foreach ($actualComplaints as $actualComplaint) :?>
         <tr>
             <td>
-                <a href="/karman/complaints?id=<?=$actualComplaint['id']?>">
+                <a href="/karman/complaints?id=<?=$actualComplaint['id']?>" class="text-decoration-none">
                     <?php $message = $actualComplaint['message']?>
                     <?=\Palto\Filter::shortText($message, 50)?>
                 </a>

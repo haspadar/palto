@@ -11,22 +11,22 @@ $this->partial('header.inc', [
 <dl>
     <dt>Сайт включен</dt>
     <dd>
-        <?php if (\Palto\Config::get('AUTH') == 0) :?>
+        <?php if (\Palto\Status::isSiteEnabled()) :?>
             <span class="badge rounded-pill bg-success">Да</span>
-            <a href="javascript:void(0);" class="small">Выключить</a>
+            <a href="javascript:void(0);" class="small disable-site">Выключить</a>
         <?php else :?>
             <span class="badge rounded-pill bg-danger">Нет</span>
-            <a href="javascript:void(0);" class="small">Включить</a>
+            <a href="javascript:void(0);" class="small enable-site">Включить</a>
         <?php endif;?>
     </dd>
     <dt>Кеш включен</dt>
     <dd>
-        <?php if (\Palto\Config::isCacheEnabled()) :?>
+        <?php if (\Palto\Status::isCacheEnabled()) :?>
             <span class="badge rounded-pill bg-success">Да</span>
-            <a href="javascript:void(0);" class="small">Выключить</a>
+            <a href="javascript:void(0);" class="small disable-cache">Выключить</a>
         <?php else :?>
             <span class="badge rounded-pill bg-danger">Нет</span>
-            <a href="javascript:void(0);" class="small">Включить</a>
+            <a href="javascript:void(0);" class="small enable-cache">Включить</a>
         <?php endif;?>
     </dd>
     <dt>Занятое место на диске</dt>

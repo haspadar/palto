@@ -15,18 +15,6 @@ class Config
         return self::getEnv()[$name] ?? '';
     }
 
-    public static function isCacheEnabled(): bool
-    {
-        $name = Cli::getNginxDomainFilename();
-        if ($name) {
-            $nginxConfig = file_get_contents($name);
-
-            return mb_strpos($nginxConfig, '#set $no_cache 1;#disable cache') === false;
-        }
-
-        return false;
-    }
-
     public static function withErrors(): bool
     {
         return ($_GET['errors'] ?? 0);
@@ -61,5 +49,14 @@ class Config
         }
 
         return self::$env;
+    }
+
+    public static function getNginxDomainFilename(): string
+    {
+        if (Cli::isLinux()) {
+            return '/etc/nginx/sites-available/' . Directory::getProjectName();
+        }
+
+        return '';
     }
 }

@@ -27,6 +27,54 @@ $(function () {
         });
     });
 
+    $('.disable-site').on('click', function () {
+        $.ajax({
+            url: '/karman/status/disable-site',
+            dataType: "json",
+            type: 'PUT',
+            data: {},
+            success: function () {
+                document.location.reload();
+            }
+        });
+    });
+
+    $('.enable-site').on('click', function () {
+        $.ajax({
+            url: '/karman/status/enable-site',
+            dataType: "json",
+            type: 'PUT',
+            data: {},
+            success: function () {
+                document.location.reload();
+            }
+        });
+    });
+
+    $('.disable-cache').on('click', function () {
+        $.ajax({
+            url: '/karman/status/disable-cache',
+            dataType: "json",
+            type: 'PUT',
+            data: {},
+            success: function () {
+                document.location.reload();
+            }
+        });
+    });
+
+    $('.enable-cache').on('click', function () {
+        $.ajax({
+            url: '/karman/status/enable-cache',
+            dataType: "json",
+            type: 'PUT',
+            data: {},
+            success: function () {
+                document.location.reload();
+            }
+        });
+    });
+
     function getParam(name) {
         if (!name) {
             return '';

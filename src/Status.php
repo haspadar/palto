@@ -3,6 +3,8 @@ namespace Palto;
 
 class Status
 {
+    const DISABLE_CACHE_ROW = 'set $no_cache 1;#disable cache';
+    const ENABLE_CACHE_ROW = '#set $no_cache 1;#disable cache';
 
     public static function getMySqlDirectory(\MeekroDB $db): string
     {
@@ -54,5 +56,56 @@ class Status
         }
 
         return 0;
+    }
+
+    public static function disableCache()
+    {
+        $name = Config::getNginxDomainFilename();
+        if ($name) {
+            $content = file_get_contents($name);
+            $replaced = str_replace(self::ENABLE_CACHE_ROW, self::DISABLE_CACHE_ROW, $content);
+            file_put_contents($name, $replaced);
+        }
+    }
+
+    public static function isSiteEnabled(): bool
+    {
+        return \Palto\Config::get('AUTH') == 0;
+    }
+
+    public static function isCacheEnabled(): bool
+    {
+        $name = Config::getNginxDomainFilename();
+        if ($name) {
+            $nginxConfig = file_get_contents($name);
+
+            return mb_strpos($nginxConfig, self::ENABLE_CACHE_ROW) !== false;
+        }
+
+        return false;
+    }
+
+    public static function enableCache()
+    {
+        $name = Config::getNginxDomainFilename();
+        if ($name) {
+            $content = file_get_contents($name);
+            $replaced = str_replace(self::DISABLE_CACHE_ROW, self::ENABLE_CACHE_ROW, $content);
+            file_put_contents($name, $replaced);
+        }
+    }
+
+    public static function enableSite()
+    {
+        $content = file_get_contents(Directory::getRootDirectory() . '/.env');
+        $replaced = str_replace('AUTH=1', 'AUTH=0', $content);
+        file_put_contents(Directory::getRootDirectory() . '/.env', $replaced);
+    }
+
+    public static function disableSite()
+    {
+        $content = file_get_contents(Directory::getRootDirectory() . '/.env');
+        $replaced = str_replace('AUTH=0', 'AUTH=1', $content);
+        file_put_contents(Directory::getRootDirectory() . '/.env', $replaced);
     }
 }

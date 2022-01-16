@@ -1,20 +1,24 @@
 <?php
-namespace Palto;
+namespace Palto\Dispatcher;
 
+use Palto\Ad;
+use Palto\Auth;
+use Palto\Category;
+use Palto\Cli;
+use Palto\Config;
+use Palto\ExecutionTime;
+use Palto\Flash;
+use Palto\IP;
+use Palto\Layouts;
 use Palto\Model\Regions;
+use Palto\Region;
 use Palto\Router;
 
-class Dispatcher
+class Client extends Dispatcher
 {
-    private Router\Router $router;
     private ?Region $region = null;
     private ?Category $category = null;
     private ?Ad $ad = null;
-
-    public function __construct(Router\Router $router)
-    {
-        $this->router = $router;
-    }
 
     public function run()
     {
@@ -44,20 +48,13 @@ class Dispatcher
         }
 
         $this->checkPageExists();
-        $layout = new Layout($this->getRouter()->getLayoutName(), $this);
+        $layout = Layouts::create($this);
         $layout->load();
         $executionTime->end();
         if (Config::isDebug() && !Cli::isCli()) {
             $this->showInfo($executionTime);
         }
     }
-//
-//    public function getProjectName(): string
-//    {
-//        $pathParts = explode('/', Directory::getRootDirectory());
-//
-//        return $pathParts[count($pathParts) - 1];
-//    }
 
     /**
      * @return Region|null
@@ -82,51 +79,6 @@ class Dispatcher
     {
         return $this->ad;
     }
-//
-//
-//    private function initRegion()
-//    {
-//        if ($this->getRouter()->getRegionUrl() == $this->defaultRegionUrl
-//            || !$this->getRouter()->getRegionUrl()
-//        ) {
-//            $this->region = $this->getDefaultRegion();
-//        } else {
-//            $this->region = $this->db->queryFirstRow('SELECT * FROM regions WHERE url = %s', $this->getRouter()->getRegionUrl());
-//            if ($this->region) {
-//                $this->region['parents'] = $this->getParentsRegions($this->region);
-//            } else {
-//                Flash::add('Region not found.');
-//                $this->redirect($this->generateRegionUrl($this->getDefaultRegion()));
-//                $this->getRouter()->setNotFoundLayout();
-//            }
-//        }
-//    }
-//
-//    private function initCategory()
-//    {
-//        if ($this->getRouter()->getCategoryUrl()) {
-//            $this->category = $this->getUrlCategory($this->getRouter()->getCategoryUrl(), $this->getRouter()->getCategoryLevel());
-//            if ($this->category) {
-//                $this->category['parents'] = $this->getParentCategories($this->category);
-//                $this->category['titles'] = array_filter(
-//                    array_merge(
-//                        [$this->getCurrentCategory()['title']],
-//                        array_column(
-//                            array_reverse($this->category['parents']),
-//                            'title'
-//                        ),
-//                    )
-//                );
-//                $this->category['children'] = $this->getChildCategories($this->category);
-//            } elseif ($this->region) {
-//                Flash::add('Category not found.');
-//                $this->redirect($this->generateRegionUrl($this->region));
-//                $this->getRouter()->setNotFoundLayout();
-//            } else {
-//                $this->getRouter()->setNotFoundLayout();
-//            }
-//        }
-//    }
 
     private function showInfo(ExecutionTime $executionTime)
     {
@@ -143,29 +95,6 @@ class Dispatcher
             'ad' => $this->ad,
             'execution_time' => $executionTime->get()
         ]);
-    }
-//
-//    private function initAd()
-//    {
-//        if ($this->getRouter()->getAdId()) {
-//            $this->ad = $this->getAd($this->getRouter()->getAdId());
-//            if (!$this->ad) {
-//                Flash::add('The ad was deleted.');
-//                if ($this->category) {
-//                    $this->redirect($this->generateCategoryUrl($this->category));
-//                }
-//
-//                $this->getRouter()->setNotFoundLayout();
-//            }
-//        }
-//    }
-
-    /**
-     * @return Router\Router
-     */
-    public function getRouter(): Router\Router
-    {
-        return $this->router;
     }
 
     private function redirect(string $categoryUrl)

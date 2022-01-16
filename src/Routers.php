@@ -4,6 +4,7 @@ namespace Palto;
 
 use Palto\Router\Ad;
 use Palto\Router\Category;
+use Palto\Router\Karman;
 use Palto\Router\Region;
 use Palto\Router\Router;
 use Palto\Router\Standard;
@@ -12,8 +13,9 @@ class Routers
 {
     public static function create(Url $url): Router
     {
-        $standardRouteLayout = Directory::getStandardRouteLayout($url->getPath());
-        if ($standardRouteLayout) {
+        if ($url->isKarmanPage()) {
+            $router = new Karman($url);
+        } elseif ($standardRouteLayout = Directory::getStandardRouteLayout($url->getPath())) {
             $router = new Standard($url, $standardRouteLayout);
         } elseif ($url->isRegionPage()) {
             $router = new Region($url);

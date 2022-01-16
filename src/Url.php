@@ -4,6 +4,8 @@ namespace Palto;
 
 class Url
 {
+    private const KARMAN = 'karman';
+
     /**
      * @var mixed|string
      */
@@ -75,6 +77,11 @@ class Url
         $last = $this->getLastPart($this->path);
 
         return intval(mb_substr($last, 2));
+    }
+
+    public function isKarmanPage(): bool
+    {
+        return $this->getParts() == self::KARMAN;
     }
 
     public function isRegionPage(): bool

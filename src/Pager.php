@@ -2,7 +2,7 @@
 
 namespace Palto;
 
-use Palto\Router\Router;
+use Palto\Dispatcher\Dispatcher;
 
 class Pager
 {

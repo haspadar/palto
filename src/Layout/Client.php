@@ -1,25 +1,17 @@
 <?php
 
-namespace Palto;
+namespace Palto\Layout;
 
-class Layout
+use Palto\Ad;
+use Palto\Ads;
+use Palto\Categories;
+use Palto\Category;
+use Palto\Directory;
+use Palto\Region;
+use Palto\Regions;
+
+class Client extends Layout
 {
-    private string $name;
-
-    private array $partialVariables;
-    private Dispatcher $dispatcher;
-
-    public function __construct(string $name, Dispatcher $dispatcher)
-    {
-        $this->name = $name;
-        $this->dispatcher = $dispatcher;
-    }
-
-    public function load()
-    {
-        require_once Directory::getLayoutsDirectory() . '/' . $this->name;
-    }
-
     public function getRegionsLinks(): string
     {
         $region = $this->getRegion();
@@ -30,17 +22,6 @@ class Layout
         }
 
         return implode(',', $links);
-    }
-
-    public function partial(string $file, array $variables = [])
-    {
-        $this->partialVariables = $variables;
-        require Directory::getLayoutsDirectory() . '/partials/' . $file;
-    }
-
-    public function getPartialVariable(string $name)
-    {
-        return $this->partialVariables[$name] ?? '';
     }
 
     public function getSearchQuery(): string
@@ -61,11 +42,6 @@ class Layout
     public function getCategory(): ?Category
     {
         return $this->dispatcher->getCategory();
-    }
-
-    public function getDispatcher(): Dispatcher
-    {
-        return $this->dispatcher;
     }
 
     public function getBreadcrumbUrls()

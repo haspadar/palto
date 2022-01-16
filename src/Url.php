@@ -84,6 +84,16 @@ class Url
         return $this->getParts() == self::KARMAN;
     }
 
+    public function isDefaultRegionPage(): bool
+    {
+        return $this->getPath() == '/' . Config::get('DEFAULT_REGION_URL');
+    }
+
+    public function isCategoryPage(): bool
+    {
+        return count($this->getParts()) > 1 && !$this->isAdPage();
+    }
+
     public function isRegionPage(): bool
     {
         return count($this->getParts()) == 1;
@@ -128,7 +138,7 @@ class Url
             $parts = $this->getUrlParts($path);
             array_pop($parts);
 
-            return implode('/', array_filter($parts));
+            return '/' . implode('/', array_filter($parts));
         }
 
         return $path;

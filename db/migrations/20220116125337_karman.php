@@ -28,7 +28,12 @@ final class Karman extends AbstractMigration
         ];
         Update::replaceCode($replaces);
         \Palto\Cli::runCommands([
-            'mv ' . \Palto\Directory::getLayoutsDirectory() . '/*.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/'
+            'mv ' . \Palto\Directory::getLayoutsDirectory() . '/*.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/',
+            'mkdir -p ' . \Palto\Directory::getLayoutsDirectory() . '/client/static',
+            'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/*-list.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
+            'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/index.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
+            'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/registration.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
+//            'mv ' . \Palto\Directory::getLayoutsDirectory() . '/client/404.php ' . \Palto\Directory::getLayoutsDirectory() . '/client/static/',
         ]);
     }
 }

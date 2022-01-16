@@ -10,6 +10,11 @@ class Karman extends Dispatcher
     {
         Auth::check();
         $layout = Layouts::create($this);
-        $layout->load();
+        $layout->load($this->getLayoutName());
+    }
+
+    protected function getLayoutName(): string
+    {
+        // TODO: Implement getLayoutName() method.
     }
 }

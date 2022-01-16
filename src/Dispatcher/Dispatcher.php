@@ -21,4 +21,6 @@ abstract class Dispatcher
     }
 
     abstract public function run();
+
+    abstract protected function getLayoutName(): string;
 }

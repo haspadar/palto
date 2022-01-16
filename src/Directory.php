@@ -8,11 +8,17 @@ class Directory
 
     public const PARSE_ADS_SCRIPT = 'parse_ads.php';
 
-    public const ROUTES_SCRIPT = 'routes.php';
+    public const STATIC_LAYOUTS_SCRIPT = 'static_layouts.php';
+
+    public const LAYOUT_LIST = 'list.php';
+
+    public const LAYOUT_AD = 'ad.php';
+
+    public const LAYOUT_404 = '404.php';
 
     private static string $rootDirectory;
 
-    private static array $standardRoutes = [];
+    private static array $staticLayouts = [];
 
     public static function setRootDirectory(string $rootDirectory)
     {
@@ -78,23 +84,5 @@ class Directory
     public static function getPublicDirectory(): string
     {
         return self::getRootDirectory() . '/public';
-    }
-
-    public static function getStandardRouteLayout(string $path): string
-    {
-        if (in_array($path, array_keys(self::getStandardRoutes()))) {
-            return self::getStandardRoutes()[$path];
-        }
-
-        return '';
-    }
-
-    private static function getStandardRoutes(): array
-    {
-        if (!self::$standardRoutes) {
-            self::$standardRoutes = require_once self::getRootDirectory() . '/' . self::ROUTES_SCRIPT;
-        }
-
-        return self::$standardRoutes;
     }
 }

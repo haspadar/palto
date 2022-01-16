@@ -6,9 +6,9 @@ use Palto\Dispatcher\Dispatcher;
 
 class Pager
 {
-    private $nextPageUrl = '';
+    private string $nextPageUrl = '';
 
-    private $previousPageUrl = '';
+    private string $previousPageUrl = '';
 
     private Dispatcher $dispatcher;
 
@@ -36,12 +36,10 @@ class Pager
     private function getPageUrl(int $pageNumber): string
     {
         $url = $this->dispatcher->getRouter()->getUrl();
-        $path = $url->getPath();
-        $withoutPageNumberPath = $url->withoutPageNumber($path);
+        $withoutPageNumberPath = $url->getPath();
 
         return $withoutPageNumberPath
-            . '/'
-            . $pageNumber
+            . ($pageNumber > 1 ? '/' . $pageNumber : '')
             . ($this->dispatcher->getRouter()->getQueryParameters()
                 ? '?' . http_build_query($this->dispatcher->getRouter()->getQueryParameters())
                 : ''

@@ -16,12 +16,11 @@ abstract class Layout
     public function __construct(Dispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
-        $this->name = $dispatcher->getRouter()->getLayoutName();
     }
 
-    public function load()
+    public function load(string $name)
     {
-        require_once Directory::getLayoutsDirectory() . '/' . $this->name;
+        require_once Directory::getLayoutsDirectory() . $name;
     }
 
     /**
@@ -43,7 +42,8 @@ abstract class Layout
     public function partial(string $file, array $variables = [])
     {
         $this->partialVariables = $variables;
-        require Directory::getLayoutsDirectory() . '/partials/' . $file;
+
+        require Directory::getLayoutsDirectory() . '/client/partials/' . $file;
     }
 
     public function getPartialVariable(string $name)

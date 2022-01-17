@@ -145,18 +145,6 @@ class Url
         return 1;
     }
 
-    public function withoutPageNumber(string $path): string
-    {
-        if ($this->hasUrlPageNumber()) {
-            $parts = $this->getUrlParts($path);
-            array_pop($parts);
-
-            return '/' . implode('/', array_filter($parts));
-        }
-
-        return $path;
-    }
-
     public function getParts(): array
     {
         return array_values(array_filter(explode('/', $this->path)));

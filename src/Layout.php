@@ -168,7 +168,7 @@ class Layout
         return $ad->generateUrl();
     }
 
-    public function generateCategoryUrl(Category $category)
+    public function generateCategoryUrl(Category $category): string
     {
         return $category->generateUrl($this->dispatcher->getRegion());
     }

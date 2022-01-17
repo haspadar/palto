@@ -4,6 +4,8 @@ namespace Palto;
 
 class Url
 {
+    private const KARMAN = 'karman';
+
     /**
      * @var mixed|string
      */
@@ -90,6 +92,21 @@ class Url
         return intval(mb_substr($last, 2));
     }
 
+    public function isKarmanPage(): bool
+    {
+        return ($this->getParts()[0] ?? '') == self::KARMAN;
+    }
+
+    public function isDefaultRegionPage(): bool
+    {
+        return $this->getPath() == '/' . Config::get('DEFAULT_REGION_URL');
+    }
+
+    public function isCategoryPage(): bool
+    {
+        return count($this->getParts()) > 1 && !$this->isAdPage();
+    }
+
     public function isRegionPage(): bool
     {
         return count($this->getParts()) == 1;
@@ -128,7 +145,7 @@ class Url
         return 1;
     }
 
-    private function getParts(): array
+    public function getParts(): array
     {
         return array_values(array_filter(explode('/', $this->path)));
     }

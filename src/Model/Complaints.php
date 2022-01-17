@@ -19,17 +19,17 @@ class Complaints extends Model
         return self::getDb()->queryFirstRow('SELECT * FROM complaints WHERE id=%d', $id);
     }
 
-    public static function updateResponseTime(int $id)
+    public static function updateResponseTime(array $ids)
     {
         self::getDb()->update('complaints', [
             'response_time' => (new \DateTime())->format('Y-m-d H:i:s')
-        ], "id = %d", $id);
+        ], "id IN %ld", $ids);
     }
 
-    public static function updateIgnoreTime(int $id)
+    public static function updateIgnoreTime(array $ids)
     {
         self::getDb()->update('complaints', [
             'ignore_time' => (new \DateTime())->format('Y-m-d H:i:s')
-        ], "id = %d", $id);
+        ], "id IN %ld", $ids);
     }
 }

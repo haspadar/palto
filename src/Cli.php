@@ -150,7 +150,9 @@ class Cli
                 $projectName
             );
 
-            return "echo '$nginxDomain' > /etc/nginx/sites-available/$projectName";
+            $filename = Config::getNginxDomainFilename();
+
+            return "echo '$nginxDomain' > $filename";
         }
 
         return self::ignoreMac();
@@ -246,6 +248,11 @@ class Cli
         }
     }
 
+    public static function isLinux(): bool
+    {
+        return PHP_OS == 'Linux';
+    }
+
     private static function getPhpVersion(): string
     {
         $output = `php -v`;
@@ -253,11 +260,6 @@ class Cli
         $versionParts = explode('.', $outputLines[1]);
 
         return $versionParts[0] . '.' . $versionParts[1];
-    }
-
-    private static function isLinux(): bool
-    {
-        return PHP_OS == 'Linux';
     }
 
     public static function updateHost(): string

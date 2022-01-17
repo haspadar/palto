@@ -2,7 +2,7 @@
 /vendor/
 /.idea/
 /logs/*
-/layouts/
+/layouts/client/*
 /parse_ads.php
 /parse_categories.php
 /backups/*
@@ -16,3 +16,5 @@
 /public/img/
 /public/sitemaps/
 /tasks/locks/
+/.DS_Store
+/public/.DS_Store

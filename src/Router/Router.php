@@ -5,7 +5,6 @@ use Palto\Url;
 
 abstract class Router
 {
-    protected string $layoutName = NOT_FOUND_LAYOUT;
     protected string $path;
     private Url $url;
 
@@ -15,24 +14,11 @@ abstract class Router
     }
 
     /**
-     * @return string
-     */
-    public function getLayoutName(): string
-    {
-        return $this->layoutName;
-    }
-
-    /**
      * @return int
      */
     public function getPageNumber(): int
     {
         return $this->url->getPageNumber();
-    }
-
-    public function setNotFoundLayout()
-    {
-        $this->layoutName = NOT_FOUND_LAYOUT;
     }
 
     /**
@@ -102,5 +88,10 @@ abstract class Router
     public function getUrl(): Url
     {
         return $this->url;
+    }
+
+    public function isAjax(): bool
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
 }

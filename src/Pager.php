@@ -2,6 +2,8 @@
 
 namespace Palto;
 
+use Palto\Dispatcher\Dispatcher;
+
 class Pager
 {
     private string $nextPageUrl = '';

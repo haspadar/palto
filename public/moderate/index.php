@@ -1,6 +1,6 @@
 <?php
 
-use Palto\Moderation;
+use Palto\Complaints;
 
 require_once '../../vendor/autoload.php';
 \Palto\Auth::check();
@@ -27,7 +27,7 @@ require_once '../../vendor/autoload.php';
             </tr>
         </thead>
         <tbody>
-            <?php $actualComplaints = Moderation::getActualComplaints();
+            <?php $actualComplaints = Complaints::getActualComplaints();
             foreach ($actualComplaints as $actualComplaint) :?>
                 <tr>
                     <td height="30" style="border-bottom:#CCC solid 1px; padding-left:10px">

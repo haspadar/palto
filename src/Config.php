@@ -50,4 +50,13 @@ class Config
 
         return self::$env;
     }
+
+    public static function getNginxDomainFilename(): string
+    {
+        if (Cli::isLinux()) {
+            return '/etc/nginx/sites-available/' . Directory::getProjectName();
+        }
+
+        return '';
+    }
 }

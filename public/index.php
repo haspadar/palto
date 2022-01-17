@@ -1,6 +1,6 @@
 <?php
 
-use Palto\Dispatcher;
+use Palto\Dispatchers;
 use Palto\Routers;
 use Palto\Url;
 
@@ -8,5 +8,5 @@ require_once '../vendor/autoload.php';
 
 $url = new Url();
 $router = Routers::create($url);
-$dispatcher = new Dispatcher($router);
+$dispatcher = Dispatchers::create($router);
 $dispatcher->run();

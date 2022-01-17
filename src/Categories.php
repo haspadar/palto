@@ -58,6 +58,7 @@ class Categories
             $category['tree_id'] = $parent->getTreeId();
         }
 
+        $category['url'] = self::generateUrl($category['title'], $category['level']);
         $found = self::getByUrl($category['url'], $category['level']);
         if ($found && $found->getId()) {
             return $found;
@@ -68,13 +69,15 @@ class Categories
         return new Category(Model\Categories::getById($id));
     }
 
-    public static function generateUrl(string $title, int $level): string
+    public static function generateUrl(string $title, int $level, bool $addSuffix = false): string
     {
         $urlPattern = (new Slugify())->slugify($title);
         $url = $urlPattern;
         $counter = 0;
-        while (\Palto\Model\Categories::getByUrl($url, $level)) {
-            $url = $urlPattern . '-' . (++$counter);
+        if ($addSuffix) {
+            while (Model\Categories::getByUrl($url, $level)) {
+                $url = $urlPattern . '-' . (++$counter);
+            }
         }
 
         return $url;

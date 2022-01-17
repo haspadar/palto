@@ -2,7 +2,6 @@
 
 use Crunz\Schedule;
 use Palto\Directory;
-use Palto\Palto;
 use Symfony\Component\Lock\Store\FlockStore;
 
 $schedule = new Schedule();

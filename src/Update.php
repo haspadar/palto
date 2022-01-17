@@ -13,7 +13,6 @@ class Update
             'Copy Layouts' => Cli::safeCopyLayouts(),
             'Copy CSS' => Cli::safeCopyCss(),
             'Copy Images' => Cli::safeCopyImg(),
-            'Copy composer.json' => Cli::copyComposerJson(),
             'Add Cron' => Cli::safeAddCron(),
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Update Htpasswd' => Cli::updateHtpasswd(),

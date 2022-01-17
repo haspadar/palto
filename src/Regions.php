@@ -52,8 +52,9 @@ class Regions
             $region['tree_id'] = $parent->getTreeId();
         }
 
+        $region['url'] = self::generateUrl($region['title']);
         $found = self::getByUrl($region['url']);
-        if ($found && $found->getId()) {
+        if ($found->getId()) {
             return $found;
         }
 
@@ -62,13 +63,15 @@ class Regions
         return new Region(Model\Regions::getById($id));
     }
 
-    public static function generateUrl(string $title): string
+    public static function generateUrl(string $title, bool $addSuffix = false): string
     {
         $urlPattern = (new Slugify())->slugify($title);
         $url = $urlPattern;
         $counter = 0;
-        while (Model\Regions::getByUrl($url)) {
-            $url = $urlPattern . '-' . (++$counter);
+        if ($addSuffix) {
+            while (Model\Regions::getByUrl($url)) {
+                $url = $urlPattern . '-' . (++$counter);
+            }
         }
 
         return $url;

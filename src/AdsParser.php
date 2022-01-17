@@ -10,11 +10,21 @@ abstract class AdsParser
 {
     protected const IS_PROXY_REQUIRED = true;
 
+    protected const IS_CRON_DISABLED = false;
+
     abstract protected function findAds(Crawler $categoryDocument);
     abstract protected function findAdUrl(Crawler $resultRow, Category $category): ?Url;
 
     public function run(string $file)
     {
+        if (self::IS_CRON_DISABLED && Cli::isCron()) {
+            Logger::error('Cron parsing disabled');
+
+            exit;
+        } elseif (self::IS_CRON_DISABLED && Cli::isCli()) {
+            Logger::warning('Cron parsing disabled');
+        }
+
         if (static::IS_PROXY_REQUIRED && !Config::get('ROTATOR_URL')) {
             Logger::error('Env option ROTATOR_URL is empty');
 

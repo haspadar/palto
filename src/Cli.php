@@ -66,7 +66,7 @@ class Cli
         if (self::isLinux()) {
             $cronFilePath = '/etc/crontab';
             $commandComment = '#Every minute';
-            $command = "* * * * * root cd ' . Directory::getRootDirectory() . ' && vendor/bin/crunz schedule:run'";
+            $command = "* * * * * root cd " . Directory::getRootDirectory() . " && vendor/bin/crunz schedule:run";
             $cronFileContent = file_get_contents($cronFilePath);
             $isCommandExists = mb_strpos($cronFileContent, $command) !== false;
             if (!$isCommandExists) {

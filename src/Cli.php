@@ -130,7 +130,7 @@ class Cli
         if (self::isLinux()) {
             $projectName = Directory::getProjectName();
 
-            return self::asUser("ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName");
+            return "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName";
         }
 
         return self::ignoreMac();
@@ -234,6 +234,7 @@ class Cli
             } elseif ($hasComment && $command == Cli::ignoreMac()) {
                 Logger::warning(`$command`);
             } elseif ($command != Cli::ignoreMac()) {
+                Logger::error('Command: ' . $command);
                 Logger::debug(`$command`);
             }
         }

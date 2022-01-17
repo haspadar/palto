@@ -44,6 +44,11 @@ class Complaints
         Model\Complaints::updateResponseTime($ids);
     }
 
+    public static function getActualComplaintsCount(): int
+    {
+        return Model\Complaints::getActualComplaintsCount();
+    }
+
     public static function getActualComplaints(): array
     {
         return Model\Complaints::getActualComplaints();

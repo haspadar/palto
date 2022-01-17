@@ -28,13 +28,17 @@
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link <?php if ($this->getUrl() == '/karman/status') :?>fw-bold<?php endif;?>" aria-current="page" href="/karman/status">
-                            Статус
+                        <a class="nav-link " aria-current="page" href="/karman/status">
+                            <h7 class="<?php if ($this->getUrl() == '/karman/status') :?>fw-bold<?php endif;?>">Статус</h7>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?php if ($this->getUrl() == '/karman/complaints') :?>fw-bold<?php endif;?>" href="/karman/complaints">
-                            Жалобы
+                        <a class="nav-link" href="/karman/complaints">
+                            <h7 class="<?php if ($this->getUrl() == '/karman/complaints') :?>fw-bold<?php endif;?>">Жалобы
+                                <?php if ($count = \Palto\Complaints::getActualComplaintsCount()) :?>
+                                    <span class="badge bg-warning"><?=$count?></span>
+                                <?php endif;?>
+                            </h7>
                         </a>
                     </li>
                 </ul>

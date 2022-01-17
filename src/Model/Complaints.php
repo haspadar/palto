@@ -9,6 +9,11 @@ class Complaints extends Model
         self::getDb()->insert('complaints', $complaint);
     }
 
+    public static function getActualComplaintsCount()
+    {
+        return self::getDb()->queryFirstField("SELECT COUNT(*) FROM complaints WHERE response_time IS NULL AND ignore_time IS NULL");
+    }
+
     public static function getActualComplaints()
     {
         return self::getDb()->query("SELECT * FROM complaints WHERE response_time IS NULL AND ignore_time IS NULL");

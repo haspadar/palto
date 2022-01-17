@@ -234,7 +234,7 @@ class Cli
             } elseif ($hasComment && $command == Cli::ignoreMac()) {
                 Logger::warning(`$command`);
             } elseif ($command != Cli::ignoreMac()) {
-                Logger::error('Command: ' . $command);
+                Logger::debug('Command: ' . $command);
                 Logger::debug(`$command`);
             }
         }

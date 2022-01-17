@@ -10,6 +10,7 @@ class Update
         $databaseUsername = Config::get('DB_USER');
         $databasePassword = Config::get('DB_PASSWORD');
         Cli::runCommands([
+            'Copy translates' => Cli::safeCopyTranslates(),
             'Copy Layouts' => Cli::safeCopyLayouts(),
             'Copy CSS' => Cli::safeCopyCss(),
             'Copy Images' => Cli::safeCopyImg(),

@@ -3,6 +3,7 @@ namespace Palto\Layout;
 
 use Palto\Directory;
 use Palto\Dispatcher\Dispatcher;
+use Palto\Translates;
 use Palto\Url;
 
 abstract class Layout
@@ -21,6 +22,11 @@ abstract class Layout
     public function load(string $name)
     {
         require_once Directory::getLayoutsDirectory() . '/' . $name;
+    }
+
+    public function translate(string $from): string
+    {
+        return Translates::get($from);
     }
 
     /**

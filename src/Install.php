@@ -16,6 +16,7 @@ class Install
             'Update FPM' => Cli::updateNginxPhpFpm(),
             Cli::reloadNginx(),
             'Copy Parse Scripts' => Cli::safeCopyParseScripts(),
+            'Copy Translates' => Cli::safeCopyTranslates(),
             'Copy Layouts' => Cli::safeCopyLayouts(),
             'Copy CSS' => Cli::safeCopyCss(),
             'Copy Images' => Cli::safeCopyImg(),

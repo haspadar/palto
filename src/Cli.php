@@ -287,6 +287,13 @@ class Cli
             . " && cp -n $rootDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
     }
 
+    public static function safeCopyTranslates(): string
+    {
+        $rootDirectory = Directory::getRootDirectory();
+
+        return self::asUser("cp -n $rootDirectory/structure/" . Directory::TRANSLATES_SCRIPT . " $rootDirectory/");
+    }
+
     public static function checkSudo()
     {
         if (!self::isSudo()) {

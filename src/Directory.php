@@ -4,6 +4,8 @@ namespace Palto;
 
 class Directory
 {
+    public const TRANSLATES_SCRIPT = 'translates.php';
+
     public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
 
     public const PARSE_ADS_SCRIPT = 'parse_ads.php';

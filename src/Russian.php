@@ -2,9 +2,9 @@
 
 namespace Palto;
 
-class Time
+class Russian
 {
-    public static function russianMonth(string $monthNumber): string
+    public static function month(string $monthNumber): string
     {
         $titles = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'ноября', 'декабря'];
 

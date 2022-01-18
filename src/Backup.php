@@ -59,7 +59,7 @@ class Backup
 
     private static function getFiles(string $archiveName): array
     {
-        $layoutFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/layouts/*', $archiveName . '/');
+        $layoutFiles = self::getDirectoryFiles(Directory::getLayoutsDirectory() . '/*', $archiveName . '/');
         $cssFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/css/*', $archiveName . '/');
         $imgFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/img/*', $archiveName . '/');
 

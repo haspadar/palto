@@ -4,6 +4,8 @@ namespace Palto;
 class Sitemap
 {
     const GENERATE_SCRIPT = 'bin/generate_sitemap.php';
+    const MAX_FILE_LINKS = 40000;
+    const MAX_FILE_SIZE_MB = 40;
     private string $domainUrl;
     private string $path;
 
@@ -218,11 +220,11 @@ class Sitemap
 
     private function getMaxFileLinks(): int
     {
-        return intval(Config::get('SITEMAP_MAX_FILE_LINKS') ?: 0) ?: 40000;
+        return self::MAX_FILE_LINKS;
     }
 
     private function getMaxFileSizeMb(): float
     {
-        return intval(Config::get('SITEMAP_MAX_FILE_SIZE_MB') ?: 0) ?: 40;
+        return self::MAX_FILE_SIZE_MB;
     }
 }

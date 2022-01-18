@@ -33,7 +33,7 @@ $this->partial('header.inc', [
         <dt>Время:</dt>
         <dd>
             <?php $createTime = new DateTime($complaint['create_time'])?>
-            <?=$createTime->format('d')?> <?=\Palto\Time::russianMonth($createTime->format('m'))?>
+            <?=$createTime->format('d')?> <?=\Palto\Russian::month($createTime->format('m'))?>
             <small class="text-muted"><?=$createTime->format('H:i')?></small>
         </dd>
         <dt>IP:</dt>

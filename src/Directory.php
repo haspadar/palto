@@ -25,6 +25,14 @@ class Directory
         self::$rootDirectory = $rootDirectory;
     }
 
+    public static function getProjectShortName(): string
+    {
+        $name = self::getProjectName();
+        $parts = explode('.', $name);
+
+        return $parts[0];
+    }
+
     public static function getProjectName(): string
     {
         $pathParts = explode('/', self::getRootDirectory());
@@ -35,6 +43,16 @@ class Directory
     public static function getConfigsDirectory(): string
     {
         return self::getRootDirectory() . '/configs';
+    }
+
+    public static function getStructureConfigsDirectory(): string
+    {
+        return self::getStructureDirectory() . '/configs';
+    }
+
+    public static function getStructureDirectory(): string
+    {
+        return self::getRootDirectory() . '/structure';
     }
 
     public static function getLayoutsDirectory(): string

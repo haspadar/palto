@@ -54,6 +54,7 @@ final class Translates extends AbstractMigration
 
         $replaces['SUNDUK_URL=""'] = 'SUNDUK_URL="http://95.216.222.193/"';
         $replaces['YANDEX_TRANSLATE_API_KEY='] = 'YANDEX_TRANSLATE_API_KEY="AQVNwmJ4oPONRgtb76ZwHk8tVrYWSmkMyD1vEMNu"';
+        $replaces['ROTATOR_URL=""'] = 'ROTATOR_URL="https://rotator.dev/list.php?key=Rq9S-3SY3QC6"';
         $content = strtr(file_get_contents($structureConfigDirectory . '/' . $envFileName), $replaces);
         \Palto\Debug::dump($content, $configDirectoryDirectory . '/' . $envFileName);
         file_put_contents($configDirectoryDirectory . '/' . $envFileName, $content);

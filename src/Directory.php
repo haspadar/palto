@@ -4,6 +4,10 @@ namespace Palto;
 
 class Directory
 {
+    public const COUNTERS_SCRIPT = 'counters.php';
+
+    public const TRANSLATES_SCRIPT = 'translates.php';
+
     public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
 
     public const PARSE_ADS_SCRIPT = 'parse_ads.php';
@@ -23,6 +27,14 @@ class Directory
         self::$rootDirectory = $rootDirectory;
     }
 
+    public static function getProjectShortName(): string
+    {
+        $name = self::getProjectName();
+        $parts = explode('.', $name);
+
+        return $parts[0];
+    }
+
     public static function getProjectName(): string
     {
         $pathParts = explode('/', self::getRootDirectory());
@@ -33,6 +45,21 @@ class Directory
     public static function getConfigsDirectory(): string
     {
         return self::getRootDirectory() . '/configs';
+    }
+
+    public static function getStructureLayoutsDirectory(): string
+    {
+        return self::getStructureDirectory() . '/layouts';
+    }
+
+    public static function getStructureConfigsDirectory(): string
+    {
+        return self::getStructureDirectory() . '/configs';
+    }
+
+    public static function getStructureDirectory(): string
+    {
+        return self::getRootDirectory() . '/structure';
     }
 
     public static function getLayoutsDirectory(): string

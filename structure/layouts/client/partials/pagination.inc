@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
  */
 $paginationUrls = $this->getPartialVariable('paginationUrls');
 ?>

@@ -3,6 +3,7 @@ namespace Palto\Layout;
 
 use Palto\Directory;
 use Palto\Dispatcher\Dispatcher;
+use Palto\Translates;
 use Palto\Url;
 
 abstract class Layout

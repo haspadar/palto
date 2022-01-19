@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="<?=$this->translate('html_lang')?>">
 <?php 
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client
  */
 $title = $this->getPartialVariable('title');
 $description = $this->getPartialVariable('description');
@@ -48,7 +48,7 @@ $description = $this->getPartialVariable('description');
                     <tr>
                         <td>
                             <?php if (file_exists($this->getPublicDirectory() . '/img/logo.png')) :?>
-                                <a href="/"><img src="/img/logo.png" alt="Classified Ads in LA" class="mylogo"/></a>
+                                <a href="/"><img src="/img/logo.png" alt="<?=sprintf($this->translate('Частные бесплатные объявления в %s'), $this->getRegion()->getTitle())?>" class="mylogo"/></a>
                             <?php endif;?>
                             <div class="main_menu">
                                 <table class="tbl_menu">

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Layout\Karman
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Karman
  */
 $this->partial('header.inc', [
     'title' => 'Жалобы',
@@ -29,7 +29,7 @@ $this->partial('header.inc', [
                 </td>
                 <td>
                     <?php $createTime = new DateTime($actualComplaint['create_time'])?>
-                    <?=$createTime->format('d')?> <?=\Palto\Time::russianMonth($createTime->format('m'))?>
+                    <?=$createTime->format('d')?> <?=\Palto\Russian::month($createTime->format('m'))?>
                     <small class="text-muted"><?=$createTime->format('H:i')?></small>
                 </td>
 

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
  */
 $this->partial('header.inc', [
-    'title' => 'Regions',
-    'description' => 'Regions',
+    'title' => $this->translate('regions_title'),
+    'description' => $this->translate('regions_description'),
 ]);
 ?>
-<h1>Regions</h1>
+<h1><?=$this->translate('regions_h1')?></h1>
 <?php foreach ($this->getWithAdsRegions() as $level1Region) :?>
     <div class="span-d regions"><a href="<?=$this->generateRegionUrl($level1Region)?>"><strong> <?=$level1Region->getTitle()?></strong></a>
         <?php if ($level2Regions = $this->getWithAdsRegions($level1Region)) :?>

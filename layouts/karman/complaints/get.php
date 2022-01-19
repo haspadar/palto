@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Layout\Karman
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Karman
  */
 $complaint = \Palto\Complaints::getComplaint($this->getId());
 $ad = \Palto\Ads::getById($complaint['id']);
@@ -33,7 +33,7 @@ $this->partial('header.inc', [
         <dt>Время:</dt>
         <dd>
             <?php $createTime = new DateTime($complaint['create_time'])?>
-            <?=$createTime->format('d')?> <?=\Palto\Time::russianMonth($createTime->format('m'))?>
+            <?=$createTime->format('d')?> <?=\Palto\Russian::month($createTime->format('m'))?>
             <small class="text-muted"><?=$createTime->format('H:i')?></small>
         </dd>
         <dt>IP:</dt>

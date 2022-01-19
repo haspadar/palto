@@ -94,7 +94,7 @@ class Cli
             'DOMAIN_URL=' => 'DOMAIN_URL=https://www.' . Directory::getProjectName()
         ];
         $content = strtr(
-            file_get_contents(Directory::getConfigsDirectory() . '/.env'),
+            file_get_contents(Directory::getStructureConfigsDirectory() . '/.env'),
             $replaces
         );
         $tmp = '/tmp/install_' . md5(time());
@@ -105,7 +105,7 @@ class Cli
 
     public static function updatePhinx(string $databaseName, string $databaseUser, string $databasePassword): string
     {
-        $content = strtr(file_get_contents(Directory::getConfigsDirectory(). '/phinx.php'), [
+        $content = strtr(file_get_contents(Directory::getStructureConfigsDirectory(). '/phinx.php'), [
             'production_db' => $databaseName,
             'production_user' => $databaseUser,
             'production_pass' => $databasePassword,
@@ -117,7 +117,7 @@ class Cli
     public static function updateNginx(): string
     {
         if (self::isLinux()) {
-            $nginxConfig = file_get_contents(Directory::getConfigsDirectory() . '/nginx/nginx.conf');
+            $nginxConfig = file_get_contents(Directory::getStructureConfigsDirectory() . '/nginx/nginx.conf');
 
             return "echo '$nginxConfig' > /etc/nginx/nginx.conf";
         }
@@ -141,7 +141,7 @@ class Cli
         if (self::isLinux()) {
             $projectName = Directory::getProjectName();
             $nginxDomain = sprintf(
-                file_get_contents(Directory::getConfigsDirectory() . '/nginx/domain'),
+                file_get_contents(Directory::getStructureConfigsDirectory() . '/nginx/domain'),
                 Directory::getRootDirectory(),
                 "$projectName *.$projectName",
                 intval(self::getPhpVersion()),
@@ -164,7 +164,7 @@ class Cli
             $phpVersion = self::getPhpVersion();
             $phpMajorVersion = intval($phpVersion);
             $nginxPhpFpmConfig = sprintf(
-                file_get_contents(Directory::getConfigsDirectory() . '/nginx/php-fpm.conf'),
+                file_get_contents(Directory::getStructureConfigsDirectory() . '/nginx/php-fpm.conf'),
                 $phpMajorVersion,
                 $phpVersion
             );
@@ -178,7 +178,7 @@ class Cli
     public static function updateHtpasswd(): string
     {
         if (self::isLinux()) {
-            $configsPath = Directory::getConfigsDirectory();
+            $configsPath = Directory::getStructureConfigsDirectory();
             $rootPath = Directory::getRootDirectory();
 
             return "cp -R $configsPath/.htpasswd $rootPath/";
@@ -190,7 +190,7 @@ class Cli
     public static function copyComposerJson(): string
     {
         $rootDirectory = Directory::getRootDirectory();
-        $configsDirectory = Directory::getConfigsDirectory();
+        $configsDirectory = Directory::getStructureConfigsDirectory();
 
         return "cp $configsDirectory/composer.json $rootDirectory";
     }
@@ -199,7 +199,7 @@ class Cli
     {
         $rootDirectory = Directory::getRootDirectory();
 
-        return "cp -R -n $rootDirectory/structure/layouts $rootDirectory";
+        return "cp -R -n $rootDirectory/structure/layouts/client/* $rootDirectory/client/";
     }
 
     public static function safeCopyCss(): string
@@ -279,12 +279,36 @@ class Cli
         }
     }
 
+    public static function safeCopyPylesosEnv(): string
+    {
+        $structureConfigDirectory = Directory::getStructureConfigsDirectory();
+        $configDirectory = Directory::getConfigsDirectory();
+
+        return self::asUser("cp -n $structureConfigDirectory/.pylesos" . " $configDirectory/");
+    }
+
     public static function safeCopyParseScripts(): string
     {
         $rootDirectory = Directory::getRootDirectory();
 
         return self::asUser("cp -n $rootDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
             . " && cp -n $rootDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
+    }
+
+    public static function safeCopyTranslates(): string
+    {
+        $structureConfigDirectory = Directory::getStructureConfigsDirectory();
+        $configDirectory = Directory::getConfigsDirectory();
+
+        return self::asUser("cp -n $structureConfigDirectory/" . Directory::TRANSLATES_SCRIPT . " $configDirectory/");
+    }
+
+    public static function safeCopyCounters(): string
+    {
+        $structureConfigDirectory = Directory::getStructureConfigsDirectory();
+        $configDirectory = Directory::getConfigsDirectory();
+
+        return self::asUser("cp -n $structureConfigDirectory/" . Directory::COUNTERS_SCRIPT . " $configDirectory/");
     }
 
     public static function checkSudo()

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
  */
 $this->partial('header.inc', [
     'title' => '404',
@@ -10,13 +10,12 @@ $this->partial('header.inc', [
 ?>
     <br/>
 <?php if ($this->getAd()) :?>
-    <h1>Ad was deleted</h1>
+    <h1><?=$this->translate('Объявление было удалено')?></h1>
 <?php else :?>
-    <h1>Not found</h1>
+    <h1><?=$this->translate('Не найдено')?></h1>
 <?php endif;?>
 
-
-<h2>Categories</h2>
+<h2><?=$this->translate('Категории')?></h2>
 <?php foreach ($this->getWithAdsCategories() as $level1Category) :?>
     <div class="span-d">
         <p>

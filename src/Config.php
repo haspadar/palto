@@ -22,17 +22,12 @@ class Config
 
     public static function isDebug(): bool
     {
-        return self::get('DEBUG') || ($_GET['debug'] ?? 0);
+        return $_GET['debug'] ?? 0;
     }
 
     public static function getDomainUrl(): string
     {
-        $domainUrl = self::get('DOMAIN_URL');
-        if (!$domainUrl) {
-            $domainUrl = 'https://www.' . Directory::getProjectName();
-        }
-
-        return $domainUrl;
+        return 'https://www.' . Directory::getProjectName();
     }
 
     public static function setEnv(string $name, string $value)
@@ -44,8 +39,10 @@ class Config
     public static function getEnv(): array
     {
         if (!isset(self::$env)) {
-            $dotenv = Dotenv::createImmutable(Directory::getRootDirectory());
-            self::$env = $dotenv->load();
+            self::$env = array_merge(
+                Dotenv::createImmutable(Directory::getConfigsDirectory(), '.env')->load(),
+                Dotenv::createImmutable(Directory::getConfigsDirectory(), '.pylesos')->load()
+            );
         }
 
         return self::$env;

@@ -2,18 +2,14 @@
 
 $flashMessage = \Palto\Flash::get();
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
  */
 $categoryWithChildrenIds = $this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [];
 $ads = $this->getAds();
 $pager = new \Palto\Pager($this->getDispatcher());
 $this->partial('header.inc', [
-    'title' => $this->generateHtmlTitle('Ogłoszenia w '),
-    'description' => $this->generateHtmlDescription('Agregator wszystkich tablic ogłoszeniowych w '
-        . ($this->getCategory()
-            ? implode(' - ', $this->getCategory()->getWithParentsTitles([$this->getRegion()->getTitle()]))
-            : $this->getRegion()->getTitle()
-        )),
+    'title' => $this->generateHtmlTitle($this->translate('Бесплатные объявления в ')),
+    'description' => $this->generateHtmlDescription($this->translate('Агрегатор частных бесплатных объявлений в ')),
     'nextPageUrl' => $pager->getNextPageUrl(),
     'previousPageUrl' => $pager->getPreviousPageUrl(),
 ]);
@@ -24,14 +20,10 @@ $this->partial('header.inc', [
     >
         <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     </div>
-    <h1><?php if ($this->getCategory()) :?>
-            <?= $this->getCategory()->getTitle()?> w
-        <?php endif;?>
-        <?= $this->getRegion()->getTitle() == 'Polska'
-            ? 'Polske'
-            : $this->getRegion()->getTitle()
-        ?>: Ogłoszenia drobne z OLX
+    <h1>
+        <?=$this->translate('list_h1')?>
     </h1>
+    <?=\Palto\Counters::get('google')?>
 <?php if ($flashMessage) :?>
     <div class="alert"><?=$flashMessage?></div>
 <?php endif;?>
@@ -49,15 +41,14 @@ $this->partial('header.inc', [
     </ul>
 <?php endif;?>
 
-    <div class="region_cat"><b>Region:</b> <?= $this->getRegion()->getTitle() ?></div>
+    <div class="region_cat"><b><?=$this->translate('Регион')?>:</b> <?= $this->getRegion()->getTitle() ?></div>
     <table class="serp">
         <?php foreach ($ads as $adIndex => $ad) :?>
             <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
-
             <?php if (in_array($adIndex + 1, [5, 15])) : ?>
-                <!--                                Counter-->
+                <?=\Palto\Counters::get('google')?>
             <?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
-                <!--                                Counter-->
+                <?=\Palto\Counters::get('google')?>
             <?php endif; ?>
         <?php endforeach;?>
     </table>

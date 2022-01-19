@@ -9,6 +9,7 @@ use Palto\Category;
 use Palto\Directory;
 use Palto\Region;
 use Palto\Regions;
+use Palto\Translates;
 
 class Client extends Layout
 {
@@ -22,6 +23,11 @@ class Client extends Layout
         }
 
         return implode(',', $links);
+    }
+
+    public function translate(string $from): string
+    {
+        return Translates::get($from, $this);
     }
 
     public function getSearchQuery(): string

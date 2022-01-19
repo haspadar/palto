@@ -11,7 +11,6 @@ class Update
         $databasePassword = Config::get('DB_PASSWORD');
         Cli::runCommands([
             'Copy translates' => Cli::safeCopyTranslates(),
-            'Copy pylesos env' => Cli::safeCopyPylesosEnv(),
             'Copy counters' => Cli::safeCopyCounters(),
             'Copy Layouts' => Cli::safeCopyLayouts(),
             'Copy CSS' => Cli::safeCopyCss(),

@@ -21,6 +21,7 @@ final class Translates extends AbstractMigration
         \Palto\Cli::runCommands([
             'mv ' . \Palto\Directory::getConfigsDirectory() . \Palto\Directory::getStructureDirectory() . '/',
             'mv ' . \Palto\Directory::getRootDirectory() . '/.env ' . \Palto\Directory::getConfigsDirectory(),
+            'Copy Pylesos env' => \Palto\Cli::safeCopyPylesosEnv()
         ]);
         \Palto\Update::run();
     }

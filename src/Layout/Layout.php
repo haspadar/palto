@@ -24,11 +24,6 @@ abstract class Layout
         require_once Directory::getLayoutsDirectory() . '/' . $name;
     }
 
-    public function translate(string $from): string
-    {
-        return Translates::get($from);
-    }
-
     /**
      * @return Dispatcher
      */

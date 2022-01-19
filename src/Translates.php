@@ -9,20 +9,23 @@ class Translates
      */
     private static array $translates;
 
-    public static function get(string $name): string
+    public static function get(string $name, \Palto\Layout\Client $layout): string
     {
         $translates = self::getTranslates();
         $translate = $translates[$name] ?? '';
+        if ($translate) {
+            $translate = self::replacePlaceholders($translate, $layout, $translates);
+        }
 
         return $translate ?: $name;
     }
 
     public static function getYandexTranslates(string $languageCode): array
     {
-        $keys = array_keys(self::getTranslates());
+        $existsTranslates = self::getTranslates();
         $translates = [];
-        foreach ($keys as $key) {
-            $translates[$key] = Yandex::translate($key, 'ru', $languageCode);
+        foreach ($existsTranslates as $key => $value) {
+            $translates[$key] = Yandex::translate(self::isRussian($key) ? $key : $value, 'ru', $languageCode);
         }
 
         return $translates;
@@ -42,4 +45,31 @@ class Translates
         return self::$translates;
     }
 
+    private static function isRussian(string $text): bool
+    {
+        return preg_match('/[А-Яа-яЁё]/u', $text);
+    }
+
+    private static function replacePlaceholders(string $translate, \Palto\Layout\Client $layout, array $translates): string
+    {
+        return strtr($translate, [
+             ':AD' => $layout->getAd() ? $layout->getAd()->getTitle() : '',
+             ':ADDRESS_WITH_REGION' => (
+                 $layout->getAd() && $layout->getAd()->getAddress()
+                     ? $layout->getAd()->getAddress() . ', '
+                     : ''
+                ) . $layout->getRegion()->getTitle(),
+             ':CATEGORIES' => $layout->getCategory()
+                    ? implode(' - ', $layout->getCategory()->getWithParentsTitles())
+                    : '',
+              ':REGION' => $layout->getRegion()->getTitle(),
+              ':CATEGORY_IN_REGION' => $layout->getCategory()
+                  ? $layout->getCategory()->getTitle()
+                    . ' '
+                    . ($translates['в'] ?? 'in')
+                    . ' '
+                    . Russian::regionCase($layout->getRegion()->getTitle(), 'предложный')
+                  : $layout->getRegion()->getTitle()
+        ]);
+    }
 }

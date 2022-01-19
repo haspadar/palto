@@ -4,6 +4,8 @@ namespace Palto;
 
 class Directory
 {
+    public const COUNTERS_SCRIPT = 'counters.php';
+
     public const TRANSLATES_SCRIPT = 'translates.php';
 
     public const PARSE_CATEGORIES_SCRIPT = 'parse_categories.php';
@@ -43,6 +45,11 @@ class Directory
     public static function getConfigsDirectory(): string
     {
         return self::getRootDirectory() . '/configs';
+    }
+
+    public static function getStructureLayoutsDirectory(): string
+    {
+        return self::getStructureDirectory() . '/layouts';
     }
 
     public static function getStructureConfigsDirectory(): string

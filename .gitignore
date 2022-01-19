@@ -1,4 +1,7 @@
-/configs/*
+/configs/.pylesos
+/configs/.env
+/configs/counters.php
+/configs/translates.php
 /vendor/
 /.idea/
 /logs/*

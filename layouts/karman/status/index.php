@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Layout\Karman
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Karman
  */
 $this->partial('header.inc', [
     'title' => 'Статус',

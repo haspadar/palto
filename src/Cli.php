@@ -279,6 +279,14 @@ class Cli
         }
     }
 
+    public static function safeCopyPylesosEnv(): string
+    {
+        $structureConfigDirectory = Directory::getStructureConfigsDirectory();
+        $configDirectory = Directory::getConfigsDirectory();
+
+        return self::asUser("cp -n $structureConfigDirectory/.pylesos" . " $configDirectory/");
+    }
+
     public static function safeCopyParseScripts(): string
     {
         $rootDirectory = Directory::getRootDirectory();
@@ -293,6 +301,14 @@ class Cli
         $configDirectory = Directory::getConfigsDirectory();
 
         return self::asUser("cp -n $structureConfigDirectory/" . Directory::TRANSLATES_SCRIPT . " $configDirectory/");
+    }
+
+    public static function safeCopyCounters(): string
+    {
+        $structureConfigDirectory = Directory::getStructureConfigsDirectory();
+        $configDirectory = Directory::getConfigsDirectory();
+
+        return self::asUser("cp -n $structureConfigDirectory/" . Directory::COUNTERS_SCRIPT . " $configDirectory/");
     }
 
     public static function checkSudo()

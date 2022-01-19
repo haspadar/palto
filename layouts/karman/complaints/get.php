@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $this \Palto\Layout\Karman
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Karman
  */
 $complaint = \Palto\Complaints::getComplaint($this->getId());
 $ad = \Palto\Ads::getById($complaint['id']);

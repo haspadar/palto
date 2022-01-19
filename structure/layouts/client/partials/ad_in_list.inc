@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
  * @var $ad \Palto\Ad
  */
 $ad = $this->getPartialVariable('ad');

@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
  */
 $this->partial('header.inc', [
     'title' => $this->generateHtmlTitle(),
@@ -17,7 +17,7 @@ $this->partial('header.inc', [
     <div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
         <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     </div>
-    <h1><?=$this->getAd()->getTitle()?> <span style="color:#999"> in <?=$this->getAd()->getAddress() ? $this->getAd()->getAddress() . ', ' : ''?><?=$this->getRegion()->getTitle()?> from craigslist</span></h1>
+    <h1><?=$this->translate('ad_h1')?></h1>
 <?php if ($this->getAd()->getImages()) :?>
     <!-- Slideshow container -->
     <div class="slideshow-container">
@@ -30,8 +30,8 @@ $this->partial('header.inc', [
         <?php endforeach;?>
 
         <!-- Next and previous buttons -->
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        <a class="prev" onclick="plusSlides(-1)">❮</a>
+        <a class="next" onclick="plusSlides(1)">❯</a>
     </div>
     <br>
 
@@ -77,7 +77,7 @@ $this->partial('header.inc', [
 <?php endif;?>
 
 <?php if ($this->getAd()->getRegion()):?>
-    Region: <a href="<?=$this->generateRegionUrl($this->getAd()->getRegion())?>"><?=$this->getAd()->getRegion()->getTitle()?></a>
+    <?=$this->translate('Регион')?>: <a href="<?=$this->generateRegionUrl($this->getAd()->getRegion())?>"><?=$this->getAd()->getRegion()->getTitle()?></a>
 <?php endif;?>
 
 <?php if (trim($this->getAd()->getSellerName())) :?>
@@ -87,22 +87,22 @@ $this->partial('header.inc', [
 <?php if ($this->getAd()->getSellerPhone()) :?>
     <div class="phone">📞 <a class="show-phone phone" id="show-phone" data-phone="<?=$this->getAd()->getSellerPhone()?>" href="tel:<?=$this->getAd()->getSellerPhone()?>">
             <?php if ($this->getAd()->getSellerPhone()) :?>
-                Show Phone
+                <?=$this->translate('Показать телефон')?>
             <?php else :?>
-                No Phone
+                <?=$this->translate('Нет телефона')?>
             <?php endif;?></a>
     </div>
 <?php endif;?>
 
-    <div class="reply"><a class="reply_link" href="<?=$this->getAd()->getUrl()?>" target="_blank" rel="nofollow">🤙 Reply</a></div>
-    <div class="create_time">⏱ Post time: <?=$this->getAd()->getCreateTime()->format('d.m.Y')?> </div>
-    <div class="report"><a class="report_link" href="javascript:void(0);" id="send-abuse">⚠️ Report this ad</a></div>
+    <div class="reply"><a class="reply_link" href="<?=$this->getAd()->getUrl()?>" target="_blank" rel="nofollow">🤙 <?=$this->translate('Связаться')?></a></div>
+    <div class="create_time">⏱ <?=$this->translate('Время публикации')?>: <?=$this->getAd()->getCreateTime()->format('d.m.Y')?> </div>
+    <div class="report"><a class="report_link" href="javascript:void(0);" id="send-abuse">⚠️ <?=$this->translate('Пожаловаться на объявление')?></a></div>
     <div id="send-abuse-modal" class="modal" data-url="<?=\Palto\Config::getDomainUrl()?>/send-feedback.php">
         <!-- Modal content -->
         <div class="modal-content">
             <div class="modal-header">
                 <span class="close">&times;</span>
-                <div>Report this ad</div>
+                <div><?=$this->translate('Пожаловаться на объявление')?></div>
             </div>
             <form class="form">
                 <table class="tbl_report">
@@ -111,7 +111,7 @@ $this->partial('header.inc', [
                         <td><input type="email" name="email" required></td>
                     </tr>
                     <tr>
-                        <td class="td_report"><input type="hidden" name="ad_id" value="<?=$this->getAd()->getId()?>"><label>Report:</label></td>
+                        <td class="td_report"><input type="hidden" name="ad_id" value="<?=$this->getAd()->getId()?>"><label><?=$this->translate('Жалоба')?>:</label></td>
                         <td><textarea name="message" rows="3" width="200px"></textarea></td>
                     </tr>
                     <tr>
@@ -121,12 +121,12 @@ $this->partial('header.inc', [
                 </table>
             </form>
             <p class="success" style="display: none">
-                Your report has been sent.
+                <?=$this->translate('Ваша жалоба успешно отправлена.')?>
             </p>
         </div>
     </div>
     <br />
-    <h2>Similar ads</h2>
+    <h2><?=$this->translate('Похожие объявления')?></h2>
     <table class="serp">
         <?php foreach ($this->getSimilarAds() as $similarAd) :?>
             <?php if ($similarAd->getId() != $this->getAd()->getId()) :?>

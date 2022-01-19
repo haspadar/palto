@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @var $this \Palto\Layout
+ * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
  */
 $this->partial('header.inc', [
-    'title' => 'Private free classifieds in Los Angeles (LA) from craigslist and other boards',
-    'description' => 'Aggregator of all classifieds boards in Los Angeles.',
+    'title' => $this->translate('index_title'),
+    'description' => $this->translate('index_description'),
 ]);
 ?>
-<h1>Categories</h1>
+<h1><?=$this->translate('Категории')?></h1>
 <?php foreach ($this->getWithAdsCategories() as $level1Category) :?>
     <div class="span-d">
         <p><a href="<?=$this->generateCategoryUrl($level1Category)?>">

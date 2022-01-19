@@ -199,7 +199,7 @@ class Cli
     {
         $rootDirectory = Directory::getRootDirectory();
 
-        return "cp -R -n $rootDirectory/structure/layouts $rootDirectory";
+        return "cp -R -n $rootDirectory/structure/layouts/client/* $rootDirectory/client/";
     }
 
     public static function safeCopyCss(): string

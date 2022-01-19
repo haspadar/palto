@@ -66,7 +66,7 @@ class Cli
         if (self::isLinux()) {
             $cronFilePath = '/etc/crontab';
             $commandComment = '#Every minute';
-            $command = "* * * * * root cd ' . Directory::getRootDirectory() . ' && vendor/bin/crunz schedule:run'";
+            $command = "* * * * * root cd " . Directory::getRootDirectory() . " && vendor/bin/crunz schedule:run";
             $cronFileContent = file_get_contents($cronFilePath);
             $isCommandExists = mb_strpos($cronFileContent, $command) !== false;
             if (!$isCommandExists) {
@@ -130,7 +130,7 @@ class Cli
         if (self::isLinux()) {
             $projectName = Directory::getProjectName();
 
-            return self::asUser("ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName");
+            return "ln -s /etc/nginx/sites-available/$projectName /etc/nginx/sites-enabled/$projectName";
         }
 
         return self::ignoreMac();

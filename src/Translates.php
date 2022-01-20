@@ -59,16 +59,20 @@ class Translates
                      ? $layout->getAd()->getAddress() . ', '
                      : ''
                 ) . $layout->getRegion()->getTitle(),
+             ':ADDRESS' => $layout->getAd() && $layout->getAd()->getAddress()
+                 ? $layout->getAd()->getAddress()
+                 : '',
              ':CATEGORIES' => $layout->getCategory()
                     ? implode(' - ', $layout->getCategory()->getWithParentsTitles())
                     : '',
               ':REGION' => $layout->getRegion()->getTitle(),
+              ':REGION_PREPOSITIONAL' => Russian::regionPrepositional($layout->getRegion()->getTitle()),
               ':CATEGORY_IN_REGION' => $layout->getCategory()
                   ? $layout->getCategory()->getTitle()
                     . ' '
                     . ($translates['в'] ?? 'in')
                     . ' '
-                    . Russian::regionCase($layout->getRegion()->getTitle(), 'предложный')
+                    . Russian::regionPrepositional($layout->getRegion()->getTitle())
                   : $layout->getRegion()->getTitle()
         ]);
     }

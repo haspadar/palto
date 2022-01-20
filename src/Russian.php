@@ -13,6 +13,11 @@ class Russian
         return $titles[intval($monthNumber) + 1];
     }
 
+    public static function regionPrepositional(string $region): string
+    {
+        return self::regionCase($region, 'предложный');
+    }
+
     public static function regionCase(string $region, string $case): string
     {
         $forms = [

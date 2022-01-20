@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
+ * @var $this \Palto\Layout\Client
  */
 $this->partial('header.inc', [
-    'title' => $this->translate('Категории'),
+    'title' => $this->translate('categories_title'),
     'description' => $this->translate('categories_description'),
 ]);
 ?>
-<h1><?=$this->translate('Категории')?></h1>
+<h1><?=$this->translate('categories_h1')?></h1>
 <?php foreach ($this->getWithAdsCategories() as $level1Category) :?>
     <div class="span-d regions"><a href="<?=$this->generateCategoryUrl($level1Category)?>"><strong> <?=$level1Category->getTitle()?></strong></a>
         <?php if ($level2Categories = $this->getWithAdsCategories($level1Category)) :?>

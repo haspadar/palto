@@ -1,9 +1,9 @@
 <?php
 /**
- * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
+ * @var $this \Palto\Layout\Client
  */
 $this->partial('header.inc', [
-    'title' => $this->generateHtmlTitle(),
+    'title' => $this->translate('ad_title'),
     'description' => \Palto\Filter::shortText($this->getAd()->getText()),
     'css' => $this->getAd()->getCoordinates() ? [
         [

@@ -2,14 +2,14 @@
 
 $flashMessage = \Palto\Flash::get();
 /**
- * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client
+ * @var $this \Palto\Layout\Client
  */
 $categoryWithChildrenIds = $this->getCategory() ? $this->getCategory()->getWithChildrenIds() : [];
 $ads = $this->getAds();
 $pager = new \Palto\Pager($this->getDispatcher());
 $this->partial('header.inc', [
-    'title' => $this->generateHtmlTitle($this->translate('Бесплатные объявления в ')),
-    'description' => $this->generateHtmlDescription($this->translate('Агрегатор частных бесплатных объявлений в ')),
+    'title' => $this->translate('list_title'),
+    'description' => $this->translate('list_description'),
     'nextPageUrl' => $pager->getNextPageUrl(),
     'previousPageUrl' => $pager->getPreviousPageUrl(),
 ]);

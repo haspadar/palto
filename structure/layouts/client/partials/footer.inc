@@ -11,13 +11,13 @@ use Palto\Config;
 	</tr>
 	<tr>
 	    <td class="tdfooter"></td>
-	    <td class="tdfooter"><a href="<?=Config::getDomainUrl()?>" class="footer"><?=$this->translate('Частные бесплатные объявления в %s')?></a> - <?=$this->translate('Агрегатор всех местных досок объявлений')?> | <a href="maito:<?=Config::get('DEFAULT_REGION_TITLE')?>" class="footer"><?=$this->translate('Контакты')?>: <?=Config::get('DEFAULT_REGION_TITLE')?></a> | <?=\Palto\Counters::get('liveinternet')?></td>
+	    <td class="tdfooter"><?=$this->translate('footer_text')?> <?=\Palto\Counters::get('liveinternet')?></td>
 		<td class="tdfooter"></td>
 	</tr>
 </table>
 
 <div id="cookie_notification">
-    <div><?=$this->translate('Текст про куки')?></div>
+    <div><?=$this->translate('cookie_text')?></div>
     <button class="button cookie_accept"><?=$this->translate('СОГЛАСЕН')?></button>
 </div>
 

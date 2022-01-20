@@ -88,6 +88,11 @@ class Categories
         return \Palto\Model\Regions::getMaxTreeId();
     }
 
+    public static function update(array $updates, int $id)
+    {
+        \Palto\Model\Categories::update($updates, $id);
+    }
+
     private static function getChildCategories(array $category): array
     {
         $childrenIds = [];

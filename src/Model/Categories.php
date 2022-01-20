@@ -98,4 +98,9 @@ class Categories extends Model
 
         return [];
     }
+
+    public static function update(array $updates, int $id)
+    {
+        self::getDb()->update('categories', $updates, 'id = %d', $id);
+    }
 }

@@ -35,10 +35,10 @@ class Filter
 
     public static function get(string $value)
     {
-        return trim(strip_tags(htmlentities(self::removeEmoji($value))));
+        return trim(strip_tags(htmlentities($value)));
     }
 
-    private static function removeEmoji(string $string): string
+    public static function removeEmoji(string $string): string
     {
         $symbols = "\x{1F100}-\x{1F1FF}" // Enclosed Alphanumeric Supplement
             ."\x{1F300}-\x{1F5FF}" // Miscellaneous Symbols and Pictographs

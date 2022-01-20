@@ -124,5 +124,35 @@ $(function () {
                 }
             });
         }
+
     }
+
+    $('.category').on('submit', function () {
+        var emoji = $('#emoji-button').html();
+        $.ajax({
+            url: '/karman/categories/update?id=' + getParam('id'),
+            dataType: "json",
+            type: 'PUT',
+            data: {
+                title: $(this).find('[name=title]').val(),
+                url: $(this).find('[name=url]').val(),
+                emoji: emoji === 'Emoji' ? '' : emoji
+            },
+            success: function () {
+                document.location = '/karman/categories';
+            }
+        });
+
+        return false;
+    });
+
+    const button = document.querySelector('#emoji-button');
+    const picker = new EmojiButton();
+    picker.on('emoji', emoji => {
+        $('#emoji-button').html(emoji);
+    });
+
+    button.addEventListener('click', () => {
+        picker.togglePicker(button);
+    });
 });

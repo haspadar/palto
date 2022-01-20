@@ -2,7 +2,7 @@
 <html lang="ru">
 <?php
 /**
- * @var $this \Palto\Layout\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Client\Karman
+ * @var $this \Palto\Layout\Karman
  */
 ?>
 <head>
@@ -39,6 +39,11 @@
                                     <span class="badge bg-warning"><?=$count?></span>
                                 <?php endif;?>
                             </h7>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/karman/categories">
+                            <h7 class="<?php if ($this->getUrl() == '/karman/categories') :?>fw-bold<?php endif;?>">Категории</h7>
                         </a>
                     </li>
                 </ul>

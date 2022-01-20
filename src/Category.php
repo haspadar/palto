@@ -153,4 +153,9 @@ class Category
     {
         return new Url($this->category['donor_url']);
     }
+
+    public function getEmoji(): string
+    {
+        return $this->category['emoji'] ?? '';
+    }
 }

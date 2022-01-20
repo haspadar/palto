@@ -19,12 +19,19 @@ class Counters
 
     public static function extractCounters(): array
     {
+        $googleAutoStart = '<script async src="https://pagead2.googlesyndication.com';
+        $googleSearchStart = '<script async src="https://cse.google.com/cse.js';
+        $googleEnd = '</script>';
         $patterns = [
             'partials/footer.inc' => [
                 'liveinternet' => ['<!--LiveInternet counter-->', 0, '<!--/LiveInternet-->'],
             ],
             'list.php' => [
                 'google' => ['</h1>', 0, '<?php if ($flashMessage)']
+            ],
+            'partials/header.inc' => [
+                'google_auto' => [$googleAutoStart, 0, $googleEnd],
+                'google_search' => [$googleSearchStart, 0, $googleEnd]
             ]
         ];
 
@@ -35,6 +42,14 @@ class Counters
                     $counters[$translateKey] = Translates::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], \Palto\Directory::getLayoutsDirectory() . '/client/' . $file);
                 }
             }
+        }
+
+        if ($counters['google_auto']) {
+            $counters['google_auto'] = $googleAutoStart . $counters['google_auto'] . $googleEnd;
+        }
+
+        if ($counters['google_search']) {
+            $counters['google_search'] = $googleSearchStart . $counters['google_search'] . $googleEnd;
         }
 
         return $counters;

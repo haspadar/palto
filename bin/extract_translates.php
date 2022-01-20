@@ -13,5 +13,5 @@ $defaultTranslates = require_once $fileName;
 $extractedTranslates['ad_h1'] = ':AD <span style="color:#999"> ' . $defaultTranslates['в'] . ' :ADDRESS_WITH_REGION ' . ($isRussian ? 'c ' : 'from ') . \Palto\Directory::getProjectShortName();
 Translates::saveTranslates($extractedTranslates, $defaultTranslates, $fileName);
 
-$extractedCounters = $this->extractCounters();
+$extractedCounters = Counters::extractCounters();
 Counters::saveCounters($extractedCounters, \Palto\Directory::getConfigsDirectory() . '/counters.php');

@@ -43,14 +43,22 @@ class Ads
             : 0;
     }
 
-    public static function getAds(?Region $region, ?Category $category, int $limit = self::LIMIT, int $offset = 0, int $excludeId = 0): array
+    public static function getAds(
+        ?Region $region,
+        ?Category $category,
+        int $limit = self::LIMIT,
+        int $offset = 0,
+        int $excludeId = 0,
+        string $orderBy = 'create_time DESC'
+    ): array
     {
         $ads = Model\Ads::getAds(
             $region,
             $category,
             $limit,
             $offset,
-            $excludeId
+            $excludeId,
+            $orderBy
         );
         $adIds = array_column($ads, 'id');
         $images = Ads::getAdsImages($adIds);

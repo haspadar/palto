@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="<?=$this->translate('html_lang')?>">
-<?php 
+<?php
 /**
  * @var $this \Palto\Layout\Client
  */
@@ -40,38 +40,38 @@ $description = $this->getPartialVariable('description');
     <?php endif;?>
 </head>
 <body>
-    <table class="tbl_base">
-        <tr class="trheader">
-            <td class="fifty"></td>
-            <td class="tdheader">
-                <table class="top_tbl">
-                    <tr>
-                        <td>
-                            <?php if (file_exists($this->getPublicDirectory() . '/img/logo.png')) :?>
-                                <a href="/"><img src="/img/logo.png" alt="<?=$this->translate('logo_alt')?>" class="mylogo"/></a>
-                            <?php endif;?>
-                            <div class="main_menu">
-                                <table class="tbl_menu">
-                                    <tr>
-                                        <td>
-                                            <?php foreach ($this->getWithAdsCategories( null, 5) as $popularLevel1Category) :?>
-                                                <a class="menu" href="<?=$this->generateCategoryUrl($popularLevel1Category)?>" rel="nofollow"><?=$popularLevel1Category->getTitle()?></a> <span class="whitem">|</span>
-                                            <?php endforeach;?>
+<table class="tbl_base">
+    <tr class="trheader">
+        <td class="fifty"></td>
+        <td class="tdheader">
+            <table class="top_tbl">
+                <tr>
+                    <td>
+                        <?php if (file_exists($this->getPublicDirectory() . '/img/logo.png')) :?>
+                            <a href="/"><img src="/img/logo.png" alt="<?=$this->translate('logo_alt')?>" class="mylogo"/></a>
+                        <?php endif;?>
+                        <div class="main_menu">
+                            <table class="tbl_menu">
+                                <tr>
+                                    <td>
+                                        <?php foreach ($this->getWithAdsCategories( null, 5) as $popularLevel1Category) :?>
+                                            <a class="menu" href="<?=$this->generateCategoryUrl($popularLevel1Category)?>" rel="nofollow"><?=$popularLevel1Category->getTitle()?></a> <span class="whitem">|</span>
+                                        <?php endforeach;?>
 
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-            <td class="fifty"></td>
-        </tr>
-        <tr>
-            <td class="tdleft"></td>
-            <td class="table_main">
-                <form action="/search" method="get" class="search">
-                    <input type="search" name="query" value="<?=$this->getSearchQuery()?>" placeholder="Find what yo need..." class="input" />
-                    <input type="submit" name="" value="" class="submit" />
-                </form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="fifty"></td>
+    </tr>
+    <tr>
+        <td class="tdleft"></td>
+        <td class="table_main">
+            <?php if ($counter = \Palto\Counters::get('google_search')) :?>
+                <?=$counter?>
+                <div class="gcse-search"></div>
+            <?php endif;?>

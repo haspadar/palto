@@ -94,13 +94,25 @@ class Client extends Layout
         );
     }
 
-    public function getAds(): array
+    public function getHotAds(int $limit): array
     {
         return Ads::getAds(
             $this->getRegion(),
             $this->getCategory(),
-            Ads::LIMIT,
-            ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * Ads::LIMIT
+            $limit,
+            ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * $limit,
+            0,
+            'id ASC'
+        );
+    }
+
+    public function getAds(int $limit = Ads::LIMIT): array
+    {
+        return Ads::getAds(
+            $this->getRegion(),
+            $this->getCategory(),
+            $limit,
+            ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * $limit
         );
     }
 

@@ -23,12 +23,19 @@ class Ads extends Model
         return self::getDb()->queryFirstRow($query . ' WHERE a.url = %s', $url->getFull()) ?: [];
     }
 
-    public static function getAds(?Region $region, ?Category $category, int $limit, int $offset = 0, int $excludeId = 0): array
+    public static function getAds(
+        ?Region $region,
+        ?Category $category,
+        int $limit,
+        int $offset,
+        int $excludeId,
+        string $orderBy
+    ): array
     {
         $query = self::getAdsQuery();
         [$where, $values] = self::getAdsWhere($region, $category, $excludeId);
         $query .= $where;
-        $query .= ' ORDER BY create_time DESC LIMIT %d_limit OFFSET %d_offset';
+        $query .= ' ORDER BY ' . $orderBy . ' LIMIT %d_limit OFFSET %d_offset';
         $values['limit'] = $limit;
         $values['offset'] = $offset;
 

@@ -35,7 +35,7 @@ $this->partial('header.inc', [
         <input type="text" class="form-control" name="url" value="<?=$category->getUrl()?>">
     </div>
     <div class="mb-3">
-        <button id="emoji-button" class="btn btn-outline-secondary" type="button">Emoji</button>
+        <button id="emoji-button" class="btn btn-outline-secondary" type="button"><?=$category->getEmoji() ?: 'Emoji'?></button>
     </div>
 
     <button type="submit" class="btn btn-primary">Сохранить</button>

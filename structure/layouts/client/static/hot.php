@@ -22,7 +22,7 @@ $this->partial('header.inc', [
 <br style="clear: both">
 <br style="clear: both">
 
-<h2>🗂 <?=$this->translate('index_h1')?></h2>
+<h2>🗂 <?=$this->translate('Категории')?></h2>
 <?php $level1Categories = array_filter(
         $this->getWithAdsCategories(null, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1')),
         fn(Category $category) => count($this->getWithAdsCategories($category, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) == Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')

@@ -33,6 +33,7 @@ return [
 //hot.php
     'Горячие объявления' => 'Hot ads',
     'Новые объявления' => 'New ads',
+    'Категории' => 'Categories',
 //categories-list.php
     'categories_title' => 'Categories',
     'categories_description' => 'Categories of Classified Ads in Washington',

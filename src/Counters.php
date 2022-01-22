@@ -60,8 +60,9 @@ class Counters
         $content = "<?php
 return [
     'liveinternet' => '" . ($extractedCounters['liveinternet'] ?? '') . "',
-
-    'google' => '" . ($extractedCounters['google'] ?? '') . "'
+    'google' => '" . ($extractedCounters['google'] ?? '') . "',
+    'google_auto' => '" . ($extractedCounters['google_auto'] ?? '') . "',
+    'google_search' => '" . ($extractedCounters['google_search'] ?? '') . "',
 ];";
         file_put_contents($fileName, $content);
     }

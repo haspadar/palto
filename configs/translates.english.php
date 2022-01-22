@@ -30,6 +30,9 @@ return [
     'index_title' => 'Private free classifieds in Washington from craigslist and other boards',
     'index_h1' => 'Categories',
     'index_description' => 'Aggregator of all classifieds boards in Washington.',
+//hot.php
+    'Горячие объявления' => 'Hot ads',
+    'Новые объявления' => 'New ads',
 //categories-list.php
     'categories_title' => 'Categories',
     'categories_description' => 'Categories of Classified Ads in Washington',

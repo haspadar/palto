@@ -15,14 +15,14 @@ $this->partial('header.inc', [
 ]);
 ?>
 <h1><?=$this->translate('index_h1')?></h1>
-<?php foreach (Regions::getWithAdsRegions(null, Config::get('HOT_LAYOUT')) as $region) :?>
+<?php foreach (Regions::getWithAdsRegions(null, Config::get('HOT_LAYOUT_REGIONS')) as $region) :?>
     <div class="span-d regions">📍<a href="<?=$region->generateUrl()?>"><strong> <?=$region->getTitle()?></strong></a></div>
 <?php endforeach;?>
 
 <br style="clear: both">
 <br style="clear: both">
 
-<h2>🗂 Categorii</h2>
+<h2>🗂 <?=$this->translate('index_h1')?></h2>
 <?php $level1Categories = array_filter(
         $this->getWithAdsCategories(null, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1')),
         fn(Category $category) => count($this->getWithAdsCategories($category, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) == Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
@@ -46,14 +46,14 @@ foreach ($level1Categories as $level1Category) :?>
 
 <br style="clear: both">
 <br style="clear: both">
-<h2 style="color: #d91b39;">🔥 Горячие объявления 🔥</h2>
+<h2 style="color: #d91b39;">🔥 <?=$this->translate('Горячие объявления')?> 🔥</h2>
 <table class="serp">
 <?php foreach ($this->getHotAds(Config::get('HOT_LAYOUT_HOT_ADS')) as $ad) :?>
     <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
 <?php endforeach;?>
 </table>
 
-<h2>🔔 Новые объявления</h2>
+<h2>🔔 <?=$this->translate('Новые объявления')?></h2>
 <table class="serp">
     <?php foreach ($this->getAds(Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>
         <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>

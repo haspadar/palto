@@ -52,7 +52,8 @@ foreach ($level1Categories as $level1Category) :?>
     <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
 <?php endforeach;?>
 </table>
-
+<br style="clear: both">
+<br style="clear: both">
 <h2>🔔 <?=$this->translate('Новые объявления')?></h2>
 <table class="serp">
     <?php foreach ($this->getAds(Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>

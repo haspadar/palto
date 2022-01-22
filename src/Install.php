@@ -28,7 +28,8 @@ class Install
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Update Htpasswd' => Cli::updateHtpasswd(),
             'Update Host' => Cli::updateHost(),
-            'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory())
+            'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory()),
+            Cli::updatePermissions('/etc/nginx/sites-available')
         ]);
     }
 }

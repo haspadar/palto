@@ -9,7 +9,7 @@ $this->partial('header.inc', [
     'title' => 'Жалоба #' . $complaint['id'],
     'breadcrumbUrls' => [[
         'title' => 'Жалобы',
-        'url' => '/karman/complaints'
+        'url' => '/karman/complaints?cache=0'
     ], [
         'title' => 'Жалоба #' . $complaint['id'],
     ]]

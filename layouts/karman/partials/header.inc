@@ -28,13 +28,13 @@
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="/karman/status">
-                            <h7 class="<?php if ($this->getUrl() == '/karman/status') :?>fw-bold<?php endif;?>">Статус</h7>
+                        <a class="nav-link " aria-current="page" href="/karman/status?cache=0">
+                            <h7 class="<?php if ($this->getUrl()->getPath() == '/karman/status') :?>fw-bold<?php endif;?>">Статус</h7>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/karman/complaints">
-                            <h7 class="<?php if ($this->getUrl() == '/karman/complaints') :?>fw-bold<?php endif;?>">Жалобы
+                        <a class="nav-link" href="/karman/complaints?cache=0">
+                            <h7 class="<?php if ($this->getUrl()->getPath() == '/karman/complaints') :?>fw-bold<?php endif;?>">Жалобы
                                 <?php if ($count = \Palto\Complaints::getActualComplaintsCount()) :?>
                                     <span class="badge bg-warning"><?=$count?></span>
                                 <?php endif;?>
@@ -42,8 +42,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/karman/categories">
-                            <h7 class="<?php if ($this->getUrl() == '/karman/categories') :?>fw-bold<?php endif;?>">Категории</h7>
+                        <a class="nav-link" href="/karman/categories?cache=0">
+                            <h7 class="<?php if ($this->getUrl()->getPath() == '/karman/categories') :?>fw-bold<?php endif;?>">Категории</h7>
                         </a>
                     </li>
                 </ul>

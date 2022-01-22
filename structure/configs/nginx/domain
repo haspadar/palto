@@ -29,8 +29,11 @@ server {
          set $no_cache 1;
     }
 
-    set $no_cache 1;#disable cache
+    if ($query_string != "") {
+         set $no_cache 1;
+    }
 
+    set $no_cache 1;#disable cache
     add_header x-fastcgi-cache $upstream_cache_status;
 
     location ^~ /adminer.php {
@@ -65,4 +68,8 @@ server {
 	location / {
           try_files $uri $uri/ /index.php?$query_string;
 	}
+
+	location /karman {
+        set $no_cache 1;
+    }
 }

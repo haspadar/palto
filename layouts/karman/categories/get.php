@@ -19,7 +19,7 @@ $this->partial('header.inc', [
     'title' => 'Категория "' . $category->getTitle() . '"',
     'breadcrumbUrls' => array_merge([[
         'title' => 'Категории',
-        'url' => '/karman/categories'
+        'url' => '/karman/categories?cache=0'
     ]], $parentsUrls, [[
         'title' => 'Категория "' . $category->getTitle() . '"',
     ]])

@@ -141,9 +141,6 @@ class Translates
             foreach ($fileReplaces as $translateKey => $fileReplace) {
                 if ($fileReplace) {
                     $translates[$file][$translateKey] = self::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], Directory::getLayoutsDirectory() . '/client/' . $file);
-                    if ($translateKey == 'list_h1') {
-                        Debug::dump($translates[$file][$translateKey], 'extracted list_h1');
-                    }
                 }
             }
         }

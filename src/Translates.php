@@ -129,7 +129,7 @@ class Translates
             'list.php' => [
                 'list_description' => ['$this->generateHtmlDescription(\'', 0, '\')'],
                 'list_h1' => ['    ?>: ', 0, '</h1>'],
-                'в' => ['$this->getCategory()->getTitle()?> ', 0, ' <?php endif;?><?= $this->getRegion()->getTitle()'],
+                'в' => ['$this->getCategory()->getTitle()?> ', 0, '<?php'],
             ],
             'static/registration.php' => [
                 'registration_title' => ['\'title\' => \'', 0, '\''],

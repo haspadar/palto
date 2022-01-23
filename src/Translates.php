@@ -186,7 +186,7 @@ class Translates
                 );
             }
         }
-
+Debug::dump($translates, '$translates');
         return $translatesValues;
     }
 

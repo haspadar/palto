@@ -18,7 +18,7 @@ $this->partial('header.inc', [
 <?php foreach (Regions::getWithAdsRegions(null, Config::get('HOT_LAYOUT_REGIONS')) as $region) :?>
     <div class="span-d regions">📍<a href="<?=$region->generateUrl()?>"><strong> <?=$region->getTitle()?></strong></a></div>
 <?php endforeach;?>
-
+<?=\Palto\Counters::get('google')?>
 <br style="clear: both">
 <br style="clear: both">
 

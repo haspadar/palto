@@ -54,7 +54,7 @@ class Counters
         if ($counters['google_search']) {
             $counters['google_search'] = $googleSearchStart . $counters['google_search'] . $googleEnd;
         }
-Debug::dump($counters);
+
         return $counters;
     }
 

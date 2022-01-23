@@ -134,12 +134,15 @@ class Translates
                 'registration_title' => ['\'title\' => \'', 0, '\''],
                 'registration_description' => ['\'description\' => \'', 0, '\''],
                 'registration_h1' => ['<h1>', 0, '</h1>'],
+
                 'Зарегистрировать' => ['<button>', 0, '<button>'],
                 'Забыли пароль?' => ['<div><a href="#">', 0, '</a>'],
                 'Войти' => ['<button class="button">', 0, '</button>'],
+                'Регистрация' => ['<h2>', 0, '</h2>'],
+                'или' => ['<p>', 0, '</p>'],
             ]
         ];
-        $fromDonorTranslate = self::extractLayoutTranslate('<?=$this->getRegion()->getTitle()?>', '0', '</span>', Directory::getLayoutsDirectory() . '/client/' . 'ad.php');
+        $fromDonorTranslate = self::extractLayoutTranslate('<?=$this->getRegion()->getTitle()?>', 0, '</span>', Directory::getLayoutsDirectory() . '/client/' . 'ad.php');
         $translates = [];
         foreach ($patterns as $file => $fileReplaces) {
             foreach ($fileReplaces as $translateKey => $fileReplace) {
@@ -151,7 +154,10 @@ class Translates
         }
 
         $translates['ad.php']['ad_title'] = ':CATEGORIES - :ADDRESS - ' . ($translates['ad.php']['ad_title'] ? $translates['ad.php']['ad_title'] . ' ' : '') .  ':REGION';
-
+        if (!$translates['static/registration.php']['Зарегистрировать']) {
+            $translates['static/registration.php']['Зарегистрировать'] = self::extractLayoutTranslate('<button class="button">', 1, '</button>', Directory::getLayoutsDirectory() . '/client/static/' . 'registration.php');
+        }
+        
         $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', Directory::getLayoutsDirectory() . '/client/list.php');
         if ($listTitleVariant) {
             $translates['list.php']['list_title'] = $listTitleVariant . ' :REGION_PREPOSITIONAL';

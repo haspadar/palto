@@ -55,6 +55,7 @@ return [
     'Забыли пароль?' => 'Forgot password?',
     'Войти' => 'Log in',
     'Регистрация' => 'Create an account',
+    'Авторизация' => 'Authorization',
     'или' => 'or'
 ];
 /**

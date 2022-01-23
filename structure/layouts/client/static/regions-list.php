@@ -9,6 +9,7 @@ $this->partial('header.inc', [
 ]);
 ?>
 <h1><?=$this->translate('regions_h1')?></h1>
+<?=\Palto\Counters::get('google')?>
 <?php foreach ($this->getWithAdsRegions() as $level1Region) :?>
     <div class="span-d regions"><a href="<?=$this->generateRegionUrl($level1Region)?>"><strong> <?=$level1Region->getTitle()?></strong></a>
         <?php if ($level2Regions = $this->getWithAdsRegions($level1Region)) :?>

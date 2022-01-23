@@ -155,12 +155,13 @@ class Translates
         $translatesValues = [];
         foreach ($translates as $file => $fileTranslates) {
             foreach ($fileTranslates as $translateKey => $translate) {
-                $translatesValues[$translateKey] = strtr(
-                    $translate, [
-                        'from craigslist' => $fromDonorTranslate,
-                        'с olx' => $fromDonorTranslate
-                    ]
-                );
+                $translatesValues[$translateKey] = $translate;
+//                $translatesValues[$translateKey] = strtr(
+//                    $translate, [
+//                        'from craigslist' => $fromDonorTranslate,
+//                        'с olx' => $fromDonorTranslate
+//                    ]
+//                );
             }
         }
 

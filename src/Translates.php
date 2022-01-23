@@ -148,7 +148,6 @@ class Translates
             ]
         ];
         $fromDonorTranslate = self::extractLayoutTranslate('<?=$this->getRegion()->getTitle()?>', 0, '</span>', Directory::getLayoutsDirectory() . '/client/' . 'ad.php');
-        Debug::dump($fromDonorTranslate, '$fromDonorTranslate');
         $translates = [];
         foreach ($patterns as $file => $fileReplaces) {
             foreach ($fileReplaces as $translateKey => $fileReplace) {
@@ -186,7 +185,7 @@ class Translates
                 );
             }
         }
-Debug::dump($translates, '$translates');
+
         return $translatesValues;
     }
 

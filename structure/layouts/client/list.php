@@ -15,9 +15,7 @@ $this->partial('header.inc', [
 ]);
 ?>
     <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
-    <h1>
-        <?=$this->translate('list_h1')?>
-    </h1>
+    <h1><?=$this->translate('list_h1')?></h1>
     <?=\Palto\Counters::get('google')?>
 <?php if ($flashMessage) :?>
     <div class="alert"><?=$flashMessage?></div>

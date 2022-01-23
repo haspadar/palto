@@ -220,7 +220,7 @@ class Translates
 
     private static function replacePlaceholders(string $translate, Client $layout, array $translates): string
     {
-        return strtr($translate, [
+        return trim(strtr($translate, [
              ':AD' => $layout->getAd() ? $layout->getAd()->getTitle() : '',
              ':ADDRESS_WITH_REGION' => (
                  $layout->getAd() && $layout->getAd()->getAddress()
@@ -242,6 +242,6 @@ class Translates
                     . ' '
                     . Russian::regionPrepositional($layout->getRegion()->getTitle())
                   : $layout->getRegion()->getTitle()
-        ]);
+        ]));
     }
 }

@@ -157,7 +157,7 @@ class Translates
         if (!$translates['static/registration.php']['Зарегистрировать']) {
             $translates['static/registration.php']['Зарегистрировать'] = self::extractLayoutTranslate('<button class="button">', 1, '</button>', Directory::getLayoutsDirectory() . '/client/static/' . 'registration.php');
         }
-        
+
         $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', Directory::getLayoutsDirectory() . '/client/list.php');
         if ($listTitleVariant) {
             $translates['list.php']['list_title'] = $listTitleVariant . ' :REGION_PREPOSITIONAL';

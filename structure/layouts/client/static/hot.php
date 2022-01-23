@@ -46,6 +46,8 @@ foreach ($level1Categories as $level1Category) :?>
                 <?php foreach ($level2Categories as  $level2Category) :?>
                     <li><a href="<?=$this->generateCategoryUrl($level2Category)?>"><?=$level2Category->getTitle()?></a></li>
                 <?php endforeach;?>
+
+                <li><a href="<?=$level1Category->generateUrl($this->getRegion())?>">Other...</a></li>
             </ul>
         <?php endif;?>
     </div>

@@ -14,9 +14,7 @@ $this->partial('header.inc', [
     ] : [],
 ]);
 ?>
-    <div class="bread" itemscope itemtype="http://schema.org/BreadcrumbList">
-        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
-    </div>
+    <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     <h1><?=$this->translate('ad_h1')?></h1>
 <?php if ($this->getAd()->getImages()) :?>
     <!-- Slideshow container -->

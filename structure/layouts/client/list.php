@@ -14,12 +14,7 @@ $this->partial('header.inc', [
     'previousPageUrl' => $pager->getPreviousPageUrl(),
 ]);
 ?>
-    <div class="bread"
-         itemscope
-         itemtype="http://schema.org/BreadcrumbList"
-    >
-        <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
-    </div>
+    <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     <h1>
         <?=$this->translate('list_h1')?>
     </h1>

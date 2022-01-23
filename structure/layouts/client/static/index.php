@@ -12,9 +12,14 @@ $this->partial('header.inc', [
 <?php foreach ($this->getWithAdsCategories() as $level1Category) :?>
     <div class="span-d">
         <p><a href="<?=$this->generateCategoryUrl($level1Category)?>">
-                <?php if ($level1Category->getIconUrl()) :?>
-                    <img src="<?=$level1Category->getIconUrl()?>" title="<?=$level1Category->getIconText()?>" class="icm" />
+                <?php if ($level1Category->getEmoji()) :?>
+                    <?=$level1Category->getEmoji()?>
+                <?php elseif ($level1Category->getIconUrl()) :?>
+                    <img src="<?=$level1Category->getIconUrl()?>"
+                         title="<?=$level1Category->getIconText()?>"
+                         class="icm" />
                 <?php endif?>
+
                 <strong> <?=$level1Category->getTitle()?></strong>
             </a>
         </p>

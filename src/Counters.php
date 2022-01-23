@@ -14,7 +14,7 @@ class Counters
         $counters = self::getCounters();
         $counter = $counters[$name] ?? '';
 
-        return $counter ?: $name;
+        return $counter ?: '';
     }
 
     public static function extractCounters(): array

@@ -16,7 +16,7 @@ return [
     '404_h1_list' => 'Not found',
     '404_h2' => 'Categories',
 //ad.php
-    'ad_title' => ':CATEGORIES - :ADDRESS - :REGION',
+    'ad_title' => ':AD: :CATEGORIES',
     'ad_h1' => ':AD <span style="color:#999"> in :ADDRESS_REGION from craigslist</span>',
     'Показать телефон' => 'Show Phone',
     'Нет телефона' => 'No Phone',

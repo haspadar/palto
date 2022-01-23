@@ -98,7 +98,7 @@ class Translates
                 '404_h2' => ['<h2>', 0, '</h2>'],
             ],
             'ad.php' => [
-                'ad_title' => ['generateHtmlTitle(', 0, ')'],
+//                'ad_title' => ['generateHtmlTitle(', 0, ')'],
                 'Показать телефон' => ['<?php if ($this->getAd()->getSellerPhone()) :?>
             ', 0, '<?php else :?>'],
                 'Нет телефона' => ['<?php else :?>', 0, '<?php endif;?>'],
@@ -158,7 +158,7 @@ class Translates
             }
         }
 
-        $translates['ad.php']['ad_title'] = ':CATEGORIES - :ADDRESS - ' . ($translates['ad.php']['ad_title'] ? $translates['ad.php']['ad_title'] . ' ' : '') .  ':REGION';
+//        $translates['ad.php']['ad_title'] = ':CATEGORIES - :ADDRESS - ' . ($translates['ad.php']['ad_title'] ? $translates['ad.php']['ad_title'] . ' ' : '') .  ':REGION';
         if (!$translates['static/registration.php']['Зарегистрировать']) {
             $translates['static/registration.php']['Зарегистрировать'] = self::extractLayoutTranslate('<button class="button">', 1, '</button>', Directory::getLayoutsDirectory() . '/client/static/' . 'registration.php');
         }

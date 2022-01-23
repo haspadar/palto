@@ -60,6 +60,11 @@ $description = $this->getPartialVariable('description');
                                         <?php endforeach;?>
 
                                     </td>
+                                    <td align="righ">
+                                        <strong>
+                                            ✍🏻<a href="/registration"><?=$this->translate('Добавить объявление')?></a>
+                                        </strong>
+                                    </td>
                                 </tr>
                             </table>
                         </div>

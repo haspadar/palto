@@ -17,6 +17,11 @@ class Translates
         $translate = $translates[$name] ?? '';
         if ($translate) {
             $translate = self::replacePlaceholders($translate, $layout, $translates);
+            $translate = strtr($translate, [
+                '-  -' => '-',
+                ': :' => ':',
+                '| |' => '|'
+            ]);
         }
 
         return $translate ?: $name;

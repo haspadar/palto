@@ -17,11 +17,14 @@ class Translates
         $translate = $translates[$name] ?? '';
         if ($translate) {
             $translate = self::replacePlaceholders($translate, $layout, $translates);
-            $translate = strtr($translate, [
+            $translate = trim(strtr($translate, [
                 '-  -' => '-',
                 ': :' => ':',
                 '| |' => '|'
-            ]);
+            ]));
+            if (in_array(mb_substr($translate, 0, 1), ['-', ':', '_'])) {
+                $translate = trim(mb_substr($translate, 1));
+            }
         }
 
         return $translate ?: $name;
@@ -165,7 +168,7 @@ class Translates
             $translates['list.php']['list_title'] = $listTitleVariant . ' :REGION_PREPOSITIONAL';
         } else {
             $listTitleVariant = self::extractLayoutTranslate('generateHtmlTitle()  . \'', 0, '\',', Directory::getLayoutsDirectory() . '/client/list.php');
-            $translates['list.php']['list_title'] = ':CATEGORIES - :REGION' . ' ' . $listTitleVariant;
+            $translates['list.php']['list_title'] = ':CATEGORIES - ' . $listTitleVariant . ' :REGION_PREPOSITIONAL';
         }
 
         $translates['list.php']['list_description'] = ($translates['list.php']['list_description'] ? $translates['list.php']['list_description'] . ' ' : '') . ':CATEGORIES - :REGION';
@@ -244,13 +247,6 @@ class Translates
                     . ' '
                     . Russian::regionPrepositional($layout->getRegion()->getTitle())
                   : $layout->getRegion()->getTitle(),
-            ':CATEGORIES_IN_REGION' => $layout->getCategory()
-                ? implode(' - ', $layout->getCategory()->getWithParentsTitles())
-                    . ' '
-                    . ($translates['в'] ?? 'in')
-                    . ' '
-                    . Russian::regionPrepositional($layout->getRegion()->getTitle())
-                : $layout->getRegion()->getTitle()
         ]));
     }
 }

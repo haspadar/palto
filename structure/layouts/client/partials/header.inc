@@ -38,6 +38,7 @@ $description = $this->getPartialVariable('description');
             <?php endforeach;?>
         <?php endforeach;?>
     <?php endif;?>
+    <?=\Palto\Counters::get('google')?>
 </head>
 <body>
 <table class="tbl_base">

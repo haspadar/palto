@@ -31,7 +31,10 @@ class Counters
             ],
             'partials/header.inc' => [
                 'google_auto' => [$googleAutoStart, 0, $googleEnd],
-                'google_search' => [$googleSearchStart, 0, $googleEnd]
+                'google_search' => [$googleSearchStart, 0, $googleEnd],
+                'google_header' => ['<?php endforeach;?>
+    <?php endif;?>
+    ', 0, '</head>']
             ]
         ];
 
@@ -51,7 +54,7 @@ class Counters
         if ($counters['google_search']) {
             $counters['google_search'] = $googleSearchStart . $counters['google_search'] . $googleEnd;
         }
-
+Debug::dump($counters);
         return $counters;
     }
 
@@ -60,6 +63,7 @@ class Counters
         $content = "<?php
 return [
     'liveinternet' => '" . ($extractedCounters['liveinternet'] ?? '') . "',
+    'google_header' => '" . ($extractedCounters['google_header'] ?? '') . "',
     'google' => '" . ($extractedCounters['google'] ?? '') . "',
     'google_auto' => '" . ($extractedCounters['google_auto'] ?? '') . "',
     'google_search' => '" . ($extractedCounters['google_search'] ?? '') . "',

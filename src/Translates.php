@@ -104,6 +104,11 @@ class Translates
                 'index_title' => ['\'title\' => \'', 0, '\''],
                 'index_description' => ['\'description\' => \'', 0, '\'']
             ],
+            'static/hot.php' => [
+                'Горячие объявления' => ['<h2 style="color: #d91b39;">🔥', 0, '</h2>'],
+                'Новые объявления' => ['<h2>🔔', 0, '</h2>'],
+                'Категории' => ['<h2>🗂 ', 0, '</h2>']
+            ],
             'static/categories-list.php' => [
                 'categories_title' => ['\'title\' => \'', 0, '\''],
                 'categories_description' => ['\'description\' => \'', 0, '\''],

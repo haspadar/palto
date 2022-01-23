@@ -78,6 +78,7 @@ class Translates
             'partials/header.inc' => [
                 'logo_alt' => ['<img src="/img/logo.png" alt="', 0, '"'],
                 'html_lang' => ['<html lang="', 0, '"'],
+                'Добавить объявление' => ['/registration">', 0, '</a>']
             ],
             'partials/footer.inc' => [
                 'footer_text' => ['<td class="tdfooter">', 1, ' | <!--LiveInternet'],

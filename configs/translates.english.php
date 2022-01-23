@@ -3,6 +3,7 @@ return [
 //header.inc
     'html_lang' => 'en-US',
     'logo_alt' => 'Private free classifieds in Washington',
+    'Добавить объявление' => 'Submit an ad',
 //footer.inc
     'footer_text' => '<a href="https://www.washingtonspot.org" class="footer">Classified Ads in Washington, DC</a> - Local classifieds board | <a href="maito:adspoter@gmail.com" class="footer">Contacts: adspoter@gmail.com</a> |',
     'cookie_text' => 'This website uses cookies to personalise content and ads, to provide social media features and to analyse our traffic. We also share information about your use of our site with our social media, advertising and analytics partners who may combine it with other information that you’ve provided to them or that they’ve collected from your use of their services.',

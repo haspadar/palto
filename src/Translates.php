@@ -2,6 +2,8 @@
 
 namespace Palto;
 
+use Palto\Layout\Client;
+
 class Translates
 {
     /**
@@ -9,7 +11,7 @@ class Translates
      */
     private static array $translates;
 
-    public static function get(string $name, \Palto\Layout\Client $layout): string
+    public static function get(string $name, Client $layout): string
     {
         $translates = self::getTranslates();
         $translate = $translates[$name] ?? '';
@@ -56,11 +58,11 @@ class Translates
 
         $replacedContent = implode(PHP_EOL, $lines);
         file_put_contents(
-            \Palto\Directory::getConfigsDirectory() . '/translates.old.php',
-            file_get_contents(\Palto\Directory::getConfigsDirectory() . '/translates.php')
+            Directory::getConfigsDirectory() . '/translates.old.php',
+            file_get_contents(Directory::getConfigsDirectory() . '/translates.php')
         );
         file_put_contents(
-            \Palto\Directory::getConfigsDirectory() . '/translates.php',
+            Directory::getConfigsDirectory() . '/translates.php',
             $replacedContent
         );
     }
@@ -121,6 +123,7 @@ class Translates
             'list.php' => [
                 'list_title' => ['generateHtmlTitle()  . \'', 0, '\','],
                 'list_description' => ['$this->generateHtmlDescription(\'', 0, '\')'],
+                'list_h1' => ['    ?>: ', 0, '</h1>'],
                 'в' => ['$this->getCategory()->getTitle()?> ', 0, ' <?php endif;?><?= $this->getRegion()->getTitle()'],
             ],
             'static/registration.php' => [
@@ -132,11 +135,13 @@ class Translates
                 'Войти' => ['<button class="button">', 0, '</button>'],
             ]
         ];
+        $fromDonorTranslate = self::extractLayoutTranslate('<?=$this->getRegion()->getTitle()?>', '0', '</span>', Directory::getLayoutsDirectory() . '/client/' . 'ad.php');
+        Debug::dump($fromDonorTranslate, '$fromDonorTranslate');
         $translates = [];
         foreach ($patterns as $file => $fileReplaces) {
             foreach ($fileReplaces as $translateKey => $fileReplace) {
                 if ($fileReplace) {
-                    $translates[$file][$translateKey] = self::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], \Palto\Directory::getLayoutsDirectory() . '/client/' . $file);
+                    $translates[$file][$translateKey] = self::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], Directory::getLayoutsDirectory() . '/client/' . $file);
                 }
             }
         }
@@ -144,10 +149,16 @@ class Translates
         $translates['ad.php']['ad_title'] = ':CATEGORIES - :ADDRESS - ' . ($translates['ad.php']['ad_title'] ? $translates['ad.php']['ad_title'] . ' ' : '') .  ':REGION';
         $translates['list.php']['list_title'] = ':CATEGORIES - :REGION' . ($translates['list.php']['list_title'] ? ' ' . $translates['list.php']['list_title'] : '');
         $translates['list.php']['list_description'] = ($translates['list.php']['list_description'] ? $translates['list.php']['list_description'] . ' ' : '') . ':CATEGORIES - :REGION';
+        $translates['list.php']['list_h1'] = ':CATEGORY_IN_REGION: ' . ($translates['list.php']['list_h1'] ? $translates['list.php']['list_description'] . ' ' : '');
         $translatesValues = [];
         foreach ($translates as $file => $fileTranslates) {
             foreach ($fileTranslates as $translateKey => $translate) {
-                $translatesValues[$translateKey] = $translate;
+                $translatesValues[$translateKey] = strtr(
+                    $translate, [
+                        'from craigslist' => $fromDonorTranslate,
+                        'с olx' => $fromDonorTranslate
+                    ]
+                );
             }
         }
 
@@ -189,7 +200,7 @@ class Translates
         return preg_match('/[А-Яа-яЁё]/u', $text);
     }
 
-    private static function replacePlaceholders(string $translate, \Palto\Layout\Client $layout, array $translates): string
+    private static function replacePlaceholders(string $translate, Client $layout, array $translates): string
     {
         return strtr($translate, [
              ':AD' => $layout->getAd() ? $layout->getAd()->getTitle() : '',

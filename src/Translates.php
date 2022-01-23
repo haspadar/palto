@@ -243,7 +243,14 @@ class Translates
                     . ($translates['в'] ?? 'in')
                     . ' '
                     . Russian::regionPrepositional($layout->getRegion()->getTitle())
-                  : $layout->getRegion()->getTitle()
+                  : $layout->getRegion()->getTitle(),
+            ':CATEGORIES_IN_REGION' => $layout->getCategory()
+                ? implode(' - ', $layout->getCategory()->getWithParentsTitles())
+                    . ' '
+                    . ($translates['в'] ?? 'in')
+                    . ' '
+                    . Russian::regionPrepositional($layout->getRegion()->getTitle())
+                : $layout->getRegion()->getTitle()
         ]));
     }
 }

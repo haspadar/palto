@@ -12,7 +12,7 @@ $description = $this->getPartialVariable('description');
     <title><?=$this->getPartialVariable('title')?></title>
     <meta name="description" content="<?=$this->getPartialVariable('description')?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="/favicon.ico?1">
+    <link rel="icon" type="image/png" href="/img/favicon.ico?1">
     <link rel="stylesheet" href="/css/styles.css?v=<?=hash_file('md5', $this->getPublicDirectory() . '/css/styles.css')?>">
     <?php if ($this->getPartialVariable('css')) :?>
         <?php foreach ($this->getPartialVariable('css') as $css) :?>

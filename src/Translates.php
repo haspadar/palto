@@ -121,7 +121,6 @@ class Translates
                 'regions_h1' => ['<h1>', 0, '</h1>'],
             ],
             'list.php' => [
-                'list_title' => [['generateHtmlTitle()  . \'', '$this->generateHtmlTitle(\''], 0, '\''],
                 'list_description' => ['$this->generateHtmlDescription(\'', 0, '\')'],
                 'list_h1' => ['    ?>: ', 0, '</h1>'],
                 'в' => ['$this->getCategory()->getTitle()?> ', 0, ' <?php endif;?><?= $this->getRegion()->getTitle()'],
@@ -140,27 +139,22 @@ class Translates
         foreach ($patterns as $file => $fileReplaces) {
             foreach ($fileReplaces as $translateKey => $fileReplace) {
                 if ($fileReplace) {
-                    if (is_array($fileReplace[0])) {
-                        foreach ($fileReplace[0] as $fileReplaceIterate) {
-                            $extracted = self::extractLayoutTranslate($fileReplaceIterate, $fileReplace[1], $fileReplace[2], Directory::getLayoutsDirectory() . '/client/' . $file);
-                            if ($extracted) {
-                                break;
-                            }
-                        }
-                    } else {
-                        $extracted = self::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], Directory::getLayoutsDirectory() . '/client/' . $file);
-                    }
-
-                    if ($translateKey == 'list_title') {
-                        Debug::dump($extracted ?? '', '$extracted');
-                    }
-                    $translates[$file][$translateKey] = $extracted ?? '';
+                    $extracted = self::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], Directory::getLayoutsDirectory() . '/client/' . $file);
+                    $translates[$file][$translateKey] = $extracted;
                 }
             }
         }
 
         $translates['ad.php']['ad_title'] = ':CATEGORIES - :ADDRESS - ' . ($translates['ad.php']['ad_title'] ? $translates['ad.php']['ad_title'] . ' ' : '') .  ':REGION';
-        $translates['list.php']['list_title'] = ':CATEGORIES - :REGION' . ($translates['list.php']['list_title'] ? ' ' . $translates['list.php']['list_title'] : '');
+
+        $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', Directory::getLayoutsDirectory() . '/client/list.php');
+        if ($listTitleVariant) {
+            $translates['list.php']['list_title'] = $listTitleVariant . ' :REGION_PREPOSITIONAL';
+        } else {
+            $listTitleVariant = self::extractLayoutTranslate('generateHtmlTitle()  . \'', 0, '\',', Directory::getLayoutsDirectory() . '/client/list.php');
+            $translates['list.php']['list_title'] = ':CATEGORIES - :REGION' . ' ' . $listTitleVariant;
+        }
+
         $translates['list.php']['list_description'] = ($translates['list.php']['list_description'] ? $translates['list.php']['list_description'] . ' ' : '') . ':CATEGORIES - :REGION';
         $translates['list.php']['list_h1'] = ':CATEGORY_IN_REGION: ' . ($translates['list.php']['list_h1'] ? $translates['list.php']['list_h1'] . ' ' : '');
         $translatesValues = [];

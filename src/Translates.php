@@ -151,17 +151,16 @@ class Translates
         $translates['ad.php']['ad_title'] = ':CATEGORIES - :ADDRESS - ' . ($translates['ad.php']['ad_title'] ? $translates['ad.php']['ad_title'] . ' ' : '') .  ':REGION';
         $translates['list.php']['list_title'] = ':CATEGORIES - :REGION' . ($translates['list.php']['list_title'] ? ' ' . $translates['list.php']['list_title'] : '');
         $translates['list.php']['list_description'] = ($translates['list.php']['list_description'] ? $translates['list.php']['list_description'] . ' ' : '') . ':CATEGORIES - :REGION';
-        $translates['list.php']['list_h1'] = ':CATEGORY_IN_REGION: ' . ($translates['list.php']['list_h1'] ? $translates['list.php']['list_description'] . ' ' : '');
+        $translates['list.php']['list_h1'] = ':CATEGORY_IN_REGION: ' . ($translates['list.php']['list_h1'] ? $translates['list.php']['list_h1'] . ' ' : '');
         $translatesValues = [];
         foreach ($translates as $file => $fileTranslates) {
             foreach ($fileTranslates as $translateKey => $translate) {
-                $translatesValues[$translateKey] = $translate;
-//                $translatesValues[$translateKey] = strtr(
-//                    $translate, [
-//                        'from craigslist' => $fromDonorTranslate,
-//                        'с olx' => $fromDonorTranslate
-//                    ]
-//                );
+                $translatesValues[$translateKey] = strtr(
+                    $translate, [
+                        'from craigslist' => $fromDonorTranslate,
+                        'с olx' => $fromDonorTranslate
+                    ]
+                );
             }
         }
 

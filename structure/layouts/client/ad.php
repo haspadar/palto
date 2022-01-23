@@ -77,7 +77,7 @@ $this->partial('header.inc', [
 <?php endif;?>
 
 <?php if ($this->getAd()->getRegion()):?>
-    <?=$this->translate('Регион')?>: <a href="<?=$this->generateRegionUrl($this->getAd()->getRegion())?>"><?=$this->getAd()->getRegion()->getTitle()?></a>
+    📍 <?=$this->translate('Регион')?>: <a href="<?=$this->generateRegionUrl($this->getAd()->getRegion())?>"><?=$this->getAd()->getRegion()->getTitle()?></a>
 <?php endif;?>
 
 <?php if (trim($this->getAd()->getSellerName())) :?>

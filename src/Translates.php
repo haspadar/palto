@@ -164,12 +164,11 @@ class Translates
         }
 
         $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', Directory::getLayoutsDirectory() . '/client/list.php');
-        if ($listTitleVariant) {
-            $translates['list.php']['list_title'] = ':CATEGORIES - ' . $listTitleVariant . ' :REGION_PREPOSITIONAL';
-        } else {
+        if (!$listTitleVariant) {
             $listTitleVariant = self::extractLayoutTranslate('generateHtmlTitle()  . \'', 0, '\',', Directory::getLayoutsDirectory() . '/client/list.php');
-            $translates['list.php']['list_title'] = $listTitleVariant . ' :REGION_PREPOSITIONAL';
         }
+
+        $translates['list.php']['list_title'] = ':CATEGORIES - ' . $listTitleVariant . ' :REGION_PREPOSITIONAL';
 
         $translates['list.php']['list_description'] = ($translates['list.php']['list_description'] ? $translates['list.php']['list_description'] . ' ' : '') . ':CATEGORIES - :REGION';
         $translates['list.php']['list_h1'] = ':CATEGORY_IN_REGION' . ($translates['list.php']['list_h1'] ? ': ' . $translates['list.php']['list_h1'] . ' ' : '');

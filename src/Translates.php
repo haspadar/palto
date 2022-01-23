@@ -121,7 +121,7 @@ class Translates
                 'regions_h1' => ['<h1>', 0, '</h1>'],
             ],
             'list.php' => [
-                'list_title' => [['generateHtmlTitle()  . \'', '$this->generateHtmlTitle(\''], 0, '\','],
+                'list_title' => [['generateHtmlTitle()  . \'', '$this->generateHtmlTitle(\''], 0, '\''],
                 'list_description' => ['$this->generateHtmlDescription(\'', 0, '\')'],
                 'list_h1' => ['    ?>: ', 0, '</h1>'],
                 'в' => ['$this->getCategory()->getTitle()?> ', 0, ' <?php endif;?><?= $this->getRegion()->getTitle()'],

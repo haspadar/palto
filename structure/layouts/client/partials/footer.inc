@@ -7,7 +7,7 @@ use Palto\Config;
 
 ?>
 </td>
-	    <td></td>
+    <td class="tdright"></td>
 	</tr>
 	<tr>
 	    <td class="tdfooter"></td>

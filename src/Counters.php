@@ -42,7 +42,7 @@ class Counters
         foreach ($patterns as $file => $fileReplaces) {
             foreach ($fileReplaces as $translateKey => $fileReplace) {
                 if ($fileReplace) {
-                    $counters[$translateKey] = Translates::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], \Palto\Directory::getLayoutsDirectory() . '/client/' . $file);
+                    $counters[$translateKey] = Translates::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], self::getLayoutsDirectory() . '/client/' . $file);
                 }
             }
         }
@@ -78,5 +78,10 @@ return [
         }
 
         return self::$counters;
+    }
+
+    private static function getLayoutsDirectory(): string
+    {
+        return Directory::getRootDirectory() . '/layouts';
     }
 }

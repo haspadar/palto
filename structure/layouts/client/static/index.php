@@ -9,11 +9,15 @@ $this->partial('header.inc', [
 ]);
 ?>
 <h1><?=$this->translate('index_h1')?></h1>
-<?php foreach ($this->getWithAdsRegions() as $level1Region) :?>
-    <div class="span-d regions">
-        <a href="<?=$this->generateRegionUrl($level1Region)?>"><strong> <?=$level1Region->getTitle()?></strong></a>
-    </div>
-<?php endforeach;?>
+<?php $regionsLimit = \Palto\Config::get('INDEX_LAYOUT_REGIONS');?>
+<?php \Palto\Debug::dump($regionsLimit)?>
+<?php if (!is_numeric($regionsLimit) || intval($regionsLimit) > 0) :?>
+    <?php foreach ($this->getWithAdsRegions(null, intval($regionsLimit)) as $level1Region) :?>
+        <div class="span-d regions">
+            <a href="<?=$this->generateRegionUrl($level1Region)?>"><strong> <?=$level1Region->getTitle()?></strong></a>
+        </div>
+    <?php endforeach;?>
+<?php endif?>
 
 <?=\Palto\Counters::get('google')?>
 <br style="clear: both">

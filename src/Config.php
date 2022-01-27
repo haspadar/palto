@@ -42,7 +42,7 @@ class Config
             self::$env = array_merge(
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.env')->load(),
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.pylesos')->load(),
-//                Dotenv::createImmutable(Directory::getConfigsDirectory(), '.layouts')->load(),
+                Dotenv::createImmutable(Directory::getConfigsDirectory(), '.layouts')->load(),
             );
         }
 

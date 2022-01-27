@@ -26,7 +26,7 @@ $ad = $this->getPartialVariable('ad');
             <?php endforeach;?>
         </div>
         <?php if ($ad->getPrice() > 0) :?>
-            <div class="serp_price">🏷 <?= $ad->getCurrency() ?> <?= number_format($ad->getPrice()) ?></div>
+            <div class="serp_price">🏷 <?= number_format($ad->getPrice()) ?> <?= $ad->getCurrency() ?></div>
         <?php endif;?>
 
         <div class="serp_region">📍<a class="bread_link" href="<?= $this->generateRegionUrl($ad->getRegion()) ?>"><?=$ad->getRegion()->getTitle()?></a></div>

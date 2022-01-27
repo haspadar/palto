@@ -165,7 +165,7 @@ class Translates
         }
 
 
-        $translates['static/hot.php']['hot_h1'] = $translates['partials/header.inc']['logo_alt'];
+        $translates['static/hot.php']['hot_h1'] = $translates['static/index.php']['index_h1'];
 
         $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', self::getLayoutsDirectory() . '/client/list.php');
         if (!$listTitleVariant) {

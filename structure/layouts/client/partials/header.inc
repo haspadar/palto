@@ -55,7 +55,7 @@ $description = $this->getPartialVariable('description');
                             <table class="tbl_menu">
                                 <tr>
                                     <td>
-                                        <?php foreach ($this->getWithAdsCategories( null, 5) as $popularLevel1Category) :?>
+                                        <?php foreach ($this->getWithAdsCategories( null, \Palto\Config::get('HEADER_LAYOUT_MENU')) as $popularLevel1Category) :?>
                                             <a class="menu" href="<?=$this->generateCategoryUrl($popularLevel1Category)?>" rel="nofollow"><?=$popularLevel1Category->getTitle()?></a> <span class="whitem">|</span>
                                         <?php endforeach;?>
 

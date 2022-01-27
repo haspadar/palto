@@ -64,7 +64,7 @@ class Directory
 
     public static function getLayoutsDirectory(): string
     {
-        $layoutsDirectory = isset($_GET['layouts']) ? $_GET['layouts'] : 'layouts';
+        $layoutsDirectory = isset($_GET['layouts']) ? $_GET['layouts'] : 'structure_layouts';
 
         return self::getRootDirectory() . '/' . $layoutsDirectory;
     }

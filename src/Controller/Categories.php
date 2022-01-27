@@ -32,9 +32,8 @@ class Categories extends Controller
         \Palto\Categories::update([
             'emoji' => ''
         ], $id);
-        $category = \Palto\Categories::getById($id);
         Flash::add(json_encode([
-            'message' => 'Emoji для категории <a href="/karman/categories?id=' . $id . '">"' . $category->getTitle() . '"</a> удалена',
+            'message' => 'Emoji удалена',
             'type' => 'success'
         ]));
 

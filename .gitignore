@@ -1,5 +1,6 @@
 /configs/.pylesos
 /configs/.env
+/configs/.layouts
 /configs/counters.php
 /configs/translates.php
 /vendor/

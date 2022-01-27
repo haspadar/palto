@@ -85,7 +85,7 @@ class Cli
             && mb_strpos(file_get_contents(Directory::getRootDirectory() . '/.env'), 'AUTH=1') !== false;
     }
 
-    public static function generateEnv(string $databaseName, string $databaseUser, string $databasePassword): string
+    public static function generateGeneralEnv(string $databaseName, string $databaseUser, string $databasePassword): string
     {
         $replaces = [
             'DB_USER=' => 'DB_USER=' . $databaseUser,
@@ -277,6 +277,14 @@ class Cli
         } else {
             return self::ignoreMac();
         }
+    }
+
+    public static function safeCopyLayoutsEnv(): string
+    {
+        $structureConfigDirectory = Directory::getStructureConfigsDirectory();
+        $configDirectory = Directory::getConfigsDirectory();
+
+        return self::asUser("cp -n $structureConfigDirectory/.layouts" . " $configDirectory/");
     }
 
     public static function safeCopyPylesosEnv(): string

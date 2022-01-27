@@ -10,15 +10,18 @@ class Update
         $databaseUsername = Config::get('DB_USER');
         $databasePassword = Config::get('DB_PASSWORD');
         Cli::runCommands([
-            'Copy translates' => Cli::safeCopyTranslates(),
-            'Copy counters' => Cli::safeCopyCounters(),
+            'Copy Translates' => Cli::safeCopyTranslates(),
+            'Copy Counters' => Cli::safeCopyCounters(),
             'Copy Layouts' => Cli::safeCopyLayouts(),
+            'Copy pylesos env' => Cli::safeCopyPylesosEnv(),
+            'Copy layouts env' => Cli::safeCopyLayoutsEnv(),
             'Copy CSS' => Cli::safeCopyCss(),
             'Copy Images' => Cli::safeCopyImg(),
             'Add Cron' => Cli::safeAddCron(),
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Update Htpasswd' => Cli::updateHtpasswd(),
-            'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory())
+            'Update Permissions' => Cli::updatePermissions(Directory::getRootDirectory()),
+            Cli::updatePermissions('/etc/nginx/sites-available')
         ]);
     }
 

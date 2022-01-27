@@ -39,9 +39,9 @@ $this->partial('header.inc', [
         <?php foreach ($ads as $adIndex => $ad) :?>
             <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
             <?php if (in_array($adIndex + 1, [5, 15])) : ?>
-                <?=\Palto\Counters::get('google')?>
+                <tr><td colspan="2"><?=\Palto\Counters::get('google')?></td></tr>
             <?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
-                <?=\Palto\Counters::get('google')?>
+                <tr><td colspan="2"><?=\Palto\Counters::get('google')?></td></tr>
             <?php endif; ?>
         <?php endforeach;?>
     </table>

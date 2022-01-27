@@ -5,6 +5,18 @@ $(function () {
         }
     });
 
+    $('.remove-emoji').on('click', function () {
+        $.ajax({
+            url: '/karman/categories/remove-emoji?id=' + getParam('id'),
+            dataType: "json",
+            type: 'DELETE',
+            data: {},
+            success: function () {
+                document.location.reload();
+            }
+        });
+    });
+
     $('.ignore-complaint').on('click', function () {
         clickPutRequest($(this), '/karman/complaints/ignore-complaint?id=' + getParam('id'), {});
     });

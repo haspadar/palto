@@ -36,6 +36,9 @@ $this->partial('header.inc', [
     </div>
     <div class="mb-3">
         <button id="emoji-button" class="btn btn-outline-secondary" type="button"><?=$category->getEmoji() ?: 'Emoji'?></button>
+        <?php if ($category->getEmoji()) :?>
+            <a href="javascript:void(0);" class="small text-danger text-decoration-none remove-emoji">Удалить</a>
+        <?php endif;?>
     </div>
 
     <button type="submit" class="btn btn-primary">Сохранить</button>

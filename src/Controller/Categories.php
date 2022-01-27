@@ -25,4 +25,19 @@ class Categories extends Controller
 
         return ['success' => true];
     }
+
+    public function removeEmoji()
+    {
+        $id = intval($this->getDispatcher()->getRouter()->getQueryParameter('id'));
+        \Palto\Categories::update([
+            'emoji' => ''
+        ], $id);
+        $category = \Palto\Categories::getById($id);
+        Flash::add(json_encode([
+            'message' => 'Emoji для категории <a href="/karman/categories?id=' . $id . '">"' . $category->getTitle() . '"</a> удалена',
+            'type' => 'success'
+        ]));
+
+        return ['success' => true];
+    }
 }

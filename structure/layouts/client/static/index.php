@@ -10,7 +10,6 @@ $this->partial('header.inc', [
 ?>
 <h1><?=$this->translate('index_h1')?></h1>
 <?php $regionsLimit = \Palto\Config::get('INDEX_LAYOUT_REGIONS');?>
-<?php \Palto\Debug::dump($regionsLimit)?>
 <?php if (!is_numeric($regionsLimit) || intval($regionsLimit) > 0) :?>
     <?php foreach ($this->getWithAdsRegions(null, intval($regionsLimit)) as $level1Region) :?>
         <div class="span-d regions">

@@ -2,6 +2,7 @@
 
 namespace Palto;
 
+use Monolog\Handler\ZendMonitorHandler;
 use Palto\Layout\Client;
 
 class Translates
@@ -147,12 +148,12 @@ class Translates
                 'или' => ['<p>', 0, '</p>'],
             ]
         ];
-        $fromDonorTranslate = self::extractLayoutTranslate('<?=$this->getRegion()->getTitle()?>', 0, '</span>', Directory::getLayoutsDirectory() . '/client/' . 'ad.php');
+        $fromDonorTranslate = self::extractLayoutTranslate('<?=$this->getRegion()->getTitle()?>', 0, '</span>', self::getLayoutsDirectory() . '/client/' . 'ad.php');
         $translates = [];
         foreach ($patterns as $file => $fileReplaces) {
             foreach ($fileReplaces as $translateKey => $fileReplace) {
                 if ($fileReplace) {
-                    $extracted = self::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], Directory::getLayoutsDirectory() . '/client/' . $file);
+                    $extracted = self::extractLayoutTranslate($fileReplace[0], $fileReplace[1], $fileReplace[2], self::getLayoutsDirectory() . '/client/' . $file);
                     $translates[$file][$translateKey] = $extracted;
                 }
             }
@@ -160,15 +161,15 @@ class Translates
 
 //        $translates['ad.php']['ad_title'] = ':CATEGORIES - :ADDRESS - ' . ($translates['ad.php']['ad_title'] ? $translates['ad.php']['ad_title'] . ' ' : '') .  ':REGION';
         if (!$translates['static/registration.php']['Зарегистрировать']) {
-            $translates['static/registration.php']['Зарегистрировать'] = self::extractLayoutTranslate('<button class="button">', 1, '</button>', Directory::getLayoutsDirectory() . '/client/static/' . 'registration.php');
+            $translates['static/registration.php']['Зарегистрировать'] = self::extractLayoutTranslate('<button class="button">', 1, '</button>', self::getLayoutsDirectory() . '/client/static/' . 'registration.php');
         }
 
 
         $translates['static/hot.php']['hot_h1'] = $translates['partials/header.inc']['logo_alt'];
 
-        $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', Directory::getLayoutsDirectory() . '/client/list.php');
+        $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', self::getLayoutsDirectory() . '/client/list.php');
         if (!$listTitleVariant) {
-            $listTitleVariant = self::extractLayoutTranslate('generateHtmlTitle()  . \'', 0, '\',', Directory::getLayoutsDirectory() . '/client/list.php');
+            $listTitleVariant = self::extractLayoutTranslate('generateHtmlTitle()  . \'', 0, '\',', self::getLayoutsDirectory() . '/client/list.php');
         }
 
         $translates['list.php']['list_title'] = ':CATEGORIES - ' . $listTitleVariant . ' :REGION_PREPOSITIONAL';
@@ -187,7 +188,7 @@ class Translates
                 );
             }
         }
-
+Debug::dump($translatesValues);exit;
         return $translatesValues;
     }
 
@@ -251,5 +252,10 @@ class Translates
                     . Russian::regionPrepositional($layout->getRegion()->getTitle())
                   : $layout->getRegion()->getTitle(),
         ]));
+    }
+
+    private static function getLayoutsDirectory(): string
+    {
+        return Directory::getRootDirectory() . '/layouts';
     }
 }

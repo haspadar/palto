@@ -163,6 +163,9 @@ class Translates
             $translates['static/registration.php']['Зарегистрировать'] = self::extractLayoutTranslate('<button class="button">', 1, '</button>', Directory::getLayoutsDirectory() . '/client/static/' . 'registration.php');
         }
 
+
+        $translates['static/hot.php']['hot_h1'] = $translates['partials/header.inc']['logo_alt'];
+
         $listTitleVariant = self::extractLayoutTranslate('$this->generateHtmlTitle(\'', 0, '\'', Directory::getLayoutsDirectory() . '/client/list.php');
         if (!$listTitleVariant) {
             $listTitleVariant = self::extractLayoutTranslate('generateHtmlTitle()  . \'', 0, '\',', Directory::getLayoutsDirectory() . '/client/list.php');

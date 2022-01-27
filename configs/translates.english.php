@@ -32,6 +32,7 @@ return [
     'index_h1' => 'Categories',
     'index_description' => 'Aggregator of all classifieds boards in Washington.',
 //hot.php
+    'hot_h1' => 'Private free classifieds in :REGION_PREPOSITIONAL',
     'Горячие объявления' => 'Hot ads',
     'Новые объявления' => 'New ads',
     'Категории' => 'Categories',

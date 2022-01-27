@@ -14,10 +14,13 @@ $this->partial('header.inc', [
     'description' => $this->translate('index_description'),
 ]);
 ?>
-<h1><?=$this->translate('index_h1')?></h1>
+<h1><?=$this->translate('hot_h1')?></h1>
+
 <?php $regionsLimit = \Palto\Config::get('HOT_LAYOUT_REGIONS');?>
-<?php if (!is_numeric($regionsLimit) || intval($regionsLimit) > 0) :?>
-    <?php foreach (Regions::getWithAdsRegions(null, intval($regionsLimit)) as $region) :?>
+<?php $regions = Regions::getWithAdsRegions(null, intval($regionsLimit));?>
+<?php $hasRegions = $regions && !is_numeric($regionsLimit) || intval($regionsLimit) > 0;?>
+<?php if ($hasRegions) :?>
+    <?php foreach ($regions as $region) :?>
         <div class="span-d regions">📍<a href="<?=$region->generateUrl()?>"><strong> <?=$region->getTitle()?></strong></a></div>
     <?php endforeach;?>
 <?php endif;?>
@@ -26,7 +29,10 @@ $this->partial('header.inc', [
 <br style="clear: both">
 <br style="clear: both">
 
-<h2>🗂 <?=$this->translate('Категории')?></h2>
+<?php if ($hasRegions) :?>
+    <h2>🗂 <?=$this->translate('Категории')?></h2>
+<?php endif;?>
+
 <?php $level1Categories = array_filter(
         $this->getWithAdsCategories(null, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1')),
         fn(Category $category) => count($this->getWithAdsCategories($category, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) == Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')

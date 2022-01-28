@@ -206,7 +206,7 @@ class Cli
     {
         $rootDirectory = Directory::getRootDirectory();
 
-        return "cp -R -n $rootDirectory/structure/public/css $rootDirectory/public/";
+        return "cp -R -n $rootDirectory/structure/public/css/* $rootDirectory/public/css/";
     }
 
     public static function safeCopyImg(): string

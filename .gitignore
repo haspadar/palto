@@ -14,7 +14,7 @@
 /phinx.php
 /.phpunit.result.cache
 /.htpasswd
-/public/css/
+/public/css/styles.css
 /public/*.xml
 /public/*.html
 /public/img/

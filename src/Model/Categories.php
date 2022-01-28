@@ -3,6 +3,7 @@
 namespace Palto\Model;
 
 use Palto\Category;
+use Palto\Debug;
 use Palto\Region;
 
 class Categories extends Model
@@ -52,7 +53,7 @@ class Categories extends Model
             $values['limit'] = $limit;
             $values['offset'] = $offset;
         }
-        self::getDb()->debugMode();
+
         return self::getDb()->query($query, $values);
     }
     

@@ -3,6 +3,7 @@
 namespace Palto\Model;
 
 use Palto\Category;
+use Palto\Region;
 
 class Categories extends Model
 {
@@ -27,32 +28,32 @@ class Categories extends Model
         );
     }
 
-    public static function getWithAdsCategories(?Category $parentCategory, int $limit = 0, $offset = 0, $orderBy = ''): array
+    public static function getWithAdsCategories(?Category $category, ?Region $region, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
-        if (!$parentCategory || $parentCategory->getLevel() < 3) {
-            $query = 'SELECT * FROM categories';
-            $values = [];
-            $adsFieldCategory = 'category_level_' . ($parentCategory ? $parentCategory->getLevel() + 1 : 1) . '_id';
-            $query .= " WHERE id IN (SELECT DISTINCT $adsFieldCategory FROM ads)";
-            if ($parentCategory) {
-                $query .= ' AND parent_id = %d_parent_id';
-                $values['parent_id'] = $parentCategory->getId();
-            }
-
-            if ($orderBy) {
-                $query .= ' ORDER BY ' .$orderBy;
-            }
-
-            if ($limit) {
-                $query .= ' LIMIT %d_limit OFFSET %d_offset';
-                $values['limit'] = $limit;
-                $values['offset'] = $offset;
-            }
-
-            return self::getDb()->query($query, $values);
-        } else {
-            return [];
+        $query = 'SELECT * FROM categories';
+        $values = [];
+        if ($category) {
+            $categoryField = 'category_level_' . $category->getLevel() + 1 . '_id';
+            $regionField = $region && $region->getId()
+                ? 'region_level_' . $region->getLevel() . '_id'
+                : '';
+            $query .= " WHERE id IN (SELECT DISTINCT $categoryField FROM ads"
+                . ($regionField ? " WHERE $regionField=" . $region->getId() : '')
+                . ") AND parent_id = %d_parent_id";
+            $values['parent_id'] = $category->getId();
         }
+
+        if ($orderBy) {
+            $query .= ' ORDER BY ' .$orderBy;
+        }
+
+        if ($limit) {
+            $query .= ' LIMIT %d_limit OFFSET %d_offset';
+            $values['limit'] = $limit;
+            $values['offset'] = $offset;
+        }
+        self::getDb()->debugMode();
+        return self::getDb()->query($query, $values);
     }
     
     public static function getByUrl(string $url, int $level, int $excludeId = 0): array

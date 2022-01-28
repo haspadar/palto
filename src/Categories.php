@@ -28,9 +28,9 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
-    public static function getWithAdsCategories(?Category $parentCategory = null, $count = 0): array
+    public static function getWithAdsCategories(?Category $parentCategory = null, ?Region $region = null, $count = 0): array
     {
-        $categories = Model\Categories::getWithAdsCategories($parentCategory, $count);
+        $categories = Model\Categories::getWithAdsCategories($parentCategory, $region, $count);
 
         return array_map(fn($category) => new Category($category), $categories);
     }

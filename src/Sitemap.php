@@ -105,11 +105,11 @@ class Sitemap
 
     private function hasAds(int $categoryId, ?int $regionId): bool
     {
-        return \Palto\Model\Ads::getDb()->queryFirstField(
-                "SELECT id FROM ads WHERE (category_level_1_id=$categoryId OR category_level_2_id=$categoryId OR category_level_3_id)=$categoryId"
-                . ($regionId ? : " AND (region_level_1_id=$regionId OR region_level_2_id=$regionId OR region_level_3_id=$regionId)")
-                . ' LIMIT 1'
-            ) > 1;
+        $query = "SELECT id FROM ads WHERE (category_level_1_id=$categoryId OR category_level_2_id=$categoryId OR category_level_3_id)=$categoryId"
+            . ($regionId ? " AND (region_level_1_id=$regionId OR region_level_2_id=$regionId OR region_level_3_id=$regionId)" : '')
+            . ' LIMIT 1';
+
+        return \Palto\Model\Ads::getDb()->queryFirstField($query) > 1;
     }
 
     private function saveUrls(string $path, string $fileName, array $urls, bool $checkSize = true)

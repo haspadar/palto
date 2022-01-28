@@ -6,6 +6,7 @@ use Palto\Ad;
 use Palto\Ads;
 use Palto\Categories;
 use Palto\Category;
+use Palto\Debug;
 use Palto\Directory;
 use Palto\Region;
 use Palto\Regions;

@@ -33,14 +33,15 @@ class Categories extends Model
     {
         $query = 'SELECT * FROM categories';
         $values = [];
+        $categoryField = 'category_level_' . ($category ? $category->getLevel() + 1 : 1) . '_id';
+        $regionField = $region && $region->getId()
+            ? 'region_level_' . $region->getLevel() . '_id'
+            : '';
+        $query .= " WHERE id IN (SELECT DISTINCT $categoryField FROM ads"
+            . ($regionField ? " WHERE $regionField=" . $region->getId() : '')
+            . ")";
         if ($category) {
-            $categoryField = 'category_level_' . $category->getLevel() + 1 . '_id';
-            $regionField = $region && $region->getId()
-                ? 'region_level_' . $region->getLevel() . '_id'
-                : '';
-            $query .= " WHERE id IN (SELECT DISTINCT $categoryField FROM ads"
-                . ($regionField ? " WHERE $regionField=" . $region->getId() : '')
-                . ") AND parent_id = %d_parent_id";
+            $query .= " AND parent_id = %d_parent_id";
             $values['parent_id'] = $category->getId();
         }
 

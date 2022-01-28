@@ -31,14 +31,20 @@ class Sitemap
             )
         );
         $this->generateRegionsFiles('/regions', $groupedRegions);
-        foreach ($groupedRegions as $regionTree) {
-            $regionTreeUrl = $regionTree[0]->getUrl();
-            foreach ($groupedCategories as $categoryTree) {
-                $categoryTreeUrl = $categoryTree[0]->getUrl();
+        /**
+         * @var Region[] $regions
+         */
+        foreach ($groupedRegions as $regions) {
+            $regionWithLevel1 = $regions[0];
+            /**
+             * @var Category[] $categories
+             */
+            foreach ($groupedCategories as $categories) {
+                $categoryWithLevel1 = $categories[0];
                 $this->generateCategoriesFiles(
-                    '/' . $regionTreeUrl . '-' . $categoryTreeUrl,
-                    $regionTree,
-                    $categoryTree
+                    '/' . $regionWithLevel1->getUrl() . '-' . $categoryWithLevel1->getUrl(),
+                    $regions,
+                    $categories
                 );
             }
         }
@@ -91,8 +97,11 @@ class Sitemap
         $urls = [];
         foreach ($regions as $region) {
             foreach ($categories as $category) {
-                if ($this->hasAds($category->getId(), $region->getId())) {
+                if ($this->hasAds($category, $region)) {
                     $urls[] = $category->generateUrl($region);
+                } else {
+                    Logger::debug('Ignored category ' . $category->getId() . ' with region ' . $region->getId() . ': ads not found');
+                    exit;
                 }
             }
         }
@@ -103,13 +112,15 @@ class Sitemap
         }
     }
 
-    private function hasAds(int $categoryId, ?int $regionId): bool
+    private function hasAds(Category $category, ?Region $region): bool
     {
-        $query = "SELECT id FROM ads WHERE (category_level_1_id=$categoryId OR category_level_2_id=$categoryId OR category_level_3_id)=$categoryId"
-            . ($regionId ? " AND (region_level_1_id=$regionId OR region_level_2_id=$regionId OR region_level_3_id=$regionId)" : '')
+        $categoryField = 'category_level_' . $category->getLevel() . '_id';
+        $regionField = $region && $region->getId() ? 'region_level_' . $region->getLevel() . '_id' : '';
+        $query = "SELECT id FROM ads WHERE $categoryField={$category->getId()}"
+            . ($regionField ? " AND $regionField={$region->getId()}" : '')
             . ' LIMIT 1';
 
-        return \Palto\Model\Ads::getDb()->queryFirstField($query) > 1;
+        return (bool)\Palto\Model\Ads::getDb()->queryFirstField($query);
     }
 
     private function saveUrls(string $path, string $fileName, array $urls, bool $checkSize = true)

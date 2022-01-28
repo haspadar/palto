@@ -22,6 +22,7 @@ use Palto\Config;
 </div>
 
 <script src="/js/jquery.min.js"></script>
+<script src="/js/cookies.js"></script>
 <script src="/js/slider.js?v=<?=hash_file('md5', $this->getPublicDirectory() . '/js/slider.js')?>"></script>
 <?php if ($this->getPartialVariable('js')) :?>
     <?php foreach ($this->getPartialVariable('js') as $js) :?>

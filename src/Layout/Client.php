@@ -6,6 +6,7 @@ use Palto\Ad;
 use Palto\Ads;
 use Palto\Categories;
 use Palto\Category;
+use Palto\Debug;
 use Palto\Directory;
 use Palto\Region;
 use Palto\Regions;
@@ -190,6 +191,6 @@ class Client extends Layout
      */
     public function getWithAdsCategories(?Category $parentCategory = null, int $count = 0): array
     {
-        return Categories::getWithAdsCategories($parentCategory, $count);
+        return Categories::getWithAdsCategories($parentCategory, $this->getRegion(), $count);
     }
 }

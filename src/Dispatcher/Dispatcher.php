@@ -13,6 +13,8 @@ abstract class Dispatcher
         $this->router = $router;
     }
 
+    abstract public function getTheme(): string;
+
     /**
      * @return Router
      */

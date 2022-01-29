@@ -12,11 +12,9 @@ class Update
         Cli::runCommands([
             'Copy Translates' => Cli::safeCopyTranslates(),
             'Copy Counters' => Cli::safeCopyCounters(),
-            'Copy Layouts' => Cli::safeCopyLayouts(),
             'Copy pylesos env' => Cli::safeCopyPylesosEnv(),
             'Copy layouts env' => Cli::safeCopyLayoutsEnv(),
             'Copy CSS' => Cli::safeCopyCss(),
-            'Copy Images' => Cli::safeCopyImg(),
             'Add Cron' => Cli::safeAddCron(),
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Update Htpasswd' => Cli::updateHtpasswd(),

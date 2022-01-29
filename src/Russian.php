@@ -10,7 +10,7 @@ class Russian
     {
         $titles = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'ноября', 'декабря'];
 
-        return $titles[intval($monthNumber) + 1];
+        return $titles[intval($monthNumber) + 1] ?? '';
     }
 
     public static function regionPrepositional(string $region): string

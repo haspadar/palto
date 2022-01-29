@@ -59,16 +59,16 @@ class Backup
 
     private static function getFiles(string $archiveName): array
     {
-        $layoutFiles = self::getDirectoryFiles(Directory::getLayoutsDirectory() . '/*', $archiveName . '/');
-        $cssFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/css/*', $archiveName . '/');
         $imgFiles = self::getDirectoryFiles(Directory::getRootDirectory() . '/public/img/*', $archiveName . '/');
 
         return array_merge([
+            Directory::getPublicDirectory() . '/css/styles.css' => $archiveName . '/public/css/styles.css',
+            Directory::getConfigsDirectory() . '/.layouts' => $archiveName . '/configs/.layouts',
+            Directory::getConfigsDirectory() . '/.translates' => $archiveName . '/configs/.translates',
+            Directory::getConfigsDirectory() . '/.pylesos' => $archiveName . '/configs/.pylesos',
             Directory::getRootDirectory() . '/' . Directory::PARSE_CATEGORIES_SCRIPT => $archiveName . '/' . Directory::PARSE_CATEGORIES_SCRIPT,
             Directory::getRootDirectory() . '/' . Directory::PARSE_ADS_SCRIPT => $archiveName . '/' . Directory::PARSE_ADS_SCRIPT,
         ],
-            $layoutFiles,
-            $cssFiles,
             $imgFiles
         );
     }

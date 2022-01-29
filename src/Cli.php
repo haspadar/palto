@@ -195,25 +195,11 @@ class Cli
         return "cp $configsDirectory/composer.json $rootDirectory";
     }
 
-    public static function safeCopyLayouts(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-
-        return "cp -R -n $rootDirectory/structure/layouts/client/* $rootDirectory/client/";
-    }
-
     public static function safeCopyCss(): string
     {
         $rootDirectory = Directory::getRootDirectory();
 
         return "cp -R -n $rootDirectory/structure/public/css/* $rootDirectory/public/css/";
-    }
-
-    public static function safeCopyImg(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-
-        return "cp -R -n $rootDirectory/structure/public/img $rootDirectory/public/";
     }
 
     public static function ignoreMac(): string

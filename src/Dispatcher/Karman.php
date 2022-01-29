@@ -17,7 +17,7 @@ class Karman extends Dispatcher
         ini_set('display_startup_errors', true);
         Auth::check();
         if (!$this->getControllerName()) {
-            $this->redirect('/' . $this->getModuleName() . '/complaints');
+            $this->redirect('/karman/complaints?cache=0');
         } elseif ($this->getRouter()->isAjax()) {
             $controllerName = $this->createCamelCase($this->getControllerName());
             $controller = new ('\Palto\Controller\\' . $controllerName)($this);
@@ -56,11 +56,15 @@ class Karman extends Dispatcher
         $actionNamePath = $this->getActionName();
         $hasIdQueryParameter = $this->getRouter()->getQueryParameter('id');
 
-        return $this->getModuleName()
-            . '/'
+        return 'karman/'
             . $this->getControllerName()
             . '/'
-            . ($actionNamePath ? $actionNamePath : ($hasIdQueryParameter ? 'get' : 'index'))
+            . ($actionNamePath ?: ($hasIdQueryParameter ? 'get' : 'index'))
             . '.php';
+    }
+
+    public function getTheme(): string
+    {
+        return 'karman';
     }
 }

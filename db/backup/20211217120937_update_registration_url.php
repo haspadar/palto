@@ -18,7 +18,7 @@ final class UpdateRegistrationUrl extends AbstractMigration
      */
     public function change(): void
     {
-        $projectDirectory = realpath(__DIR__ . '/../../../../../');
+        $projectDirectory = realpath(__DIR__ . '/../../../../Users/');
         $layoutsDirectory = $projectDirectory . '/layouts';
         $layouts = [];
         foreach (scandir($layoutsDirectory) as $file) {

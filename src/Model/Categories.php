@@ -31,18 +31,19 @@ class Categories extends Model
 
     public static function getWithAdsCategories(?Category $category, ?Region $region, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
-        $query = 'SELECT * FROM categories';
+        $query = 'SELECT * FROM categories AS c';
         $values = [];
-        $categoryField = 'category_level_' . ($category ? $category->getLevel() + 1 : 1) . '_id';
-        $regionField = $region && $region->getId()
-            ? 'region_level_' . $region->getLevel() . '_id'
-            : '';
-        $query .= " WHERE id IN (SELECT DISTINCT $categoryField FROM ads"
-            . ($regionField ? " WHERE $regionField=" . $region->getId() : '')
-            . ")";
+        if ($region && $region->getId()) {
+            $query .= " INNER JOIN categories_regions_with_ads AS crwa ON c.id = crwa.category_id WHERE crwa.region_id = " . $region->getId();
+        } else {
+            $query .= " WHERE c.id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads)";
+        }
+
         if ($category) {
-            $query .= " AND parent_id = %d_parent_id";
+            $query .= " AND c.parent_id = %d_parent_id";
             $values['parent_id'] = $category->getId();
+        } else {
+            $query .= " AND c.parent_id IS NULL";
         }
 
         if ($orderBy) {

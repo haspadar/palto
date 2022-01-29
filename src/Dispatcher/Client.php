@@ -6,10 +6,12 @@ use Palto\Auth;
 use Palto\Category;
 use Palto\Cli;
 use Palto\Config;
+use Palto\Debug;
 use Palto\Directory;
 use Palto\ExecutionTime;
 use Palto\Flash;
 use Palto\IP;
+use Palto\Layout\Layout;
 use Palto\Layouts;
 use Palto\Model\Regions;
 use Palto\Region;
@@ -41,7 +43,7 @@ class Client extends Dispatcher
 
         $this->checkPageExists();
         $layout = Layouts::create($this);
-        $layout->load($this->getLayoutName());
+        $layout->load($this->getTheme() . '/' . $this->getLayoutName());
         $executionTime->end();
         if (Config::isDebug() && !Cli::isCli()) {
             $this->showInfo($executionTime);
@@ -70,6 +72,25 @@ class Client extends Dispatcher
     public function getAd(): ?Ad
     {
         return $this->ad;
+    }
+
+    public function getTheme(): string
+    {
+        $foundTheme = '';
+        $existThemes = Directory::getThemes();
+        foreach ($existThemes as $existTheme) {
+            $themeSites = explode(',', Config::get('THEME_' . mb_strtoupper($existTheme) . '_SITES'));
+            if (in_array($_SERVER['SERVER_NAME'], $themeSites)) {
+                $foundTheme = $existTheme;
+                break;
+            }
+        }
+
+        if (!$foundTheme) {
+            $foundTheme = Config::get('THEME_DEFAULT') ?: $existThemes[0];
+        }
+
+        return $foundTheme;
     }
 
     private function showInfo(ExecutionTime $executionTime)
@@ -139,7 +160,7 @@ class Client extends Dispatcher
             $layoutName = Directory::LAYOUT_404;
         }
 
-        return $this->getModuleName() . '/' . $layoutName;
+        return $layoutName;
     }
 
     private function getStaticLayout(Url $url): string
@@ -148,7 +169,7 @@ class Client extends Dispatcher
         if (isset($this->staticLayouts[$path])
             && file_exists(Directory::getLayoutsDirectory()
                 . '/'
-                . $this->getModuleName()
+                . $this->getTheme()
                 . '/static/'
                 . $this->staticLayouts[$path]
             )

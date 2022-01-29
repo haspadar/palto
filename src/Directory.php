@@ -62,6 +62,14 @@ class Directory
         return self::getRootDirectory() . '/structure';
     }
 
+    public static function getThemes(): array
+    {
+        return array_filter(
+            Directory::getDirectories(self::getLayoutsDirectory()),
+            fn($directory) => substr($directory, -6) == '_theme'
+        );
+    }
+
     public static function getLayoutsDirectory(): string
     {
         $layoutsDirectory = isset($_GET['layouts']) ? $_GET['layouts'] : 'structure_layouts';
@@ -86,6 +94,14 @@ class Directory
         }
 
         return self::$rootDirectory;
+    }
+
+    public static function getDirectories(string $directory): array
+    {
+        return array_filter(
+            scandir($directory),
+            fn($directory) => !in_array($directory, ['.', '..'])
+        );
     }
 
     public static function getDirectoryFilesRecursive(string $directory): array

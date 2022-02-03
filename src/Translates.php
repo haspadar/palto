@@ -12,12 +12,12 @@ class Translates
      */
     private static array $translates;
 
-    public static function get(string $name, Client $layout): string
+    public static function get(string $name, ?Client $layout): string
     {
         $translates = self::getTranslates();
         $translate = $translates[$name] ?? '';
         if ($translate) {
-            $translate = self::replacePlaceholders($translate, $layout, $translates);
+            $translate = $layout ? self::replacePlaceholders($translate, $layout, $translates) : $translate;
             $translate = trim(strtr($translate, [
                 '-  -' => '-',
                 ': :' => ':',

@@ -1,0 +1,1 @@
+<?php \Palto\Debug::dump($this);

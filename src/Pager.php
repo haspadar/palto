@@ -2,53 +2,49 @@
 
 namespace Palto;
 
-use Palto\Dispatcher\Dispatcher;
-
 class Pager
 {
     private string $nextPageUrl = '';
 
     private string $previousPageUrl = '';
 
-    private Dispatcher $dispatcher;
+    private Url $url;
 
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct(Region $region, ?Category $category, int $pageNumber)
     {
-        $this->dispatcher = $dispatcher;
-        $pageNumber = $dispatcher->getRouter()->getPageNumber();
+        $this->url = new Url();
         $offset = $pageNumber * Ads::LIMIT;
         $nextPageAds =  \Palto\Ads::getAds(
-            $dispatcher->getRegion(),
-            $dispatcher->getCategory(),
+            $region,
+            $category,
             1,
             $offset
         );
         $hasNextPage = count($nextPageAds) > 0;
         if ($hasNextPage) {
-            $this->nextPageUrl = $this->getPageUrl($dispatcher->getRouter()->getPageNumber() + 1);
+            $this->nextPageUrl = $this->getPageUrl($pageNumber + 1);
         }
 
         if ($pageNumber > 1) {
-            $this->previousPageUrl = $this->getPageUrl($dispatcher->getRouter()->getPageNumber() - 1);
+            $this->previousPageUrl = $this->getPageUrl($pageNumber - 1);
         }
     }
 
     private function getPageUrl(int $pageNumber): string
     {
-        $url = $this->dispatcher->getRouter()->getUrl();
-        $withoutPageNumberPath = $url->getPath();
+        $withoutPageNumberPath = $this->url->getPath();
 
         return $withoutPageNumberPath
             . ($pageNumber > 1 ? '/' . $pageNumber : '')
-            . ($this->dispatcher->getRouter()->getQueryParameters()
-                ? '?' . http_build_query($this->dispatcher->getRouter()->getQueryParameters())
+            . ($this->url->getQueryParameters()
+                ? '?' . http_build_query($this->url->getQueryParameters())
                 : ''
             );
     }
 
     public function getPageNumber(): int
     {
-        return $this->dispatcher->getRouter()->getPageNumber();
+        return $this->url->getPageNumber();
     }
 
     /**

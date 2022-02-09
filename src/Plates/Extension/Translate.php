@@ -3,27 +3,28 @@ namespace Palto\Plates\Extension;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
+use Palto\Russian;
 use Palto\Translates;
 
 class Translate implements ExtensionInterface
 {
+    private Engine $engine;
+
     public function register(Engine $engine)
     {
-        $engine->registerFunction('translate', [$this, 'getObject']);
+        $this->engine = $engine;
+        $engine->registerFunction('translate', [$this, 'get']);
     }
 
-    public function getObject(): self
+    public function get(string $name): string
     {
-        return $this;
-    }
-
-    public function get(string $name)
-    {
-        return Translates::get($name, null);
-    }
-
-    public function placeholders()
-    {
-
+        return Translates::removeExtra(
+            Translates::replacePlaceholders(
+                Translates::get($name),
+                $this->engine->getData()['region'],
+                $this->engine->getData()['category'],
+                $this->engine->getData()['ad'],
+            )
+        );
     }
 }

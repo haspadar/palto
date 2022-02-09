@@ -43,19 +43,6 @@ class Url
         return $this->path;
     }
 
-//    public static function normalizeRelative(string $url): string
-//    {
-//        if (mb_substr($url, 0, 1) != '/') {
-//            $url = '/' . $url;
-//        }
-//
-//        if (mb_substr($url, -1) == '/') {
-//            $url = mb_substr($url, 0, -1);
-//        }
-//
-//        return $url;
-//    }
-
     public function getRegionUrl(): string
     {
         $parts = self::getUrlParts($this->path);
@@ -67,11 +54,23 @@ class Url
     {
         $parts = $this->getUrlParts($this->path);
         array_shift($parts);
-        if (self::isAdPage($this->path)) {
+        if (self::isAdPage()) {
             array_pop($parts);
         }
 
         return array_values(array_filter($parts));
+    }
+
+    public function getCategoryUrl(): string
+    {
+        $categoriesUrls = $this->getCategoriesUrls();
+
+        return $categoriesUrls[count($categoriesUrls) - 1] ?? '';
+    }
+
+    public function getCategoryLevel(): int
+    {
+        return count($this->getCategoriesUrls());
     }
 
     public function getQueryParameters(): array

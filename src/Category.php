@@ -95,7 +95,7 @@ class Category
             $childrenIds = [];
             $nextLevelCategoriesIds = [$this->getId()];
             $level = $this->getLevel();
-            while ($nextLevelCategoriesIds = Categories::getChildLevelCategoriesIds($nextLevelCategoriesIds, ++$level)) {
+            while ($nextLevelCategoriesIds = Categories::getChildrenIds($nextLevelCategoriesIds, ++$level)) {
                 $childrenIds = array_merge($nextLevelCategoriesIds, $childrenIds);
             }
 
@@ -157,5 +157,10 @@ class Category
     public function getEmoji(): string
     {
         return $this->category['emoji'] ?? '';
+    }
+
+    public function setChildren(array $children)
+    {
+        $this->children = $children;
     }
 }

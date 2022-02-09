@@ -69,7 +69,7 @@
                 <h1 class="h2"><?=$this->getPartialVariable('title')?></h1>
             </div>
 
-            <?php if ($flashMessage = \Palto\Flash::get()) :?>
+            <?php if ($flashMessage = \Palto\Flash::receive()) :?>
                 <?php $decoded = json_decode($flashMessage, JSON_OBJECT_AS_ARRAY)?>
                 <div class="alert alert-<?=$decoded['type']?> alert-dismissible mt-2 fade show" role="alert">
                     <?=$decoded['message']?>

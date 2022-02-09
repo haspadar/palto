@@ -191,6 +191,6 @@ class Client extends Layout
      */
     public function getWithAdsCategories(?Category $parentCategory = null, int $count = 0): array
     {
-        return Categories::getWithAdsCategories($parentCategory, $this->getRegion(), $count);
+        return Categories::getLiveCategories($parentCategory, $this->getRegion(), $count);
     }
 }

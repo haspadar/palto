@@ -17,31 +17,14 @@ $router = new Router();
 
 $parsed = new stdClass();
 // Define routes
-$router->get('/', '\Palto\Controller\Client@index');
+$router->get('/', '\Palto\Controller\Client@showIndex');
 //$router->get('/', function() use ($templatesEngine, $parsed) {
 //    $parsed->template = $templatesEngine->make('index');
 //    $templatesEngine->addData(['name' => 'Jonathan']);
 //    echo 'Index Page Contents';
 //});
-
-$router->get('/(\w+)(/\d+)?', '\Palto\Controller\Client@region');
-//$router->get('/(\w+)(/\d+)?', function($region, $pageNumber) use ($templatesEngine, $parsed) {
-//    $parsed->template = $templatesEngine->make('list');
-//    $templatesEngine->addData(['page' => 'Jonathan']);
-//    Debug::dump($pageNumber);
-//    echo 'Region Page Contents';
-//});
-$router->get('/(\w+)/(\w+)(/\w+)?(/\w+)?(/\d+)?', '\Palto\Controller\Client@category');
-//$router->get('/(\w+)/(\w+)(/\w+)?(/\w+)?(/\d+)?', function($region, $categoryLevel1, $categoryLevel2 = null, $categoryLevel3 = null, $pageNumber = null) {
-//    Debug::dump($region);
-//    Debug::dump($categoryLevel1);
-//    Debug::dump($categoryLevel2);
-//    Debug::dump($categoryLevel3);
-//    Debug::dump($pageNumber);
-//    echo 'Category Page Contents';
-//});
-
-$router->get('/(\w+)/(\w+)(/\w+)?(/\w+)?/ad(\d+)', '\Palto\Controller\Client@ad');
+$word = "[a-zA-Z0-9_-]";
+$router->get("/($word+)/($word+)(/$word+)?(/$word+)?/ad(\d+)", '\Palto\Controller\Client@showAd');
 //$router->get('/(\w+)/(\w+)(/\w+)?(/\w+)?/ad(\d+)', function($region, $categoryLevel1, $categoryLevel2 = null, $categoryLevel3 = null, $adId = null) {
 //    Debug::dump($region);
 //    Debug::dump($categoryLevel1);
@@ -51,7 +34,26 @@ $router->get('/(\w+)/(\w+)(/\w+)?(/\w+)?/ad(\d+)', '\Palto\Controller\Client@ad'
 //    echo 'Ad Page Contents';
 //});
 
-$router->set404('\Palto\Controller\Client@notFound');
+
+$router->get("/($word+)(/\d+)?", '\Palto\Controller\Client@showRegion');
+//$router->get('/(\w+)(/\d+)?', function($region, $pageNumber) use ($templatesEngine, $parsed) {
+//    $parsed->template = $templatesEngine->make('list');
+//    $templatesEngine->addData(['page' => 'Jonathan']);
+//    Debug::dump($pageNumber);
+//    echo 'Region Page Contents';
+//});
+$router->get("/($word+)/($word+)(/$word+)?(/$word+)?(/\d+)?", '\Palto\Controller\Client@showCategory');
+//$router->get('/(\w+)/(\w+)(/\w+)?(/\w+)?(/\d+)?', function($region, $categoryLevel1, $categoryLevel2 = null, $categoryLevel3 = null, $pageNumber = null) {
+//    Debug::dump($region);
+//    Debug::dump($categoryLevel1);
+//    Debug::dump($categoryLevel2);
+//    Debug::dump($categoryLevel3);
+//    Debug::dump($pageNumber);
+//    echo 'Category Page Contents';
+//});
+
+
+$router->set404('\Palto\Controller\Client@showNotFound');
 //$router->set404(function() {
 //    header('HTTP/1.1 404 Not Found');
 //    echo 'Hui';

@@ -6,6 +6,7 @@ use League\Plates\Engine;
 use Palto\Ad;
 use Palto\Ads;
 use Palto\Breadcrumbs;
+use Palto\CategoriesRegionsWithAds;
 use Palto\Category;
 use Palto\Config;
 use Palto\Debug;

@@ -153,8 +153,10 @@ class Category
     public function getChildren(): array
     {
         if (!isset($this->children)) {
-            $childrenIds = $this->getChildrenIds();
-            $this->children = Categories::getCategoriesByIds($childrenIds);
+            $this->children = array_map(
+                fn($category) => new self($category),
+                Categories::getChildren([$this->getId()], $this->getLevel() + 1)
+            );
         }
 
         return $this->children;
@@ -175,8 +177,10 @@ class Category
         return $this->category['emoji'] ?? '';
     }
 
-    public function setLiveChildren(array $children)
+    public function isParentsEquals(array $urls): bool
     {
-        $this->liveChildren = $children;
+        $parentUrls = array_map(fn(self $category) => $category->getUrl(), $this->getParents());
+
+        return $urls == $parentUrls;
     }
 }

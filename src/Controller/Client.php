@@ -23,11 +23,8 @@ use Palto\Url;
 class Client
 {
     private Engine $templatesEngine;
-
     private Url $url;
-
     private ?Region $region;
-
     private ?Category $category;
     private ?Ad $ad;
 
@@ -81,7 +78,9 @@ class Client
 
     public function showCategory()
     {
-        if ($this->region && $this->category) {
+        $parentUrls = $this->url->getCategoriesUrls();
+        array_pop($parentUrls);
+        if ($this->region && $this->category && $this->category->isParentsEquals($parentUrls)) {
             $this->templatesEngine->addData([
                 'title' => $this->translate('list_title'),
                 'description' => $this->translate('list_description'),
@@ -115,7 +114,13 @@ class Client
     public function showNotFound()
     {
         header('HTTP/1.1 404 Not Found');
-        Debug::dump('Not');
+        $this->templatesEngine->addData([
+            'title' => '404',
+            'description' => '404',
+            'h1' => $this->url->isAdPage() ? $this->translate('404_h1_ad') : $this->translate('404_h1_list'),
+            'h2' => $this->translate('404_h2'),
+        ]);
+        echo $this->templatesEngine->make('404');
     }
     
     private function translate(string $translate): string

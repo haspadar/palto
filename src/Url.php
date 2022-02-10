@@ -130,7 +130,9 @@ class Url
     {
         $last = $this->getLastPart($this->path);
 
-        return mb_substr($last, 0, 2) == 'ad' && is_numeric($this->getAdId());
+        return mb_substr($last, 0, 2) == 'ad'
+            && is_numeric($this->getAdId())
+            && $this->getAdId();
     }
 
     public function getPageNumber(): int

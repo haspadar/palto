@@ -1,25 +1,11 @@
-<?php
+<?php /** @var $this League\Plates\Template\Template */?>
+<?php $this->layout('layout');?>
 
-/**
- * @var $this \Palto\Layout\Client
- */
-$this->partial('header.inc', [
-    'title' => '404',
-    'description' => '404',
-]);
-?>
-    <br/>
-<?php if ($this->getAd()) :?>
-    <h1><?=$this->translate('404_h1_ad')?></h1>
-<?php else :?>
-    <h1><?=$this->translate('404_h1_list')?></h1>
-<?php endif;?>
-
-<h2><?=$this->translate('404_h2')?></h2>
-<?php foreach ($this->getWithAdsCategories() as $level1Category) :?>
+<h2><?=$this->data['h2']?></h2>
+<?php foreach (\Palto\Categories::getLiveCategories($this->data['category'], $this->data['region']) as $level1Category) :?>
     <div class="span-d">
         <p>
-            <a href="<?=$this->generateCategoryUrl($level1Category)?>">
+            <a href="<?=$level1Category->generateUrl($this->data['region'])?>">
                 <?php if ($level1Category->getEmoji()) :?>
                     <?=$level1Category->getEmoji()?>
                 <?php elseif ($level1Category->getIconUrl()) :?>
@@ -32,6 +18,4 @@ $this->partial('header.inc', [
             </a>
         </p>
     </div>
-<?php endforeach;?>
-
-<?php $this->partial('footer.inc', []);
+<?php endforeach;

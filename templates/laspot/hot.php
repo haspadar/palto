@@ -1,5 +1,6 @@
 <?php /** @var $this League\Plates\Template\Template */?>
-<?php use Palto\Ads; ?>
+<?php use Palto\Ads;
+use Palto\Config; ?>
 <?php $this->layout('layout');?>
 
 <?php if ($this->data['regions']) :?>
@@ -17,7 +18,10 @@
 <?php endif;?>
 
 <?php /** @var $level1Category \Palto\Category */?>
-<?php foreach ($this->data['categories'] as $level1Category) :?>
+<?php foreach (\Palto\Categories::getLiveCategoriesWithChildren(
+    Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1'),
+    Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
+) as $level1Category) :?>
     <div class="span-d">
         <p><a href="<?=$level1Category->generateUrl($this->data['region'])?>">
                 <?php if ($level1Category->getEmoji()) :?>
@@ -31,7 +35,7 @@
                 <strong> <?=$level1Category->getTitle()?></strong>
             </a>
         </p>
-        <?php if ($level2Categories = $level1Category->getChildren()) :?>
+        <?php if ($level2Categories = $level1Category->getLiveChildren($this->data['region'], Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) :?>
             <ul>
                 <?php foreach ($level2Categories as  $level2Category) :?>
                     <li><a href="<?=$level2Category->generateUrl($this->data['region'])?>"><?=$level2Category->getTitle()?></a></li>

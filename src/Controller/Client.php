@@ -58,15 +58,7 @@ class Client
             'h1' => $isHot ? $this->translate('hot_h1') : $this->translate('index_h1'),
             'regions' => !is_numeric($limit) || intval($limit) > 0
                 ? Regions::getWithAdsRegions(null, intval($limit))
-                : [],
-            'categories' => $isHot
-                ? \Palto\Categories::getLiveCategoriesWithChildren(
-                    null,
-                    null,
-                    Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1'),
-                    Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
-                )
-                : \Palto\Categories::getLiveCategoriesWithChildren()
+                : []
         ]);
         echo $this->templatesEngine->make($isHot ? 'hot' : 'index');
     }

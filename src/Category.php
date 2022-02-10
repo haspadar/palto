@@ -11,6 +11,7 @@ class Category
      */
     private array $parents;
     private array $children;
+    private array $liveChildren;
     private array $childrenIds;
     private array $category;
 
@@ -134,6 +135,21 @@ class Category
     /**
      * @return Category[]
      */
+    public function getLiveChildren(?Region $region, int $limit = 0): array
+    {
+        if (!isset($this->liveChildren)) {
+            $this->liveChildren = array_map(
+                fn($category) => new self($category),
+                Categories::getLiveCategories($this, $region, $limit)
+            );
+        }
+
+        return $this->liveChildren;
+    }
+
+    /**
+     * @return Category[]
+     */
     public function getChildren(): array
     {
         if (!isset($this->children)) {
@@ -159,8 +175,8 @@ class Category
         return $this->category['emoji'] ?? '';
     }
 
-    public function setChildren(array $children)
+    public function setLiveChildren(array $children)
     {
-        $this->children = $children;
+        $this->liveChildren = $children;
     }
 }

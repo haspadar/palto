@@ -20,7 +20,7 @@ class Categories extends Model
             : [];
     }
 
-    public static function getChildren(array $categoriesIds, int $level, int $limit): array
+    public static function getChildren(array $categoriesIds, int $level, int $limit = 0): array
     {
         return $limit
             ? self::getDb()->query(
@@ -40,25 +40,13 @@ class Categories extends Model
         return array_column(self::getChildren($categoriesIds, $level), 'id');
     }
 
-    public static function getLiveCategoriesWithChildren(?Category $category, ?Region $region, int $limit = 0, int $childrenMinimumCount = 5): array
+    public static function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array
     {
         $query = 'SELECT c.*, COUNT(c2.id) AS count FROM categories AS c INNER JOIN categories AS c2 ON c.id = c2.parent_id';
-        $values = [];
-        if ($region && $region->getId()) {
-            $query .= " INNER JOIN categories_regions_with_ads AS crwa ON c.id = crwa.category_id WHERE crwa.region_id = " . $region->getId();
-        } else {
-            $query .= " WHERE c.id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads)";
-        }
-
-        if ($category) {
-            $query .= " AND c.parent_id = %d_parent_id";
-            $values['parent_id'] = $category->getId();
-        } else {
-            $query .= " AND c.parent_id IS NULL";
-        }
-
-        $query .= ' GROUP BY c.id HAVING count > %d_count';
-        $values['count'] = $childrenMinimumCount;
+        $query .= " WHERE c.id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads)";
+        $query .= " AND c.parent_id IS NULL";
+        $query .= ' GROUP BY c.id HAVING count >= %d_count';
+        $values = ['count' => $childrenMinimumCount];
         if ($limit) {
             $query .= ' LIMIT %d_limit';
             $values['limit'] = $limit;

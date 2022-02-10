@@ -4,6 +4,7 @@ namespace Palto;
 
 use Cocur\Slugify\Slugify;
 use DateTime;
+use Monolog\Handler\ZendMonitorHandler;
 
 class Categories
 {
@@ -53,27 +54,13 @@ class Categories
         return array_map(fn($category) => new Category($category), $categories);
     }
 
-    public static function getLiveCategoriesWithChildren(
-        ?Category $parentCategory = null,
-        ?Region $region = null,
-        $count = 0,
-        int $childrenMinimumCount = 0
-    ): array {
+    public static function getLiveCategoriesWithChildren($count = 0, int $childrenMinimumCount = 0): array
+    {
         $rows = $childrenMinimumCount > 0
-            ? Model\Categories::getLiveCategoriesWithChildren($parentCategory, $region, $count, $childrenMinimumCount)
-            : Model\Categories::getLiveCategories($parentCategory, $region, $count);
-        $children = $rows
-            ? self::getChildren(
-                array_map(fn($category) => $category['id'], $rows),
-                $rows[0]['level'] + 1,
-                $childrenMinimumCount
-            ) : [];
-        $categories = array_map(fn($category) => new Category($category), $rows);
-        foreach ($categories as $category) {
-            $category->setChildren($children[$category->getId()] ?? []);
-        }
+            ? Model\Categories::getLiveCategoriesWithChildren($count, $childrenMinimumCount)
+            : Model\Categories::getLiveCategories(null, null, $count);
 
-        return $categories;
+        return array_map(fn($category) => new Category($category), $rows);
     }
 
     /**

@@ -29,7 +29,7 @@
             </a>
         </p>
         <?php /** @var $level2Category \Palto\Category */?>
-        <?php if ($level2Categories = $level1Category->getChildren()) :?>
+        <?php if ($level2Categories = $level1Category->getLiveChildren($this->data(['regionx']))) :?>
             <ul>
                 <?php foreach ($level2Categories as  $level2Category) :?>
                     <li><a href="<?=$level2Category->generateUrl($region ?? null)?>"><?=$level2Category->getTitle()?></a></li>

@@ -67,8 +67,8 @@ class Client
     {
         if ($this->region) {
             $this->templatesEngine->addData([
-                'title' => 'TITLE',
-                'description' => 'DESCRIPTION',
+                'title' => $this->translate('list_title'),
+                'description' => $this->translate('list_description'),
                 'h1' => $this->translate('list_h1'),
                 'ads' => Ads::getAds($this->region, null),
                 'pager' => new Pager($this->region, null, max($pageNumber, 1)),

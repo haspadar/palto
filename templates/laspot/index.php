@@ -14,9 +14,9 @@
 <h2><?=$this->translate('Категории')?></h2>
 
 <?php /** @var $level1Category \Palto\Category */?>
-<?php foreach (\Palto\Categories::getLiveCategories(null, $region ?? null) as $level1Category) :?>
+<?php foreach (\Palto\Categories::getLiveCategories(null, $this->data['region']) as $level1Category) :?>
     <div class="span-d">
-        <p><a href="<?=$level1Category->generateUrl($region ?? null)?>">
+        <p><a href="<?=$level1Category->generateUrl($this->data['region'])?>">
                 <?php if ($level1Category->getEmoji()) :?>
                     <?=$level1Category->getEmoji()?>
                 <?php elseif ($level1Category->getIconUrl()) :?>
@@ -29,10 +29,10 @@
             </a>
         </p>
         <?php /** @var $level2Category \Palto\Category */?>
-        <?php if ($level2Categories = $level1Category->getLiveChildren($this->data(['regionx']))) :?>
+        <?php if ($level2Categories = $level1Category->getLiveChildren($this->data(['region']))) :?>
             <ul>
                 <?php foreach ($level2Categories as  $level2Category) :?>
-                    <li><a href="<?=$level2Category->generateUrl($region ?? null)?>"><?=$level2Category->getTitle()?></a></li>
+                    <li><a href="<?=$level2Category->generateUrl($this->data['region'])?>"><?=$level2Category->getTitle()?></a></li>
                 <?php endforeach;?>
             </ul>
         <?php endif;?>

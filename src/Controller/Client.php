@@ -102,6 +102,7 @@ class Client
             $this->templatesEngine->addData([
                 'title' => $this->translate('ad_title'),
                 'description' => Filter::shortText($this->ad->getText()),
+                'h1' => $this->translate('ad_h1'),
                 'ad' => $this->ad,
                 'breadcrumbs' => Breadcrumbs::getUrls($this->region, $this->category)
             ]);

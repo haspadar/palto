@@ -10,8 +10,6 @@ use Palto\Categories; ?>
     <?php $this->end() ?>
 <?php endif;?>
 
-    <?php $this->insert('partials/breadcrumbs');?>
-    <h1><?=$this->translate('ad_h1')?></h1>
 <?=\Palto\Counters::get('google')?>
 <?php if ($ad->getImages()) :?>
     <!-- Slideshow container -->

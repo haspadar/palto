@@ -83,8 +83,8 @@ class Client
     {
         if ($this->region && $this->category) {
             $this->templatesEngine->addData([
-                'title' => 'TITLE',
-                'description' => 'DESCRIPTION',
+                'title' => $this->translate('list_title'),
+                'description' => $this->translate('list_description'),
                 'h1' => $this->translate('list_h1'),
                 'ads' => Ads::getAds($this->region, $this->category),
                 'pager' => new Pager($this->region, $this->category, max($this->url->getPageNumber(), 1)),

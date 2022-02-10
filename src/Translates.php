@@ -201,30 +201,32 @@ class Translates
         return '';
     }
 
-    public static function replacePlaceholders(string $translate, Region $region, ?Category $category, ?Ad $ad)
+    public static function replacePlaceholders(string $translate, ?Region $region, ?Category $category, ?Ad $ad)
     {
+        $regionTitle = $region ? $region->getTitle() : '';
+
         return trim(strtr($translate, [
             ':AD' => $ad ? $ad->getTitle() : '',
             ':ADDRESS_WITH_REGION' => (
                 $ad && $ad->getAddress()
                     ? $ad->getAddress() . ', '
                     : ''
-                ) . $region->getTitle(),
+                ) . $regionTitle,
             ':ADDRESS' => $ad && $ad->getAddress()
                 ? $ad->getAddress()
                 : '',
             ':CATEGORIES' => $category
                 ? implode(' - ', $category->getWithParentsTitles())
                 : '',
-            ':REGION' => $region->getTitle(),
-            ':REGION_PREPOSITIONAL' => Russian::regionPrepositional($region->getTitle()),
+            ':REGION' => $regionTitle,
+            ':REGION_PREPOSITIONAL' => $region ? Russian::regionPrepositional($region->getTitle()) : '',
             ':CATEGORY_IN_REGION' => $category
                 ? $category->getTitle()
                     . ' '
                     . ($translates['в'] ?? 'in')
                     . ' '
-                    . Russian::regionPrepositional($region->getTitle())
-                : $region->getTitle(),
+                    . ($region ? Russian::regionPrepositional($region->getTitle()) : '')
+                : $regionTitle,
         ]));
     }
 

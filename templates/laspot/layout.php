@@ -82,7 +82,9 @@ use Palto\Categories;
                     <?= $this->insert('partials/breadcrumbs'); ?>
                 <?php endif; ?>
 
-                <h1><?= $this->data['h1'] ?></h1>
+                <?php if ($this->data['h1'] ?? '') :?>
+                    <h1><?= $this->data['h1'] ?></h1>
+                <?php endif;?>
 
                 <?php if ($this->data['flash']) : ?>
                     <div class="alert"><?= $this->data['flash'] ?></div>

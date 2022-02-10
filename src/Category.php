@@ -78,11 +78,11 @@ class Category
         return $this->category['url'];
     }
 
-    public function generateUrl(Region $region): Url
+    public function generateUrl(?Region $region): Url
     {
         $parents = $this->getParents();
         $parts = array_filter(array_merge(
-            [$region->getUrl()],
+            [$region ? $region->getUrl() : ''],
             array_map(fn (Category $category) => $category->getUrl(), $parents),
             [$this->getUrl()]
         ));

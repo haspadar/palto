@@ -7,7 +7,7 @@ use DateTime;
 
 class Regions
 {
-    public static function getWithAdsRegions(?Region $parentRegion, $limit): array
+    public static function getWithAdsRegions(?Region $parentRegion = null, $limit = 0): array
     {
         $regions = Model\Regions::getWithAdsRegions($parentRegion, $limit);
 

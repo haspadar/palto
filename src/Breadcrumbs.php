@@ -4,14 +4,14 @@ namespace Palto;
 
 class Breadcrumbs
 {
-    public static function getUrls(Region $region, ?Category $category): array
+    public static function getUrls(?Region $region, ?Category $category): array
     {
         $defaultRegion = new Region([]);
         $urls = [[
             'title' => $defaultRegion->getTitle(),
             'url' => $defaultRegion->generateUrl(),
         ]];
-        if ($region->generateUrl() != $defaultRegion->generateUrl()) {
+        if ($region && $region->generateUrl() != $defaultRegion->generateUrl()) {
             $urls[] = [
                 'title' => $region->getTitle(),
                 'url' => $region->generateUrl()

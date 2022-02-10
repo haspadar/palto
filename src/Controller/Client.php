@@ -60,6 +60,36 @@ class Client
         echo $this->templatesEngine->make($isHot ? 'hot' : 'index');
     }
 
+    public function showRegistration()
+    {
+        $this->templatesEngine->addData([
+            'title' => $this->translate('registration_title'),
+            'description' => $this->translate('registration_description'),
+            'h1' => $this->translate('index_h1'),
+        ]);
+        echo $this->templatesEngine->make('registration');
+    }
+
+    public function showRegionsList()
+    {
+        $this->templatesEngine->addData([
+            'title' => $this->translate('regions_title'),
+            'description' => $this->translate('regions_description'),
+            'h1' => $this->translate('regions_h1'),
+        ]);
+        echo $this->templatesEngine->make('regions-list');
+    }
+
+    public function showCategoriesList()
+    {
+        $this->templatesEngine->addData([
+            'title' => $this->translate('categories_title'),
+            'description' => $this->translate('categories_description'),
+            'h1' => $this->translate('categories_h1'),
+        ]);
+        echo $this->templatesEngine->make('categories-list');
+    }
+
     public function showRegion($regionUrl, $pageNumber)
     {
         if ($this->region) {

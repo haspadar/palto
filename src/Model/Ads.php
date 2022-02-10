@@ -11,16 +11,12 @@ class Ads extends Model
 {
     public static function getById(int $adId): array
     {
-        $query = self::getAdsQuery();
-
-        return self::getDb()->queryFirstRow($query . ' WHERE a.id = %d', $adId) ?: [] ;
+        return self::getDb()->queryFirstRow('SELECT a.* FROM ads AS a WHERE a.id = %d', $adId) ?: [] ;
     }
 
     public static function getByUrl(Url $url): array
     {
-        $query = self::getAdsQuery();
-
-        return self::getDb()->queryFirstRow($query . ' WHERE a.url = %s', $url->getFull()) ?: [];
+        return self::getDb()->queryFirstRow('SELECT a.* FROM ads AS a WHERE a.url = %s', $url->getFull()) ?: [];
     }
 
     public static function getAds(
@@ -32,9 +28,32 @@ class Ads extends Model
         string $orderBy
     ): array
     {
-        $query = self::getAdsQuery();
-        [$where, $values] = self::getAdsWhere($region, $category, $excludeId);
-        $query .= $where;
+        $query = 'SELECT a.* FROM ads AS a ';
+        if ($region || $category) {
+            $query .= ' INNER JOIN ads_links AS al ON a.id = al.ad_id WHERE';
+            $values = [];
+            if ($category) {
+                $query .= ' al.category_id = %d_category_id AND al.category_level = %d_category_level';
+                $values['category_id'] = $category->getId();
+                $values['category_level'] = $category->getLevel();
+            }
+
+            if ($region && $region->getId()) {
+                $query .= ' al.region_id = %d_region_id AND al.region_level = %d_region_level';
+                $values['region_id'] = $region->getId();
+                $values['region_level'] = $region->getLevel();
+            }
+        }
+
+        if ($excludeId) {
+            if (!$category && !$region) {
+                $query .= ' WHERE';
+            }
+
+            $query .= ' a.id <> %d_exclude_id';
+            $values['exclude_id'] = $excludeId;
+        }
+
         $query .= ' ORDER BY ' . $orderBy . ' LIMIT %d_limit OFFSET %d_offset';
         $values['limit'] = $limit;
         $values['offset'] = $offset;
@@ -52,44 +71,9 @@ class Ads extends Model
         return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
     }
 
-    /**
-     * @return string
-     */
-    private static function getAdsQuery(): string
-    {
-        return 'SELECT a.*, c.title AS category_title, c.parent_id AS category_parent_id, c.level AS category_level,'
-            . ' c.url AS category_url, r.title AS region_title, r.parent_id AS parent_region_id,'
-            . ' r.level AS region_level, r.url AS region_url'
-            . ' FROM ads AS a LEFT JOIN categories AS c ON a.category_id = c.id'
-            . ' LEFT JOIN regions AS r ON a.region_id = r.id';
-    }
-
     public static function getAdLastTime(): ?string
     {
         return self::getDb()->queryFirstField("SELECT MAX(create_time) FROM ads");
-    }
-
-    private static function getAdsWhere(?Region $region, ?Category $category, int $excludeId): array
-    {
-        $query = ' WHERE ';
-        $values = [];
-        $where = [];
-        if ($category) {
-            $where[] = 'a.category_level_' . $category->getLevel() . '_id = %d_category';
-            $values['category'] = $category->getId();
-        }
-
-        if ($region && $region->getId()) {
-            $where[] = 'a.region_level_' . $region->getLevel() . '_id = %d_region';
-            $values['region'] = $region->getId();
-        }
-
-//        $where[] = 'a.deleted_time IS NULL';
-        $values['exclude'] = $excludeId;
-        $where[] = 'a.id <> %d_exclude';
-        $query .= implode(' AND ', $where);
-
-        return [$query, $values];
     }
 
     public static function markAsDeleted(int $adId)
@@ -108,8 +92,6 @@ class Ads extends Model
 
     public static function getByDonorUrl(string $donorUrl)
     {
-        $query = self::getAdsQuery();
-
-        return self::getDb()->queryFirstRow($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
+        return self::getDb()->queryFirstRow('SELECT a.* FROM ads AS a WHERE a.donor_url = %s', $donorUrl) ?: [] ;
     }
 }

@@ -19,7 +19,6 @@ class CategoriesRegionsWithAds
             } else {
                 \Palto\Model\CategoriesRegionsWithAds::add($category->getId(), null);
             }
-
         }
     }
 }

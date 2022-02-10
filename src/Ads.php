@@ -5,6 +5,7 @@ namespace Palto;
 use DateTime;
 use Palto\Model\AdsDetails;
 use Palto\Model\AdsImages;
+use Palto\Model\AdsLinks;
 use Palto\Model\DetailsFields;
 
 class Ads
@@ -83,10 +84,10 @@ class Ads
             $ad['title'] = Filter::get($ad['title']);
             $ad['text'] = Filter::get($ad['text']);
             $ad['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
-            $ad = self::addLevels($ad);
             try {
                 $adId = Model\Ads::add($ad);
                 CategoriesRegionsWithAds::add($ad['category_id'], $ad['region_id']);
+                self::addLinks($ad);
             } catch (\Exception $e) {
                 Logger::error(var_export($ad, true));
                 Logger::error($e->getTraceAsString());
@@ -171,25 +172,29 @@ class Ads
         return $grouped;
     }
 
-    private static function addLevels(array &$ad): array
+    private static function addLinks(array $ad)
     {
+        $categoryIds = [];
         if (isset($ad['category_id']) && $ad['category_id']) {
             $category = Categories::getById($ad['category_id']);
             while ($category) {
-                $ad['category_level_' . $category->getLevel() . '_id'] = $category->getId();
+                $categoryIds[$category->getLevel()] = $category->getId();
                 $category = $category->getParentId() ? Categories::getById($category->getParentId()) : null;
             }
         }
 
+        $regionIds = [];
         if (isset($ad['region_id']) && $ad['region_id']) {
             $region = Regions::getById($ad['region_id']);
             while ($region) {
-                $ad['region_level_' . $region->getLevel() . '_id'] = $region->getId();
+                $regionIds[$region->getLevel()] = $region->getId();
                 $region = $region->getParentId() ? Regions::getById($region->getParentId()) : null;
             }
+        } else {
+            $regionIds = [null];
         }
 
-        return $ad;
+        AdsLinks::add($ad['id'], $categoryIds, $regionIds);
     }
 
     private static function getByDonorUrl(string $donorUrl): ?Ad

@@ -18,7 +18,6 @@ use Palto\Categories;
     <link rel="stylesheet" href="/css/styles.css">
     <?= $this->section('styles') ?>
 
-
     <?php if (isset($pager) && $pager instanceof \Palto\Pager) : ?>
         <?php /** @var $pager \Palto\Pager */ ?>
         <?php if ($pager->getPreviousPageUrl()) : ?>
@@ -79,11 +78,11 @@ use Palto\Categories;
                     <div class="gcse-search"></div>
                 <?php endif; ?>
 
-                <?php if ($breadcrubms ?? []) : ?>
+                <?php if ($this->data['breadcrumbs']) : ?>
                     <?= $this->insert('partials/breadcrumbs'); ?>
                 <?php endif; ?>
 
-                <h1><?= $h1 ?? '' ?></h1>
+                <h1><?= $this->data['h1'] ?></h1>
 
                 <?php if ($this->data['flash']) : ?>
                     <div class="alert"><?= $this->data['flash'] ?></div>

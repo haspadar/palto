@@ -3,6 +3,7 @@
 namespace Palto\Controller;
 
 use League\Plates\Engine;
+use League\Plates\Extension\Asset;
 use Palto\Ad;
 use Palto\Ads;
 use Palto\Breadcrumbs;
@@ -32,6 +33,7 @@ class Client
     {
         $this->templatesEngine = new Engine(Directory::getRootDirectory() . '/templates/laspot');
         $this->templatesEngine->loadExtension(new Translate());
+        $this->templatesEngine->loadExtension(new Asset(Directory::getPublicDirectory(), false));
         $this->url = new Url();
         $this->region = Regions::getByUrl($this->url->getRegionUrl());
         $this->category = \Palto\Categories::getByUrl($this->url->getCategoryUrl(), $this->url->getCategoryLevel());

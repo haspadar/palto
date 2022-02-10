@@ -6,7 +6,7 @@ use Palto\Categories; ?>
 <?php /** @var $ad \Palto\Ad */?>
 <?php if ($ad->getCoordinates()) :?>
     <?php $this->push('styles') ?>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+        <link rel="stylesheet" href="<?=$this->asset('https://unpkg.com/leaflet@1.7.1/dist/leaflet.css')?>">
     <?php $this->end() ?>
 <?php endif;?>
 
@@ -124,8 +124,8 @@ use Palto\Categories; ?>
     <?=\Palto\Counters::get('google')?>
     <table class="serp">
         <?php foreach (Ads::getAds(
-            $region,
-            $category,
+            $this->data['region'],
+            $this->data['category'],
             5,
             0
         ) as $similarAd) :?>

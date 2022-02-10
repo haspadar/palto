@@ -14,15 +14,15 @@ use Palto\Categories;
     <meta name="description" content="<?= $this->translate($this->data['description']) ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/img/favicon.ico">
-    <link rel="stylesheet" href="/laspot-theme/css/styles.css">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="<?=$this->asset('/laspot-theme/css/styles.css')?>">
+    <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>">
     <?= $this->section('styles') ?>
 
     <?php if (isset($pager) && $pager instanceof \Palto\Pager) : ?>
         <?php /** @var $pager \Palto\Pager */ ?>
         <?php if ($pager->getPreviousPageUrl()) : ?>
             <meta name="robots" content="noindex, follow"/>
-            <link rel="prev" href="<?= $previousPageUrl ?? '' ?>">
+            <link rel="prev" href="<?= $pager->getPreviousPageUrl() ?>">
         <?php endif; ?>
 
         <?php if ($pager->getNextPageUrl()) : ?>
@@ -82,7 +82,7 @@ use Palto\Categories;
                     <?= $this->insert('partials/breadcrumbs'); ?>
                 <?php endif; ?>
 
-                <?php if ($this->data['h1'] ?? '') :?>
+                <?php if ($this->data['h1']) :?>
                     <h1><?= $this->data['h1'] ?></h1>
                 <?php endif;?>
 
@@ -107,11 +107,11 @@ use Palto\Categories;
         <button class="button cookie_accept"><?= $this->translate('СОГЛАСЕН') ?></button>
     </div>
 
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/cookies.js"></script>
-    <script src="/js/slider.js"></script>
-    <script src="/js/moderation.js"></script>
-    <script src="/js/script.js"></script>
+    <script src="<?=$this->asset('/js/jquery.min.js')?>"></script>
+    <script src="<?=$this->asset('/js/cookies.js')?>"></script>
+    <script src="<?=$this->asset('/js/slider.js')?>"></script>
+    <script src="<?=$this->asset('/js/moderation.js')?>"></script>
+    <script src="<?=$this->asset('/js/script.js')?>"></script>
     <?= $this->section('scripts') ?>
 </body>
 </html>

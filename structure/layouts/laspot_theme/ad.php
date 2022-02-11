@@ -24,7 +24,7 @@ $this->partial('header.inc', [
         <?php foreach ($this->getAd()->getImages() as $key => $image) :?>
             <div class="mySlides fade">
                 <div class="numbertext"><?=$key + 1?> / <?=count($this->getAd()->getImages())?></div>
-                <img src="<?=$image['small']?>;s=640x640" style="width:100%" loading="lazy">
+                <img src="<?=$image['small']?>" style="width:100%" loading="lazy">
             </div>
         <?php endforeach;?>
 

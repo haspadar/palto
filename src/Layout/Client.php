@@ -6,6 +6,7 @@ use Palto\Ad;
 use Palto\Ads;
 use Palto\Categories;
 use Palto\Category;
+use Palto\Config;
 use Palto\Debug;
 use Palto\Directory;
 use Palto\Region;
@@ -99,11 +100,9 @@ class Client extends Layout
     {
         return Ads::getAds(
             $this->getRegion(),
-            $this->getCategory(),
+            Categories::getById(Config::get('HOT_LAYOUT_HOT_CATEGORY')),
             $limit,
-            ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * $limit,
-            0,
-            'id ASC'
+            ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * $limit
         );
     }
 

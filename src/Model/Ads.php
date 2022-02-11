@@ -29,35 +29,36 @@ class Ads extends Model
     ): array
     {
         $query = 'SELECT a.* FROM ads AS a ';
+        $where = [];
         if ($region || $category) {
-            $query .= ' INNER JOIN ads_links AS al ON a.id = al.ad_id WHERE';
+            $query .= ' INNER JOIN ads_links AS al ON a.id = al.ad_id';
             $values = [];
             if ($category) {
-                $query .= ' al.category_id = %d_category_id AND al.category_level = %d_category_level';
+                $where[] = ' al.category_id = %d_category_id AND al.category_level = %d_category_level';
                 $values['category_id'] = $category->getId();
                 $values['category_level'] = $category->getLevel();
             }
 
             if ($region && $region->getId()) {
-                $query .= ' al.region_id = %d_region_id AND al.region_level = %d_region_level';
+                $where[] = ' al.region_id = %d_region_id AND al.region_level = %d_region_level';
                 $values['region_id'] = $region->getId();
                 $values['region_level'] = $region->getLevel();
             }
         }
 
         if ($excludeId) {
-            if (!$category && !$region) {
-                $query .= ' WHERE';
-            }
-
-            $query .= ' a.id <> %d_exclude_id';
+            $where[] = ' a.id <> %d_exclude_id';
             $values['exclude_id'] = $excludeId;
+        }
+
+        if ($where) {
+            $query .= ' WHERE ' . implode(' AND ', $where);
         }
 
         $query .= ' ORDER BY ' . $orderBy . ' LIMIT %d_limit OFFSET %d_offset';
         $values['limit'] = $limit;
         $values['offset'] = $offset;
-
+        
         return self::getDb()->query($query, $values);
     }
 

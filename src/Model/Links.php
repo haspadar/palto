@@ -8,6 +8,12 @@ abstract class Links extends Model
 {
     abstract static function update();
 
+    public static function addTableLinks(int $id, $parentId, string $table, string $linksTable, string $linkField)
+    {
+        $parentIds = self::getParentIds($parentId, $table);
+        self::addLinks($id, $parentIds, $linksTable, $linkField);
+    }
+
     public static function updateTableLinks(string $table, string $linksTable, string $linkField)
     {
         self::getDb()->query("TRUNCATE table $linksTable");

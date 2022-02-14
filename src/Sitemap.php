@@ -114,11 +114,8 @@ class Sitemap
 
     private function hasAds(Category $category, ?Region $region): bool
     {
-        $categoryField = 'category_level_' . $category->getLevel() . '_id';
-        $regionField = $region && $region->getId() ? 'region_level_' . $region->getLevel() . '_id' : '';
-        $query = "SELECT id FROM ads WHERE $categoryField={$category->getId()}"
-            . ($regionField ? " AND $regionField={$region->getId()}" : '')
-            . ' LIMIT 1';
+        $query = "SELECT id FROM categories_regions_with_ads WHERE category_id={$category->getId()}"
+            . ($region && $region->getId() ? " AND region_id={$region->getId()}" : '');
 
         return (bool)\Palto\Model\Ads::getDb()->queryFirstField($query);
     }

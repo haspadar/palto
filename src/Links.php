@@ -16,4 +16,9 @@ class Links
     {
         RegionLinks::update();
     }
+
+    public static function addRegion(int $id, $parentId)
+    {
+        RegionLinks::add($id, $parentId);
+    }
 }

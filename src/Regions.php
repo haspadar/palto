@@ -59,6 +59,7 @@ class Regions
         }
 
         $id = Model\Regions::add($region);
+        Links::addRegion(self::getById($id));
 
         return new Region(Model\Regions::getById($id));
     }

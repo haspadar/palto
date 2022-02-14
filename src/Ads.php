@@ -83,7 +83,6 @@ class Ads
             $ad['title'] = Filter::get($ad['title']);
             $ad['text'] = Filter::get($ad['text']);
             $ad['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
-            $ad = self::addLevels($ad);
             try {
                 $adId = Model\Ads::add($ad);
                 CategoriesRegionsWithAds::add($ad['category_id'], $ad['region_id']);
@@ -169,27 +168,6 @@ class Ads
         }
 
         return $grouped;
-    }
-
-    private static function addLevels(array &$ad): array
-    {
-        if (isset($ad['category_id']) && $ad['category_id']) {
-            $category = Categories::getById($ad['category_id']);
-            while ($category) {
-                $ad['category_level_' . $category->getLevel() . '_id'] = $category->getId();
-                $category = $category->getParentId() ? Categories::getById($category->getParentId()) : null;
-            }
-        }
-
-        if (isset($ad['region_id']) && $ad['region_id']) {
-            $region = Regions::getById($ad['region_id']);
-            while ($region) {
-                $ad['region_level_' . $region->getLevel() . '_id'] = $region->getId();
-                $region = $region->getParentId() ? Regions::getById($region->getParentId()) : null;
-            }
-        }
-
-        return $ad;
     }
 
     private static function getByDonorUrl(string $donorUrl): ?Ad

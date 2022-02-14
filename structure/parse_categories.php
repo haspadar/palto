@@ -55,3 +55,5 @@ $categoriesDocument->filter('.part25>ul>li')->each(function (Crawler $level2Cate
         );
     });
 });
+
+\Palto\Links::updateCategoryLinks();

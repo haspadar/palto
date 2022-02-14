@@ -75,12 +75,12 @@ class Ads extends Model
         $values = [];
         $where = [];
         if ($category) {
-            $where[] = 'a.category_level_' . $category->getLevel() . '_id = %d_category';
+            $where[] = 'a.category_id IN(SELECT child_id FROM category_links WHERE category_id = %d_category)';
             $values['category'] = $category->getId();
         }
 
         if ($region && $region->getId()) {
-            $where[] = 'a.region_level_' . $region->getLevel() . '_id = %d_region';
+            $where[] = 'a.region_id IN(SELECT child_id FROM region_links WHERE region_id = %d_region)';
             $values['region'] = $region->getId();
         }
 

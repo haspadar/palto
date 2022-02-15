@@ -58,11 +58,8 @@ class Regions
             return $found;
         }
 
-        $maxLevel = Model\Regions::getMaxLevel();
         $id = Model\Regions::add($region);
-        if ($region['level'] > $maxLevel) {
-            Levels::addRegionLevel($maxLevel);
-        }
+        Levels::checkRegionsFields();
 
         return new Region(Model\Regions::getById($id));
     }

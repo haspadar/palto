@@ -3,6 +3,7 @@
 namespace Palto;
 
 use DateTime;
+use Exception;
 use Palto\Model\AdsDetails;
 use Palto\Model\AdsImages;
 use Palto\Model\DetailsFields;
@@ -87,7 +88,7 @@ class Ads
             try {
                 $adId = Model\Ads::add($ad);
                 CategoriesRegionsWithAds::add($ad['category_id'], $ad['region_id']);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Logger::error(var_export($ad, true));
                 Logger::error($e->getTraceAsString());
 
@@ -113,7 +114,7 @@ class Ads
                             'ad_id' => $adId,
                             'value' => Filter::get($detailValue)
                         ]);
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Logger::error(var_export($ad, true));
                         Logger::error($e->getTraceAsString());
 
@@ -203,6 +204,6 @@ class Ads
 
     public static function getFieldNames(): array
     {
-        return \Palto\Model\Ads::getFieldNames('ads');
+        return Model\Ads::getFieldNames('ads');
     }
 }

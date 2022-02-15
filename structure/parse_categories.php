@@ -9,7 +9,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 require '../vendor/autoload.php';
 
-\Palto\Levels::checkCategories();
+\Palto\Levels::checkCategoriesFields();
 
 exit;
 $donorUrl = Parser::checkDonorUrl();
@@ -58,4 +58,4 @@ $categoriesDocument->filter('.part25>ul>li')->each(function (Crawler $level2Cate
         );
     });
 });
-\Palto\Levels::checkCategories();
+\Palto\Levels::checkCategoriesFields();

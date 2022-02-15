@@ -85,12 +85,17 @@ class Categories
 
     public static function getMaxTreeId(): int
     {
-        return \Palto\Model\Regions::getMaxTreeId();
+        return \Palto\Model\Categories::getMaxTreeId();
     }
 
     public static function update(array $updates, int $id)
     {
         \Palto\Model\Categories::update($updates, $id);
+    }
+
+    public static function getMaxLevel(): int
+    {
+        return \Palto\Model\Categories::getMaxLevel();
     }
 
     private static function getChildCategories(array $category): array

@@ -200,4 +200,9 @@ class Ads
             ? new Ad($row, AdsImages::getAdsImages([$row['id']]), AdsDetails::getAdsDetails([$row['id']]))
             : null;
     }
+
+    public static function getFieldNames(): array
+    {
+        return \Palto\Model\Ads::getFieldNames('ads');
+    }
 }

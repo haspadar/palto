@@ -74,4 +74,9 @@ class Regions extends Model
 
         return self::getDb()->insertId();
     }
+
+    public static function getMaxLevel(): int
+    {
+        return self::getDb()->queryFirstField('SELECT MAX(level) FROM regions') ?: 0;
+    }
 }

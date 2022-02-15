@@ -7,8 +7,11 @@ use Palto\Parser;
 use Pylesos\PylesosService;
 use Symfony\Component\DomCrawler\Crawler;
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
+\Palto\Levels::checkCategories();
+
+exit;
 $donorUrl = Parser::checkDonorUrl();
 $level1Response = PylesosService::get($donorUrl . '/sitemap', [], Config::getEnv());
 $categoriesDocument = new Crawler($level1Response->getResponse());
@@ -55,3 +58,4 @@ $categoriesDocument->filter('.part25>ul>li')->each(function (Crawler $level2Cate
         );
     });
 });
+\Palto\Levels::checkCategories();

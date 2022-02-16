@@ -1,8 +1,6 @@
 <?php
 namespace Palto\Layout;
 
-use Palto\Config;
-use Palto\Debug;
 use Palto\Directory;
 use Palto\Dispatcher\Dispatcher;
 use Palto\Url;
@@ -23,15 +21,6 @@ abstract class Layout
     public function load(string $name)
     {
         require_once Directory::getLayoutsDirectory() . '/' . $name;
-    }
-
-    public static function getTheme(): string
-    {
-        if (self::getDispatcher()->getModuleName() == 'karman') {
-            return 'karman';
-        }
-
-
     }
 
     public static function getThemes(): array

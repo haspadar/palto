@@ -26,6 +26,18 @@ final class CategoriesRegionsWithAds extends AbstractMigration
   FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
 );");
         $this->execute("ALTER TABLE `categories_regions_with_ads` ADD UNIQUE `category_id_region_id` (`category_id`, `region_id`);");
+        $this->execute("ALTER TABLE `categories_regions_with_ads` ADD `ads_count` int unsigned NOT NULL DEFAULT '0';");
+
+        $this->execute("ALTER TABLE `ads`
+ADD INDEX `category_level_1_id_region_level_1_id` (`category_level_1_id`, `region_level_1_id`),
+ADD INDEX `category_level_1_id_region_level_2_id` (`category_level_1_id`, `region_level_2_id`),
+ADD INDEX `category_level_1_id_region_level_3_id` (`category_level_1_id`, `region_level_3_id`),
+ADD INDEX `category_level_2_id_region_level_1_id` (`category_level_2_id`, `region_level_1_id`),
+ADD INDEX `category_level_2_id_region_level_2_id` (`category_level_2_id`, `region_level_2_id`),
+ADD INDEX `category_level_2_id_region_level_3_id` (`category_level_2_id`, `region_level_3_id`),
+ADD INDEX `category_level_3_id_region_level_1_id` (`category_level_3_id`, `region_level_1_id`),
+ADD INDEX `category_level_3_id_region_level_2_id` (`category_level_3_id`, `region_level_2_id`),
+ADD INDEX `category_level_3_id_region_level_3_id` (`category_level_3_id`, `region_level_3_id`)");
 
         $categories = $this->fetchAll("select * from categories");
         $regions = $this->fetchAll("select * from regions");

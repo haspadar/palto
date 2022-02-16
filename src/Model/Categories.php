@@ -20,16 +20,42 @@ class Categories extends Model
             : [];
     }
 
-    public static function getChildLevelCategoriesIds(array $categoriesIds, int $level): array
+    public static function getChildren(array $categoriesIds, int $level, int $limit = 0): array
     {
-        return self::getDb()->queryFirstColumn(
-            'SELECT id FROM categories WHERE parent_id IN %ld AND level = %d',
-            $categoriesIds,
-            $level
-        );
+        return $limit
+            ? self::getDb()->query(
+                'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d LIMIT %d',
+                $categoriesIds,
+                $level,
+                $limit
+            ) : self::getDb()->queryFirstColumn(
+                'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d',
+                $categoriesIds,
+                $level
+            );
     }
 
-    public static function getWithAdsCategories(?Category $category, ?Region $region, int $limit = 0, $offset = 0, $orderBy = ''): array
+    public static function getChildrenIds(array $categoriesIds, int $level): array
+    {
+        return array_column(self::getChildren($categoriesIds, $level), 'id');
+    }
+
+    public static function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array
+    {
+        $query = 'SELECT c.*, COUNT(c2.id) AS count FROM categories AS c INNER JOIN categories AS c2 ON c.id = c2.parent_id';
+        $query .= " WHERE c.id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads)";
+        $query .= " AND c.parent_id IS NULL";
+        $query .= ' GROUP BY c.id HAVING count >= %d_count';
+        $values = ['count' => $childrenMinimumCount];
+        if ($limit) {
+            $query .= ' LIMIT %d_limit';
+            $values['limit'] = $limit;
+        }
+
+        return self::getDb()->query($query, $values);
+    }
+
+    public static function getLiveCategories(?Category $category, ?Region $region, int $limit = 0): array
     {
         $query = 'SELECT * FROM categories AS c';
         $values = [];
@@ -46,14 +72,9 @@ class Categories extends Model
             $query .= " AND c.parent_id IS NULL";
         }
 
-        if ($orderBy) {
-            $query .= ' ORDER BY ' .$orderBy;
-        }
-
         if ($limit) {
-            $query .= ' LIMIT %d_limit OFFSET %d_offset';
+            $query .= ' LIMIT %d_limit';
             $values['limit'] = $limit;
-            $values['offset'] = $offset;
         }
 
         return self::getDb()->query($query, $values);

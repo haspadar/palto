@@ -4,9 +4,22 @@ namespace Palto;
 
 use Cocur\Slugify\Slugify;
 use DateTime;
+use Monolog\Handler\ZendMonitorHandler;
 
 class Categories
 {
+    public static function getChildren(array $ids, int $level, int $limit = 0): array
+    {
+        $rows = Model\Categories::getChildren($ids, $level, $limit);
+        $children = [];
+        foreach ($rows as $row) {
+            $category = new Category($row);
+            $children[$category->getParentId()][] = $category;
+        }
+
+        return $children;
+    }
+
     public static function getById(int $id): ?Category
     {
         $category = Model\Categories::getById($id);
@@ -28,11 +41,26 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
-    public static function getWithAdsCategories(?Category $parentCategory = null, ?Region $region = null, $count = 0): array
+    /**
+     * @param Category|null $parentCategory
+     * @param Region|null $region
+     * @param $count
+     * @return Category[]
+     */
+    public static function getLiveCategories(?Category $parentCategory = null, ?Region $region = null, int $count = 0): array
     {
-        $categories = Model\Categories::getWithAdsCategories($parentCategory, $region, $count);
+        $categories = Model\Categories::getLiveCategories($parentCategory, $region, $count);
 
         return array_map(fn($category) => new Category($category), $categories);
+    }
+
+    public static function getLiveCategoriesWithChildren($count = 0, int $childrenMinimumCount = 0): array
+    {
+        $rows = $childrenMinimumCount > 0
+            ? Model\Categories::getLiveCategoriesWithChildren($count, $childrenMinimumCount)
+            : Model\Categories::getLiveCategories(null, null, $count);
+
+        return array_map(fn($category) => new Category($category), $rows);
     }
 
     /**
@@ -103,7 +131,7 @@ class Categories
         $childrenIds = [];
         $nextLevelCategoriesIds = [$category['id']];
         $level = $category['level'];
-        while ($nextLevelCategoriesIds = Model\Categories::getChildLevelCategoriesIds($nextLevelCategoriesIds, ++$level)) {
+        while ($nextLevelCategoriesIds = Model\Categories::getChildrenIds($nextLevelCategoriesIds, ++$level)) {
             $childrenIds = array_merge($nextLevelCategoriesIds, $childrenIds);
         }
 

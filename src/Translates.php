@@ -2,7 +2,6 @@
 
 namespace Palto;
 
-use Monolog\Handler\ZendMonitorHandler;
 use Palto\Layout\Client;
 
 class Translates
@@ -12,21 +11,10 @@ class Translates
      */
     private static array $translates;
 
-    public static function get(string $name, Client $layout): string
+    public static function get(string $name): string
     {
         $translates = self::getTranslates();
         $translate = $translates[$name] ?? '';
-        if ($translate) {
-            $translate = self::replacePlaceholders($translate, $layout, $translates);
-            $translate = trim(strtr($translate, [
-                '-  -' => '-',
-                ': :' => ':',
-                '| |' => '|'
-            ]));
-            if (in_array(mb_substr($translate, 0, 1), ['-', ':', '_'])) {
-                $translate = trim(mb_substr($translate, 1));
-            }
-        }
 
         return $translate ?: $name;
     }
@@ -36,7 +24,7 @@ class Translates
         $existsTranslates = self::getTranslates();
         $translates = [];
         foreach ($existsTranslates as $key => $value) {
-            $translates[$key] = Yandex::translate(self::isRussian($key) ? $key : $value, 'ru', $languageCode);
+            $translates[$key] = Yandex::translate(self::isRussianSymbol($key) ? $key : $value, 'ru', $languageCode);
         }
 
         return $translates;
@@ -213,6 +201,49 @@ class Translates
         return '';
     }
 
+    public static function replacePlaceholders(string $translate, ?Region $region, ?Category $category, ?Ad $ad)
+    {
+        $regionTitle = $region ? $region->getTitle() : '';
+
+        return trim(strtr($translate, [
+            ':AD' => $ad ? $ad->getTitle() : '',
+            ':ADDRESS_WITH_REGION' => (
+                $ad && $ad->getAddress()
+                    ? $ad->getAddress() . ', '
+                    : ''
+                ) . $regionTitle,
+            ':ADDRESS' => $ad && $ad->getAddress()
+                ? $ad->getAddress()
+                : '',
+            ':CATEGORIES' => $category
+                ? implode(' - ', $category->getWithParentsTitles())
+                : '',
+            ':REGION' => $regionTitle,
+            ':REGION_PREPOSITIONAL' => $region ? Russian::regionPrepositional($region->getTitle()) : '',
+            ':CATEGORY_IN_REGION' => $category
+                ? $category->getTitle()
+                    . ' '
+                    . ($translates['в'] ?? 'in')
+                    . ' '
+                    . ($region ? Russian::regionPrepositional($region->getTitle()) : '')
+                : $regionTitle,
+        ]));
+    }
+
+    public static function removeExtra(string $translate): string
+    {
+        $replaced = trim(strtr($translate, [
+            '-  -' => '-',
+            ': :' => ':',
+            '| |' => '|'
+        ]));
+        if (in_array(mb_substr($replaced, 0, 1), ['-', ':', '_'])) {
+            $replaced = trim(mb_substr($replaced, 1));
+        }
+
+        return $replaced;
+    }
+
     private static function getTranslates(): array
     {
         if (!isset(self::$translates)) {
@@ -222,37 +253,11 @@ class Translates
         return self::$translates;
     }
 
-    private static function isRussian(string $text): bool
+    private static function isRussianSymbol(string $text): bool
     {
         return preg_match('/[А-Яа-яЁё]/u', $text);
     }
 
-    private static function replacePlaceholders(string $translate, Client $layout, array $translates): string
-    {
-        return trim(strtr($translate, [
-             ':AD' => $layout->getAd() ? $layout->getAd()->getTitle() : '',
-             ':ADDRESS_WITH_REGION' => (
-                 $layout->getAd() && $layout->getAd()->getAddress()
-                     ? $layout->getAd()->getAddress() . ', '
-                     : ''
-                ) . $layout->getRegion()->getTitle(),
-             ':ADDRESS' => $layout->getAd() && $layout->getAd()->getAddress()
-                 ? $layout->getAd()->getAddress()
-                 : '',
-             ':CATEGORIES' => $layout->getCategory()
-                    ? implode(' - ', $layout->getCategory()->getWithParentsTitles())
-                    : '',
-              ':REGION' => $layout->getRegion()->getTitle(),
-              ':REGION_PREPOSITIONAL' => Russian::regionPrepositional($layout->getRegion()->getTitle()),
-              ':CATEGORY_IN_REGION' => $layout->getCategory()
-                  ? $layout->getCategory()->getTitle()
-                    . ' '
-                    . ($translates['в'] ?? 'in')
-                    . ' '
-                    . Russian::regionPrepositional($layout->getRegion()->getTitle())
-                  : $layout->getRegion()->getTitle(),
-        ]));
-    }
 
     private static function getLayoutsDirectory(): string
     {

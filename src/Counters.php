@@ -20,7 +20,9 @@ class Counters
     public static function receive(string $name): string
     {
         $counters = self::getCounters();
-        $counter = is_array($counters[$name]) && $counters[$name] ? array_shift($counters[$name]) : '';
+        $counter = isset($counters[$name]) && is_array($counters[$name]) && $counters[$name]
+            ? array_shift($counters[$name])
+            : '';
 
         return $counter ?: '';
     }

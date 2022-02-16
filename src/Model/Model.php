@@ -39,6 +39,16 @@ class Model
         return self::$db;
     }
 
+    public static function getFieldNames(string $name): array
+    {
+        return array_column(self::getDb()->query("SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE 
+                TABLE_SCHEMA = Database()
+                AND TABLE_NAME = '$name'"
+        ), 'COLUMN_NAME');
+    }
+
     protected static function groupByField(array $unGrouped, string $field): array
     {
         $grouped = [];

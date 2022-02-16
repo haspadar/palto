@@ -128,4 +128,10 @@ class Categories extends Model
     {
         self::getDb()->update('categories', $updates, 'id = %d', $id);
     }
+
+    public static function getMaxLevel(): int
+    {
+        return self::getDb()->queryFirstField('SELECT MAX(level) FROM categories') ?: 0;
+    }
+
 }

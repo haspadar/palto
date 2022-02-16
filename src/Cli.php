@@ -100,7 +100,7 @@ class Cli
         $tmp = '/tmp/install_' . md5(time());
         file_put_contents($tmp, $content);
 
-        return self::asUser("cp $tmp " . Directory::getRootDirectory() . '/.env');
+        return self::asUser("cp $tmp " . Directory::getConfigsDirectory() . '/.env');
     }
 
     public static function updatePhinx(string $databaseName, string $databaseUser, string $databasePassword): string

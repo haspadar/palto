@@ -6,13 +6,21 @@ class Levels
 {
     public static function checkCategoriesFields()
     {
-        $newFields = self::getNewFields('category_level_%d_id', Categories::getMaxLevel());
+        Logger::debug('Check Categories Fields');
+        $maxLevel = Categories::getMaxLevel();
+        Logger::debug('Max level: ' . $maxLevel);
+        $newFields = self::getNewFields('category_level_%d_id', $maxLevel);
+        Logger::debug('New fields: ' . implode(',', $newFields));
         self::addLevelsFields($newFields, 'categories');
     }
 
     public static function checkRegionsFields()
     {
+        Logger::debug('Check Regions Fields');
+        $maxLevel = Regions::getMaxLevel();
+        Logger::debug('Max level: ' . $maxLevel);
         $newFields = self::getNewFields('region_level_%d_id', Regions::getMaxLevel());
+        Logger::debug('New fields: ' . implode(',', $newFields));
         self::addLevelsFields($newFields, 'regions');
     }
 
@@ -23,7 +31,7 @@ class Levels
 
     public static function updateRegionsLevels()
     {
-        self::updateLevels('region_level_%d_id', 'regions', Categories::getMaxLevel());
+        self::updateLevels('region_level_%d_id', 'regions', Regions::getMaxLevel());
     }
 
     private static function getNewFields(string $levelField, int $maxLevel): array
@@ -43,7 +51,8 @@ class Levels
     private static function addLevelsFields(array $newFields, string $levelsTable)
     {
         foreach ($newFields as $newField) {
-            $query = "ALTER TABLE `ads` ADD `$newField` int(11) unsigned`, ADD FOREIGN KEY (`$newField`) REFERENCES `$levelsTable` (`id`);";
+            $query = "ALTER TABLE `ads` ADD `$newField` int(11) unsigned, ADD FOREIGN KEY (`$newField`) REFERENCES `$levelsTable` (`id`);";
+            Logger::debug($query);
             Model\Ads::getDb()->query($query);
         }
     }
@@ -52,12 +61,16 @@ class Levels
     {
         $field = sprintf($levelField, $maxLevel);
         $baseField = str_replace('level_%d_', '', $levelField);
-        Model\Ads::getDb()->query("UPDATE ads SET $field = $baseField WHERE $field IS NULL");
+        $query = "UPDATE ads SET $field = $baseField WHERE $field IS NULL";
+        Logger::debug($query);
+        Model\Ads::getDb()->query($query);
         for ($level = $maxLevel - 1; $level >= 1; $level--) {
             Logger::debug('Update level ' . $level);
             $parentField = sprintf($levelField, $level + 1);
             $field = sprintf($levelField, $level);
-            Model\Ads::getDb()->query("UPDATE ads AS a INNER JOIN $levelsTable AS l ON a.$parentField = l.id SET a.$field = l.parent_id WHERE a.$field IS NULL");
+            $query = "UPDATE ads AS a INNER JOIN $levelsTable AS l ON a.$parentField = l.id SET a.$field = l.parent_id WHERE a.$field IS NULL";
+            Logger::debug($query);
+            Model\Ads::getDb()->query($query);
         }
     }
 }

@@ -9,7 +9,7 @@ $this->partial('header.inc', [
 ]);
 ?>
 <h2><?=$this->translate('Авторизация')?></h2>
-<?=\Palto\Counters::get('google')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::get('adx')?>
 <form action="#">
     <input type="email" placeholder="email" class="reg"><br/>
     <input type="password" placeholder="password" class="reg"><br/>

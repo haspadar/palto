@@ -17,6 +17,14 @@ class Counters
         return $counter ?: '';
     }
 
+    public static function receive(string $name): string
+    {
+        $counters = self::getCounters();
+        $counter = is_array($counters[$name]) && $counters[$name] ? array_shift($counters[$name]) : '';
+
+        return $counter ?: '';
+    }
+
     public static function extractCounters(): array
     {
         $googleAutoStart = '<script async src="https://pagead2.googlesyndication.com';

@@ -25,7 +25,7 @@ $this->partial('header.inc', [
     <?php endforeach;?>
 <?php endif;?>
 
-<?=\Palto\Counters::get('google')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::get('adx')?>
 <br style="clear: both">
 <br style="clear: both">
 

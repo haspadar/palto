@@ -146,7 +146,7 @@ class Cli
                 "$projectName *.$projectName",
                 intval(self::getPhpVersion()),
                 $databaseName,
-                $databaseName,
+                $projectName,
                 $projectName
             );
 

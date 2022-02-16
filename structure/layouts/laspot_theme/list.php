@@ -1,5 +1,4 @@
 <?php
-
 $flashMessage = \Palto\Flash::get();
 /**
  * @var $this \Palto\Layout\Client

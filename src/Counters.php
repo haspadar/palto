@@ -23,6 +23,7 @@ class Counters
         $counter = isset($counters[$name]) && is_array($counters[$name]) && $counters[$name]
             ? array_shift($counters[$name])
             : '';
+        self::$counters[$name] = $counters[$name];
 
         return $counter ?: '';
     }

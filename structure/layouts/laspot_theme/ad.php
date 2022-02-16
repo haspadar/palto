@@ -16,7 +16,7 @@ $this->partial('header.inc', [
 ?>
     <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     <h1><?=$this->translate('ad_h1')?></h1>
-<?=\Palto\Counters::get('google')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <?php if ($this->getAd()->getImages()) :?>
     <!-- Slideshow container -->
     <div class="slideshow-container">
@@ -55,8 +55,9 @@ $this->partial('header.inc', [
         <?php endforeach;?>
     </ul>
 <?php endif;?>
-    <div class="description"> <?=urldecode($this->getAd()->getText())?> </div>
-    <?=\Palto\Counters::get('google')?>
+
+<div class="description"> <?=urldecode($this->getAd()->getText())?> </div>
+<?=\Palto\Counters::receive('adx') ?: \Palto\Counters::get('google')?>
 <?php if ($this->getAd()->getPrice() > 0) :?>
     <div class="price">
         🏷 <?=$this->getAd()->getCurrency()?><?=number_format($this->getAd()->getPrice())?>
@@ -127,7 +128,7 @@ $this->partial('header.inc', [
     </div>
     <br />
     <h2><?=$this->translate('Похожие объявления')?></h2>
-    <?=\Palto\Counters::get('google')?>
+    <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
     <table class="serp">
         <?php foreach ($this->getSimilarAds() as $similarAd) :?>
             <?php if ($similarAd->getId() != $this->getAd()->getId()) :?>

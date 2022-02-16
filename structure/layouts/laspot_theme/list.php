@@ -1,5 +1,4 @@
 <?php
-
 $flashMessage = \Palto\Flash::get();
 /**
  * @var $this \Palto\Layout\Client
@@ -16,7 +15,7 @@ $this->partial('header.inc', [
 ?>
     <?php $this->partial('breadcrumb.inc', ['breadcrumbUrls' => $this->getBreadcrumbUrls()]);?>
     <h1><?=$this->translate('list_h1')?></h1>
-    <?=\Palto\Counters::get('google')?>
+    <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <?php if ($flashMessage) :?>
     <div class="alert"><?=$flashMessage?></div>
 <?php endif;?>
@@ -38,10 +37,10 @@ $this->partial('header.inc', [
     <table class="serp">
         <?php foreach ($ads as $adIndex => $ad) :?>
             <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
-            <?php if (in_array($adIndex + 1, [5, 15])) : ?>
-                <tr><td colspan="2"><?=\Palto\Counters::get('google')?></td></tr>
-            <?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
-                <tr><td colspan="2"><?=\Palto\Counters::get('google')?></td></tr>
+            <?php if (in_array($adIndex + 1, [5, 15, 21])) : ?>
+                <tr><td colspan="2"><?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?></td></tr>
+            <?php elseif (in_array($adIndex + 1, [2, 10])) : ?>
+                <tr><td colspan="2"><?=\Palto\Counters::receive('adx') ?: \Palto\Counters::get('google')?></td></tr>
             <?php endif; ?>
         <?php endforeach;?>
     </table>

@@ -59,8 +59,14 @@ class Regions
         }
 
         $id = Model\Regions::add($region);
+        Levels::checkRegionsFields();
 
         return new Region(Model\Regions::getById($id));
+    }
+
+    public static function getMaxLevel(): int
+    {
+        return \Palto\Model\Regions::getMaxLevel();
     }
 
     public static function generateUrl(string $title, bool $addSuffix = false): string

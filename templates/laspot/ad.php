@@ -6,7 +6,7 @@ use Palto\Categories; ?>
 <?php /** @var $ad \Palto\Ad */?>
 <?php if ($ad->getCoordinates()) :?>
     <?php $this->push('styles') ?>
-        <link rel="stylesheet" href="<?=$this->asset('https://unpkg.com/leaflet@1.7.1/dist/leaflet.css')?>">
+        <link rel="stylesheet" href="<?=$this->asset('/css/leaflet.css')?>">
     <?php $this->end() ?>
 <?php endif;?>
 
@@ -137,6 +137,6 @@ use Palto\Categories; ?>
 
 <?php if ($ad->getCoordinates()) :?>
     <?php $this->push('scripts') ?>
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="<?=$this->asset('/js/leaflet.js')?>"></script>
     <?php $this->end() ?>
 <?php endif;

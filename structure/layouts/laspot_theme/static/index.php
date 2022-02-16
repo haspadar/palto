@@ -18,7 +18,7 @@ $this->partial('header.inc', [
     <?php endforeach;?>
 <?php endif?>
 
-<?=\Palto\Counters::get('google') ?: \Palto\Counters::get('adx')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <br style="clear: both">
 <br style="clear: both">
 <h2><?=$this->translate('Категории')?></h2>

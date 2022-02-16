@@ -15,7 +15,7 @@ $this->partial('header.inc', [
     <h1><?=$this->translate('404_h1_list')?></h1>
 <?php endif;?>
 
-<?=\Palto\Counters::get('google') ?: \Palto\Counters::get('adx')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 
 <h2><?=$this->translate('404_h2')?></h2>
 <?php foreach ($this->getWithAdsCategories() as $level1Category) :?>

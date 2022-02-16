@@ -2,7 +2,7 @@
 
 <?php $this->layout('layout');?>
 
-<?=\Palto\Counters::get('google')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <?php foreach (\Palto\Categories::getLiveCategories() as $level1Category) :?>
     <div class="span-d regions"><a href="<?=$level1Category->generateUrl($this->data['region'])?>"><strong> <?=$level1Category->getTitle()?></strong></a>
         <?php if ($level2Categories = $level1Category->getLiveChildren($this->data['region'])) :?>

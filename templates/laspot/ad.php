@@ -10,7 +10,7 @@ use Palto\Categories; ?>
     <?php $this->end() ?>
 <?php endif;?>
 
-<?=\Palto\Counters::get('google')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <?php if ($ad->getImages()) :?>
     <!-- Slideshow container -->
     <div class="slideshow-container">
@@ -50,7 +50,7 @@ use Palto\Categories; ?>
     </ul>
 <?php endif;?>
     <div class="description"> <?=urldecode($ad->getText())?> </div>
-    <?=\Palto\Counters::get('google')?>
+    <?=\Palto\Counters::receive('adx') ?: \Palto\Counters::get('google')?>
 <?php if ($ad->getPrice() > 0) :?>
     <div class="price">
         🏷 <?=$ad->getCurrency()?><?=number_format($ad->getPrice())?>
@@ -121,7 +121,7 @@ use Palto\Categories; ?>
     </div>
     <br />
     <h2><?=$this->translate('Похожие объявления')?></h2>
-    <?=\Palto\Counters::get('google')?>
+    <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
     <table class="serp">
         <?php foreach (Ads::getAds(
             $this->data['region'],

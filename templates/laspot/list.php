@@ -2,7 +2,7 @@
 <?php use Palto\Categories; ?>
 <?php $this->layout('layout'); ?>
 
-<?= \Palto\Counters::get('google') ?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 
 <?php if ($categories = Categories::getLiveCategories($this->data['category'], $this->data['region'])) : ?>
     <ul class="sub_cat">
@@ -18,13 +18,13 @@
 <table class="serp">
     <?php foreach ($this->data['ads'] as $adIndex => $ad) : ?>
         <?php $this->insert('partials/ad_in_list', ['ad' => $ad]) ?>
-        <?php if (in_array($adIndex + 1, [5, 15])) : ?>
+        <?php if (in_array($adIndex + 1, [5, 15, 21])) : ?>
             <tr>
-                <td colspan="2"><?= \Palto\Counters::get('google') ?></td>
+            <tr><td colspan="2"><?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?></td></tr>
             </tr>
-        <?php elseif (in_array($adIndex + 1, [2, 10, 21])) : ?>
+        <?php elseif (in_array($adIndex + 1, [2, 10])) : ?>
             <tr>
-                <td colspan="2"><?= \Palto\Counters::get('google') ?></td>
+            <tr><td colspan="2"><?=\Palto\Counters::receive('adx') ?: \Palto\Counters::get('google')?></td></tr>
             </tr>
         <?php endif; ?>
     <?php endforeach; ?>

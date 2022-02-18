@@ -29,7 +29,9 @@ use Palto\Config; ?>
                 <?php elseif ($level1Category->getIconUrl()) :?>
                     <img src="<?=$level1Category->getIconUrl()?>"
                          title="<?=$level1Category->getIconText()?>"
-                         class="icm" />
+                         class="icm"
+                         onerror="this.src='/laspot-theme/img/no-photo.png'"
+                    />
                 <?php endif?>
 
                 <strong> <?=$level1Category->getTitle()?></strong>
@@ -38,7 +40,7 @@ use Palto\Config; ?>
         <?php if ($level2Categories = $level1Category->getLiveChildren($this->data['region'], Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) :?>
             <ul>
                 <?php foreach ($level2Categories as  $level2Category) :?>
-                    <li><a href="<?=$level2Category->generateUrl($this->data['region'])?>" onerror="this.src='/laspot-theme/img/no-photo.png'"><?=$level2Category->getTitle()?></a></li>
+                    <li><a href="<?=$level2Category->generateUrl($this->data['region'])?>"><?=$level2Category->getTitle()?></a></li>
                 <?php endforeach;?>
 
                 <li><a href="<?=$level1Category->generateUrl($this->data['region'])?>">Other...</a></li>

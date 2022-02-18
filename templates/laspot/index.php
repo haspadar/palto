@@ -22,7 +22,9 @@
                 <?php elseif ($level1Category->getIconUrl()) :?>
                     <img src="<?=$level1Category->getIconUrl()?>"
                          title="<?=$level1Category->getIconText()?>"
-                         class="icm" />
+                         class="icm"
+                         onerror="this.src='/laspot-theme/img/no-photo.png'"
+                    />
                 <?php endif?>
 
                 <strong> <?=$level1Category->getTitle()?></strong>

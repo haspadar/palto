@@ -6,21 +6,15 @@ class Levels
 {
     public static function checkCategoriesFields()
     {
-        Logger::debug('Check Categories Fields');
         $maxLevel = Categories::getMaxLevel();
-        Logger::debug('Max level: ' . $maxLevel);
         $newFields = self::getNewFields('category_level_%d_id', $maxLevel);
-        Logger::debug('New fields: ' . implode(',', $newFields));
         self::addLevelsFields($newFields, 'categories');
     }
 
     public static function checkRegionsFields()
     {
-        Logger::debug('Check Regions Fields');
         $maxLevel = Regions::getMaxLevel();
-        Logger::debug('Max level: ' . $maxLevel);
-        $newFields = self::getNewFields('region_level_%d_id', Regions::getMaxLevel());
-        Logger::debug('New fields: ' . implode(',', $newFields));
+        $newFields = self::getNewFields('region_level_%d_id', $maxLevel);
         self::addLevelsFields($newFields, 'regions');
     }
 

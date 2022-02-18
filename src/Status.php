@@ -1,23 +1,18 @@
 <?php
 namespace Palto;
 
+use Doctrine\DBAL\Connection;
+
 class Status
 {
     const DISABLE_CACHE_ROW = 'set $no_cache 1;#disable cache';
     const ENABLE_CACHE_ROW = '#set $no_cache 1;#disable cache';
 
-    public static function getMySqlDirectory(\MeekroDB $db): string
+    public static function getMySqlDirectory(Connection $db): string
     {
-        if (class_exists('DB')) {
-            $variables = $db->query('SHOW VARIABLES WHERE Variable_Name LIKE "%dir"');
-            foreach ($variables as $variable) {
-                if ($variable['Variable_name'] == 'datadir') {
-                    return $variable['Value'];
-                }
-            }
-        }
+        $variables = $db->executeQuery('SHOW VARIABLES WHERE Variable_Name LIKE "%dir"')->fetchAllKeyValue();
 
-        return '';
+        return $variables['datadir'];
     }
 
     public static function getDirectoryUsePercent($directory): string

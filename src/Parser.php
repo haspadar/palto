@@ -36,13 +36,13 @@ class Parser
     public static function safeTransaction(Callable $function)
     {
         try {
-            \Palto\Model\Ads::getConnection()->startTransaction();
+            \Palto\Model\Ads::getConnection()->beginTransaction();
             $return = $function();
             \Palto\Model\Ads::getConnection()->commit();
 
             return $return;
         } catch (\Exception $e) {
-            \Palto\Model\Ads::getConnection()->rollback();
+            \Palto\Model\Ads::getConnection()->rollBack();
             Logger::error($e->getMessage());
             Logger::error($e->getTraceAsString());
             if (!Cli::isCron() && Cli::isCli()) {

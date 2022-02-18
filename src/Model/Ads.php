@@ -39,17 +39,17 @@ class Ads extends Model
         $values['limit'] = $limit;
         $values['offset'] = $offset;
 
-        return self::getConnection()->query($query, $values);
+        return self::getConnection()->executeQuery($query, $values)->fetchAllAssociative();
     }
 
     public static function getRegionsAdsCount(array $regionsIds): int
     {
-        return self::getConnection()->queryFirstField('SELECT COUNT(*) FROM ads WHERE region_id IN %ld', $regionsIds);
+        return self::getConnection()->executeQuery('SELECT COUNT(*) FROM ads WHERE region_id IN %ld', $regionsIds)->fetchFirstColumn();
     }
 
     public static function getCategoriesAdsCount(array $categoriesIds): int
     {
-        return self::getConnection()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
+        return self::getConnection()->executeQuery('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds)->fetchFirstColumn();
     }
 
     /**
@@ -109,7 +109,7 @@ class Ads extends Model
     public static function getByDonorUrl(string $donorUrl)
     {
         $query = self::getAdsQuery();
-
-        return self::getConnection()->queryFirstRow($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
+//@TODO Переделать query со строки в Query Builder Select
+        return self::getConnection()->executeQuery($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
     }
 }

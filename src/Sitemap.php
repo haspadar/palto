@@ -21,13 +21,18 @@ class Sitemap
         $executionTime->start();
         $groupedRegions = $this->groupTrees(
             array_map(fn ($region) => new Region($region),
-                \Palto\Model\Regions::getConnection()->query('SELECT * FROM regions ORDER BY tree_id, level')
+                \Palto\Model\Regions::getConnection()
+                    ->createQueryBuilder()
+                    ->select('*')
+                    ->from('regions')
+                    ->orderBy('tree_id, level')
+                    ->fetchAllAssociative()
             )
         );
         $groupedRegions[0][] = new Region([]);
         $groupedCategories = $this->groupTrees(
             array_map(fn ($category) => new Category($category),
-                \Palto\Model\Categories::getConnection()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_level_1_id FROM ads) ORDER BY tree_id, level')
+                \Palto\Model\Categories::getConnection()->executeQuery('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_level_1_id FROM ads) ORDER BY tree_id, level')->fetchAllAssociative()
             )
         );
         $this->generateRegionsFiles('/regions', $groupedRegions);
@@ -120,7 +125,7 @@ class Sitemap
             . ($regionField ? " AND $regionField={$region->getId()}" : '')
             . ' LIMIT 1';
 
-        return (bool)\Palto\Model\Ads::getConnection()->queryFirstField($query);
+        return (bool)\Palto\Model\Ads::getConnection()->executeQuery($query)->fetchOne();
     }
 
     private function saveUrls(string $path, string $fileName, array $urls, bool $checkSize = true)

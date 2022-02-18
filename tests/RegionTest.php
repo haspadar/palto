@@ -16,7 +16,7 @@ class RegionTest extends Web
 
     public function testRegion()
     {
-        if (Regions::getConnection()->query('SELECT * FROM regions LIMIT 1')) {
+        if (Regions::getConnection()->executeQuery('SELECT * FROM regions LIMIT 1')->fetchOne()) {
             $regionsResponse = $this->download($this->url);
             $crawler = new Crawler($regionsResponse->getHtml());
             $firstRegionPage = $crawler->filter('.table_main a');

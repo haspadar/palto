@@ -97,7 +97,7 @@ abstract class AdsParser
         $ads = $this->findAds($categoryDocument);
         Logger::info('Found ' . count($ads) . ' ads', $extendedLogContext);
         $addedAdsCount = 0;
-        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $category) {
+        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $category, $pageNumber) {
             $adUrl = $this->findAdUrl($resultRow, $category);
             if (!$adUrl) {
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
@@ -111,7 +111,7 @@ abstract class AdsParser
 
                 if ($adId) {
                     $adNumber = $i + 1;
-                    Logger::debug("Added $adNumber-th ad with id=$adUrl");
+                    Logger::debug("Added $adNumber-th ad on page $pageNumber with id=$adUrl");
                     $addedAdsCount++;
                 } else {
                     Logger::debug('Skipped wrong ad with url ' . $adUrl->getFull());

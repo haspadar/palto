@@ -58,7 +58,7 @@ class Regions
 
         $region['url'] = self::generateUrl($region['title']);
         $found = self::getByUrl($region['url']);
-        if ($found->getId()) {
+        if ($found && $found->getId()) {
             return $found;
         }
 

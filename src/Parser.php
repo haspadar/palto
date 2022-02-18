@@ -85,7 +85,12 @@ class Parser
             exit('Укажите первым параметром URL страницы, например: php parse_ads.php https://losangeles.craigslist.org' . PHP_EOL);
         }
 
-        return $_SERVER['argv'][1];
+        $domain = $_SERVER['argv'][1];
+        if (mb_substr($domain, -1) == '/') {
+            $domain = mb_substr($domain, 0, -1);
+        }
+
+        return $domain;
     }
 
     public static function findSelectorWith(Crawler $adDocument, array $selectors): array

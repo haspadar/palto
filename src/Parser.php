@@ -69,7 +69,7 @@ class Parser
             $url = self::removeLastSymbol($url);
         }
 
-        return implode('', array_reverse($pageNumberSymbols));
+        return implode('', array_reverse($pageNumberSymbols)) ?: 0;
     }
 
     public static function getNextPageUrl(Crawler $categoryDocument): ?Url

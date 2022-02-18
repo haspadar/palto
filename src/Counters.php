@@ -20,12 +20,16 @@ class Counters
     public static function receive(string $name): string
     {
         $counters = self::getCounters();
-        $counter = isset($counters[$name]) && is_array($counters[$name]) && $counters[$name]
-            ? array_shift($counters[$name])
-            : '';
-        self::$counters[$name] = $counters[$name] ?? [];
+        if (isset($counters[$name])) {
+            $counter = is_array($counters[$name]) && $counters[$name]
+                ? array_shift($counters[$name])
+                : '';
+            self::$counters[$name] = $counters[$name] ?? [];
 
-        return $counter ?: '';
+            return $counter ?: '';
+        }
+
+        return '';
     }
 
     public static function extractCounters(): array

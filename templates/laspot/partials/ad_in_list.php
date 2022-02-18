@@ -2,7 +2,11 @@
     <tr>
         <td class="serp_img">
             <?php if ($this->data['ad']->getImages()) : ?>
-                <a href="<?= $this->data['ad']->generateUrl() ?>"><img src="<?= $this->data['ad']->getImages()[0]['small'] ?>" alt="<?=$this->data['ad']->getTitle()?>"/></a>
+                <a href="<?= $this->data['ad']->generateUrl() ?>">
+                    <img src="<?= $this->data['ad']->getImages()[0]['small'] ?>"
+                         alt="<?=$this->data['ad']->getTitle()?>"
+                         onerror="this.src='/laspot-theme/img/no-photo.png'"
+                    /></a>
             <?php else :?>
                 <img src="/img/no-photo.png">
             <?php endif; ?>

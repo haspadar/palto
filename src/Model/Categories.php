@@ -13,6 +13,11 @@ class Categories extends Model
         return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id) ?: [];
     }
 
+    public static function getMaxTreeId(): int
+    {
+        return self::getDb()->queryFirstField('SELECT MAX(tree_id) FROM categories') ?: 0;
+    }
+
     public static function getCategoriesByIds(array $categoryIds): array
     {
         return $categoryIds

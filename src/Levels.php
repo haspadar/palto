@@ -19,7 +19,7 @@ class Levels
         Logger::debug('Check Regions Fields');
         $maxLevel = Regions::getMaxLevel();
         Logger::debug('Max level: ' . $maxLevel);
-        $newFields = self::getNewFields('region_level_%d_id', Regions::getMaxLevel());
+        $newFields = self::getNewFields('region_level_%d_id', $maxLevel);
         Logger::debug('New fields: ' . implode(',', $newFields));
         self::addLevelsFields($newFields, 'regions');
     }
@@ -53,7 +53,7 @@ class Levels
         foreach ($newFields as $newField) {
             $query = "ALTER TABLE `ads` ADD `$newField` int(11) unsigned, ADD FOREIGN KEY (`$newField`) REFERENCES `$levelsTable` (`id`);";
             Logger::debug($query);
-            Model\Ads::getDb()->query($query);
+            Model\Ads::getConnection()->executeQuery($query);
         }
     }
 
@@ -63,14 +63,14 @@ class Levels
         $baseField = str_replace('level_%d_', '', $levelField);
         $query = "UPDATE ads SET $field = $baseField WHERE $field IS NULL";
         Logger::debug($query);
-        Model\Ads::getDb()->query($query);
+        Model\Ads::getConnection()->query($query);
         for ($level = $maxLevel - 1; $level >= 1; $level--) {
             Logger::debug('Update level ' . $level);
             $parentField = sprintf($levelField, $level + 1);
             $field = sprintf($levelField, $level);
             $query = "UPDATE ads AS a INNER JOIN $levelsTable AS l ON a.$parentField = l.id SET a.$field = l.parent_id WHERE a.$field IS NULL";
             Logger::debug($query);
-            Model\Ads::getDb()->query($query);
+            Model\Ads::getConnection()->query($query);
         }
     }
 }

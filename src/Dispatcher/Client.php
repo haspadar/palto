@@ -137,7 +137,7 @@ class Client extends Dispatcher
         } elseif (Config::isDebug()) {
             ini_set('display_errors', true);
             ini_set('display_startup_errors', true);
-            Regions::getDb()->query('SET SESSION query_cache_type=0;');
+            Regions::getConnection()->query('SET SESSION query_cache_type=0;');
         } elseif (Config::withErrors()) {
             ini_set('display_errors', true);
             ini_set('display_startup_errors', true);

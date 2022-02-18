@@ -10,17 +10,17 @@ class DetailsFields extends Model
 {
     public static function getDetailsFieldId(int $categoryId, string $field): int
     {
-        $fieldId = self::getDb()->queryFirstField(
+        $fieldId = self::getConnection()->queryFirstField(
             'SELECT id FROM details_fields WHERE category_id = %d AND field = %s LIMIT 1',
             $categoryId,
             $field
         );
         if (!$fieldId) {
-            self::getDb()->insert('details_fields', [
+            self::getConnection()->insert('details_fields', [
                 'category_id' => $categoryId,
                 'field' => $field
             ]);
-            $fieldId = self::getDb()->insertId();
+            $fieldId = self::getConnection()->insertId();
         }
 
         return $fieldId;

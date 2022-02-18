@@ -16,7 +16,7 @@ class RegionsTest extends Web
 
     public function testRegions()
     {
-        if (Regions::getDb()->query('SELECT * FROM regions LIMIT 1')) {
+        if (Regions::getConnection()->query('SELECT * FROM regions LIMIT 1')) {
             $response = $this->download($this->url);
             $this->checkPhpErrors($response);
             $this->checkLinks($response);

@@ -10,25 +10,25 @@ class Categories extends Model
 {
     public static function getById(int $id): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id) ?: [];
+        return self::getConnection()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id) ?: [];
     }
 
     public static function getCategoriesByIds(array $categoryIds): array
     {
         return $categoryIds
-            ? self::getDb()->query('SELECT * FROM categories WHERE id IN %ld', $categoryIds)
+            ? self::getConnection()->query('SELECT * FROM categories WHERE id IN %ld', $categoryIds)
             : [];
     }
 
     public static function getChildren(array $categoriesIds, int $level, int $limit = 0): array
     {
         return $limit
-            ? self::getDb()->query(
+            ? self::getConnection()->query(
                 'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d LIMIT %d',
                 $categoriesIds,
                 $level,
                 $limit
-            ) : self::getDb()->queryFirstColumn(
+            ) : self::getConnection()->queryFirstColumn(
                 'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d',
                 $categoriesIds,
                 $level
@@ -52,7 +52,7 @@ class Categories extends Model
             $values['limit'] = $limit;
         }
 
-        return self::getDb()->query($query, $values);
+        return self::getConnection()->query($query, $values);
     }
 
     public static function getLiveCategories(?Category $category, ?Region $region, int $limit = 0): array
@@ -77,13 +77,13 @@ class Categories extends Model
             $values['limit'] = $limit;
         }
 
-        return self::getDb()->query($query, $values);
+        return self::getConnection()->query($query, $values);
     }
     
     public static function getByUrl(string $url, int $level, int $excludeId = 0): array
     {
         if ($url) {
-            return self::getDb()->queryFirstRow(
+            return self::getConnection()->queryFirstRow(
                 'SELECT * FROM categories WHERE url = %s AND level = %d AND id <> %d',
                 $url,
                 $level,
@@ -101,20 +101,20 @@ class Categories extends Model
             $query .= " LIMIT $limit";
         }
 
-        return self::getDb()->query($query);
+        return self::getConnection()->query($query);
     }
 
     public static function add(array $category): int
     {
-        self::getDb()->insert('categories', $category);
+        self::getConnection()->insert('categories', $category);
 
-        return self::getDb()->insertId();
+        return self::getConnection()->insertId();
     }
 
     public static function getByDonorUrl(string $donorUrl, int $level): array
     {
         if ($donorUrl) {
-            return self::getDb()->queryFirstRow(
+            return self::getConnection()->queryFirstRow(
                 'SELECT * FROM categories WHERE donor_url = %s AND level = %d',
                 $donorUrl,
                 $level
@@ -126,12 +126,15 @@ class Categories extends Model
 
     public static function update(array $updates, int $id)
     {
-        self::getDb()->update('categories', $updates, 'id = %d', $id);
+        self::getConnection()->update('categories', $updates, 'id = %d', $id);
     }
 
     public static function getMaxLevel(): int
     {
-        return self::getDb()->queryFirstField('SELECT MAX(level) FROM categories') ?: 0;
+        return self::getConnection()->createQueryBuilder()
+            ->select('MAX(level)')
+            ->from('categories')
+            ->fetchOne() ?: 0;
     }
 
 }

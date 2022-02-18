@@ -13,14 +13,14 @@ class Ads extends Model
     {
         $query = self::getAdsQuery();
 
-        return self::getDb()->queryFirstRow($query . ' WHERE a.id = %d', $adId) ?: [] ;
+        return self::getConnection()->queryFirstRow($query . ' WHERE a.id = %d', $adId) ?: [] ;
     }
 
     public static function getByUrl(Url $url): array
     {
         $query = self::getAdsQuery();
 
-        return self::getDb()->queryFirstRow($query . ' WHERE a.url = %s', $url->getFull()) ?: [];
+        return self::getConnection()->queryFirstRow($query . ' WHERE a.url = %s', $url->getFull()) ?: [];
     }
 
     public static function getAds(
@@ -39,17 +39,17 @@ class Ads extends Model
         $values['limit'] = $limit;
         $values['offset'] = $offset;
 
-        return self::getDb()->query($query, $values);
+        return self::getConnection()->query($query, $values);
     }
 
     public static function getRegionsAdsCount(array $regionsIds): int
     {
-        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE region_id IN %ld', $regionsIds);
+        return self::getConnection()->queryFirstField('SELECT COUNT(*) FROM ads WHERE region_id IN %ld', $regionsIds);
     }
 
     public static function getCategoriesAdsCount(array $categoriesIds): int
     {
-        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
+        return self::getConnection()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
     }
 
     /**
@@ -66,7 +66,7 @@ class Ads extends Model
 
     public static function getAdLastTime(): ?string
     {
-        return self::getDb()->queryFirstField("SELECT MAX(create_time) FROM ads");
+        return self::getConnection()->queryFirstField("SELECT MAX(create_time) FROM ads");
     }
 
     private static function getAdsWhere(?Region $region, ?Category $category, int $excludeId): array
@@ -94,22 +94,22 @@ class Ads extends Model
 
     public static function markAsDeleted(int $adId)
     {
-        self::getDb()->update('ads', [
+        self::getConnection()->update('ads', [
             'deleted_time' => (new \DateTime())->format('Y-m-d H:i:s')
         ], "id = %d", $adId);
     }
 
     public static function add(array $ad): int
     {
-        self::getDb()->insert('ads', $ad);
+        self::getConnection()->insert('ads', $ad);
 
-        return self::getDb()->insertId();
+        return self::getConnection()->insertId();
     }
 
     public static function getByDonorUrl(string $donorUrl)
     {
         $query = self::getAdsQuery();
 
-        return self::getDb()->queryFirstRow($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
+        return self::getConnection()->queryFirstRow($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
     }
 }

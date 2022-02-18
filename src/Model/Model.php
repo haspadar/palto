@@ -2,60 +2,39 @@
 
 namespace Palto\Model;
 
-use Palto\Cli;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Palto\Config;
-use Palto\Debug;
-use Palto\Logger;
 
 class Model
 {
-    private static \MeekroDB $db;
+    private static Connection $connection;
 
-    public static function getDb(): \MeekroDB
+    public static function getConnection(): Connection
     {
-        if (!isset(self::$db)) {
-            self::$db = new \MeekroDB(
-                Config::get('DB_HOST') ?? '127.0.0.1',
-                Config::get('DB_USER'),
-                Config::get('DB_PASSWORD'),
-                Config::get('DB_NAME'),
-                Config::get('DB_PORT') ?? 3306,
-                'utf8mb4'
-            );
-            if (Config::isDebug() && !Cli::isCli()) {
-                self::$db->debugMode();
-            }
-
-            $errorHandler = function ($params) {
-                Logger::error('Database error: ' . $params['error']);
-                Logger::error('Database query: ' . $params['query'] ?? '');
-
-                throw new \Exception('Database error: ' . $params['error']);
-            };
-            self::$db->error_handler = $errorHandler; // runs on mysql query errors
-            self::$db->nonsql_error_handler = $errorHandler; // runs on library errors (bad syntax, etc)
+        if (!isset(self::$connection)) {
+            $connectionParams = [
+                'dbname' => Config::get('DB_NAME'),
+                'user' => Config::get('DB_USER'),
+                'password' => Config::get('DB_PASSWORD'),
+                'host' => Config::get('DB_HOST') ?? '127.0.0.1',
+                'driver' => 'mysqli',
+                'charset' => 'utf8mb4'
+            ];
+            self::$connection = DriverManager::getConnection($connectionParams);
         }
 
-        return self::$db;
+        return self::$connection;
     }
 
     public static function getFieldNames(string $name): array
     {
-        return array_column(self::getDb()->query("SELECT COLUMN_NAME 
-            FROM INFORMATION_SCHEMA.COLUMNS 
-            WHERE 
-                TABLE_SCHEMA = Database()
-                AND TABLE_NAME = '$name'"
-        ), 'COLUMN_NAME');
-    }
-
-    protected static function groupByField(array $unGrouped, string $field): array
-    {
-        $grouped = [];
-        foreach ($unGrouped as $data) {
-            $grouped[$data[$field]][] = $data;
-        }
-
-        return $grouped;
+        return self::getConnection()->createQueryBuilder()
+            ->select('COLUMN_NAME')
+            ->from('INFORMATION_SCHEMA.COLUMNS')
+            ->where('TABLE_SCHEMA = Database()')
+            ->andWhere('TABLE_NAME = ?')
+            ->setParameter(0, $name)
+            ->fetchFirstColumn();
     }
 }

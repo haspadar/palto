@@ -10,13 +10,13 @@ class AdsImages extends Model
 {
     public static function getAdsImages(array $adIds): array
     {
-        return self::getDb()->query('SELECT ad_id, big, small FROM ads_images WHERE ad_id IN %ld', $adIds);
+        return self::getConnection()->query('SELECT ad_id, big, small FROM ads_images WHERE ad_id IN %ld', $adIds);
     }
 
     public static function add($images): int
     {
-        self::getDb()->insert('ads_images', $images);
+        self::getConnection()->insert('ads_images', $images);
 
-        return self::getDb()->insertId();
+        return self::getConnection()->insertId();
     }
 }

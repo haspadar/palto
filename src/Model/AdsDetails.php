@@ -10,7 +10,7 @@ class AdsDetails extends Model
 {
     public static function getAdsDetails(array $adIds): array
     {
-        return self::getDb()->query(
+        return self::getConnection()->query(
             'SELECT ad_id, field, value FROM details_fields AS df INNER JOIN ads_details AS dfv ON df.id = dfv.details_field_id WHERE ad_id IN %ld',
             $adIds
         );
@@ -18,8 +18,8 @@ class AdsDetails extends Model
 
     public static function add(array $details): int
     {
-        self::getDb()->insert('ads_details', $details);
+        self::getConnection()->insert('ads_details', $details);
 
-        return self::getDb()->insertId();
+        return self::getConnection()->insertId();
     }
 }

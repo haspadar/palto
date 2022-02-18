@@ -9,13 +9,13 @@ class Regions extends Model
 {
     public static function getById(int $id): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $id) ?: [];
+        return self::getConnection()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $id) ?: [];
     }
 
     public static function getByUrl(string $url): array
     {
         if ($url) {
-            return self::getDb()->queryFirstRow('SELECT * FROM regions WHERE url = %s', $url) ?: [];
+            return self::getConnection()->queryFirstRow('SELECT * FROM regions WHERE url = %s', $url) ?: [];
         }
 
         return [];
@@ -23,12 +23,12 @@ class Regions extends Model
 
     public static function getRegionsByIds(array $ids): array
     {
-        return self::getDb()->query('SELECT * FROM regions WHERE id IN %ld', $ids);
+        return self::getConnection()->query('SELECT * FROM regions WHERE id IN %ld', $ids);
     }
 
     public static function getChildRegionsIds(array $regionsIds): array
     {
-        return self::getDb()->queryFirstColumn(
+        return self::getConnection()->queryFirstColumn(
             'SELECT id FROM regions WHERE parent_id IN %ld',
             $regionsIds,
         );
@@ -57,7 +57,7 @@ class Regions extends Model
                 $values['offset'] = $offset;
             }
 
-            return self::getDb()->query($query, $values);
+            return self::getConnection()->query($query, $values);
         } else {
             return [];
         }
@@ -65,18 +65,21 @@ class Regions extends Model
 
     public static function getMaxTreeId(): int
     {
-        return self::getDb()->queryFirstField('SELECT MAX(tree_id) FROM regions') ?: 0;
+        return self::getConnection()->queryFirstField('SELECT MAX(tree_id) FROM regions') ?: 0;
     }
 
     public static function add(array $region): int
     {
-        self::getDb()->insert('regions', $region);
+        self::getConnection()->insert('regions', $region);
 
-        return self::getDb()->insertId();
+        return self::getConnection()->insertId();
     }
 
     public static function getMaxLevel(): int
     {
-        return self::getDb()->queryFirstField('SELECT MAX(level) FROM regions') ?: 0;
+        return self::getConnection()->createQueryBuilder()
+            ->select('MAX(level)')
+            ->from('regions')
+            ->fetchOne() ?: 0;
     }
 }

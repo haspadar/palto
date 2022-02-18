@@ -6,7 +6,7 @@ require_once '../vendor/autoload.php';
 $parserPid = Status::getPhpCommandPid(\Palto\Directory::PARSE_ADS_SCRIPT, \Palto\Directory::getProjectName());
 echo json_encode([
     'disk_mysql_used' => Status::getDirectoryUsePercent(
-        Status::getMySqlDirectory(\Palto\Model\Ads::getDb())
+        Status::getMySqlDirectory(\Palto\Model\Ads::getConnection())
     ),
     'disk_root_used' => Status::getDirectoryUsePercent('/'),
     'ad_last_time' => \Palto\Model\Ads::getAdLastTime(),

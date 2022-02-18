@@ -70,7 +70,7 @@ class Regions
 
     public static function getMaxLevel(): int
     {
-        return \Palto\Model\Regions::getMaxLevel();
+        return Model\Regions::getMaxLevel();
     }
 
     public static function generateUrl(string $title, bool $addSuffix = false): string

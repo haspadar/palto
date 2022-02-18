@@ -17,7 +17,8 @@
         "bramus/monolog-colored-line-formatter": "dev-master",
         "wapmorgan/morphos": "dev-master",
         "bramus/router": "dev-master",
-        "league/plates": "v3.x-dev"
+        "league/plates": "v3.x-dev",
+        "doctrine/dbal": "4.0.x-dev"
     },
     "autoload": {
         "psr-4": {

@@ -19,6 +19,7 @@ final class CategoriesRegionsAdsCount extends AbstractMigration
     public function change(): void
     {
         $this->log('Update 1');
+        $this->execute("ALTER TABLE `categories_regions_with_ads` ADD `ads_count` int unsigned NOT NULL DEFAULT '0';");
         $this->execute("update categories_regions_with_ads as crwa
  inner join categories as c on crwa.category_id = c.id
  set crwa.ads_count = (select count(*) from ads where category_level_1_id = crwa.category_id OR category_level_2_id = crwa.category_id OR category_level_3_id = crwa.category_id)

@@ -90,6 +90,7 @@ class Ads
                 CategoriesRegionsWithAds::add($ad['category_id'], $ad['region_id']);
             } catch (Exception $e) {
                 Logger::error(var_export($ad, true));
+                Logger::error($e->getMessage());
                 Logger::error($e->getTraceAsString());
 
                 return 0;

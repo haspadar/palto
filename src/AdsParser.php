@@ -23,6 +23,8 @@ abstract class AdsParser
     protected function getNextPageNumber(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): int
     {
         if (Parser::hasNextPageLinkTag($categoryDocument)) {
+            Logger::debug('hasNextPageLinkTag: true');
+
             return Parser::getNextPageNumber($categoryDocument);
         }
 

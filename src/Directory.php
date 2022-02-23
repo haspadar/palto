@@ -96,12 +96,20 @@ class Directory
         return self::$rootDirectory;
     }
 
+    public static function getPaltoDirectories(string $directory = '/var/www'): array
+    {
+        return array_values(array_filter(
+            scandir($directory),
+            fn($iterateDirectory) => file_exists($directory . '/' . $iterateDirectory . '/configs/.env')
+        ));
+    }
+
     public static function getDirectories(string $directory): array
     {
-        return array_filter(
+        return array_values(array_filter(
             scandir($directory),
-            fn($directory) => !in_array($directory, ['.', '..'])
-        );
+            fn($iterateDirectory) => !in_array($iterateDirectory, ['.', '..'])
+        ));
     }
 
     public static function getDirectoryFilesRecursive(string $directory): array

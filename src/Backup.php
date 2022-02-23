@@ -66,8 +66,8 @@ class Backup
             Directory::getConfigsDirectory() . '/.layouts' => $archiveName . '/configs/.layouts',
             Directory::getConfigsDirectory() . '/.translates' => $archiveName . '/configs/.translates',
             Directory::getConfigsDirectory() . '/.pylesos' => $archiveName . '/configs/.pylesos',
-            Directory::getRootDirectory() . '/' . Directory::PARSE_CATEGORIES_SCRIPT => $archiveName . '/' . Directory::PARSE_CATEGORIES_SCRIPT,
-            Directory::getRootDirectory() . '/' . Directory::PARSE_ADS_SCRIPT => $archiveName . '/' . Directory::PARSE_ADS_SCRIPT,
+            Directory::getParseCategoriesFile() => $archiveName . '/' . Directory::PARSE_CATEGORIES_SCRIPT,
+            Directory::getParseAdsFile() => $archiveName . '/' . Directory::PARSE_ADS_SCRIPT,
         ],
             $imgFiles
         );

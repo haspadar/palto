@@ -82,6 +82,16 @@ class Directory
         return self::getRootDirectory() . '/tests';
     }
 
+    public static function getParseCategoriesFile(): string
+    {
+        return self::getRootDirectory() . '/' . self::PARSE_CATEGORIES_SCRIPT;
+    }
+
+    public static function getParseAdsFile(): string
+    {
+        return self::getRootDirectory() . '/' . self::PARSE_ADS_SCRIPT;
+    }
+
     public static function getRootDirectory(): string
     {
         if (!isset(self::$rootDirectory)) {

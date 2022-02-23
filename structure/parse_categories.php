@@ -9,9 +9,6 @@ use Symfony\Component\DomCrawler\Crawler;
 
 require '../vendor/autoload.php';
 
-\Palto\Levels::checkCategoriesFields();
-
-exit;
 $donorUrl = Parser::checkDonorUrl();
 $level1Response = PylesosService::get($donorUrl . '/sitemap', [], Config::getEnv());
 $categoriesDocument = new Crawler($level1Response->getResponse());

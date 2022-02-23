@@ -57,4 +57,19 @@ class Config
 
         return '';
     }
+
+    public static function replace(string $key, string $value, string $configPath)
+    {
+        $lines = explode(PHP_EOL, file_get_contents($configPath));
+        foreach ($lines as &$line) {
+            if (mb_strpos($line, $key . '=') === 0) {
+                $line = $key . '="' . $value . '"';
+            }
+        }
+
+        file_put_contents(
+            $configPath,
+            implode(PHP_EOL, $lines)
+        );
+    }
 }

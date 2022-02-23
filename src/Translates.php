@@ -230,6 +230,22 @@ class Translates
         ]));
     }
 
+    public static function replace(string $key, string $value)
+    {
+        $translates = file_get_contents(Directory::getConfigsDirectory() . '/translates.php');
+        $lines = explode(PHP_EOL, $translates);
+        foreach ($lines as &$line) {
+            if (mb_strpos(trim($line), "'" . $key . "'") === 0) {
+                $line = "    '" . $key . "' => '" . $value . "',";
+            }
+        }
+
+        file_put_contents(
+            Directory::getConfigsDirectory() . '/translates.php',
+            implode(PHP_EOL, $lines)
+        );
+    }
+
     public static function removeExtra(string $translate): string
     {
         $replaced = trim(strtr($translate, [

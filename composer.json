@@ -16,7 +16,10 @@
         "bramus/monolog-colored-line-formatter": "^3.0",
         "wapmorgan/morphos": "^3.2",
         "phpunit/phpunit": "^9.5",
-        "league/climate": "^3.8"
+        "league/climate": "^3.8",
+        "bramus/router": "^1.6",
+        "league/plates": "^3.4",
+        "vlucas/phpdotenv": "^5.4"
     },
     "autoload": {
         "psr-4": {

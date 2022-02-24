@@ -164,7 +164,9 @@ $(function () {
         $('#emoji-button').html(emoji);
     });
 
-    button.addEventListener('click', () => {
-        picker.togglePicker(button);
-    });
+    if (button) {
+        button.addEventListener('click', () => {
+            picker.togglePicker(button);
+        });
+    }
 });

@@ -9,6 +9,11 @@ $templatesEngine = new League\Plates\Engine(\Palto\Directory::getRootDirectory()
 $templatesEngine->loadExtension(new Translate());
 
 $router = new Router();
+$router->mount('/karman', function() use ($router) {
+    $router->get('/', '\Palto\Controller\Karman@showComplaints');
+    $router->get('/complaints', '\Palto\Controller\Karman@showComplaints');
+});
+
 $router->get('/', '\Palto\Controller\Client@showIndex');
 $router->get('/registration', '\Palto\Controller\Client@showRegistration');
 $router->get('/regions', '\Palto\Controller\Client@showRegionsList');

@@ -82,6 +82,16 @@ class Directory
         return self::getRootDirectory() . '/tests';
     }
 
+    public static function getParseCategoriesFile(): string
+    {
+        return self::getRootDirectory() . '/' . self::PARSE_CATEGORIES_SCRIPT;
+    }
+
+    public static function getParseAdsFile(): string
+    {
+        return self::getRootDirectory() . '/' . self::PARSE_ADS_SCRIPT;
+    }
+
     public static function getRootDirectory(): string
     {
         if (!isset(self::$rootDirectory)) {
@@ -96,12 +106,20 @@ class Directory
         return self::$rootDirectory;
     }
 
+    public static function getPaltoDirectories(string $directory = '/var/www'): array
+    {
+        return array_values(array_filter(
+            scandir($directory),
+            fn($iterateDirectory) => file_exists($directory . '/' . $iterateDirectory . '/configs/.env')
+        ));
+    }
+
     public static function getDirectories(string $directory): array
     {
-        return array_filter(
+        return array_values(array_filter(
             scandir($directory),
-            fn($directory) => !in_array($directory, ['.', '..'])
-        );
+            fn($iterateDirectory) => !in_array($iterateDirectory, ['.', '..'])
+        ));
     }
 
     public static function getDirectoryFilesRecursive(string $directory): array

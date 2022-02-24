@@ -3,7 +3,6 @@
 namespace Palto\Model;
 
 use Palto\Category;
-use Palto\Debug;
 use Palto\Region;
 
 class Categories extends Model

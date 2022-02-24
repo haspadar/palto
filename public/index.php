@@ -1,7 +1,6 @@
 <?php
 
 use Bramus\Router\Router;
-use Palto\Debug;
 use Palto\Plates\Extension\Translate;
 
 require_once '../vendor/autoload.php';

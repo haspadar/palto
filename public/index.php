@@ -1,9 +1,16 @@
 <?php
 
 use Bramus\Router\Router;
+use Palto\Auth;
+use Palto\Config;
+use Palto\IP;
 use Palto\Plates\Extension\Translate;
 
 require_once '../vendor/autoload.php';
+
+if (Config::get('AUTH') && !IP::isLocal()) {
+    Auth::check();
+}
 
 $templatesEngine = new League\Plates\Engine(\Palto\Directory::getRootDirectory() . '/templates');
 $templatesEngine->loadExtension(new Translate());

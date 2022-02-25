@@ -17,7 +17,7 @@ class CategoriesRegionsWithAds extends Model
                 $regionId
             )[0]['count'];
         } else {
-            $count = self::getDb()->query('SELECT COUNT(*) AS count FROM ads WHERE category_level_' . $category['level'] . '_id = %d')[0]['count'];
+            $count = self::getDb()->query('SELECT COUNT(*) AS count FROM ads WHERE category_level_' . $category['level'] . '_id = %d', $categoryId)[0]['count'];
         }
 
         self::getDb()->insertUpdate('categories_regions_with_ads', [

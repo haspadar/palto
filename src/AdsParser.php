@@ -130,6 +130,8 @@ abstract class AdsParser
             if ($nextUrl) {
                 Logger::debug('Parsing next page ' . $nextUrl);
                 $this->parseCategory($category, $nextUrl, $nextPageNumber + 1, $logContent);
+            } else {
+                Logger::debug('Not found next page on url ' . $nextUrl);
             }
 
         } else {

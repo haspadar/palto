@@ -113,7 +113,7 @@ abstract class AdsParser
 
                 if ($adId) {
                     $adNumber = $i + 1;
-                    Logger::debug("Added $adNumber-th ad on page $pageNumber with id=$adUrl");
+                    Logger::debug("Added {$adNumber}th ad on page $pageNumber with id=$adUrl");
                     $addedAdsCount++;
                 } else {
                     Logger::debug('Skipped wrong ad with url ' . $adUrl->getFull());

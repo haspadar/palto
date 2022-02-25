@@ -18,7 +18,7 @@ use Palto\Categories; ?>
         <?php foreach ($ad->getImages() as $key => $image) :?>
             <div class="mySlides fade">
                 <div class="numbertext"><?=$key + 1?> / <?=count($ad->getImages())?></div>
-                <img src="<?=$image['big'] ?: $image['small']?>" style="width:100%" loading="lazy">
+                <img src="<?=$image['big'] ?: $image['small']?>" loading="lazy">
             </div>
         <?php endforeach;?>
 

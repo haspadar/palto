@@ -44,6 +44,15 @@ class Ads
             : 0;
     }
 
+    public static function getHotAds(?Region $region, int $limit): array
+    {
+        return self::getAds(
+            $region,
+            Categories::getById(Config::get('HOT_LAYOUT_HOT_CATEGORY')),
+            $limit
+        );
+    }
+
     public static function getAds(
         ?Region $region,
         ?Category $category,

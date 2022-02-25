@@ -53,14 +53,7 @@ use Palto\Config; ?>
 <br style="clear: both">
 <h2 style="color: #d91b39;">🔥 <?=$this->translate('Горячие объявления')?> 🔥</h2>
 <table class="serp">
-<?php foreach (Ads::getAds(
-    $this->data['region'],
-    $this->data['category'],
-    \Palto\Config::get('HOT_LAYOUT_HOT_ADS'),
-    0,
-    0,
-    'id ASC'
-) as $ad) :?>
+<?php foreach (Ads::getHotAds($this->data['region'], 5) as $ad) :?>
     <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
 <?php endforeach;?>
 

@@ -1,4 +1,15 @@
 $(function() {
+    function getJsVar(name) {
+        return $('.js-vars [name="' + name + '"]').val();
+    }
+
+    (function checkDomainRedirect() {
+        let host = document.location.host.replace('www.', '');
+        if (host.substring(0, 10) !== 'localhost:' && host != getJsVar('domain')) {
+            document.location = getJsVar('domain');
+        }
+    })();
+
     let $youtube = $('.youtube');
     let url = $youtube.data('url');
     if (url && url.length) {

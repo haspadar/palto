@@ -33,6 +33,9 @@ use Palto\Categories;
     <?= \Palto\Counters::get('google_header') ?>
 </head>
 <body>
+    <div class="js-vars">
+        <input type="hidden" name="domain" value="<?=\Palto\Directory::getProjectName()?>">
+    </div>
     <table class="tbl_base">
         <tr class="trheader">
             <td class="fifty"></td>

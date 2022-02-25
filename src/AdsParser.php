@@ -127,8 +127,11 @@ abstract class AdsParser
         $nextPageNumber = $this->getNextPageNumber($categoryDocument, $category, $url, $pageNumber);
         if ($nextPageNumber && $nextPageNumber <= 10) {
             $nextUrl = $this->getNextPageUrl($categoryDocument, $category, $url, $pageNumber);
-            Logger::debug('Parsing next page ' . $nextUrl);
-            $this->parseCategory($category, $nextUrl, $nextPageNumber + 1, $logContent);
+            if ($nextUrl) {
+                Logger::debug('Parsing next page ' . $nextUrl);
+                $this->parseCategory($category, $nextUrl, $nextPageNumber + 1, $logContent);
+            }
+
         } else {
             Logger::warning('Ignored next page number ' . $nextPageNumber);
         }

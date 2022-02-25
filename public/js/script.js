@@ -6,7 +6,7 @@ $(function() {
     (function checkDomainRedirect() {
         let host = document.location.host.replace('www.', '');
         if (host.substring(0, 10) !== 'localhost:' && host != getJsVar('domain')) {
-            document.location = getJsVar('domain');
+            document.location = 'https://' + getJsVar('domain');
         }
     })();
 

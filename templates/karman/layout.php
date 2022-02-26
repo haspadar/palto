@@ -84,6 +84,7 @@
 <script src="<?=$this->asset('/js/jquery.min.js')?>"></script>
 <script src="<?=$this->asset('/bootstrap/js/bootstrap.js')?>"></script>
 <script src="<?=$this->asset('/clipboard/dist/clipboard.min.js')?>"></script>
+<!--https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js-->
 <script src="<?=$this->asset('/js/emoji.min.js')?>"></script>
 <script src="<?=$this->asset('/js/karman.js')?>"></script>
 

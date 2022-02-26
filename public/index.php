@@ -10,6 +10,7 @@ $templatesEngine->loadExtension(new Translate());
 
 $router = new Router();
 $router->mount('/karman', function() use ($router) {
+    \Palto\Auth::check();
     $router->get('/', '\Palto\Controller\Karman@showComplaints');
     $router->get('/complaints', '\Palto\Controller\Karman@showComplaints');
 });

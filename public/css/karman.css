@@ -1,0 +1,10 @@
+.karman-panel {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #6c757d!important;
+    color: #fff!important;
+    text-align: center;
+    padding-top: 15px;
+}

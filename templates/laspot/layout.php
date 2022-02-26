@@ -16,6 +16,10 @@ use Palto\Categories;
     <link rel="icon" type="image/png" href="/img/favicon.ico">
     <link rel="stylesheet" href="<?=$this->asset('/laspot-theme/css/styles.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>">
+    <?php if (\Palto\Auth::isLogged()) :?>
+        <link rel="stylesheet" href="<?=$this->asset('/css/karman.css')?>">
+    <?php endif;?>
+
     <?= $this->section('styles') ?>
 
     <?php if (isset($pager) && $pager instanceof \Palto\Pager) : ?>
@@ -33,6 +37,9 @@ use Palto\Categories;
     <?= \Palto\Counters::get('google_header') ?>
 </head>
 <body>
+    <div class="js-vars">
+        <input type="hidden" name="domain" value="<?=\Palto\Directory::getProjectName()?>">
+    </div>
     <table class="tbl_base">
         <tr class="trheader">
             <td class="fifty"></td>
@@ -113,5 +120,11 @@ use Palto\Categories;
     <script src="<?=$this->asset('/js/moderation.js')?>"></script>
     <script src="<?=$this->asset('/js/script.js')?>"></script>
     <?= $this->section('scripts') ?>
+
+    <?php if (\Palto\Auth::isLogged()) :?>
+        <div class="karman-panel">
+            <p>Footer</p>
+        </div>
+    <?php endif;?>
 </body>
 </html>

@@ -4,9 +4,14 @@ namespace Palto;
 
 class Auth
 {
+    public static function isLogged(): bool
+    {
+        return !empty($_SERVER['PHP_AUTH_USER']);
+    }
+
     public static function check()
     {
-        if (empty($_SERVER['PHP_AUTH_USER'])) {
+        if (!self::isLogged()) {
             self::showAuthForm();
         } else {
             $login = $_SERVER['PHP_AUTH_USER'];

@@ -28,7 +28,7 @@ class Install
             'Update Htpasswd' => Cli::updateHtpasswd(),
             'Update Host' => Cli::updateHost(),
             'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory()),
-            Cli::updatePermissions('/etc/nginx/sites-available')
+            Cli::updatePermissions('/etc/nginx/sites-available', 'www-data'),
         ]);
     }
 }

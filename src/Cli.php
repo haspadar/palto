@@ -225,13 +225,13 @@ class Cli
         }
     }
 
-    public static function updatePermissions(string $path): string
+    public static function updatePermissions(string $path, string $user = ''): string
     {
-        if (self::isLinux()) {
-            return "chown -R \"km\" $path";
-        } else {
-            return "chown -R \"haspadar\" $path";
+        if (!$user) {
+            $user = self::isLinux() ? 'km' : 'haspadar';
         }
+
+        return "chown -R \"$user\" $path";
     }
 
     public static function isLinux(): bool

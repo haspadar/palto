@@ -19,7 +19,7 @@ class Update
             'Update Phinx' => Cli::updatePhinx($databaseName, $databaseUsername, $databasePassword),
             'Update Htpasswd' => Cli::updateHtpasswd(),
             'Update Permissions' => Cli::updatePermissions(Directory::getRootDirectory()),
-            Cli::updatePermissions('/etc/nginx/sites-available')
+            Cli::updatePermissions('/etc/nginx/sites-available', 'www-data')
         ]);
     }
 

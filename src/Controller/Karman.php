@@ -6,6 +6,7 @@ use League\Plates\Engine;
 use League\Plates\Extension\Asset;
 use Palto\Ads;
 use Palto\Category;
+use Palto\Cli;
 use Palto\Config;
 use Palto\Debug;
 use Palto\Directory;

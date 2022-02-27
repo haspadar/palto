@@ -65,6 +65,7 @@ class Status
             $content = file_get_contents($name);
             $replaced = str_replace(self::ENABLE_CACHE_ROW, self::DISABLE_CACHE_ROW, $content);
             file_put_contents($name, $replaced);
+            Cli::runCommands([Cli::reloadNginx()]);
         }
     }
 
@@ -92,6 +93,7 @@ class Status
             $content = file_get_contents($name);
             $replaced = str_replace(self::DISABLE_CACHE_ROW, self::ENABLE_CACHE_ROW, $content);
             file_put_contents($name, $replaced);
+            Cli::runCommands([Cli::reloadNginx()]);
         }
     }
 

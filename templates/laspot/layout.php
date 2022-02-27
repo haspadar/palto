@@ -119,12 +119,9 @@ use Palto\Categories;
     <script src="<?=$this->asset('/js/slider.js')?>"></script>
     <script src="<?=$this->asset('/js/moderation.js')?>"></script>
     <script src="<?=$this->asset('/js/script.js')?>"></script>
+    <script src="<?=$this->asset('/js/karman-panel.js')?>"></script>
     <?= $this->section('scripts') ?>
+    <?= $this->insert('partials/karman-panel'); ?>
 
-    <?php if (\Palto\Auth::isLogged()) :?>
-        <div class="karman-panel">
-            <p>Footer</p>
-        </div>
-    <?php endif;?>
 </body>
 </html>

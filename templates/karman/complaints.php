@@ -15,7 +15,7 @@
         <?php foreach ($this->data['complaints'] as $actualComplaint) :?>
             <tr>
                 <td>
-                    <a href="/karman/complaints?id=<?=$actualComplaint['id']?>" class="text-decoration-none">
+                    <a href="/karman/complaints/<?=$actualComplaint['id']?>" class="text-decoration-none">
                         <?php $message = $actualComplaint['message']?>
                         <?=\Palto\Filter::shortText($message, 50)?>
                     </a>

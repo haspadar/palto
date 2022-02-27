@@ -69,8 +69,8 @@
                 <h1 class="h2"><?= $this->data['title'] ?></h1>
             </div>
 
-            <?php if ($flashMessage = \Palto\Flash::receive()) : ?>
-                <?php $decoded = json_decode($flashMessage, JSON_OBJECT_AS_ARRAY) ?>
+            <?php if ($this->data['flash']) : ?>
+                <?php $decoded = json_decode($this->data['flash'], JSON_OBJECT_AS_ARRAY) ?>
                 <div class="alert alert-<?= $decoded['type'] ?> alert-dismissible mt-2 fade show" role="alert">
                     <?= $decoded['message'] ?>
                 </div>

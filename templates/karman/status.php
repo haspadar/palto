@@ -1,12 +1,6 @@
-<?php
+<?php /** @var $this League\Plates\Template\Template */?>
 
-/**
- * @var $this \Palto\Layout\Karman
- */
-$this->partial('header.inc', [
-    'title' => 'Статус',
-]);
-?>
+<?php $this->layout('layout');?>
 
 <dl>
     <dt>Сайт включен</dt>
@@ -32,5 +26,3 @@ $this->partial('header.inc', [
     <dt>Занятое место на диске</dt>
     <dd><?=\Palto\Status::getDirectoryUsePercent('/')?>%</dd>
 </dl>
-
-<?php $this->partial('footer.inc');

@@ -6,8 +6,9 @@ $(function () {
     });
 
     $('.remove-emoji').on('click', function () {
+        let id = $(this).data('id');
         $.ajax({
-            url: '/karman/categories/remove-emoji?id=' + getParam('id'),
+            url: '/karman/remove-emoji/' + id,
             dataType: "json",
             type: 'DELETE',
             data: {},
@@ -18,30 +19,32 @@ $(function () {
     });
 
     $('.ignore-complaint').on('click', function () {
-        clickPutRequest($(this), '/karman/complaints/ignore-complaint?id=' + getParam('id'), {});
+        let id = $(this).data('id');
+        clickPutRequest($(this), '/karman/ignore-complaint/' + id, {});
     });
 
     $('.ignore-all-complaints').on('click', function () {
         let ids = $(this).data('ids');
-        clickPutRequest($(this), '/karman/complaints/ignore-complaints', {
+        clickPutRequest($(this), '/karman/ignore-complaints', {
             'ids': ids
         });
     });
 
     $('.remove-ad').on('click', function () {
-        clickDeleteRequest($(this), '/karman/complaints/remove-ad?id=' + getParam('id'), {});
+        let id = $(this).data('id');
+        clickDeleteRequest($(this), '/karman/remove-ad/' + id, {});
     });
 
     $('.remove-all-ads').on('click', function () {
         let ids = $(this).data('ids');
-        clickDeleteRequest($(this), '/karman/complaints/remove-ads', {
+        clickDeleteRequest($(this), '/karman/remove-ads', {
             'ids': ids
         });
     });
 
     $('.disable-site').on('click', function () {
         $.ajax({
-            url: '/karman/status/disable-site',
+            url: '/karman/disable-site',
             dataType: "json",
             type: 'PUT',
             data: {},
@@ -53,7 +56,7 @@ $(function () {
 
     $('.enable-site').on('click', function () {
         $.ajax({
-            url: '/karman/status/enable-site',
+            url: '/karman/enable-site',
             dataType: "json",
             type: 'PUT',
             data: {},
@@ -65,7 +68,7 @@ $(function () {
 
     $('.disable-cache').on('click', function () {
         $.ajax({
-            url: '/karman/status/disable-cache',
+            url: '/karman/disable-cache',
             dataType: "json",
             type: 'PUT',
             data: {},
@@ -77,7 +80,7 @@ $(function () {
 
     $('.enable-cache').on('click', function () {
         $.ajax({
-            url: '/karman/status/enable-cache',
+            url: '/karman/enable-cache',
             dataType: "json",
             type: 'PUT',
             data: {},
@@ -140,9 +143,10 @@ $(function () {
     }
 
     $('.category').on('submit', function () {
-        var emoji = $('#emoji-button').html();
+        let emoji = $('#emoji-button').html();
+        let id = $(this).find('[type=submit]').data('id');
         $.ajax({
-            url: '/karman/categories/update?id=' + getParam('id'),
+            url: '/karman/update-category/' + id,
             dataType: "json",
             type: 'PUT',
             data: {

@@ -8,9 +8,9 @@ class Russian
 {
     public static function month(string $monthNumber): string
     {
-        $titles = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'ноября', 'декабря'];
+        $titles = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 
-        return $titles[intval($monthNumber) + 1] ?? '';
+        return $titles[intval($monthNumber) - 1] ?? '';
     }
 
     public static function regionPrepositional(string $region): string

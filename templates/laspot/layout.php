@@ -16,6 +16,10 @@ use Palto\Categories;
     <link rel="icon" type="image/png" href="/img/favicon.ico">
     <link rel="stylesheet" href="<?=$this->asset('/laspot-theme/css/styles.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>">
+    <?php if (\Palto\Auth::isLogged()) :?>
+        <link rel="stylesheet" href="<?=$this->asset('/css/karman.css')?>">
+    <?php endif;?>
+
     <?= $this->section('styles') ?>
 
     <?php if (isset($pager) && $pager instanceof \Palto\Pager) : ?>
@@ -115,6 +119,9 @@ use Palto\Categories;
     <script src="<?=$this->asset('/js/slider.js')?>"></script>
     <script src="<?=$this->asset('/js/moderation.js')?>"></script>
     <script src="<?=$this->asset('/js/script.js')?>"></script>
+    <script src="<?=$this->asset('/js/karman-panel.js')?>"></script>
     <?= $this->section('scripts') ?>
+    <?= $this->insert('partials/karman-panel'); ?>
+
 </body>
 </html>

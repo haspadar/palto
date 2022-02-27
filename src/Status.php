@@ -27,7 +27,7 @@ class Status
         $values = explode(' ', $lines[1]);
         foreach ($values as $value) {
             if (strpos($value, '%') !== false) {
-                return $value;
+                return str_replace('%', '', $value);
             }
         }
 
@@ -97,15 +97,15 @@ class Status
 
     public static function enableSite()
     {
-        $content = file_get_contents(Directory::getRootDirectory() . '/.env');
+        $content = file_get_contents(Directory::getConfigsDirectory() . '/.env');
         $replaced = str_replace('AUTH=1', 'AUTH=0', $content);
-        file_put_contents(Directory::getRootDirectory() . '/.env', $replaced);
+        file_put_contents(Directory::getConfigsDirectory() . '/.env', $replaced);
     }
 
     public static function disableSite()
     {
-        $content = file_get_contents(Directory::getRootDirectory() . '/.env');
+        $content = file_get_contents(Directory::getConfigsDirectory() . '/.env');
         $replaced = str_replace('AUTH=0', 'AUTH=1', $content);
-        file_put_contents(Directory::getRootDirectory() . '/.env', $replaced);
+        file_put_contents(Directory::getConfigsDirectory() . '/.env', $replaced);
     }
 }

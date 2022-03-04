@@ -152,10 +152,11 @@ use Palto\Categories; ?>
             $this->data['region'],
             $this->data['category'],
             5,
-            0
+            0,
+            $this->data['ad']->getId()
         ) as $similarAd) : ?>
             <?php if ($similarAd->getId() != $ad->getId()) : ?>
-                <?php $this->insert('partials/ad_in_list') ?>
+                <?php $this->insert('partials/ad_in_list', ['ad' => $similarAd]) ?>
             <?php endif; ?>
         <?php endforeach; ?>
     </table>

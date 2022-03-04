@@ -73,7 +73,7 @@ class Karman
             $complaint = \Palto\Complaints::getComplaint($id);
             $ad = Ads::getById($complaint['ad_id']);
             Flash::add(json_encode([
-                'message' => 'Жалоба #' . $id . ' на <a href="' . $ad->generateUrl() . '" target="_blank">объявление</a> проигнарировано',
+                'message' => 'Жалоба #' . $id . ' на <a href="' . $ad->generateUrl() . '" target="_blank">объявление</a> проигнорировано',
                 'type' => 'success'
             ]));
             $this->showJsonResponse(['success' => true]);
@@ -89,7 +89,7 @@ class Karman
         if ($ids) {
             \Palto\Complaints::ignoreComplaints($ids);
             Flash::add(json_encode([
-                'message' => 'Жалобы ##' . $idsString . ' проигнарированы',
+                'message' => 'Жалобы ##' . $idsString . ' проигнорированы',
                 'type' => 'success'
             ]));
             $this->showJsonResponse(['success' => true]);

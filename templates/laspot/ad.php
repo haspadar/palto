@@ -95,12 +95,19 @@ use Palto\Categories; ?>
     </div>
 <?php endif; ?>
 
-    <div class="reply"><a class="reply_link"
-                          href="<?= \Palto\Config::get('DONOR_URL') == 1 ? $ad->getUrl() : '/registration' ?>"
-                          target="_blank"
-                          rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
-    </div>
+    <div class="reply">
+        <?php if (\Palto\Config::get('DONOR_URL') == 1) :?>
+            <a class="reply_link"
+              href="<?= $ad->getUrl() ?>"
+              target="_blank"
+              rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
+        <?php else :?>
+            <a class="reply_link"
+               href="/registration"
+               rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
+        <?php endif;?>
 
+    </div>
     <div class="create_time">⏱ <?= $this->translate('Время публикации') ?>
         : <?= $ad->getCreateTime()->format('d.m.Y') ?> </div>
     <div class="report"><a class="report_link" href="javascript:void(0);"

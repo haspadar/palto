@@ -18,74 +18,21 @@ final class CategoriesRegionsAdsCount extends AbstractMigration
      */
     public function change(): void
     {
-        $this->log('Update 1');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- set crwa.ads_count = (select count(*) from ads where category_level_1_id = crwa.category_id OR category_level_2_id = crwa.category_id OR category_level_3_id = crwa.category_id)
- where crwa.region_id is NULL;");
+        $categoriesCount = $this->query('SELECT COUNT(*) AS count FROM categories')->fetchAll()[0]['count'];
+        $categories = $this->query('SELECT * FROM categories')->fetchAll();
 
-        $this->log('Update 2');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_1_id = crwa.category_id) AND (region_level_1_id = crwa.region_id))
- where crwa.region_id is NOT NULL AND c.level=1 and r.level=1");
-
-        $this->log('Update 3');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_2_id = crwa.category_id) AND (region_level_1_id = crwa.region_id))
- where crwa.region_id is NOT NULL  AND c.level=2 and r.level=1");
-
-        $this->log('Update 4');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_3_id = crwa.category_id) AND (region_level_1_id = crwa.region_id))
- where crwa.region_id is NOT NULL AND c.level=3 and r.level=1");
-
-        $this->log('Update 5');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_1_id = crwa.category_id) AND (region_level_2_id = crwa.region_id))
- where crwa.region_id is NOT NULL AND c.level=1 and r.level=2");
-
-        $this->log('Update 6');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_2_id = crwa.category_id) AND (region_level_2_id = crwa.region_id))
- where crwa.region_id is NOT NULL AND c.level=2 and r.level=2");
-
-        $this->log('Update 7');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_3_id = crwa.category_id) AND (region_level_2_id = crwa.region_id))
- where crwa.region_id is NOT NULL  AND c.level=3 and r.level=2");
-
-        $this->log('Update 8');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_1_id = crwa.category_id) AND (region_level_3_id = crwa.region_id))
- where crwa.region_id is NOT NULL  AND c.level=1 and r.level=3");
-
-        $this->log('Update 9');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_2_id = crwa.category_id) AND (region_level_3_id = crwa.region_id))
- where crwa.region_id is NOT NULL AND c.level=2 and r.level=3");
-
-        $this->log('Update 10');
-        $this->execute("update categories_regions_with_ads as crwa
- inner join categories as c on crwa.category_id = c.id
- inner join regions as r on crwa.region_id = r.id
- set crwa.ads_count = (select count(*) from ads where (category_level_3_id = crwa.category_id) AND (region_level_3_id = crwa.region_id))
- where crwa.region_id is NOT NULL AND c.level=3 and r.level=3");
+        $regionsCount = $this->query('SELECT COUNT(*) AS count FROM regions')->fetchAll()[0]['count'];
+        $regions = $this->query('SELECT * FROM regions')->fetchAll();
+        foreach ($categories as $categoryKey => $category) {
+            foreach ($regions as $regionKey => $region) {
+                echo 'Category ' . ($categoryKey + 1) . '/' .  $categoriesCount . PHP_EOL;
+                echo 'Region ' . ($regionKey + 1) . '/' .  $regionsCount . PHP_EOL;
+                $categoryField = "category_level_" . $category['level'] . "_id";
+                $regionField = "region_level_" . $region['level'] . "_id";
+                $adsCount = $this->query("SELECT COUNT(*) AS count FROM ads WHERE $categoryField = $category[id] AND $regionField = $region[id]")->fetchAll()[0]['count'];
+                $this->execute("INSERT INTO categories_regions_with_ads (category_id, region_id, ads_count) VALUES($category[id], $region[id], $adsCount) ON DUPLICATE KEY UPDATE ads_count=$adsCount");
+            }
+        }
     }
 
     private function log(string $string)

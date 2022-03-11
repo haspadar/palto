@@ -25,12 +25,12 @@ class Sitemap
             )
         );
         $groupedRegions[0][] = new Region([]);
+        $this->generateRegionsFiles('/regions', $groupedRegions);
         $groupedCategories = $this->groupTrees(
             array_map(fn ($category) => new Category($category),
-                \Palto\Model\Categories::getDb()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_level_1_id FROM ads) ORDER BY tree_id, level')
+                \Palto\Model\Categories::getDb()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads) ORDER BY tree_id, level')
             )
         );
-        $this->generateRegionsFiles('/regions', $groupedRegions);
         /**
          * @var Region[] $regions
          */
@@ -114,13 +114,14 @@ class Sitemap
 
     private function hasAds(Category $category, ?Region $region): bool
     {
-        $categoryField = 'category_level_' . $category->getLevel() . '_id';
-        $regionField = $region && $region->getId() ? 'region_level_' . $region->getLevel() . '_id' : '';
-        $query = "SELECT id FROM ads WHERE $categoryField={$category->getId()}"
-            . ($regionField ? " AND $regionField={$region->getId()}" : '')
-            . ' LIMIT 1';
-
-        return (bool)\Palto\Model\Ads::getDb()->queryFirstField($query);
+        return (bool)\Palto\Model\Ads::getDb()->queryFirstField('SELECT * FROM categories_regions_with_ads WHERE category_id = %d AND region_id = %d', $category->getId(), $region->getId());
+//        $categoryField = 'category_level_' . $category->getLevel() . '_id';
+//        $regionField = $region && $region->getId() ? 'region_level_' . $region->getLevel() . '_id' : '';
+//        $query = "SELECT id FROM ads WHERE $categoryField={$category->getId()}"
+//            . ($regionField ? " AND $regionField={$region->getId()}" : '')
+//            . ' LIMIT 1';
+//
+//        return (bool)\Palto\Model\Ads::getDb()->queryFirstField($query);
     }
 
     private function saveUrls(string $path, string $fileName, array $urls, bool $checkSize = true)

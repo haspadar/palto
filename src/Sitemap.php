@@ -101,7 +101,6 @@ class Sitemap
                     $urls[] = $category->generateUrl($region);
                 } else {
                     Logger::debug('Ignored category ' . $category->getId() . ' with region ' . $region->getId() . ': ads not found');
-                    exit;
                 }
             }
         }

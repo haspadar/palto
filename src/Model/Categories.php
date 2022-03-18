@@ -47,7 +47,7 @@ class Categories extends Model
     public static function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array
     {
         $query = 'SELECT c.*, COUNT(c2.id) AS count FROM categories AS c INNER JOIN categories AS c2 ON c.id = c2.parent_id';
-        $query .= " WHERE c.id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads)";
+        $query .= " WHERE (c.id IN (SELECT DISTINCT category_level_1_id FROM ads) OR c.id IN (SELECT DISTINCT category_level_2_id FROM ads))";
         $query .= " AND c.parent_id IS NULL";
         $query .= ' GROUP BY c.id HAVING count >= %d_count';
         $values = ['count' => $childrenMinimumCount];

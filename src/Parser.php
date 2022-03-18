@@ -79,6 +79,20 @@ class Parser
         return $url ? new Url($url) : null;
     }
 
+    public static function checkDonorPath(): string
+    {
+        if (!isset($_SERVER['argv'][1])) {
+            exit('Укажите первым параметром путь к categories.html' . PHP_EOL);
+        }
+
+        $domain = $_SERVER['argv'][1];
+        if (mb_substr($domain, -1) == '/') {
+            $domain = mb_substr($domain, 0, -1);
+        }
+
+        return $domain;
+    }
+
     public static function checkDonorUrl(): string
     {
         if (!isset($_SERVER['argv'][1])) {

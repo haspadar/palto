@@ -237,12 +237,12 @@ class Portnoy
         if ($parserProjectPath) {
             Logger::debug('Set parser project ' . $parserProjectPath);
             file_put_contents(
-                Directory::getParseCategoriesFile(),
-                file_get_contents($parserProjectPath . '/' . Directory::PARSE_CATEGORIES_SCRIPT)
+                Directory::getParseCategoriesScript(),
+                file_get_contents(Directory::getParseCategoriesScript())
             );
             file_put_contents(
-                Directory::getParseAdsFile(),
-                file_get_contents($parserProjectPath . '/' . Directory::PARSE_ADS_SCRIPT)
+                Directory::getParseAdsScript(),
+                file_get_contents(Directory::getParseAdsScript())
             );
         }
     }

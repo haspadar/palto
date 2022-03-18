@@ -15,7 +15,7 @@ class Install
             Cli::safeLinkNginxDomain(),
             'Update FPM' => Cli::updateNginxPhpFpm(),
             Cli::reloadNginx(),
-            'Copy Parse Scripts' => Cli::safeCopyParseScripts(),
+//            'Copy Parse Scripts' => Cli::safeCopyParseScripts(),
             'Copy Translates' => Cli::safeCopyTranslates(),
             'Copy Counters' => Cli::safeCopyCounters(),
             'Copy CSS' => Cli::safeCopyCss(),

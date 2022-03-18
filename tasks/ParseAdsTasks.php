@@ -6,7 +6,7 @@ use Symfony\Component\Lock\Store\FlockStore;
 
 $schedule = new Schedule();
 
-$task = $schedule->run(PHP_BINARY . ' ' . Directory::PARSE_ADS_SCRIPT);
+$task = $schedule->run(PHP_BINARY . ' ' . Directory::getParseAdsScript());
 $task
     ->hourly()
     ->description('Ads parser')

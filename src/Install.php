@@ -4,11 +4,14 @@ namespace Palto;
 
 class Install
 {
-    public static function run()
+    public static function run($databaseUsername = '', $databasePassword = '')
     {
-        $databaseName = str_replace('.', '_', Directory::getProjectName());
-        $databaseUsername = $databaseName;
-        $databasePassword = Cli::generatePassword();
+        if (!$databaseUsername && !$databasePassword) {
+            $databaseUsername = str_replace('.', '_', Directory::getProjectName());
+            $databasePassword = Cli::generatePassword();
+        }
+
+        $databaseName = $databaseUsername;
         Cli::runCommands([
             'Update Nginx' => Cli::updateNginx(),
             Cli::updateNginxDomain($databaseName),

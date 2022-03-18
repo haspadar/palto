@@ -9,12 +9,15 @@ class Portnoy
     public static function run()
     {
         $options = self::prompt();
-        Install::run();
+        Install::run($options['database_username'], $options['database_password']);
         self::setOptions($options);
     }
 
     private static function prompt(): array
     {
+//        $databaseProject = self::getDatabaseProject('/Users/haspadar/Projects');
+        $databaseProject = self::getDatabaseProject('/var/www');
+        $copyEnvContent = $databaseProject ? file_get_contents($databaseProject . '/configs/.env') : '';
         $regionTitle = self::getRegionTitle();
         $htmlLang = self::getHtmlLang();
         $translateFile = self::getTranslateFile($htmlLang);
@@ -26,7 +29,7 @@ class Portnoy
             $helpPassword = self::getHelpPassword();
         }
 
-        $parserProjectPath = self::getParserProjectPath();
+        $parserProjectPath = self::getParser($copyEnvContent);
 
         return [
             'html_lang' => $htmlLang,
@@ -34,7 +37,9 @@ class Portnoy
             'translate_file' => $translateFile,
             'help_login' => $helpLogin,
             'help_password' => $helpPassword,
-            'parser_project_path' => $parserProjectPath
+            'parser' => $parserProjectPath,
+            'database_username' => $copyEnvContent ? self::extractEnvValue('DB_USER', $copyEnvContent) : '',
+            'database_password' => $copyEnvContent ? self::extractEnvValue('DB_PASSWORD', $copyEnvContent) : '',
         ];
     }
 
@@ -209,16 +214,31 @@ class Portnoy
         $climate->red()->out("Логин и пароль не подошли");
     }
 
-    private static function getParserProjectPath(): string
+    private static function getParser(string $copyEnvContent = ''): string
     {
-        $path = '/Users/haspadar/Projects';
-        $projects = Directory::getPaltoDirectories($path);
-        if ($projects) {
-            $climate = new CLImate();
-            $input = $climate->cyan()->radio('Откуда скопировать парсеры? ', $projects);
-            $response = $input->prompt();
+        if ($copyEnvContent) {
+            $defaultValue = self::extractEnvValue('PARSE_ADS_SCRIPT', $copyEnvContent);
+            if ($defaultValue) {
+                return $defaultValue;
+            }
+        }
 
-            return $path . '/' . $response;
+        $directories = Directory::getDirectories(Directory::getParsersDirectory() . '/ads');
+        $parsers = [];
+        foreach ($directories as $directory) {
+            $parsers = array_merge(
+                $parsers,
+                array_map(fn($parser) => $directory . '/' . $parser,
+                    Directory::getDirectories(Directory::getParsersDirectory() . '/ads/' . $directory)
+                )
+            );
+        }
+
+        if ($parsers) {
+            $climate = new CLImate();
+            $input = $climate->cyan()->radio('Какой парсер используем (например, olx/adsid.php)? ', $parsers);
+
+            return $input->prompt();
         }
 
         return '';
@@ -226,24 +246,18 @@ class Portnoy
 
     private static function setOptions(array $options)
     {
-        self::setParserProject($options['parser_project_path']);
+        self::setParser($options['parser']);
         self::setTranslateFile($options['translate_file']);
         self::setHtmlLang($options['html_lang']);
         self::setHelpOptions($options['help_login'], $options['help_password']);
     }
 
-    private static function setParserProject(string $parserProjectPath)
+    private static function setParser(string $parser)
     {
-        if ($parserProjectPath) {
-            Logger::debug('Set parser project ' . $parserProjectPath);
-            file_put_contents(
-                Directory::getParseCategoriesScript(),
-                file_get_contents(Directory::getParseCategoriesScript())
-            );
-            file_put_contents(
-                Directory::getParseAdsScript(),
-                file_get_contents(Directory::getParseAdsScript())
-            );
+        if ($parser) {
+            Logger::debug('Set parser ' . $parser);
+            Config::replace('PARSE_ADS_SCRIPT', $parser, Directory::getConfigsDirectory() . '/.env');
+            Config::replace('PARSE_CATEGORIES_SCRIPT', $parser, Directory::getConfigsDirectory() . '/.env');
         }
     }
 
@@ -272,5 +286,34 @@ class Portnoy
         Config::replace('SMTP_EMAIL', $helpKeys['smtp_email'], Directory::getConfigsDirectory() . '/.env');
         Config::replace('SMTP_PASSWORD', $helpKeys['smtp_password'], Directory::getConfigsDirectory() . '/.env');
         Config::replace('SMTP_FROM', $helpKeys['smtp_from'], Directory::getConfigsDirectory() . '/.env');
+    }
+
+    private static function getDatabaseProject(string $path): string
+    {
+        $projects = Directory::getPaltoDirectories($path);
+        if ($projects) {
+            $climate = new CLImate();
+            $input = $climate->cyan()->radio('Какую базу данных подключить? ', array_merge(['Новую'], $projects));
+            $response = $input->prompt();
+
+            return $response == 'Новую' ? '' : $path . '/' . $response;
+        }
+
+        return '';
+    }
+
+    private static function extractEnvValue(string $name, string $content)
+    {
+        $defaultValueStart = mb_strpos($content, $name . '=');
+        $defaultValueFinish = mb_strpos($content, PHP_EOL, $defaultValueStart);
+        if ($defaultValueStart !== false) {
+            $skipLength = strlen($name . '=');
+
+            return str_replace(
+                '"',
+                '',
+                mb_substr($content, $defaultValueStart + $skipLength, $defaultValueFinish - $defaultValueStart - $skipLength)
+            );
+        }
     }
 }

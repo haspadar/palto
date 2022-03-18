@@ -45,7 +45,7 @@
 <br style="clear: both">
 <h2 style="color: #d91b39;">🔥 <?=$this->translate('Горячие объявления')?> 🔥</h2>
 <table class="serp">
-    <?php foreach (Ads::getHotAds($this->data['region'], 5) as $ad) :?>
+    <?php foreach (\Palto\Ads::getHotAds($this->data['region'], 5) as $ad) :?>
         <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
     <?php endforeach;?>
 
@@ -54,7 +54,7 @@
 <br style="clear: both">
 <h2>🔔 <?=$this->translate('Новые объявления')?></h2>
 <table class="serp">
-    <?php foreach (Ads::getAds($this->data['region'], $this->data['category'], \Palto\Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>
+    <?php foreach (\Palto\Ads::getAds($this->data['region'], $this->data['category'], \Palto\Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>
         <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
     <?php endforeach;?>
 </table>

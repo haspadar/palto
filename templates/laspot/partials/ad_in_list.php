@@ -8,7 +8,7 @@
                          onerror="this.src='/laspot-theme/img/no-photo.png'"
                     /></a>
             <?php else :?>
-                <img src="/img/no-photo.png">
+                <img src="/laspot-theme/img/no-photo.png">
             <?php endif; ?>
         </td>
         <td>

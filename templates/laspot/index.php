@@ -2,11 +2,11 @@
 <?php $this->layout('layout');?>
 
 <?php /** @var $level1Region \Palto\Region*/?>
-<?php foreach ($this->data['regions'] as $level1Region) :?>
-    <div class="span-d regions">
-        <a href="<?=$level1Region->generateUrl()?>"><strong> <?=$level1Region->getTitle()?></strong></a>
-    </div>
-<?php endforeach;?>
+<?php if ($this->data['regions']) :?>
+    <?php foreach ($this->data['regions'] as $region) :?>
+        <div class="span-d regions">📍<a href="<?=$region->generateUrl()?>"><strong> <?=$region->getTitle()?></strong></a></div>
+    <?php endforeach;?>
+<?php endif;?>
 
 <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <br style="clear: both">

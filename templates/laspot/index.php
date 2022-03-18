@@ -2,11 +2,11 @@
 <?php $this->layout('layout');?>
 
 <?php /** @var $level1Region \Palto\Region*/?>
-<?php foreach ($this->data['regions'] as $level1Region) :?>
-    <div class="span-d regions">
-        <a href="<?=$level1Region->generateUrl()?>"><strong> <?=$level1Region->getTitle()?></strong></a>
-    </div>
-<?php endforeach;?>
+<?php if ($this->data['regions']) :?>
+    <?php foreach ($this->data['regions'] as $region) :?>
+        <div class="span-d regions">📍<a href="<?=$region->generateUrl()?>"><strong> <?=$region->getTitle()?></strong></a></div>
+    <?php endforeach;?>
+<?php endif;?>
 
 <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <br style="clear: both">
@@ -39,4 +39,22 @@
             </ul>
         <?php endif;?>
     </div>
-<?php endforeach;
+<?php endforeach;?>
+
+<br style="clear: both">
+<br style="clear: both">
+<h2 style="color: #d91b39;">🔥 <?=$this->translate('Горячие объявления')?> 🔥</h2>
+<table class="serp">
+    <?php foreach (\Palto\Ads::getHotAds($this->data['region'], 5) as $ad) :?>
+        <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
+    <?php endforeach;?>
+
+</table>
+<br style="clear: both">
+<br style="clear: both">
+<h2>🔔 <?=$this->translate('Новые объявления')?></h2>
+<table class="serp">
+    <?php foreach (\Palto\Ads::getAds($this->data['region'], $this->data['category'], \Palto\Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>
+        <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
+    <?php endforeach;?>
+</table>

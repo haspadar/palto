@@ -281,13 +281,13 @@ class Cli
         return self::asUser("cp -n $structureConfigDirectory/.pylesos" . " $configDirectory/");
     }
 
-    public static function safeCopyParseScripts(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-
-        return self::asUser("cp -n $rootDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
-            . " && cp -n $rootDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
-    }
+//    public static function safeCopyParseScripts(): string
+//    {
+//        $rootDirectory = Directory::getRootDirectory();
+//
+//        return self::asUser("cp -n $rootDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
+//            . " && cp -n $rootDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
+//    }
 
     public static function safeCopyTranslates(): string
     {

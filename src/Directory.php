@@ -27,6 +27,21 @@ class Directory
         self::$rootDirectory = $rootDirectory;
     }
 
+    public static function getParsersDirectory(): string
+    {
+        return self::getRootDirectory() . '/parsers';
+    }
+
+    public static function getParseCategoriesScript(): string
+    {
+        return self::getParsersDirectory() . '/categories/' . Config::get('PARSE_CATEGORIES_SCRIPT');
+    }
+
+    public static function getParseAdsScript(): string
+    {
+        return self::getParsersDirectory() . '/ads/' . Config::get('PARSE_ADS_SCRIPT');
+    }
+
     public static function getProjectShortName(): string
     {
         $name = self::getProjectName();
@@ -85,11 +100,6 @@ class Directory
     public static function getParseCategoriesFile(): string
     {
         return self::getRootDirectory() . '/' . self::PARSE_CATEGORIES_SCRIPT;
-    }
-
-    public static function getParseAdsFile(): string
-    {
-        return self::getRootDirectory() . '/' . self::PARSE_ADS_SCRIPT;
     }
 
     public static function getRootDirectory(): string

@@ -66,7 +66,7 @@ class Categories extends Model
         if ($region && $region->getId()) {
             $query .= " INNER JOIN categories_regions_with_ads AS crwa ON c.id = crwa.category_id WHERE crwa.region_id = " . $region->getId();
         } else {
-            $query .= " WHERE c.id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads)";
+            $query .= " WHERE (c.id IN (SELECT DISTINCT category_level_1_id FROM ads) OR c.id IN (SELECT DISTINCT category_level_2_id FROM ads))";
         }
 
         if ($category) {

@@ -31,7 +31,7 @@ class Client
 
     public function __construct()
     {
-        $this->templatesEngine = new Engine(Directory::getRootDirectory() . '/templates/laspot');
+        $this->templatesEngine = new Engine(Directory::getThemeTemplatesDirectory());
         $this->templatesEngine->loadExtension(new Translate());
         $this->templatesEngine->loadExtension(new Asset(Directory::getPublicDirectory(), false));
         $this->url = new Url();

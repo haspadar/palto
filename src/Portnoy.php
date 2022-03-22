@@ -30,6 +30,7 @@ class Portnoy
         }
 
         $parserProjectPath = self::getParser($copyEnvContent);
+        $layoutTheme = self::getLayoutTheme();
 
         return [
             'html_lang' => $htmlLang,
@@ -40,6 +41,7 @@ class Portnoy
             'parser' => $parserProjectPath,
             'database_username' => $copyEnvContent ? self::extractEnvValue('DB_USER', $copyEnvContent) : '',
             'database_password' => $copyEnvContent ? self::extractEnvValue('DB_PASSWORD', $copyEnvContent) : '',
+            'layout_theme' => $layoutTheme
         ];
     }
 
@@ -250,6 +252,7 @@ class Portnoy
         self::setTranslateFile($options['translate_file']);
         self::setHtmlLang($options['html_lang']);
         self::setHelpOptions($options['help_login'], $options['help_password']);
+        self::setLayoutTheme($options['layout_theme']);
     }
 
     private static function setParser(string $parser)
@@ -274,6 +277,11 @@ class Portnoy
     {
         Logger::debug('Set Html Lang to ' . $htmlLang);
         Translates::replace('html_lang', $htmlLang);
+    }
+
+    private static function setLayoutTheme(string $layoutTheme)
+    {
+        Config::replace('LAYOUT_THEME', $layoutTheme, Directory::getConfigsDirectory() . '/.layouts');
     }
 
     private static function setHelpOptions(string $helpLogin, string $helpPassword)
@@ -315,5 +323,13 @@ class Portnoy
                 mb_substr($content, $defaultValueStart + $skipLength, $defaultValueFinish - $defaultValueStart - $skipLength)
             );
         }
+    }
+
+    private static function getLayoutTheme()
+    {
+        $climate = new CLImate();
+        $input = $climate->cyan()->radio('Какую тему используем? ', ['laspot', 'bootstrap']);
+
+        return $input->prompt();
     }
 }

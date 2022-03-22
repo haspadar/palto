@@ -17,3 +17,5 @@ THEME_DEFAULT="laspot_theme"
 
 DONOR_URL=1
 YOUTUBE_URL=1
+
+LAYOUT_THEME=laspot

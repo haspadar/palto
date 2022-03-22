@@ -23,7 +23,7 @@ class Karman
     public function __construct()
     {
         \Palto\Auth::check();
-        $this->templatesEngine = new Engine(Directory::getRootDirectory() . '/templates/karman');
+        $this->templatesEngine = new Engine(Directory::getKarmanTemplatesDirectory());
         $this->templatesEngine->loadExtension(new Asset(Directory::getPublicDirectory(), false));
         $this->url = new Url();
         $this->templatesEngine->addData([

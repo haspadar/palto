@@ -14,7 +14,7 @@ use Palto\Categories;
     <meta name="description" content="<?= $this->translate($this->data['description']) ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/img/favicon.ico">
-    <link rel="stylesheet" href="<?=$this->asset('/laspot-theme/css/styles.css')?>">
+    <link rel="stylesheet" href="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/css/styles.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>">
     <?php if (\Palto\Auth::isLogged()) :?>
         <link rel="stylesheet" href="<?=$this->asset('/css/karman.css')?>">
@@ -121,7 +121,7 @@ use Palto\Categories;
     <script src="<?=$this->asset('/js/script.js')?>"></script>
     <script src="<?=$this->asset('/js/karman-panel.js')?>"></script>
     <?= $this->section('scripts') ?>
-    <?= $this->insert('partials/karman-panel'); ?>
+    <?= $this->insert('../karman/partials/karman-panel'); ?>
 
 </body>
 </html>

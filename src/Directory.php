@@ -124,6 +124,26 @@ class Directory
         ));
     }
 
+    public static function getKarmanTemplatesDirectory(): string
+    {
+        return self::getTemplatesDirectory() . '/karman';
+    }
+
+    public static function getTemplatesDirectory(): string
+    {
+        return self::getRootDirectory() . '/templates';
+    }
+
+    public static function getThemeTemplatesDirectory(): string
+    {
+        return self::getTemplatesDirectory() . '/' . Config::get('LAYOUT_THEME');
+    }
+
+    public static function getThemePublicDirectory(): string
+    {
+        return '/themes/' . Config::get('LAYOUT_THEME');
+    }
+
     public static function getDirectories(string $directory): array
     {
         return array_values(array_filter(

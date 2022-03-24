@@ -204,7 +204,8 @@ class Translates
     public static function replacePlaceholders(string $translate, ?Region $region, ?Category $category, ?Ad $ad)
     {
         $regionTitle = $region ? $region->getTitle() : '';
-
+        $translates = self::getTranslates();
+        
         return trim(strtr($translate, [
             ':AD' => $ad ? $ad->getTitle() : '',
             ':ADDRESS_WITH_REGION' => (

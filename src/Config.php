@@ -44,12 +44,14 @@ class Config
 
     public static function getEnv(): array
     {
-        if (!isset(self::$env) || !self::$env) {
+        if (!isset(self::$env)) {
             self::$env = array_merge(
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.env')->load(),
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.pylesos')->load(),
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.layouts')->load(),
             );
+            Logger::debug('self::$env: ' . json_encode(self::$env));
+            Logger::debug('path: ' . Directory::getConfigsDirectory());
         }
 
         return self::$env;

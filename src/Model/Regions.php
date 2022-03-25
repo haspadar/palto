@@ -7,6 +7,11 @@ use Palto\Region;
 
 class Regions extends Model
 {
+    public static function getCount(): int
+    {
+        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM categories') ?: 0;
+    }
+
     public static function getById(int $id): array
     {
         return self::getDb()->queryFirstRow('SELECT * FROM regions WHERE id = %d', $id) ?: [];

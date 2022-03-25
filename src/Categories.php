@@ -8,6 +8,11 @@ use Monolog\Handler\ZendMonitorHandler;
 
 class Categories
 {
+    public static function getCount(): int
+    {
+        return Model\Categories::getCount();
+    }
+
     public static function getChildren(array $ids, int $level, int $limit = 0): array
     {
         $rows = Model\Categories::getChildren($ids, $level, $limit);

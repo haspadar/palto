@@ -138,4 +138,9 @@ class Categories extends Model
         return self::getDb()->queryFirstField('SELECT MAX(level) FROM categories') ?: 0;
     }
 
+    public static function getCount(): int
+    {
+        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM categories') ?: 0;
+    }
+
 }

@@ -12,12 +12,13 @@ class Config
 
     public static function get(string $name): string
     {
+        $found = self::getEnv()[$name] ?? '';
         if ($name == 'ROTATOR_URL') {
             Logger::debug('Env for Rotator: ' . json_encode(self::$env));
             Logger::debug('Found url: ' . self::getEnv()[$name] ?? '');
         }
 
-        return self::getEnv()[$name] ?? '';
+        return $found;
     }
 
     public static function withErrors(): bool

@@ -7,7 +7,7 @@ use DateTime;
 
 class Regions
 {
-    public static function getWithAdsRegions(?Region $parentRegion, $limit): array
+    public static function getWithAdsRegions(?Region $parentRegion = null, $limit = 0): array
     {
         $regions = Model\Regions::getWithAdsRegions($parentRegion, $limit);
 
@@ -33,11 +33,15 @@ class Regions
         return new Region($region);
     }
 
-    public static function getByUrl(string $regionUrl): Region
+    public static function getByUrl(string $regionUrl): ?Region
     {
-        return $regionUrl
-            ? new Region(Model\Regions::getByUrl($regionUrl))
-            : new Region([]);
+        if (!$regionUrl || $regionUrl == Config::get('DEFAULT_REGION_URL')) {
+            return new Region([]);
+        } elseif ($found = Model\Regions::getByUrl($regionUrl)) {
+            return new Region($found);
+        } else {
+            return null;
+        }
     }
 
     public static function safeAdd(array $region): Region
@@ -54,13 +58,19 @@ class Regions
 
         $region['url'] = self::generateUrl($region['title']);
         $found = self::getByUrl($region['url']);
-        if ($found->getId()) {
+        if ($found && $found->getId()) {
             return $found;
         }
 
         $id = Model\Regions::add($region);
+        Levels::checkRegionsFields();
 
         return new Region(Model\Regions::getById($id));
+    }
+
+    public static function getMaxLevel(): int
+    {
+        return \Palto\Model\Regions::getMaxLevel();
     }
 
     public static function generateUrl(string $title, bool $addSuffix = false): string

@@ -44,7 +44,7 @@ $this->partial('header.inc', [
     <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 
-<?php $categories = Categories::getWithAdsCategories($category);?>
+<?php $categories = Categories::getLiveCategories($category);?>
 <?php if ($categories) :?>
     <table class="table table-striped">
         <thead>

@@ -43,19 +43,6 @@ class Url
         return $this->path;
     }
 
-//    public static function normalizeRelative(string $url): string
-//    {
-//        if (mb_substr($url, 0, 1) != '/') {
-//            $url = '/' . $url;
-//        }
-//
-//        if (mb_substr($url, -1) == '/') {
-//            $url = mb_substr($url, 0, -1);
-//        }
-//
-//        return $url;
-//    }
-
     public function getRegionUrl(): string
     {
         $parts = self::getUrlParts($this->path);
@@ -67,11 +54,23 @@ class Url
     {
         $parts = $this->getUrlParts($this->path);
         array_shift($parts);
-        if (self::isAdPage($this->path)) {
+        if (self::isAdPage()) {
             array_pop($parts);
         }
 
         return array_values(array_filter($parts));
+    }
+
+    public function getCategoryUrl(): string
+    {
+        $categoriesUrls = $this->getCategoriesUrls();
+
+        return $categoriesUrls[count($categoriesUrls) - 1] ?? '';
+    }
+
+    public function getCategoryLevel(): int
+    {
+        return count($this->getCategoriesUrls());
     }
 
     public function getQueryParameters(): array
@@ -131,13 +130,15 @@ class Url
     {
         $last = $this->getLastPart($this->path);
 
-        return mb_substr($last, 0, 2) == 'ad' && is_numeric($this->getAdId());
+        return mb_substr($last, 0, 2) == 'ad'
+            && is_numeric($this->getAdId())
+            && $this->getAdId();
     }
 
     public function getPageNumber(): int
     {
         if ($this->hasUrlPageNumber()) {
-            $withoutQueryUrl = parse_url($this->url)['path'];
+            $withoutQueryUrl = parse_url($this->url)['path'] ?? '/';
 
             return $this->getLastPart($withoutQueryUrl);
         }
@@ -152,7 +153,7 @@ class Url
 
     private function hasUrlPageNumber(): bool
     {
-        $withoutQueryUrl = parse_url($this->url)['path'];
+        $withoutQueryUrl = parse_url($this->url)['path'] ?? '/';
         $parts = self::getUrlParts($withoutQueryUrl);
 
         return isset($parts[count($parts) - 1]) && is_numeric($parts[count($parts) - 1]);
@@ -172,7 +173,7 @@ class Url
 
     private function initPath(): string
     {
-        $path = parse_url($this->url)['path'];
+        $path = parse_url($this->url)['path'] ?? '/';
         if (mb_substr($path, -1) == '/' && $path != '/') {
             $path = mb_substr($path, 0, -1);
         }

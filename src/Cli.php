@@ -100,7 +100,7 @@ class Cli
         $tmp = '/tmp/install_' . md5(time());
         file_put_contents($tmp, $content);
 
-        return self::asUser("cp $tmp " . Directory::getRootDirectory() . '/.env');
+        return self::asUser("cp $tmp " . Directory::getConfigsDirectory() . '/.env');
     }
 
     public static function updatePhinx(string $databaseName, string $databaseUser, string $databasePassword): string
@@ -146,7 +146,7 @@ class Cli
                 "$projectName *.$projectName",
                 intval(self::getPhpVersion()),
                 $databaseName,
-                $databaseName,
+                $projectName,
                 $projectName
             );
 
@@ -225,13 +225,13 @@ class Cli
         }
     }
 
-    public static function updatePermissions(string $path): string
+    public static function updatePermissions(string $path, string $user = ''): string
     {
-        if (self::isLinux()) {
-            return "chown -R \"km\" $path";
-        } else {
-            return "chown -R \"haspadar\" $path";
+        if (!$user) {
+            $user = self::isLinux() ? 'km' : 'haspadar';
         }
+
+        return "chown -R \"$user\" $path";
     }
 
     public static function isLinux(): bool
@@ -281,13 +281,13 @@ class Cli
         return self::asUser("cp -n $structureConfigDirectory/.pylesos" . " $configDirectory/");
     }
 
-    public static function safeCopyParseScripts(): string
-    {
-        $rootDirectory = Directory::getRootDirectory();
-
-        return self::asUser("cp -n $rootDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
-            . " && cp -n $rootDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
-    }
+//    public static function safeCopyParseScripts(): string
+//    {
+//        $rootDirectory = Directory::getRootDirectory();
+//
+//        return self::asUser("cp -n $rootDirectory/structure/" . Directory::PARSE_CATEGORIES_SCRIPT . " $rootDirectory/"
+//            . " && cp -n $rootDirectory/structure/" . Directory::PARSE_ADS_SCRIPT . " $rootDirectory/");
+//    }
 
     public static function safeCopyTranslates(): string
     {

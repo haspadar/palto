@@ -7,8 +7,6 @@
 /.idea/
 /logs/*
 /layouts/client/*
-/parse_ads.php
-/parse_categories.php
 /backups/*
 /*.lock
 /phinx.php
@@ -22,3 +20,4 @@
 /tasks/locks/
 /.DS_Store
 /public/.DS_Store
+/configs/.parsers

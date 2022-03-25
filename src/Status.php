@@ -27,7 +27,7 @@ class Status
         $values = explode(' ', $lines[1]);
         foreach ($values as $value) {
             if (strpos($value, '%') !== false) {
-                return $value;
+                return str_replace('%', '', $value);
             }
         }
 
@@ -65,6 +65,7 @@ class Status
             $content = file_get_contents($name);
             $replaced = str_replace(self::ENABLE_CACHE_ROW, self::DISABLE_CACHE_ROW, $content);
             file_put_contents($name, $replaced);
+            Cli::runCommands([Cli::reloadNginx()]);
         }
     }
 
@@ -92,20 +93,21 @@ class Status
             $content = file_get_contents($name);
             $replaced = str_replace(self::DISABLE_CACHE_ROW, self::ENABLE_CACHE_ROW, $content);
             file_put_contents($name, $replaced);
+            Cli::runCommands([Cli::reloadNginx()]);
         }
     }
 
     public static function enableSite()
     {
-        $content = file_get_contents(Directory::getRootDirectory() . '/.env');
+        $content = file_get_contents(Directory::getConfigsDirectory() . '/.env');
         $replaced = str_replace('AUTH=1', 'AUTH=0', $content);
-        file_put_contents(Directory::getRootDirectory() . '/.env', $replaced);
+        file_put_contents(Directory::getConfigsDirectory() . '/.env', $replaced);
     }
 
     public static function disableSite()
     {
-        $content = file_get_contents(Directory::getRootDirectory() . '/.env');
+        $content = file_get_contents(Directory::getConfigsDirectory() . '/.env');
         $replaced = str_replace('AUTH=0', 'AUTH=1', $content);
-        file_put_contents(Directory::getRootDirectory() . '/.env', $replaced);
+        file_put_contents(Directory::getConfigsDirectory() . '/.env', $replaced);
     }
 }

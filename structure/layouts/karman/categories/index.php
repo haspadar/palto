@@ -8,7 +8,7 @@ $this->partial('header.inc', [
 ]);
 ?>
 
-<?php $categories = \Palto\Categories::getWithAdsCategories();?>
+<?php $categories = \Palto\Categories::getLiveCategories();?>
 <?php if ($categories) :?>
     <table class="table table-striped">
         <thead>

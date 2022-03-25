@@ -15,7 +15,9 @@
         "cocur/slugify": "dev-master",
         "lavary/crunz": "3.1.x-dev",
         "bramus/monolog-colored-line-formatter": "dev-master",
-        "wapmorgan/morphos": "dev-master"
+        "wapmorgan/morphos": "dev-master",
+        "bramus/router": "dev-master",
+        "league/plates": "v3.x-dev"
     },
     "autoload": {
         "psr-4": {

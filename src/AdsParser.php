@@ -15,6 +15,31 @@ abstract class AdsParser
     abstract protected function findAds(Crawler $categoryDocument);
     abstract protected function findAdUrl(Crawler $resultRow, Category $category): ?Url;
 
+    protected function getFirstPageNumber(): int
+    {
+        return 1;
+    }
+
+    protected function getNextPageNumber(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): int
+    {
+        if (Parser::hasNextPageLinkTag($categoryDocument)) {
+            Logger::debug('hasNextPageLinkTag: true');
+
+            return Parser::getNextPageNumber($categoryDocument);
+        }
+
+        return $pageNumber + 1;
+    }
+
+    protected function getNextPageUrl(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): ?Url
+    {
+        if (Parser::hasNextPageLinkTag($categoryDocument)) {
+            return Parser::getNextPageUrl($categoryDocument);
+        }
+
+        return null;
+    }
+
     public function run(string $file)
     {
         if (self::IS_CRON_DISABLED && Cli::isCron()) {
@@ -47,7 +72,7 @@ abstract class AdsParser
                             'iteration' => ($leafKey + 1) . '/' . $leafCategoriesCount
                         ];
                         Logger::info('Parsing category ' . $category->getTitle(), $logContent);
-                        $this->parseCategory($category, $category->getDonorUrl(), $logContent);
+                        $this->parseCategory($category, $category->getDonorUrl(), $this->getFirstPageNumber(), $logContent);
                     }
                 } else {
                     Logger::info('Categories not found');
@@ -60,7 +85,7 @@ abstract class AdsParser
         Logger::info('Finished ads parsing with pid=' . $pid);
     }
 
-    private function parseCategory(Category $category, Url $url, array $logContent = [])
+    private function parseCategory(Category $category, Url $url, int $pageNumber, array $logContent = [])
     {
         $categoryResponse = PylesosService::get($url->getFull(), [], Config::getEnv());
         $categoryDocument = new Crawler($categoryResponse->getResponse());
@@ -74,7 +99,7 @@ abstract class AdsParser
         $ads = $this->findAds($categoryDocument);
         Logger::info('Found ' . count($ads) . ' ads', $extendedLogContext);
         $addedAdsCount = 0;
-        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $category) {
+        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $category, $pageNumber) {
             $adUrl = $this->findAdUrl($resultRow, $category);
             if (!$adUrl) {
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
@@ -87,7 +112,8 @@ abstract class AdsParser
                 });
 
                 if ($adId) {
-                    Logger::debug('Added ad with id=' . $adUrl);
+                    $adNumber = $i + 1;
+                    Logger::debug("Added {$adNumber}th ad on page $pageNumber with id=$adUrl");
                     $addedAdsCount++;
                 } else {
                     Logger::debug('Skipped wrong ad with url ' . $adUrl->getFull());
@@ -98,9 +124,18 @@ abstract class AdsParser
             }
         });
         Logger::info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
-        if (Parser::hasNextPageLinkTag($categoryDocument) && Parser::getNextPageNumber($categoryDocument) <= 10) {
-            Logger::debug('Parsing next page ' . Parser::getNextPageUrl($categoryDocument));
-            $this->parseCategory($category, Parser::getNextPageUrl($categoryDocument), $logContent);
+        $nextPageNumber = $this->getNextPageNumber($categoryDocument, $category, $url, $pageNumber);
+        if ($nextPageNumber && $nextPageNumber <= 10) {
+            $nextUrl = $this->getNextPageUrl($categoryDocument, $category, $url, $pageNumber);
+            if ($nextUrl) {
+                Logger::debug('Parsing next page ' . $nextUrl);
+                $this->parseCategory($category, $nextUrl, $nextPageNumber + 1, $logContent);
+            } else {
+                Logger::warning('Not found next page on url ' . $nextUrl);
+            }
+
+        } else {
+            Logger::warning('Ignored next page number ' . $nextPageNumber);
         }
     }
 }

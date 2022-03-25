@@ -11,6 +11,7 @@ class Category
      */
     private array $parents;
     private array $children;
+    private array $liveChildren;
     private array $childrenIds;
     private array $category;
 
@@ -77,11 +78,11 @@ class Category
         return $this->category['url'];
     }
 
-    public function generateUrl(Region $region): Url
+    public function generateUrl(?Region $region): Url
     {
         $parents = $this->getParents();
         $parts = array_filter(array_merge(
-            [$region->getUrl()],
+            [$region ? $region->getUrl() : ''],
             array_map(fn (Category $category) => $category->getUrl(), $parents),
             [$this->getUrl()]
         ));
@@ -95,7 +96,7 @@ class Category
             $childrenIds = [];
             $nextLevelCategoriesIds = [$this->getId()];
             $level = $this->getLevel();
-            while ($nextLevelCategoriesIds = Categories::getChildLevelCategoriesIds($nextLevelCategoriesIds, ++$level)) {
+            while ($nextLevelCategoriesIds = Categories::getChildrenIds($nextLevelCategoriesIds, ++$level)) {
                 $childrenIds = array_merge($nextLevelCategoriesIds, $childrenIds);
             }
 
@@ -134,11 +135,28 @@ class Category
     /**
      * @return Category[]
      */
+    public function getLiveChildren(?Region $region, int $limit = 0): array
+    {
+        if (!isset($this->liveChildren)) {
+            $this->liveChildren = array_map(
+                fn($category) => new self($category),
+                Categories::getLiveCategories($this, $region, $limit)
+            );
+        }
+
+        return $this->liveChildren;
+    }
+
+    /**
+     * @return Category[]
+     */
     public function getChildren(): array
     {
         if (!isset($this->children)) {
-            $childrenIds = $this->getChildrenIds();
-            $this->children = Categories::getCategoriesByIds($childrenIds);
+            $this->children = array_map(
+                fn($category) => new self($category),
+                Categories::getChildren([$this->getId()], $this->getLevel() + 1)
+            );
         }
 
         return $this->children;
@@ -157,5 +175,12 @@ class Category
     public function getEmoji(): string
     {
         return $this->category['emoji'] ?? '';
+    }
+
+    public function isParentsEquals(array $urls): bool
+    {
+        $parentUrls = array_map(fn(self $category) => $category->getUrl(), $this->getParents());
+
+        return $urls == $parentUrls;
     }
 }

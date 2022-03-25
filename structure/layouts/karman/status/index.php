@@ -30,7 +30,7 @@ $this->partial('header.inc', [
         <?php endif;?>
     </dd>
     <dt>Занятое место на диске</dt>
-    <dd><?=\Palto\Status::getDirectoryUsePercent('/')?></dd>
+    <dd><?=\Palto\Status::getDirectoryUsePercent('/')?>%</dd>
 </dl>
 
 <?php $this->partial('footer.inc');

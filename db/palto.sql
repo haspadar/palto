@@ -195,4 +195,16 @@ INSERT INTO `phinxlog` (`version`, `migration_name`, `start_time`, `end_time`, `
                                                                                                  (20220104152745,	'DonorUrlComplete',	'2022-01-04 19:40:03',	'2022-01-04 19:40:03',	0),
                                                                                                  (20220107120308,	'RegionsCategoriesDuplicatesRemove',	'2022-01-07 23:26:03',	'2022-01-07 23:26:09',	0);
 
+
+DROP TABLE IF EXISTS `categories_regions_with_ads`;
+CREATE TABLE `categories_regions_with_ads` (
+                                               `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                               `category_id` int(11) unsigned NULL,
+                                               `region_id` int(11) unsigned NULL,
+                                               FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+                                               FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
+);
+
+ALTER TABLE `categories_regions_with_ads` ADD UNIQUE `category_id_region_id` (`category_id`, `region_id`);
+
 -- 2022-01-10 20:57:19

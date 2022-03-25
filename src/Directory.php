@@ -27,6 +27,21 @@ class Directory
         self::$rootDirectory = $rootDirectory;
     }
 
+    public static function getParsersDirectory(): string
+    {
+        return self::getRootDirectory() . '/parsers';
+    }
+
+    public static function getParseCategoriesScript(): string
+    {
+        return self::getParsersDirectory() . '/categories/' . Config::get('PARSE_CATEGORIES_SCRIPT');
+    }
+
+    public static function getParseAdsScript(): string
+    {
+        return self::getParsersDirectory() . '/ads/' . Config::get('PARSE_ADS_SCRIPT');
+    }
+
     public static function getProjectShortName(): string
     {
         $name = self::getProjectName();
@@ -82,6 +97,11 @@ class Directory
         return self::getRootDirectory() . '/tests';
     }
 
+    public static function getParseCategoriesFile(): string
+    {
+        return self::getRootDirectory() . '/' . self::PARSE_CATEGORIES_SCRIPT;
+    }
+
     public static function getRootDirectory(): string
     {
         if (!isset(self::$rootDirectory)) {
@@ -96,12 +116,40 @@ class Directory
         return self::$rootDirectory;
     }
 
+    public static function getPaltoDirectories(string $directory = '/var/www'): array
+    {
+        return array_values(array_filter(
+            scandir($directory),
+            fn($iterateDirectory) => file_exists($directory . '/' . $iterateDirectory . '/configs/.env')
+        ));
+    }
+
+    public static function getKarmanTemplatesDirectory(): string
+    {
+        return self::getTemplatesDirectory() . '/karman';
+    }
+
+    public static function getTemplatesDirectory(): string
+    {
+        return self::getRootDirectory() . '/templates';
+    }
+
+    public static function getThemeTemplatesDirectory(): string
+    {
+        return self::getTemplatesDirectory() . '/' . Config::get('LAYOUT_THEME');
+    }
+
+    public static function getThemePublicDirectory(): string
+    {
+        return '/themes/' . Config::get('LAYOUT_THEME');
+    }
+
     public static function getDirectories(string $directory): array
     {
-        return array_filter(
+        return array_values(array_filter(
             scandir($directory),
-            fn($directory) => !in_array($directory, ['.', '..'])
-        );
+            fn($iterateDirectory) => !in_array($iterateDirectory, ['.', '..'])
+        ));
     }
 
     public static function getDirectoryFilesRecursive(string $directory): array

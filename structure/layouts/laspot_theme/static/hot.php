@@ -25,7 +25,7 @@ $this->partial('header.inc', [
     <?php endforeach;?>
 <?php endif;?>
 
-<?=\Palto\Counters::get('google')?>
+<?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 <br style="clear: both">
 <br style="clear: both">
 
@@ -33,9 +33,10 @@ $this->partial('header.inc', [
     <h2>🗂 <?=$this->translate('Категории')?></h2>
 <?php endif;?>
 
-<?php $level1Categories = array_filter(
-        $this->getWithAdsCategories(null, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1')),
-        fn(Category $category) => count($this->getWithAdsCategories($category, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) == Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
+<?php
+$level1Categories = array_filter(
+    $this->getWithAdsCategories(null, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1')),
+    fn(Category $category) => count($this->getWithAdsCategories($category, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) == Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
 );
 foreach ($level1Categories as $level1Category) :?>
     <div class="span-d">

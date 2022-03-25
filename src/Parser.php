@@ -69,7 +69,7 @@ class Parser
             $url = self::removeLastSymbol($url);
         }
 
-        return implode('', array_reverse($pageNumberSymbols));
+        return implode('', array_reverse($pageNumberSymbols)) ?: 0;
     }
 
     public static function getNextPageUrl(Crawler $categoryDocument): ?Url
@@ -79,13 +79,32 @@ class Parser
         return $url ? new Url($url) : null;
     }
 
+    public static function checkDonorPath(): string
+    {
+        if (!isset($_SERVER['argv'][1])) {
+            exit('Укажите первым параметром путь к categories.html' . PHP_EOL);
+        }
+
+        $domain = $_SERVER['argv'][1];
+        if (mb_substr($domain, -1) == '/') {
+            $domain = mb_substr($domain, 0, -1);
+        }
+
+        return $domain;
+    }
+
     public static function checkDonorUrl(): string
     {
         if (!isset($_SERVER['argv'][1])) {
             exit('Укажите первым параметром URL страницы, например: php parse_ads.php https://losangeles.craigslist.org' . PHP_EOL);
         }
 
-        return $_SERVER['argv'][1];
+        $domain = $_SERVER['argv'][1];
+        if (mb_substr($domain, -1) == '/') {
+            $domain = mb_substr($domain, 0, -1);
+        }
+
+        return $domain;
     }
 
     public static function findSelectorWith(Crawler $adDocument, array $selectors): array

@@ -25,6 +25,14 @@ abstract class Layout
         require_once Directory::getLayoutsDirectory() . '/' . $name;
     }
 
+    public static function getThemes(): array
+    {
+        return array_map(
+            fn($directory) => substr($directory, 0, -6),
+            Directory::getThemes()
+        );
+    }
+
     public static function getTheme(): string
     {
         if (self::getDispatcher()->getModuleName() == 'karman') {

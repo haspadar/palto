@@ -4,18 +4,21 @@ namespace Palto;
 
 class Install
 {
-    public static function run()
+    public static function run($databaseUsername = '', $databasePassword = '')
     {
-        $databaseName = str_replace('.', '_', Directory::getProjectName());
-        $databaseUsername = $databaseName;
-        $databasePassword = Cli::generatePassword();
+        if (!$databaseUsername && !$databasePassword) {
+            $databaseUsername = str_replace('.', '_', Directory::getProjectName());
+            $databasePassword = Cli::generatePassword();
+        }
+
+        $databaseName = $databaseUsername;
         Cli::runCommands([
             'Update Nginx' => Cli::updateNginx(),
             Cli::updateNginxDomain($databaseName),
             Cli::safeLinkNginxDomain(),
             'Update FPM' => Cli::updateNginxPhpFpm(),
             Cli::reloadNginx(),
-            'Copy Parse Scripts' => Cli::safeCopyParseScripts(),
+//            'Copy Parse Scripts' => Cli::safeCopyParseScripts(),
             'Copy Translates' => Cli::safeCopyTranslates(),
             'Copy Counters' => Cli::safeCopyCounters(),
             'Copy CSS' => Cli::safeCopyCss(),
@@ -28,7 +31,7 @@ class Install
             'Update Htpasswd' => Cli::updateHtpasswd(),
             'Update Host' => Cli::updateHost(),
             'Update permissions' => Cli::updatePermissions(Directory::getRootDirectory()),
-            Cli::updatePermissions('/etc/nginx/sites-available')
+            Cli::updatePermissions('/etc/nginx/sites-available', 'www-data'),
         ]);
     }
 }

@@ -38,7 +38,6 @@ class Config
 
     public static function getEnv(): array
     {
-        Logger::debug('Env path: ' . Directory::getConfigsDirectory());
         if (!isset(self::$env)) {
             self::$env = array_merge(
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.env')->load(),

@@ -12,13 +12,7 @@ class Config
 
     public static function get(string $name): string
     {
-        $found = self::getEnv()[$name] ?? '';
-        if ($name == 'ROTATOR_URL') {
-            Logger::debug('Env for Rotator: ' . json_encode(self::$env));
-            Logger::debug('Found url: ' . self::getEnv()[$name] ?? '');
-        }
-
-        return $found;
+        return self::getEnv()[$name] ?? '';
     }
 
     public static function withErrors(): bool
@@ -46,15 +40,12 @@ class Config
     {
         if (!isset(self::$env)) {
             self::$env = array_merge(
-                Dotenv::createImmutable(Directory::getConfigsDirectory(), '.env')->load(),
-                Dotenv::createImmutable(Directory::getConfigsDirectory(), '.pylesos')->load(),
-                Dotenv::createImmutable(Directory::getConfigsDirectory(), '.layouts')->load(),
+                Dotenv::createMutable(Directory::getConfigsDirectory(), '.env')->load(),
+                Dotenv::createMutable(Directory::getConfigsDirectory(), '.pylesos')->load(),
+                Dotenv::createMutable(Directory::getConfigsDirectory(), '.layouts')->load(),
             );
-            Logger::debug('path: ' . Directory::getConfigsDirectory());
         }
 
-        Logger::debug('self::$env: ' . json_encode(self::$env));
-        
         return self::$env;
     }
 

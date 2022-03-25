@@ -50,10 +50,11 @@ class Config
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.pylesos')->load(),
                 Dotenv::createImmutable(Directory::getConfigsDirectory(), '.layouts')->load(),
             );
-            Logger::debug('self::$env: ' . json_encode(self::$env));
             Logger::debug('path: ' . Directory::getConfigsDirectory());
         }
 
+        Logger::debug('self::$env: ' . json_encode(self::$env));
+        
         return self::$env;
     }
 

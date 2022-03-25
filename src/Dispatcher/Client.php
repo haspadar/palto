@@ -87,7 +87,7 @@ class Client extends Dispatcher
         }
 
         if (!$foundTheme) {
-            $foundTheme = Config::get('THEME_DEFAULT') ?: $existThemes[0];
+            $foundTheme = Config::get('LAYOUT_THEME') ?: $existThemes[0];
         }
 
         return $foundTheme;

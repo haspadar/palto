@@ -17,7 +17,7 @@ $env = array_merge(
 
 $task = $schedule->run(PHP_BINARY . ' ' . Directory::getParseAdsScript());
 $task
-    ->hourly()
+    ->everyMinute()
     ->description('Ads parser')
     ->preventOverlapping(new FlockStore(__DIR__ . '/locks'));
 

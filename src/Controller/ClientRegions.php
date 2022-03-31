@@ -2,24 +2,9 @@
 
 namespace Palto\Controller;
 
-use League\Plates\Engine;
-use League\Plates\Extension\Asset;
-use Palto\Ad;
 use Palto\Ads;
 use Palto\Breadcrumbs;
-use Palto\CategoriesRegionsWithAds;
-use Palto\Category;
-use Palto\Config;
-use Palto\Debug;
-use Palto\Directory;
-use Palto\Filter;
-use Palto\Flash;
 use Palto\Pager;
-use Palto\Plates\Extension\Translate;
-use Palto\Region;
-use Palto\Regions;
-use Palto\Translates;
-use Palto\Url;
 
 class ClientRegions extends Client
 {

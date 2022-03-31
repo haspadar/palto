@@ -44,7 +44,7 @@ $word = "[a-zA-Z0-9_-]";
 
 if (Strategy::isSingleCategory()) {
 //    /region
-    $router->get("/($word+)/ad(\d+)", "\Palto\Controller\\$controller@showAd");
+    $router->get("/($word+)(/$word+)?/ad(\d+)", "\Palto\Controller\\$controller@showAd");
     $router->get("/($word+)(/\d+)?", "\Palto\Controller\\$controller@showRegion");
 } else {
     $router->get('/categories', "\Palto\Controller\\$controller@showCategoriesList");

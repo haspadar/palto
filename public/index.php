@@ -42,12 +42,12 @@ $router->get('/regions', '\Palto\Controller\ClientCategories@showRegionsList');
 $word = "[a-zA-Z0-9_-]";
 
 if (Strategy::isCategory()) {
-//    region1/region2/region3
+//    /region1/region2/region3
     $router->get("/($word+)/($word+)(/$word+)?(/$word+)?/ad(\d+)", '\Palto\Controller\ClientRegions@showAd');
     $router->get("/($word+)/($word+)(/$word+)?(/$word+)?(/\d+)?", '\Palto\Controller\ClientRegions@showRegion');
 } elseif (Strategy::isCategory()) {
     $router->get('/categories', '\Palto\Controller\ClientCategories@showCategoriesList');
-//    region/category1/category2/category3
+//    /region/category1/category2/category3
     $router->get("/($word+)/($word+)(/$word+)?(/$word+)?/ad(\d+)", '\Palto\Controller\ClientCategories@showAd');
     $router->get("/($word+)(/\d+)?", '\Palto\Controller\ClientCategories@showRegion');
     $router->get("/($word+)/($word+)(/$word+)?(/$word+)?(/\d+)?", '\Palto\Controller\ClientCategories@showCategory');

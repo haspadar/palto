@@ -36,22 +36,23 @@ $router->mount('/karman', function() use ($router) {
     $router->delete('/remove-emoji/{id}', '\Palto\Controller\Karman@removeEmoji');
 });
 
-$router->get('/', '\Palto\Controller\ClientCategories@showIndex');
-$router->get('/registration', '\Palto\Controller\ClientCategories@showRegistration');
-$router->get('/regions', '\Palto\Controller\ClientCategories@showRegionsList');
+$controller = Strategy::isSingleCategory() ? 'ClientRegions' : 'ClientCategories';
+$router->get('/', "\Palto\Controller\\$controller@showIndex");
+$router->get('/registration', "\Palto\Controller\\$controller@showRegistration");
+$router->get('/regions', "\Palto\Controller\\$controller@showRegionsList");
 $word = "[a-zA-Z0-9_-]";
 
-if (Strategy::isCategory()) {
-//    /region1/region2/region3
-    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?/ad(\d+)", '\Palto\Controller\ClientRegions@showAd');
-    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?(/\d+)?", '\Palto\Controller\ClientRegions@showRegion');
-} elseif (Strategy::isCategory()) {
-    $router->get('/categories', '\Palto\Controller\ClientCategories@showCategoriesList');
+if (Strategy::isSingleCategory()) {
+//    /region
+    $router->get("/($word+)/ad(\d+)", "\Palto\Controller\\$controller@showAd");
+    $router->get("/($word+)(/\d+)?", "\Palto\Controller\\$controller@showRegion");
+} else {
+    $router->get('/categories', "\Palto\Controller\\$controller@showCategoriesList");
 //    /region/category1/category2/category3
-    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?/ad(\d+)", '\Palto\Controller\ClientCategories@showAd');
-    $router->get("/($word+)(/\d+)?", '\Palto\Controller\ClientCategories@showRegion');
-    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?(/\d+)?", '\Palto\Controller\ClientCategories@showCategory');
+    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?/ad(\d+)", "\Palto\Controller\\$controller@showAd");
+    $router->get("/($word+)(/\d+)?", "\Palto\Controller\\$controller@showRegion");
+    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?(/\d+)?", "\Palto\Controller\\$controller@showCategory");
 }
 
-$router->set404('\Palto\Controller\ClientCategories@showNotFound');
+$router->set404("\Palto\Controller\\$controller@showNotFound");
 $router->run();

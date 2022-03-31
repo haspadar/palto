@@ -50,16 +50,6 @@ class Url
         return $parts[0] ?? '';
     }
 
-    public function getRegionsUrls(): array
-    {
-        $parts = $this->getUrlParts($this->path);
-        if (self::isAdPage()) {
-            array_pop($parts);
-        }
-
-        return array_values(array_filter($parts));
-    }
-
     public function getCategoriesUrls(): array
     {
         $parts = $this->getUrlParts($this->path);

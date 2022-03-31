@@ -17,13 +17,14 @@ use Palto\Config; ?>
 <br>
 <br>
 
-<?php if ($this->data['regions']) :?>
-    <h2><i class="bi bi-briefcase"></i>
-        <?=$this->translate('Категории')?></h2>
-<?php endif;?>
-
 <?php /** @var $level1Category \Palto\Category */?>
-<div class="d-flex">
+<?php if (!\Palto\Strategy::isSingleCategory()) :?>
+    <?php if ($this->data['regions']) :?>
+        <h2><i class="bi bi-briefcase"></i>
+            <?=$this->translate('Категории')?></h2>
+    <?php endif;?>
+
+    <div class="d-flex">
     <?php foreach (\Palto\Categories::getLiveCategoriesWithChildren(
         Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1'),
         Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
@@ -53,9 +54,11 @@ use Palto\Config; ?>
 
     <?php endforeach;?>
 </div>
+<?php endif?>
 
 <br>
 <br>
+
 <h2>
     <i class="bi bi-asterisk"></i>
 

@@ -47,6 +47,21 @@ class Client
         ]);
     }
 
+    public function showIndex()
+    {
+        $isHot = (bool)\Palto\Config::get('HOT_LAYOUT');
+        $limit = $isHot ? \Palto\Config::get('HOT_LAYOUT_REGIONS') : Config::get('INDEX_LAYOUT_REGIONS');
+        $this->templatesEngine->addData([
+            'title' => $this->translate('index_title'),
+            'description' => $this->translate('index_description'),
+            'h1' => $isHot ? $this->translate('hot_h1') : $this->translate('index_h1'),
+            'regions' => !is_numeric($limit) || intval($limit) > 0
+                ? Regions::getWithAdsRegions(null, intval($limit))
+                : []
+        ]);
+        echo $this->templatesEngine->make($isHot ? 'hot' : 'index');
+    }
+
     public function showRegistration()
     {
         $this->templatesEngine->addData([

@@ -9,12 +9,13 @@
 <?php endif;?>
 
 <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
-<br style="clear: both">
-<br style="clear: both">
-<h2><?=$this->translate('Категории')?></h2>
 
-<?php /** @var $level1Category \Palto\Category */?>
-<?php foreach (\Palto\Categories::getLiveCategories(null, $this->data['region']) as $level1Category) :?>
+<?php if (!\Palto\Strategy::isSingleCategory()) :?>
+    <br style="clear: both">
+    <br style="clear: both">
+    <h2><?=$this->translate('Категории')?></h2>
+    <?php /** @var $level1Category \Palto\Category */?>
+    <?php foreach (\Palto\Categories::getLiveCategories(null, $this->data['region']) as $level1Category) :?>
     <div class="span-d">
         <p><a href="<?=$level1Category->generateUrl($this->data['region'])?>">
                 <?php if ($level1Category->getEmoji()) :?>
@@ -40,6 +41,7 @@
         <?php endif;?>
     </div>
 <?php endforeach;?>
+<?php endif;?>
 
 <br style="clear: both">
 <br style="clear: both">

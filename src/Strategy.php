@@ -3,8 +3,8 @@ namespace Palto;
 
 class Strategy
 {
-    public static function isCategory(): bool
+    public static function isSingleCategory(): bool
     {
-        return Regions::getCount() > 1;
+        return Categories::getCount() == 1;
     }
 }

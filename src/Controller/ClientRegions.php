@@ -36,7 +36,12 @@ class ClientRegions extends Client
                 'title' => $this->translate('list_title'),
                 'description' => $this->translate('list_description'),
                 'h1' => $this->translate('list_h1'),
-                'ads' => Ads::getAds($this->region, $this->category),
+                'ads' => Ads::getAds(
+                    $this->region,
+                    $this->category,
+                    Ads::LIMIT,
+                    ($this->url->getPageNumber() -1) * Ads::LIMIT
+                ),
                 'pager' => new Pager($this->region, $this->category, max($this->url->getPageNumber(), 1)),
                 'breadcrumbs' => Breadcrumbs::getUrls($this->region, $this->category)
             ]);

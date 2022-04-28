@@ -43,6 +43,16 @@ class Category
         return $this->parents;
     }
 
+    public function getLeftId(): int
+    {
+        return $this->category['left_id'] ?? 0;
+    }
+
+    public function getRightId(): int
+    {
+        return $this->category['right_id'] ?? 0;
+    }
+
     public function getParentId(): int
     {
         return $this->category['parent_id'] ?? 0;

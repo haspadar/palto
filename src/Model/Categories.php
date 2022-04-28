@@ -47,8 +47,7 @@ class Categories extends Model
     public static function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array
     {
         $query = 'SELECT c.*, COUNT(c2.id) AS count FROM categories AS c INNER JOIN categories AS c2 ON c.id = c2.parent_id';
-        $query .= " WHERE (c.id IN (SELECT DISTINCT category_level_1_id FROM ads) OR c.id IN (SELECT DISTINCT category_level_2_id FROM ads))";
-        $query .= " AND c.parent_id IS NULL";
+        $query .= " WHERE c.parent_id IS NULL";
         $query .= ' GROUP BY c.id HAVING count >= %d_count';
         $values = ['count' => $childrenMinimumCount];
         if ($limit) {
@@ -64,16 +63,14 @@ class Categories extends Model
         $query = 'SELECT * FROM categories AS c';
         $values = [];
         if ($region && $region->getId()) {
-            $query .= " INNER JOIN categories_regions_with_ads AS crwa ON c.id = crwa.category_id WHERE crwa.region_id = " . $region->getId();
-        } else {
-            $query .= " WHERE (c.id IN (SELECT DISTINCT category_level_1_id FROM ads) OR c.id IN (SELECT DISTINCT category_level_2_id FROM ads))";
+            $query .= " INNER JOIN categories_regions AS cr ON c.id = cr.category_id WHERE cr.region_id = " . $region->getId();
         }
 
         if ($category) {
-            $query .= " AND c.parent_id = %d_parent_id";
+            $query .= " WHERE c.parent_id = %d_parent_id";
             $values['parent_id'] = $category->getId();
         } else {
-            $query .= " AND c.parent_id IS NULL";
+            $query .= " WHERE c.parent_id IS NULL";
         }
 
         if ($limit) {

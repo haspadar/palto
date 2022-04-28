@@ -7,7 +7,7 @@ use League\Plates\Extension\Asset;
 use Palto\Ad;
 use Palto\Ads;
 use Palto\Breadcrumbs;
-use Palto\CategoriesRegionsWithAds;
+use Palto\CategoriesRegions;
 use Palto\Category;
 use Palto\Config;
 use Palto\Debug;

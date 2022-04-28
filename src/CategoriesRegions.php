@@ -2,7 +2,7 @@
 
 namespace Palto;
 
-class CategoriesRegionsWithAds
+class CategoriesRegions
 {
     public static function add(int $categoryId, ?int $regionId)
     {
@@ -11,13 +11,13 @@ class CategoriesRegionsWithAds
         foreach (array_merge($childCategory->getParents(), [$childCategory]) as $category) {
             if ($childRegion) {
                 foreach (array_merge($childRegion->getParents(), [$childRegion]) as $region) {
-                    \Palto\Model\CategoriesRegionsWithAds::add(
+                    \Palto\Model\CategoriesRegions::add(
                         $category->getId(),
                         $region->getId()
                     );
                 }
             } else {
-                \Palto\Model\CategoriesRegionsWithAds::add($category->getId(), null);
+                \Palto\Model\CategoriesRegions::add($category->getId(), null);
             }
         }
     }

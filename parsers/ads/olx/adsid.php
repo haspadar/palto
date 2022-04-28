@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
 (new class extends AdsParser {
-    protected function parseAd(Crawler $adDocument, Category $category, Url $adUrl): int
+    protected function parseAd(Crawler $adDocument, \Palto\CategoryCandidate $categoryCandidate, Url $adUrl): int
     {
         $breadcrumbSelector = Parser::getSelector($adDocument, [
             '[data-testid=breadcrumb-item]',
@@ -57,7 +57,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
                 $ad = [
                     'title' => $title,
                     'url' => $adUrl,
-                    'category_id' => $category->getId(),
+                    'category_id' => $categoryCandidate->getId(),
                     'text' => $html,
                     'region_id' => $regionLevel3->getId(),
                     'price' => $price ?? 0,
@@ -87,7 +87,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         return $ads;
     }
 
-    protected function findAdUrl(Crawler $resultRow, Category $category): ?Url
+    protected function findAdUrl(Crawler $resultRow, \Palto\CategoryCandidate $candidate): ?Url
     {
         if ($resultRow->filter('h3 a', 0)->count() > 0) {
             $adUrl = $resultRow->filter('h3 a', 0)->attr('href');
@@ -97,7 +97,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $adUrl = $resultRow->filter('a[href]', 0)->attr('href');
         }
 
-        $domain = (new Url($category->getDonorUrl()))->getDomain();
+        $domain = (new Url($candidate->getDonorUrl()))->getDomain();
 
         return isset($adUrl) ? new Url($domain . $adUrl) : null;
     }

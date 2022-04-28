@@ -13,14 +13,14 @@ abstract class AdsParser
     protected const IS_CRON_DISABLED = false;
 
     abstract protected function findAds(Crawler $categoryDocument);
-    abstract protected function findAdUrl(Crawler $resultRow, Category $category): ?Url;
+    abstract protected function findAdUrl(Crawler $resultRow, CategoryCandidate $candidate): ?Url;
 
     protected function getFirstPageNumber(): int
     {
         return 1;
     }
 
-    protected function getNextPageNumber(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): int
+    protected function getNextPageNumber(Crawler $categoryDocument, CategoryCandidate $categoryCandidate, Url $url, int $pageNumber): int
     {
         if (Parser::hasNextPageLinkTag($categoryDocument)) {
             Logger::debug('hasNextPageLinkTag: true');
@@ -31,7 +31,7 @@ abstract class AdsParser
         return $pageNumber + 1;
     }
 
-    protected function getNextPageUrl(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): ?Url
+    protected function getNextPageUrl(Crawler $categoryDocument, CategoryCandidate $categoryCandidate, Url $url, int $pageNumber): ?Url
     {
         if (Parser::hasNextPageLinkTag($categoryDocument)) {
             return Parser::getNextPageUrl($categoryDocument);
@@ -63,19 +63,19 @@ abstract class AdsParser
         $scheduler = new Scheduler(Config::getEnv());
         $scheduler->run(
             function () use ($pid) {
-                $leafCategories = Categories::getLeafs();
-                if ($leafCategories) {
-                    shuffle($leafCategories);
-                    $leafCategoriesCount = count($leafCategories);
-                    foreach ($leafCategories as $leafKey => $category) {
+                $leafCategoriesCandidates = CategoriesCandidates::getLeafs();
+                if ($leafCategoriesCandidates) {
+                    shuffle($leafCategoriesCandidates);
+                    $leafCategoriesCount = count($leafCategoriesCandidates);
+                    foreach ($leafCategoriesCandidates as $leafKey => $categoryCandidate) {
                         $logContent = [
                             'iteration' => ($leafKey + 1) . '/' . $leafCategoriesCount
                         ];
-                        Logger::info('Parsing category ' . $category->getTitle(), $logContent);
-                        $this->parseCategory($category, $category->getDonorUrl(), $this->getFirstPageNumber(), $logContent);
+                        Logger::info('Parsing category candidate ' . $categoryCandidate->getTitle(), $logContent);
+                        $this->parseCategory($categoryCandidate, $categoryCandidate->getDonorUrl(), $this->getFirstPageNumber(), $logContent);
                     }
                 } else {
-                    Logger::info('Categories not found');
+                    Logger::info('Categories candidates not found');
                 }
             },
             function(\Exception $e) {
@@ -85,13 +85,15 @@ abstract class AdsParser
         Logger::info('Finished ads parsing with pid=' . $pid);
     }
 
-    private function parseCategory(Category $category, Url $url, int $pageNumber, array $logContent = [])
+    abstract protected function parseAd(Crawler $adDocument, CategoryCandidate $categoryCandidate, Url $adUrl): int;
+
+    private function parseCategory(CategoryCandidate $categoryCandidate, Url $url, int $pageNumber, array $logContent = [])
     {
         $categoryResponse = PylesosService::get($url->getFull(), [], Config::getEnv());
         $categoryDocument = new Crawler($categoryResponse->getResponse());
         $extendedLogContext = array_merge(
             [
-                'category' => $category->getTitle(),
+                'category_candidate' => $categoryCandidate->getTitle(),
                 'url' => $url->getFull()
             ],
             $logContent
@@ -99,12 +101,12 @@ abstract class AdsParser
         $ads = $this->findAds($categoryDocument);
         Logger::info('Found ' . count($ads) . ' ads', $extendedLogContext);
         $addedAdsCount = 0;
-        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $category, $pageNumber) {
-            $adUrl = $this->findAdUrl($resultRow, $category);
+        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $categoryCandidate, $pageNumber) {
+            $adUrl = $this->findAdUrl($resultRow, $categoryCandidate);
             if (!$adUrl) {
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
             } elseif (!Ads::getByUrl($adUrl)) {
-                $adId = Parser::safeTransaction(function () use ($category, $adUrl) {
+                $adId = Parser::safeTransaction(function () use ($categoryCandidate, $adUrl) {
                     $adResponse = PylesosService::get($adUrl, [], Config::getEnv());
                     $adDocument = new Crawler($adResponse->getResponse());
 

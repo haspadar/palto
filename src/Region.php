@@ -62,6 +62,16 @@ class Region
         return $this->region['level'] ?? 1;
     }
 
+    public function getLeftId(): int
+    {
+        return $this->region['left_id'] ?? 0;
+    }
+
+    public function getRightId(): int
+    {
+        return $this->region['right_id'] ?? 0;
+    }
+
     public function getId(): int
     {
         return $this->region['id'] ?? 0;

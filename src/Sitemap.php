@@ -28,7 +28,7 @@ class Sitemap
         $this->generateRegionsFiles('/regions', $groupedRegions);
         $groupedCategories = $this->groupTrees(
             array_map(fn ($category) => new Category($category),
-                \Palto\Model\Categories::getDb()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads) ORDER BY tree_id, level')
+                \Palto\Model\Categories::getDb()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_id FROM categories_regions) ORDER BY tree_id, level')
             )
         );
         /**
@@ -112,12 +112,10 @@ class Sitemap
     private function hasAds(Category $category, ?Region $region): bool
     {
         if ($region && $region->getId()) {
-            return (bool)\Palto\Model\Ads::getDb()->queryFirstField('SELECT * FROM categories_regions_with_ads WHERE category_id = %d AND region_id = %d', $category->getId(), $region->getId());
+            return (bool)\Palto\Model\Ads::getDb()->queryFirstField('SELECT * FROM categories_regions WHERE category_id = %d AND region_id = %d', $category->getId(), $region->getId());
         }
 
-        $field = 'category_level_' . $category->getLevel() . '_id';
-
-        return \Palto\Model\Ads::getDb()->queryFirstField("SELECT COUNT(*) FROM ads WHERE $field = %d", $category->getId()) > 0;
+        return true;
     }
 
     private function saveUrls(string $path, string $fileName, array $urls, bool $checkSize = true)

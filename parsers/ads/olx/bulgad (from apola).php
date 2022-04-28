@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
 (new class extends AdsParser {
-    protected function parseAd(Crawler $adDocument, Category $category, Url $adUrl): int
+    protected function parseAd(Crawler $adDocument, \Palto\CategoryCandidate $categoryCandidate, Url $adUrl): int
     {
         $count = $adDocument->filter('[data-testid=breadcrumb-item]')->count();
         if ($adDocument->filter('[data-testid=breadcrumb-item]')->eq($count - 1)->count()) {
@@ -41,7 +41,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $ad = [
                 'title' => $title,
                 'url' => $adUrl,
-                'category_id' => $category->getId(),
+                'category_id' => $categoryCandidate->getId(),
                 'text' => $html,
                 'post_time' => null,
                 'region_id' => $level2Region->getId(),
@@ -66,7 +66,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         return $ads;
     }
 
-    protected function findAdUrl(Crawler $resultRow, Category $category): ?Url
+    protected function findAdUrl(Crawler $resultRow, \Palto\CategoryCandidate $candidate): ?Url
     {
         if ($resultRow->filter('h3 a')->count() > 0) {
             $adUrl = $resultRow->filter('h3 a')->attr('href');

@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
 require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
 (new class extends AdsParser {
-    protected function parseAd(Crawler $adDocument, Category $category, Url $adUrl): int
+    protected function parseAd(Crawler $adDocument, \Palto\CategoryCandidate $categoryCandidate, Url $adUrl): int
     {
         $regionLink = $adDocument->filter('.subarea a');
         if ($regionLink->count()) {
@@ -32,7 +32,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $ad = [
                 'title' => $title,
                 'url' => $adUrl,
-                'category_id' => $category->getId(),
+                'category_id' => $categoryCandidate->getId(),
                 'text' => trim(explode(
                         '</div>
         </div>',
@@ -66,7 +66,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         return $categoryDocument->filter('.result-row');
     }
 
-    protected function findAdUrl(Crawler $resultRow, Category $category): ?Url
+    protected function findAdUrl(Crawler $resultRow, \Palto\CategoryCandidate $candidate): ?Url
     {
         $url = $resultRow->filter('h3.result-heading a')->attr('href');
 

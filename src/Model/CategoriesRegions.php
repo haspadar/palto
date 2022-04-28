@@ -2,9 +2,7 @@
 
 namespace Palto\Model;
 
-use Palto\Debug;
-
-class CategoriesRegionsWithAds extends Model
+class CategoriesRegions extends Model
 {
     public static function add(int $categoryId, ?int $regionId)
     {
@@ -20,7 +18,7 @@ class CategoriesRegionsWithAds extends Model
             $count = self::getDb()->query('SELECT COUNT(*) AS count FROM ads WHERE category_level_' . $category['level'] . '_id = %d', $categoryId)[0]['count'];
         }
 
-        self::getDb()->insertUpdate('categories_regions_with_ads', [
+        self::getDb()->insertUpdate('categories_regions', [
             'category_id' => $categoryId,
             'region_id' => $regionId,
             'ads_count' => $count

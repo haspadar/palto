@@ -8,6 +8,24 @@ use Monolog\Handler\ZendMonitorHandler;
 
 class Categories
 {
+    public static function getByTitle(string $title): ?Category
+    {
+        $group = Model\Categories::getByTitle($title);
+
+        return $group ? new Category($group) : null;
+    }
+
+    public static function getNotFound(): Category
+    {
+        $foundGroup = Model\Categories::getByUrl('');
+        if (!$foundGroup) {
+            $id = Model\Categories::add(['title' => 'Not Found', 'url' => '']);
+            $foundGroup = Model\Categories::getById($id);
+        }
+
+        return new Category($foundGroup);
+    }
+
     public static function getChildren(array $ids, int $level, int $limit = 0): array
     {
         $rows = Model\Categories::getChildren($ids, $level, $limit);

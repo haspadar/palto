@@ -3,7 +3,7 @@
 use Symfony\Component\DomCrawler\Crawler;
 use Palto\Logger;
 
-require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
+require realpath(dirname(__DIR__) . '/../../../') . '/vendor/autoload.php';
 
 $donorUrl = 'https://en.wikipedia.org/wiki/List_of_cat_breeds';
 $response = \Pylesos\PylesosService::get($donorUrl, [], \Palto\Config::getEnv());

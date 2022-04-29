@@ -98,7 +98,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             }
         }
 
-        return Categories::getNotFound();
+        return Categories::getNotFound(null);
     }
 
     private function getDetails(Crawler $adDocument): array

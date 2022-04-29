@@ -12,32 +12,38 @@ abstract class AdsParser
 
     protected const IS_CRON_DISABLED = false;
 
-    abstract protected function findAds(Crawler $categoryDocument);
-    abstract protected function findAdUrl(Crawler $resultRow, Category $category): ?Url;
+    abstract protected function findAds(Crawler $leafDocument);
+
+    abstract protected function findAdUrl(Crawler $resultRow, Category|Region $category): ?Url;
 
     protected function getFirstPageNumber(): int
     {
         return 1;
     }
 
-    protected function getNextPageNumber(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): int
+    protected function getNextPageNumber(Crawler $leafDocument, Category|Region $leaf, Url $url, int $pageNumber): int
     {
-        if (Parser::hasNextPageLinkTag($categoryDocument)) {
+        if (Parser::hasNextPageLinkTag($leafDocument)) {
             Logger::debug('hasNextPageLinkTag: true');
 
-            return Parser::getNextPageNumber($categoryDocument);
+            return Parser::getNextPageNumber($leafDocument);
         }
 
         return $pageNumber + 1;
     }
 
-    protected function getNextPageUrl(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): ?Url
+    protected function getNextPageUrl(Crawler $leafDocument, Category|Region $leaf, Url $url, int $pageNumber): ?Url
     {
-        if (Parser::hasNextPageLinkTag($categoryDocument)) {
-            return Parser::getNextPageUrl($categoryDocument);
+        if (Parser::hasNextPageLinkTag($leafDocument)) {
+            return Parser::getNextPageUrl($leafDocument);
         }
 
         return null;
+    }
+
+    protected function getTreeLeafs(): array
+    {
+        return Categories::getLeafs();
     }
 
     public function run(string $file)
@@ -63,16 +69,16 @@ abstract class AdsParser
         $scheduler = new Scheduler(Config::getEnv());
         $scheduler->run(
             function () use ($pid) {
-                $leafCategories = Categories::getLeafs();
-                if ($leafCategories) {
-                    shuffle($leafCategories);
-                    $leafCategoriesCount = count($leafCategories);
-                    foreach ($leafCategories as $leafKey => $category) {
+                $leaf = $this->getTreeLeafs();
+                if ($leaf) {
+                    shuffle($leaf);
+                    $leafsCount = count($leaf);
+                    foreach ($leaf as $leafKey => $leaf) {
                         $logContent = [
-                            'iteration' => ($leafKey + 1) . '/' . $leafCategoriesCount
+                            'iteration' => ($leafKey + 1) . '/' . $leafsCount
                         ];
-                        Logger::info('Parsing category ' . $category->getTitle(), $logContent);
-                        $this->parseCategory($category, $category->getDonorUrl(), $this->getFirstPageNumber(), $logContent);
+                        Logger::info('Parsing leaf ' . $leaf->getTitle(), $logContent);
+                        $this->parseLeaf($leaf, $leaf->getDonorUrl(), $this->getFirstPageNumber(), $logContent);
                     }
                 } else {
                     Logger::info('Categories not found');
@@ -85,30 +91,30 @@ abstract class AdsParser
         Logger::info('Finished ads parsing with pid=' . $pid);
     }
 
-    private function parseCategory(Category $category, Url $url, int $pageNumber, array $logContent = [])
+    private function parseLeaf(Category|Region $leaf, Url $url, int $pageNumber, array $logContent = [])
     {
-        $categoryResponse = PylesosService::get($url->getFull(), [], Config::getEnv());
-        $categoryDocument = new Crawler($categoryResponse->getResponse());
+        $leafResponse = PylesosService::get($url->getFull(), [], Config::getEnv());
+        $leafDocument = new Crawler($leafResponse->getResponse());
         $extendedLogContext = array_merge(
             [
-                'category' => $category->getTitle(),
+                'leaf' => $leaf->getTitle(),
                 'url' => $url->getFull()
             ],
             $logContent
         );
-        $ads = $this->findAds($categoryDocument);
+        $ads = $this->findAds($leafDocument);
         Logger::info('Found ' . count($ads) . ' ads', $extendedLogContext);
         $addedAdsCount = 0;
-        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $category, $pageNumber) {
-            $adUrl = $this->findAdUrl($resultRow, $category);
+        $ads->each(function (Crawler $resultRow, $i) use (&$addedAdsCount, $leaf, $pageNumber) {
+            $adUrl = $this->findAdUrl($resultRow, $leaf);
             if (!$adUrl) {
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
             } elseif (!Ads::getByUrl($adUrl)) {
-                $adId = Parser::safeTransaction(function () use ($category, $adUrl) {
+                $adId = Parser::safeTransaction(function () use ($leaf, $adUrl) {
                     $adResponse = PylesosService::get($adUrl, [], Config::getEnv());
                     $adDocument = new Crawler($adResponse->getResponse());
 
-                    return $this->parseAd($adDocument, $category, $adUrl);
+                    return $this->parseAd($adDocument, $leaf, $adUrl);
                 });
 
                 if ($adId) {
@@ -124,12 +130,12 @@ abstract class AdsParser
             }
         });
         Logger::info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
-        $nextPageNumber = $this->getNextPageNumber($categoryDocument, $category, $url, $pageNumber);
+        $nextPageNumber = $this->getNextPageNumber($leafDocument, $leaf, $url, $pageNumber);
         if ($nextPageNumber && $nextPageNumber <= 10) {
-            $nextUrl = $this->getNextPageUrl($categoryDocument, $category, $url, $pageNumber);
+            $nextUrl = $this->getNextPageUrl($leafDocument, $leaf, $url, $pageNumber);
             if ($nextUrl) {
                 Logger::debug('Parsing next page ' . $nextUrl);
-                $this->parseCategory($category, $nextUrl, $nextPageNumber + 1, $logContent);
+                $this->parseLeaf($leaf, $nextUrl, $nextPageNumber + 1, $logContent);
             } else {
                 Logger::warning('Not found next page on url ' . $nextUrl);
             }
@@ -137,5 +143,33 @@ abstract class AdsParser
         } else {
             Logger::warning('Ignored next page number ' . $nextPageNumber);
         }
+    }
+
+    public function findCategory(array $texts): ?Category
+    {
+        foreach ($texts as $text) {
+            for ($length = 5; $length >= 1; $length--) {
+                if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
+                    foreach ($wordsCombinations as $combination) {
+                        if ($found = Categories::getByTitle($combination)) {
+                            return $found;
+                        }
+                    }
+                }
+            }
+        }
+
+        return Categories::getNotFound();
+    }
+
+    private function getWordsCombinations(string $title, int $length): array
+    {
+        $combinations = [];
+        $words = array_values(array_filter(explode(' ', strtr($title, ['.' => '', ',' => '', '!' => '']))));
+        for ($offset = 0; $offset <= count($words) - $length; $offset++) {
+            $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));
+        }
+
+        return $combinations;
     }
 }

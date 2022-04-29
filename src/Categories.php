@@ -24,7 +24,7 @@ class Categories
             $id = Model\Categories::add([
                 'title' => 'Not Found' . ($category ? ' ' . $category->getTitle() : ''),
                 'url' => $url,
-                'parent_id' => $category ? $category->getId() : 0,
+                'parent_id' => $category ? $category->getId() : null,
                 'level' => $level
             ]);
             $foundCategory = Model\Categories::getById($id);

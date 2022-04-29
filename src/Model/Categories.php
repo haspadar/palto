@@ -7,6 +7,11 @@ use Palto\Region;
 
 class Categories extends Model
 {
+    public static function findByTitle(string $title): array
+    {
+        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE LOWER(title) = LOWER(%s)', $title) ?: [];
+    }
+
     public static function getById(int $id): array
     {
         return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id) ?: [];

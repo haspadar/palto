@@ -151,7 +151,7 @@ abstract class AdsParser
             for ($length = 5; $length >= 1; $length--) {
                 if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
                     foreach ($wordsCombinations as $combination) {
-                        if ($found = Categories::getByTitle($combination)) {
+                        if ($found = Categories::findByTitle($combination)) {
                             return $found;
                         }
                     }

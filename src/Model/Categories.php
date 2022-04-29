@@ -91,16 +91,12 @@ class Categories extends Model
     
     public static function getByUrl(string $url, int $level, int $excludeId = 0): array
     {
-        if ($url) {
-            return self::getDb()->queryFirstRow(
-                'SELECT * FROM categories WHERE url = %s AND level = %d AND id <> %d',
-                $url,
-                $level,
-                $excludeId
-            ) ?: [];
-        }
-
-        return [];
+        return self::getDb()->queryFirstRow(
+            'SELECT * FROM categories WHERE url = %s AND level = %d AND id <> %d',
+            $url,
+            $level,
+            $excludeId
+        ) ?: [];
     }
 
     public static function getLeafs(int $limit): array

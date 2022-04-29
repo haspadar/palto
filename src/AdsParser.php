@@ -81,7 +81,7 @@ abstract class AdsParser
                         $this->parseLeaf($leaf, $leaf->getDonorUrl(), $this->getFirstPageNumber(), $logContent);
                     }
                 } else {
-                    Logger::info('Categories not found');
+                    Logger::info('Leafs not found');
                 }
             },
             function(\Exception $e) {
@@ -116,7 +116,6 @@ abstract class AdsParser
 
                     return $this->parseAd($adDocument, $leaf, $adUrl);
                 });
-
                 if ($adId) {
                     $adNumber = $i + 1;
                     Logger::debug("Added {$adNumber}th ad on page $pageNumber with id=$adUrl");

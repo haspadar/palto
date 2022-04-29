@@ -80,17 +80,17 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
     private function findParentCategory(array $texts): Category
     {
         $synonyms = [
-            Categories::getByUrl('birds', 1) => ['bird', 'birds', 'parrot', 'parrots'],
-            Categories::getByUrl('dogs', 1) => ['dog', 'dogs', 'puppy', 'pup', 'puppies', 'pups'],
-            Categories::getByUrl('cats', 1) => ['cat', 'cats', 'kitty', 'kitten', 'kitties', 'kittens'],
+            'birds' => ['bird', 'birds', 'parrot', 'parrots'],
+            'dogs' => ['dog', 'dogs', 'puppy', 'pup', 'puppies', 'pups'],
+            'cats' => ['cat', 'cats', 'kitty', 'kitten', 'kitties', 'kittens'],
         ];
-        foreach ($synonyms as $category => $categorySynonyms) {
+        foreach ($synonyms as $categoryUrl => $categorySynonyms) {
             foreach ($texts as $text) {
                 for ($length = 3; $length >= 1; $length--) {
                     if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
                         foreach ($wordsCombinations as $combination) {
                             if (in_array($combination, $categorySynonyms)) {
-                                return $category;
+                                return Categories::getByUrl($categoryUrl, 1);
                             }
                         }
                     }

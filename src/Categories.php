@@ -15,7 +15,7 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
-    public static function getNotFound(?Category $category): Category
+    public static function getNotFound(?Category $category = null): Category
     {
         $foundCategory = Model\Categories::findByTitle('Not Found', $category ? $category->getId() : 0);
         if (!$foundCategory) {

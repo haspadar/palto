@@ -19,7 +19,8 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             trim(explode('</div></div>', $adDocument->filter('#postingbody')->html())[1] ?? '')
         ));
         if ($title) {
-            $category = $this->findCategory([$title, mb_substr($text, 0, 200)]);
+            $parentCategory = $this->findParentCategory([$title, mb_substr($text, 0, 200)]);
+            $category = $this->findCategory([$title, mb_substr($text, 0, 200)], $parentCategory);
 
             $priceWithCurrency = Parser::getHtml($adDocument, ['.postingtitletext .price']);
             $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
@@ -67,12 +68,37 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         return $leafDocument->filter('.result-row');
     }
 
+
     protected function findAdUrl(Crawler $resultRow, Category|\Palto\Region $region): ?Url
     {
         $url = $resultRow->filter('h3.result-heading a')->attr('href');
 //        $url = 'https://auburn.craigslist.org/pet/d/phenix-city-female-chihuahua/7469937613.html';
 
         return $url ? new Url($url) : null;
+    }
+
+    private function findParentCategory(array $texts): Category
+    {
+        $synonyms = [
+            Categories::getByUrl('birds', 1) => ['bird', 'birds', 'parrot', 'parrots'],
+            Categories::getByUrl('dogs', 1) => ['dog', 'dogs', 'puppy', 'pup', 'puppies', 'pups'],
+            Categories::getByUrl('cats', 1) => ['cat', 'cats', 'kitty', 'kitten', 'kitties', 'kittens'],
+        ];
+        foreach ($synonyms as $category => $categorySynonyms) {
+            foreach ($texts as $text) {
+                for ($length = 3; $length >= 1; $length--) {
+                    if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
+                        foreach ($wordsCombinations as $combination) {
+                            if (in_array($combination, $categorySynonyms)) {
+                                return $category;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return Categories::getNotFound();
     }
 
     private function getDetails(Crawler $adDocument): array

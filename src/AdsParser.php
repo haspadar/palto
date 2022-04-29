@@ -144,13 +144,13 @@ abstract class AdsParser
         }
     }
 
-    public function findCategory(array $texts): ?Category
+    public function findCategory(array $texts, ?Category $parent): ?Category
     {
         foreach ($texts as $text) {
             for ($length = 5; $length >= 1; $length--) {
                 if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
                     foreach ($wordsCombinations as $combination) {
-                        if ($found = Categories::findByTitle($combination)) {
+                        if ($found = Categories::findByTitle($combination, $parent)) {
                             return $found;
                         }
                     }
@@ -158,10 +158,10 @@ abstract class AdsParser
             }
         }
 
-        return Categories::getNotFound();
+        return null;
     }
 
-    private function getWordsCombinations(string $title, int $length): array
+    protected function getWordsCombinations(string $title, int $length): array
     {
         $combinations = [];
         $words = array_values(array_filter(explode(' ', strtr($title, ['.' => '', ',' => '', '!' => '']))));

@@ -8,9 +8,9 @@ use Monolog\Handler\ZendMonitorHandler;
 
 class Categories
 {
-    public static function findByTitle(string $title): ?Category
+    public static function findByTitle(string $title, ?Category $parent): ?Category
     {
-        $category = Model\Categories::findByTitle($title);
+        $category = Model\Categories::findByTitle($title, $parent ? $parent->getId() : 0);
 
         return $category ? new Category($category) : null;
     }

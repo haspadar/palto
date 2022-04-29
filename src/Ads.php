@@ -186,9 +186,11 @@ class Ads
     {
         if (isset($ad['category_id']) && $ad['category_id']) {
             $category = Categories::getById($ad['category_id']);
-            while ($category) {
+            while ($category && $category->getLevel()) {
                 $ad['category_level_' . $category->getLevel() . '_id'] = $category->getId();
-                $category = $category->getParentId() ? Categories::getById($category->getParentId()) : null;
+                $category = $category->getParentId()
+                    ? Categories::getById($category->getParentId())
+                    : null;
             }
         }
 

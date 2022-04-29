@@ -33,8 +33,11 @@ class Category
             $parents = [];
             $category = $this;
             while ($category->getParentId()) {
-                $category = new self(Categories::getById($category->getParentId()));
-                $parents[] = $category;
+                $categoryRow = Categories::getById($category->getParentId());
+                if ($categoryRow) {
+                    $category = new self($categoryRow);
+                    $parents[] = $category;
+                }
             }
 
             $this->parents = array_reverse($parents);

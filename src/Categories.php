@@ -17,9 +17,16 @@ class Categories
 
     public static function getNotFound(?Category $category = null): Category
     {
-        $foundCategory = Model\Categories::findByTitle('Not Found', $category ? $category->getId() : 0);
+        $url = 'not-found' . ($category ? '-' . $category->getUrl() : '');
+        $level = $category ? $category->getLevel() + 1 : 1;
+        $foundCategory = Model\Categories::getByUrl($url, $level);
         if (!$foundCategory) {
-            $id = Model\Categories::add(['title' => 'Not Found', 'url' => '', 'parent_id' => $category ? $category->getId() : 0]);
+            $id = Model\Categories::add([
+                'title' => 'Not Found' . ($category ? ' ' . $category->getTitle() : ''),
+                'url' => $url,
+                'parent_id' => $category ? $category->getId() : 0,
+                'level' => $level
+            ]);
             $foundCategory = Model\Categories::getById($id);
         }
 

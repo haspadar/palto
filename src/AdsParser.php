@@ -12,6 +12,8 @@ abstract class AdsParser
 
     protected const IS_CRON_DISABLED = false;
 
+    protected const MAX_PAGE_NUMBER = 10;
+
     abstract protected function findAds(Crawler $leafDocument);
 
     abstract protected function findAdUrl(Crawler $resultRow, Category|Region $category): ?Url;
@@ -111,7 +113,10 @@ abstract class AdsParser
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
             } elseif (!Ads::getByUrl($adUrl)) {
                 $adId = Parser::safeTransaction(function () use ($leaf, $adUrl) {
-                    $adResponse = PylesosService::get($adUrl, [], Config::getEnv());
+                    while (!($adResponse = PylesosService::get($adUrl, [], Config::getEnv()))) {
+                        Logger::debug('Empty ad response: next attempt');
+                    }
+
                     $adDocument = new Crawler($adResponse->getResponse());
 
                     return $this->parseAd($adDocument, $leaf, $adUrl);
@@ -130,7 +135,7 @@ abstract class AdsParser
         });
         Logger::info('Added ' . $addedAdsCount . ' ads from page ' . $url, $extendedLogContext);
         $nextPageNumber = $this->getNextPageNumber($leafDocument, $leaf, $url, $pageNumber);
-        if ($nextPageNumber && $nextPageNumber <= 10) {
+        if ($nextPageNumber && $nextPageNumber <= static::MAX_PAGE_NUMBER) {
             $nextUrl = $this->getNextPageUrl($leafDocument, $leaf, $url, $pageNumber);
             if ($nextUrl) {
                 Logger::debug('Parsing next page ' . $nextUrl);
@@ -149,7 +154,7 @@ abstract class AdsParser
         foreach ($texts as $text) {
             for ($length = 5; $length >= 1; $length--) {
                 if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
-                    foreach ($wordsCombinations as $combination) {
+                    foreach ($wordsCombinations as $combinationKey => $combination) {
                         if ($found = Categories::findByTitle($combination, $parent)) {
                             return $found;
                         }
@@ -161,10 +166,11 @@ abstract class AdsParser
         return Categories::getNotFound($parent);
     }
 
-    protected function getWordsCombinations(string $title, int $length): array
+    protected function getWordsCombinations(string $text, int $length): array
     {
         $combinations = [];
-        $words = array_values(array_filter(explode(' ', strtr($title, ['.' => '', ',' => '', '!' => '']))));
+        $text = mb_strtolower($text);
+        $words = array_values(array_filter(explode(' ', strtr($text, ['.' => '', ',' => '', '!' => '']))));
         for ($offset = 0; $offset <= count($words) - $length; $offset++) {
             $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));
         }

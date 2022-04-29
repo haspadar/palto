@@ -18,11 +18,13 @@ $dogsGroup = \Palto\Categories::safeAdd(
 
 $categoriesDocument->filter('.div-col a')->each(function (Crawler $a) use ($dogsGroup) {
     $breed = $a->text();
-    \Palto\Categories::safeAdd(
-        [
-            'title' => $breed,
-            'parent_id' => $dogsGroup->getId()
-        ]
-    );
-    Logger::debug('Added ' . $breed);
+    if (substr($breed, 0, 1) != '[') {
+        \Palto\Categories::safeAdd(
+            [
+                'title' => $breed,
+                'parent_id' => $dogsGroup->getId()
+            ]
+        );
+        Logger::debug('Added ' . $breed);
+    }
 });

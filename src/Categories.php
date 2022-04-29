@@ -15,11 +15,11 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
-    public static function getNotFound(): Category
+    public static function getNotFound(?Category $category): Category
     {
-        $foundCategory = Model\Categories::getByUrl('', 1);
+        $foundCategory = Model\Categories::findByTitle('Not Found', $category ? $category->getId() : 0);
         if (!$foundCategory) {
-            $id = Model\Categories::add(['title' => 'Not Found', 'url' => '', 'level' => 1, 'tree_id' => 0]);
+            $id = Model\Categories::add(['title' => 'Not Found', 'url' => '', 'parent_id' => $category ? $category->getId() : 0]);
             $foundCategory = Model\Categories::getById($id);
         }
 

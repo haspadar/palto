@@ -158,7 +158,7 @@ abstract class AdsParser
             }
         }
 
-        return null;
+        return $parent ?: Categories::getNotFound();
     }
 
     protected function getWordsCombinations(string $title, int $length): array

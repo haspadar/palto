@@ -69,8 +69,8 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
     protected function findAdUrl(Crawler $resultRow, Category|\Palto\Region $region): ?Url
     {
-//        $url = $resultRow->filter('h3.result-heading a')->attr('href');
-        $url = 'https://auburn.craigslist.org/pet/d/phenix-city-female-chihuahua/7469937613.html';
+        $url = $resultRow->filter('h3.result-heading a')->attr('href');
+//        $url = 'https://auburn.craigslist.org/pet/d/phenix-city-female-chihuahua/7469937613.html';
 
         return $url ? new Url($url) : null;
     }

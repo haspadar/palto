@@ -21,6 +21,11 @@ class Region
         ];
     }
 
+    public function getDonorUrl(): Url
+    {
+        return new Url($this->region['donor_url']);
+    }
+
     public function getTitle(): string
     {
         return $this->region['title'] ?? '';

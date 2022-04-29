@@ -19,7 +19,7 @@ class Categories
     {
         $foundCategory = Model\Categories::getByUrl('', 1);
         if (!$foundCategory) {
-            $id = Model\Categories::add(['title' => 'Not Found', 'url' => '', 'level' => 1]);
+            $id = Model\Categories::add(['title' => 'Not Found', 'url' => '', 'level' => 1, 'tree_id' => 0]);
             $foundCategory = Model\Categories::getById($id);
         }
 

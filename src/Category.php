@@ -186,4 +186,9 @@ class Category
 
         return $urls == $parentUrls;
     }
+
+    public function isNotFound(): bool
+    {
+        return mb_substr($this->getUrl(), 0, 9) == 'not-found';
+    }
 }

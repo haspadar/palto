@@ -173,4 +173,19 @@ $(function () {
             picker.togglePicker(button);
         });
     }
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    if (tooltipTriggerList) {
+        let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    }
+
+    let moveNotFoundModal = document.getElementById('moveNotFoundModal')
+    if (moveNotFoundModal) {
+        let synonym = document.getElementById('synonym');
+        moveNotFoundModal.addEventListener('shown.bs.modal', function () {
+            synonym.focus()
+        });
+    }
 });

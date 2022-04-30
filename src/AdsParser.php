@@ -113,13 +113,15 @@ abstract class AdsParser
                 Logger::error('Url not parsed: ' . $resultRow->outerHtml());
             } elseif (!Ads::getByUrl($adUrl)) {
                 $adId = Parser::safeTransaction(function () use ($leaf, $adUrl) {
-                    while (!($adResponse = PylesosService::get($adUrl, [], Config::getEnv()))) {
-                        Logger::debug('Empty ad response: next attempt');
+                    $adResponse = PylesosService::get($adUrl, [], Config::getEnv());
+                    if ($adResponse->getResponse()) {
+                        $adDocument = new Crawler($adResponse->getResponse());
+
+                        return $this->parseAd($adDocument, $leaf, $adUrl);
                     }
 
-                    $adDocument = new Crawler($adResponse->getResponse());
+                    return 0;
 
-                    return $this->parseAd($adDocument, $leaf, $adUrl);
                 });
                 if ($adId) {
                     $adNumber = $i + 1;
@@ -163,7 +165,7 @@ abstract class AdsParser
             }
         }
 
-        return Categories::getNotFound($parent);
+        return Categories::createUndefined($parent);
     }
 
     protected function getWordsCombinations(string $text, int $length): array

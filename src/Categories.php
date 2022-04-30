@@ -15,16 +15,16 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
-    public static function getNotFound(?Category $category = null): Category
+    public static function createUndefined(?Category $category = null): Category
     {
-        $url = 'not-found' . ($category ? '-' . $category->getUrl() : '');
+        $url = 'undefined' . ($category ? '-' . $category->getUrl() : '');
         $level = $category ? $category->getLevel() + 1 : 1;
         $foundCategory = Model\Categories::getByUrl($url, $level);
         if (!$foundCategory) {
             $id = Model\Categories::add([
-                'title' => 'Not Found' . ($category ? ' ' . $category->getTitle() : ''),
+                'title' => 'Undefined' . ($category ? ' ' . $category->getTitle() : ''),
                 'url' => $url,
-                'parent_id' => $category ? $category->getId() : null,
+                'parent_id' => $category?->getId(),
                 'level' => $level
             ]);
             $foundCategory = Model\Categories::getById($id);
@@ -149,6 +149,17 @@ class Categories
     public static function getMaxLevel(): int
     {
         return \Palto\Model\Categories::getMaxLevel();
+    }
+
+    /**
+     * @return Category[]
+     */
+    public static function getUndefinedAll(): array
+    {
+        return array_map(
+            fn($category) => new Category($category),
+            \Palto\Model\Categories::findByUrlAll('undefined')
+        );
     }
 
     private static function getChildCategories(array $category): array

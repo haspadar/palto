@@ -47,6 +47,14 @@ class Ads extends Model
         return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE region_id IN %ld', $regionsIds);
     }
 
+    public static function getCategoriesAdsCounts(array $categoriesIds, int $level = 0): array
+    {
+        $field = $level ? "category_level_{$level}_id" : 'category_id';
+        $counts = self::getDb()->query("SELECT COUNT(*) AS count, $field FROM ads WHERE $field IN %ld GROUP BY $field", $categoriesIds);
+
+        return array_column($counts, 'count', $field);
+    }
+
     public static function getCategoriesAdsCount(array $categoriesIds): int
     {
         return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);

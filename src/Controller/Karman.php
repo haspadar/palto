@@ -134,6 +134,36 @@ class Karman
         }
     }
 
+    public function showUndefinedCategories()
+    {
+        $undefinedCategories = \Palto\Categories::getUndefinedAll();
+        $this->templatesEngine->addData([
+            'title' => 'Undefined-категории',
+            'categories' => $undefinedCategories,
+            'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $undefinedCategories)),
+            'breadcrumbs' => [],
+            'category_url' => '/karman/undefined-ads'
+        ]);
+        echo $this->templatesEngine->make('categories');
+    }
+
+    public function showUndefinedAds(int $id)
+    {
+        $category = \Palto\Categories::getById($id);
+        $this->templatesEngine->addData([
+            'title' => 'Undefined-объявления',
+            'category' => $category,
+            'ads' => Ads::getAds(null, $category, 25),
+            'breadcrumbs' => array_merge([[
+                'title' => 'Категории',
+                'url' => '/karman/categories?cache=0'
+            ]], [[
+                'title' => 'Категория "' . $category->getTitle() . '"',
+            ]]),
+        ]);
+        echo $this->templatesEngine->make('undefined-ads');
+    }
+
     public function showCategory(int $id)
     {
         $category = \Palto\Categories::getById($id);
@@ -142,10 +172,12 @@ class Karman
             'title' => $parent->getTitle(),
             'url' => '/karman/categories/' . $parent->getId()
         ], $parents);
+        $categories = \Palto\Categories::getLiveCategories($category);
         $this->templatesEngine->addData([
             'title' => 'Категория',
             'category' => $category,
-            'categories' => \Palto\Categories::getLiveCategories($category),
+            'categories' => $categories,
+            'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), $category->getLevel() + 1),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
                 'url' => '/karman/categories?cache=0'
@@ -158,10 +190,13 @@ class Karman
 
     public function showCategories()
     {
+        $categories = \Palto\Categories::getLiveCategories();
         $this->templatesEngine->addData([
             'title' => 'Категории',
             'breadcrumbs' => [],
-            'categories' => \Palto\Categories::getLiveCategories()
+            'categories' => $categories,
+            'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1),
+            'category_url' => '/karman/undefined-ads'
         ]);
         echo $this->templatesEngine->make('categories');
     }

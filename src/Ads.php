@@ -37,6 +37,13 @@ class Ads
             : 0;
     }
 
+    public static function getCategoriesAdsCounts(array $categoriesIds, int $level = 0): array
+    {
+        return $categoriesIds
+            ? Model\Ads::getCategoriesAdsCounts($categoriesIds, $level)
+            : [];
+    }
+
     public static function getCategoriesAdsCount(array $categoriesIds): int
     {
         return $categoriesIds

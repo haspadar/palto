@@ -33,6 +33,8 @@ $router->mount('/karman', function() use ($router) {
     $router->get('/categories', '\Palto\Controller\Karman@showCategories');
     $router->put('/update-category/{id}', '\Palto\Controller\Karman@updateCategory');
     $router->delete('/remove-emoji/{id}', '\Palto\Controller\Karman@removeEmoji');
+    $router->get('/undefined-categories', '\Palto\Controller\Karman@showUndefinedCategories');
+    $router->get('/undefined-ads/{id}', '\Palto\Controller\Karman@showUndefinedAds');
 });
 
 $router->get('/', '\Palto\Controller\Client@showIndex');

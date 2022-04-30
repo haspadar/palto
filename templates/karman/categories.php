@@ -19,9 +19,13 @@
         <?php foreach ($this->data['categories'] as $category) :?>
             <tr>
                 <td>
-                    <a href="/karman/categories/<?=$category->getId()?>" class="text-decoration-none">
+                    <a href="<?=$this->data['category_url']?>/<?=$category->getId()?>" class="text-decoration-none">
                         <?=$category->getTitle()?>
                         <?=$category->getEmoji()?>
+
+                        <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
+                            <?=$this->data['ads_counts'][$category->getId()]?>
+                        </span>
                     </a>
                 </td>
 

@@ -46,6 +46,10 @@ use Palto\Debug;
                     <a href="/karman/categories/<?=$category->getId()?>" class="text-decoration-none">
                         <?=$category->getTitle()?>
                         <?=$category->getEmoji()?>
+
+                        <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
+                            <?=$this->data['ads_counts'][$category->getId()]?>
+                        </span>
                     </a>
                 </td>
 

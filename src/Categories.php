@@ -187,7 +187,7 @@ class Categories
         $addedCount = 0;
         foreach ($synonyms as $synonym) {
             $synonym = mb_strtolower($synonym);
-            if (!Synonyms::has($synonym, $id)) {
+            if ($synonym && !Synonyms::has($synonym, $id)) {
                 Synonyms::add($synonym, $id);
                 $addedCount++;
             }

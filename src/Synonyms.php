@@ -9,7 +9,7 @@ class Synonyms
         $synonyms = \Palto\Model\Synonyms::getAll();
         $grouped = [];
         foreach ($synonyms as $synonym) {
-            $grouped[$synonym['category_id']][] = $synonym;
+            $grouped[$synonym['category_id']][] = $synonym['title'];
         }
 
         return $grouped;

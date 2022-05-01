@@ -243,8 +243,10 @@ $(function () {
             success: function (response) {
                 let $categoryLevel1 = $('#categoryLevel1');
                 $categoryLevel1.find('option[value!="0"]').remove();
+                $categoryLevel1.append('<option value="">Новая</option>');
                 $.each(response, function (key, categoryLevel1) {
-                    let isSelected = $('#adCategoryId').val() == categoryLevel1.id || $('#adCategoryParentId').val() == categoryLevel1.id;
+                    let isSelected = $('#adCategoryId').val() == categoryLevel1.id
+                        || $('#adCategoryParentId').val() == categoryLevel1.id;
                     $categoryLevel1.append('<option value="'
                         + categoryLevel1.id
                         + '"'
@@ -254,7 +256,6 @@ $(function () {
                         + '</option>'
                     );
                 });
-                $categoryLevel1.append('<option value="">Новая</option>');
             }
         });
     }
@@ -268,20 +269,20 @@ $(function () {
             success: function (response) {
                 let $categoryLevel2 = $('#categoryLevel2');
                 $categoryLevel2.find('option').remove();
-                $.each(response, function (key, categoryLevel2) {
-                    let isSelected = $('#adCategoryId').val() == categoryLevel2.id;
-                    $categoryLevel2.append('<option value="'
-                        + categoryLevel2.id
-                        + '"'
-                        + (isSelected ? ' selected' : '')
-                        + '>'
-                        + categoryLevel2.title
-                        + '</option>'
-                    );
-                });
                 if (response.length) {
                     $categoryLevel2.append('<option value="">Новая</option>');
                     $categoryLevel2.parents('div:first').removeClass('d-none');
+                    $.each(response, function (key, categoryLevel2) {
+                        let isSelected = $('#adCategoryId').val() == categoryLevel2.id;
+                        $categoryLevel2.append('<option value="'
+                            + categoryLevel2.id
+                            + '"'
+                            + (isSelected ? ' selected' : '')
+                            + '>'
+                            + categoryLevel2.title
+                            + '</option>'
+                        );
+                    });
                 } else {
                     $categoryLevel2.parents('div:first').addClass('d-none');
                 }

@@ -231,9 +231,10 @@ class Karman
         if ($error) {
             $this->showJsonResponse(['error' => $error]);
         } else {
-            $synonyms = Filter::getArray(explode(',', $params['synonyms']));
             $category = Ads::getById(intval($params['ad_id']))->getCategory();
+            $synonyms = Filter::getSynonyms($params['synonyms'], $category->getId());
             $addedCount = Categories::addSynonyms($synonyms, $category->getId());
+//            $foundCount = Synonyms::updateUndefinedAds($synonyms, $category->getId());
             Flash::add(json_encode([
                 'message' => "Объявление $adId перемещено в \"" . $category->getTitle() . "\". "
                     . ($synonyms
@@ -270,8 +271,9 @@ class Karman
             'url' => Filter::get($putParams['url']),
             'emoji' => Filter::get($putParams['emoji'])
         ], $id);
-        $synonyms = Filter::getArray(explode(',', $putParams['synonyms']));
+        $synonyms = Filter::getSynonyms($putParams['synonyms'], $id);
         Categories::addSynonyms($synonyms, $id);
+//        Ads::findBySynonyms()
         Flash::add(json_encode([
             'message' => 'Категория <a href="/karman/categories/' . $id . '">"' . $title . '"</a> обновлена',
             'type' => 'success'

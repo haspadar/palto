@@ -2,6 +2,8 @@
 
 namespace Palto;
 
+use Palto\Model\Synonyms;
+
 class Filter
 {
     public static function shortText(string $text, int $length = 135): string
@@ -22,6 +24,19 @@ class Filter
         }
 
         return array_filter($values);
+    }
+
+    public static function getSynonyms(string $values, int $categoryId): array
+    {
+        $filtered = [];
+        $synonyms = self::getArray(explode(',', $values));
+        foreach ($synonyms as $synonym) {
+            if ($synonym && !Synonyms::has($synonym, $categoryId)) {
+                $filtered[] = $synonym;
+            }
+        }
+
+        return $filtered;
     }
 
     public static function getArray(array $values): array

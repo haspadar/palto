@@ -225,4 +225,65 @@ class Ads
     {
         return Model\Ads::getFieldNames('ads');
     }
+
+    public static function moveAd(
+        int $adId,
+        int $categoryLevel1Id,
+        string $newCategoryLevel1Title,
+        int $categoryLevel2Id,
+        string $newCategoryLevel2Title
+    ): string {
+        $error = '';
+        try {
+            \Palto\Model\Ads::getDb()->startTransaction();
+            if ($newCategoryLevel1Title && Categories::getByTitle($newCategoryLevel1Title)) {
+                $error = 'Такая категория уже есть';
+            } elseif ($newCategoryLevel1Title) {
+                $category = Categories::safeAdd([
+                    'title' => $newCategoryLevel1Title
+                ]);
+                self::update([
+                    'category_id' => $category->getId(),
+                    'category_level_1_id' => $category->getId(),
+                    'category_level_2_id' => null,
+                ], $adId);
+            } elseif ($newCategoryLevel2Title && Categories::getByTitle($newCategoryLevel2Title, $categoryLevel1Id)) {
+                $error = 'Такая категория уже есть';
+            } elseif ($newCategoryLevel2Title) {
+                $category = Categories::safeAdd([
+                    'title' => $newCategoryLevel1Title,
+                    'parent_id' => $categoryLevel1Id
+                ]);
+                self::update([
+                    'category_id' => $category->getId(),
+                    'category_level_1_id' => $categoryLevel1Id,
+                    'category_level_2_id' => $category->getId(),
+                ], $adId);
+            } elseif ($categoryLevel2Id) {
+                self::update([
+                    'category_id' => $categoryLevel2Id,
+                    'category_level_1_id' => $categoryLevel1Id,
+                    'category_level_2_id' => $categoryLevel2Id,
+                ], $adId);
+            } elseif ($categoryLevel1Id) {
+                self::update([
+                    'category_id' => $categoryLevel1Id,
+                    'category_level_1_id' => $categoryLevel1Id,
+                    'category_level_2_id' => null,
+                ], $adId);
+            }
+
+            \Palto\Model\Ads::getDb()->commit();
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            \Palto\Model\Ads::getDb()->rollback();
+        }
+
+        return $error;
+    }
+
+    private static function update(array $updates, int $id)
+    {
+        \Palto\Model\Ads::update($updates, $id);
+    }
 }

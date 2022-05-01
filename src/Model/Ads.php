@@ -120,4 +120,9 @@ class Ads extends Model
 
         return self::getDb()->queryFirstRow($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
     }
+
+    public static function update(array $updates, int $id)
+    {
+        self::getDb()->update('ads', $updates, 'id = %d', $id);
+    }
 }

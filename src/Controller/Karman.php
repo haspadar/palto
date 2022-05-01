@@ -5,6 +5,7 @@ namespace Palto\Controller;
 use League\Plates\Engine;
 use League\Plates\Extension\Asset;
 use Palto\Ads;
+use Palto\Categories;
 use Palto\Category;
 use Palto\Cli;
 use Palto\Config;
@@ -12,6 +13,7 @@ use Palto\Debug;
 use Palto\Directory;
 use Palto\Filter;
 use Palto\Flash;
+use Palto\Plural;
 use Palto\Regions;
 use Palto\Url;
 
@@ -151,15 +153,16 @@ class Karman
     {
         $category = \Palto\Categories::getById($id);
         $this->templatesEngine->addData([
-            'title' => 'Undefined-объявления',
+            'title' => 'Объявления ' . $category->getTitle(),
             'category' => $category,
             'ads' => Ads::getAds(null, $category, 25),
             'breadcrumbs' => array_merge([[
-                'title' => 'Категории',
-                'url' => '/karman/categories?cache=0'
+                'title' => 'Undefined',
+                'url' => '/karman/undefined-categories?cache=0'
             ]], [[
                 'title' => 'Категория "' . $category->getTitle() . '"',
             ]]),
+            'ads_count' => \Palto\Ads::getCategoriesAdsCount([$category->getId()])
         ]);
         echo $this->templatesEngine->make('undefined-ads');
     }
@@ -196,9 +199,62 @@ class Karman
             'breadcrumbs' => [],
             'categories' => $categories,
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1),
-            'category_url' => '/karman/undefined-ads'
+            'category_url' => '/karman/categories'
         ]);
         echo $this->templatesEngine->make('categories');
+    }
+
+    public function getCategoriesRoots(): void
+    {
+        $this->showJsonResponse(array_map(fn(Category $category) => [
+            'id' => $category->getId(),
+            'parent_id' => $category->getParentId() ?: null,
+            'title' => $category->getTitle()
+        ], \Palto\Categories::getRoots()));
+    }
+
+    public function moveAd(): void
+    {
+        $params = $this->getPutParams();
+        $adId = intval($params['ad_id']);
+        $error = Ads::moveAd(
+            $adId,
+            intval($params['category_level_1']),
+            Filter::get($params['new_category_level_1'] ?? ''),
+            intval($params['category_level_2'] ?? 0),
+            Filter::get($params['new_category_level_2'] ?? ''),
+        );
+        if ($error) {
+            $this->showJsonResponse(['error' => $error]);
+        } else {
+            $synonyms = Filter::getArray(explode(',', $params['synonyms']));
+            $category = Ads::getById(intval($params['ad_id']))->getCategory();
+            $addedCount = Categories::addSynonyms($synonyms, $category->getId());
+            Flash::add(json_encode([
+                'message' => "Объявление $adId перемещено в \"" . $category->getTitle() . "\". "
+                    . ($synonyms
+                        ? Plural::get($addedCount, 'Добавлен', 'Добавлено', 'Добавлено')
+                            . ' '
+                            . $addedCount
+                            . ' '
+                            . Plural::get($addedCount, 'синоним', 'синонима', 'синонимов')
+                            . '.'
+                        : ''
+                    ),
+                'type' => 'success'
+            ]));
+            $this->showJsonResponse(['success' => true]);
+        }
+    }
+
+    public function getCategoriesChildren(int $parentId): void
+    {
+        $children = $parentId ? \Palto\Categories::getChildren([$parentId]) : [];
+        $this->showJsonResponse(array_map(fn(Category $category) => [
+            'id' => $category->getId(),
+            'parent_id' => $category->getParentId() ?: null,
+            'title' => $category->getTitle()
+        ], $children ? $children[$parentId] : []));
     }
 
     public function updateCategory(int $id)

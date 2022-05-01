@@ -22,7 +22,12 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         $text = trim(strtr(strip_tags($adDocument->filter('#postingbody')->html()), ['QR Code Link to This Post' => '']));
         if ($title) {
             $parentCategory = $this->findParentCategory([$title, mb_substr($text, 0, 200)]);
-            $category = $this->findCategory([$title, mb_substr($text, 0, 200)], $parentCategory);
+            if ($parentCategory && $parentCategory->getLevel() == 2) {
+                $category = $parentCategory;
+            } else {
+                $category = $this->findCategory([$title, mb_substr($text, 0, 200)], $parentCategory);
+            }
+
             $priceWithCurrency = Parser::getHtml($adDocument, ['.postingtitletext .price']);
             $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
             $price = $priceWithCurrency ? Parser::filterPrice(mb_substr($priceWithCurrency, 1)) : 0;
@@ -74,23 +79,14 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
     private function findParentCategory(array $texts): ?Category
     {
-        $synonyms = [
-            'dogs' => ['dog', 'dogs', 'puppy', 'pup', 'puppies', 'pups'],
-            'birds' => ['bird', 'birds', 'parrot', 'parrots'],
-            'cats' => ['cat', 'cats', 'kitty', 'kitten', 'kitties', 'kittens'],
-        ];
-        foreach ($synonyms as $categoryUrl => $categorySynonyms) {
+        $synonyms = \Palto\Synonyms::getAll();
+        foreach ($synonyms as $categoryId => $categorySynonyms) {
             foreach ($texts as $text) {
                 for ($length = 3; $length >= 1; $length--) {
                     if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
                         foreach ($wordsCombinations as $combination) {
                             if (in_array($combination, $categorySynonyms)) {
-                                $category = Categories::getByUrl($categoryUrl, 1);
-                                if (!$category) {
-                                    throw new Exception('Category with url "' . $categoryUrl . '" not found');
-                                }
-
-                                return $category;
+                                return Categories::getById($categoryId);
                             }
                         }
                     }

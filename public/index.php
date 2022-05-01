@@ -31,6 +31,9 @@ $router->mount('/karman', function() use ($router) {
     $router->put('/enable-cache', '\Palto\Controller\Karman@enableCache');
     $router->get('/categories/{id}', '\Palto\Controller\Karman@showCategory');
     $router->get('/categories', '\Palto\Controller\Karman@showCategories');
+    $router->get('/get-categories', '\Palto\Controller\Karman@getCategoriesRoots');
+    $router->get('/get-categories/{id}', '\Palto\Controller\Karman@getCategoriesChildren');
+    $router->put('/move-ad', '\Palto\Controller\Karman@moveAd');
     $router->put('/update-category/{id}', '\Palto\Controller\Karman@updateCategory');
     $router->delete('/remove-emoji/{id}', '\Palto\Controller\Karman@removeEmoji');
     $router->get('/undefined-categories', '\Palto\Controller\Karman@showUndefinedCategories');

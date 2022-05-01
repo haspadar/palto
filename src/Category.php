@@ -158,7 +158,7 @@ class Category
         if (!isset($this->children)) {
             $this->children = array_map(
                 fn($category) => new self($category),
-                Categories::getChildren([$this->getId()], $this->getLevel() + 1)
+                Categories::getChildren([$this->getId()])
             );
         }
 

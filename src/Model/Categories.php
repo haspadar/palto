@@ -29,24 +29,22 @@ class Categories extends Model
             : [];
     }
 
-    public static function getChildren(array $categoriesIds, int $level, int $limit = 0): array
+    public static function getChildren(array $categoriesIds, int $limit = 0): array
     {
         return $limit
             ? self::getDb()->query(
-                'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d LIMIT %d',
+                'SELECT * FROM categories WHERE parent_id IN %ld LIMIT %d',
                 $categoriesIds,
-                $level,
                 $limit
-            ) : self::getDb()->queryFirstColumn(
-                'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d',
+            ) : self::getDb()->query(
+                'SELECT * FROM categories WHERE parent_id IN %ld',
                 $categoriesIds,
-                $level
             );
     }
 
     public static function getChildrenIds(array $categoriesIds, int $level): array
     {
-        return array_column(self::getChildren($categoriesIds, $level), 'id');
+        return array_column(self::getChildren($categoriesIds), 'id');
     }
 
     public static function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array
@@ -89,6 +87,14 @@ class Categories extends Model
         return self::getDb()->query($query, $values);
     }
     
+    public static function getByTitle(string $title, int $parentId = 0): array
+    {
+        return self::getDb()->queryFirstRow(
+            'SELECT * FROM categories WHERE url = %s AND parent_id ' . ($parentId ? '=' . $parentId : 'IS NULL'),
+            $title
+        ) ?: [];
+    }
+
     public static function getByUrl(string $url, int $level, int $excludeId = 0): array
     {
         return self::getDb()->queryFirstRow(
@@ -142,6 +148,11 @@ class Categories extends Model
     public static function findByUrlAll(string $url): array
     {
         return self::getDb()->query('SELECT * FROM categories WHERE url LIKE %s ORDER BY level', $url . '%') ?: [];
+    }
+
+    public static function getRoots(): array
+    {
+        return self::getDb()->query('SELECT * FROM categories WHERE level = %d', 1) ?: [];
     }
 
 }

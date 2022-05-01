@@ -5,6 +5,8 @@ namespace Palto;
 use Cocur\Slugify\Slugify;
 use DateTime;
 use Monolog\Handler\ZendMonitorHandler;
+use Palto\Model\Synonyms;
+use function Symfony\Component\String\s;
 
 class Categories
 {
@@ -33,9 +35,9 @@ class Categories
         return new Category($foundCategory);
     }
 
-    public static function getChildren(array $ids, int $level, int $limit = 0): array
+    public static function getChildren(array $ids, int $limit = 0): array
     {
-        $rows = Model\Categories::getChildren($ids, $level, $limit);
+        $rows = Model\Categories::getChildren($ids, $limit);
         $children = [];
         foreach ($rows as $row) {
             $category = new Category($row);
@@ -55,6 +57,13 @@ class Categories
     public static function getByDonorUrl(string $donorCategoryUrl, int $level): ?Category
     {
         $category = Model\Categories::getByDonorUrl($donorCategoryUrl, $level);
+
+        return $category ? new Category($category) : null;
+    }
+
+    public static function getByTitle(string $categoryTitle, int $parentId = 0): ?Category
+    {
+        $category = Model\Categories::getByTitle($categoryTitle, $parentId);
 
         return $category ? new Category($category) : null;
     }
@@ -160,6 +169,31 @@ class Categories
             fn($category) => new Category($category),
             \Palto\Model\Categories::findByUrlAll('undefined')
         );
+    }
+
+    /**
+     * @return Category[]
+     */
+    public static function getRoots(): array
+    {
+        return array_map(
+            fn($category) => new Category($category),
+            \Palto\Model\Categories::getRoots()
+        );
+    }
+
+    public static function addSynonyms(array $synonyms, int $id): int
+    {
+        $addedCount = 0;
+        foreach ($synonyms as $synonym) {
+            $synonym = mb_strtolower($synonym);
+            if (!Synonyms::has($synonym, $id)) {
+                Synonyms::add($synonym, $id);
+                $addedCount++;
+            }
+        }
+
+        return $addedCount;
     }
 
     private static function getChildCategories(array $category): array

@@ -40,6 +40,7 @@ use Palto\Debug;
          * @var $this->data['category'] Category
          */
         ?>
+
         <?php foreach ($this->data['categories'] as $category) :?>
             <tr>
                 <td>

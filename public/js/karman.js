@@ -176,16 +176,115 @@ $(function () {
 
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     if (tooltipTriggerList) {
-        let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         });
     }
 
-    let moveNotFoundModal = document.getElementById('moveNotFoundModal')
-    if (moveNotFoundModal) {
-        let synonym = document.getElementById('synonym');
-        moveNotFoundModal.addEventListener('shown.bs.modal', function () {
-            synonym.focus()
+    let moveUndefinedModal = new bootstrap.Modal(document.getElementById('moveUndefinedModal'));
+    $('.move-ad').on('click', function () {
+        $('#adId').val($(this).data('adId'));
+        $('#adCategoryId').val($(this).data('categoryId'));
+        $('#adCategoryParentId').val($(this).data('categoryParentId'));
+        updateCategoriesLevel1();
+        updateCategoriesLevel2($(this).data('categoryParentId'));
+        $('#moveUndefinedModal').find('.alert').addClass('d-none');
+        moveUndefinedModal.show();
+    });
+
+    $('#categoryLevel1').on('change', function () {
+        let categoryLevel1 = $(this).val();
+        if (categoryLevel1) {
+            updateCategoriesLevel2(categoryLevel1);
+            $('#categoryLevel2').parents('div:first').removeClass('d-none');
+            $('#newCategoryLevel1').parents('div:first').addClass('d-none');
+        } else {
+            $('#categoryLevel2').parents('div:first').addClass('d-none');
+            $('#newCategoryLevel1').parents('div:first').removeClass('d-none');
+        }
+    });
+
+    $('#moveUndefinedModal .save').on('click', function () {
+        let $moveUndefinedModal = $('#moveUndefinedModal');
+        $moveUndefinedModal.find('.alert').addClass('d-none');
+        $.ajax({
+            url: '/karman/move-ad/?cache=0',
+            dataType: "json",
+            type: 'PUT',
+            data: $('#moveUndefinedModal form').serialize(),
+            success: function (response) {
+                if (response.error) {
+                    $moveUndefinedModal.find('.alert div').text(response.error).removeClass('d-none');
+                    $moveUndefinedModal.find('.alert').removeClass('d-none');
+                } else {
+                    moveUndefinedModal.hide();
+                    document.location.reload();
+                }
+            }
+        });
+    });
+
+    $('#categoryLevel2').on('change', function () {
+        let categoryLevel2 = $(this).val();
+        if (categoryLevel2) {
+            $('#newCategoryLevel2').parents('div:first').addClass('d-none');
+        } else {
+            $('#newCategoryLevel2').parents('div:first').removeClass('d-none');
+        }
+    });
+
+    function updateCategoriesLevel1() {
+        $.ajax({
+            url: '/karman/get-categories/?cache=0',
+            dataType: "json",
+            type: 'GET',
+            data: {},
+            success: function (response) {
+                let $categoryLevel1 = $('#categoryLevel1');
+                $categoryLevel1.find('option[value!="0"]').remove();
+                $.each(response, function (key, categoryLevel1) {
+                    let isSelected = $('#adCategoryId').val() == categoryLevel1.id || $('#adCategoryParentId').val() == categoryLevel1.id;
+                    $categoryLevel1.append('<option value="'
+                        + categoryLevel1.id
+                        + '"'
+                        + (isSelected ? ' selected' : '')
+                        + '>'
+                        + categoryLevel1.title
+                        + '</option>'
+                    );
+                });
+                $categoryLevel1.append('<option value="">Новая</option>');
+            }
+        });
+    }
+
+    function updateCategoriesLevel2(categoryLevel1) {
+        $.ajax({
+            url: '/karman/get-categories/' + categoryLevel1 + '/?cache=0',
+            dataType: "json",
+            type: 'GET',
+            data: {},
+            success: function (response) {
+                let $categoryLevel2 = $('#categoryLevel2');
+                $categoryLevel2.find('option').remove();
+                $.each(response, function (key, categoryLevel2) {
+                    let isSelected = $('#adCategoryId').val() == categoryLevel2.id;
+                    $categoryLevel2.append('<option value="'
+                        + categoryLevel2.id
+                        + '"'
+                        + (isSelected ? ' selected' : '')
+                        + '>'
+                        + categoryLevel2.title
+                        + '</option>'
+                    );
+                });
+                if (response.length) {
+                    $categoryLevel2.append('<option value="">Новая</option>');
+                    $categoryLevel2.parents('div:first').removeClass('d-none');
+                } else {
+                    $categoryLevel2.parents('div:first').addClass('d-none');
+                }
+            }
         });
     }
 });

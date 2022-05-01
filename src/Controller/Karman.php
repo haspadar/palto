@@ -15,6 +15,7 @@ use Palto\Filter;
 use Palto\Flash;
 use Palto\Plural;
 use Palto\Regions;
+use Palto\Synonyms;
 use Palto\Url;
 
 class Karman
@@ -142,6 +143,7 @@ class Karman
         $this->templatesEngine->addData([
             'title' => 'Undefined-категории',
             'categories' => $undefinedCategories,
+            'synonyms' => Synonyms::getAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $undefinedCategories)),
             'breadcrumbs' => [],
             'category_url' => '/karman/undefined-ads'
@@ -180,6 +182,7 @@ class Karman
             'title' => 'Категория',
             'category' => $category,
             'categories' => $categories,
+            'synonyms' => Synonyms::getAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), $category->getLevel() + 1),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
@@ -198,6 +201,7 @@ class Karman
             'title' => 'Категории',
             'breadcrumbs' => [],
             'categories' => $categories,
+            'synonyms' => Synonyms::getAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1),
             'category_url' => '/karman/categories'
         ]);
@@ -259,12 +263,15 @@ class Karman
 
     public function updateCategory(int $id)
     {
-        $title = Filter::get($this->getPutParams()['title']);
+        $putParams = $this->getPutParams();
+        $title = Filter::get($putParams['title']);
         \Palto\Categories::update([
             'title' => $title,
-            'url' => Filter::get($this->getPutParams()['url']),
-            'emoji' => Filter::get($this->getPutParams()['emoji'])
+            'url' => Filter::get($putParams['url']),
+            'emoji' => Filter::get($putParams['emoji'])
         ], $id);
+        $synonyms = Filter::getArray(explode(',', $putParams['synonyms']));
+        Categories::addSynonyms($synonyms, $id);
         Flash::add(json_encode([
             'message' => 'Категория <a href="/karman/categories/' . $id . '">"' . $title . '"</a> обновлена',
             'type' => 'success'

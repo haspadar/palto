@@ -7,6 +7,7 @@
         <thead>
         <tr>
             <th>Название</th>
+            <th>Синонимы</th>
         </tr>
         </thead>
         <tbody>
@@ -27,6 +28,9 @@
                             <?=$this->data['ads_counts'][$category->getId()]?>
                         </span>
                     </a>
+                </td>
+                <td>
+                    <?=implode(', ', $this->data['synonyms'][$category->getId()] ?? [])?>
                 </td>
 
             </tr>

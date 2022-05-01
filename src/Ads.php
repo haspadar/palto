@@ -286,4 +286,11 @@ class Ads
     {
         \Palto\Model\Ads::update($updates, $id);
     }
+
+    public static function getUndefinedCount(): int
+    {
+        $categories = Categories::getUndefinedAll();
+
+        return self::getCategoriesAdsCount(array_map(fn(Category $category) => $category->getId(), $categories));
+    }
 }

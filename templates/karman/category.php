@@ -16,6 +16,10 @@ use Palto\Debug;
             <input type="text" class="form-control" name="url" value="<?=$this->data['category']->getUrl()?>">
         </div>
         <div class="mb-3">
+            <label class="form-label">Синонимы (через запятую)</label>
+            <input type="text" class="form-control" name="synonyms" value="<?=implode(', ', $this->data['synonyms'][$this->data['category']->getId()] ?? [])?>">
+        </div>
+        <div class="mb-3">
             <button id="emoji-button" class="btn btn-outline-secondary" type="button"><?=$this->data['category']->getEmoji() ?: 'Emoji'?></button>
             <?php if ($this->data['category']->getEmoji()) :?>
                 <a href="javascript:void(0);" class="small text-danger text-decoration-none remove-emoji" data-id="<?=$this->data['category']->getId()?>">Удалить</a>
@@ -31,6 +35,7 @@ use Palto\Debug;
         <thead>
         <tr>
             <th>Подкатегории</th>
+            <th>Синонимы</th>
         </tr>
         </thead>
         <tbody>
@@ -53,7 +58,9 @@ use Palto\Debug;
                         </span>
                     </a>
                 </td>
-
+                <td>
+                    <?=implode(', ', $this->data['synonyms'][$category->getId()] ?? [])?>
+                </td>
             </tr>
         <?php endforeach;?>
         </tbody>

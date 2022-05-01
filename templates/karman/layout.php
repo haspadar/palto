@@ -48,7 +48,12 @@
                     <?php if (\Palto\Categories::getUndefinedAll()) :?>
                         <li class="nav-item">
                             <a class="nav-link" href="/karman/undefined-categories?cache=0">
-                                <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/undefined-categories', '/karman/undefined-ads'])) :?>fw-bold<?php endif;?>">Undefined</h7>
+                                <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/undefined-categories', '/karman/undefined-ads'])) :?>fw-bold<?php endif;?>">
+                                    Undefined
+                                    <?php if ($count = \Palto\Ads::getUndefinedCount()) : ?>
+                                        <span class="badge bg-secondary"><?= $count ?></span>
+                                    <?php endif; ?>
+                                </h7>
                             </a>
                         </li>
                     <?php endif;?>

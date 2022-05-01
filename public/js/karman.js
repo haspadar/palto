@@ -152,7 +152,8 @@ $(function () {
             data: {
                 title: $(this).find('[name=title]').val(),
                 url: $(this).find('[name=url]').val(),
-                emoji: emoji === 'Emoji' ? '' : emoji
+                emoji: emoji === 'Emoji' ? '' : emoji,
+                synonyms: $(this).find('[name=synonyms]').val(),
             },
             success: function () {
                 document.location = '/karman/categories';

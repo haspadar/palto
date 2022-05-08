@@ -20,7 +20,7 @@
         <?php foreach ($this->data['categories'] as $category) :?>
             <tr>
                 <td>
-                    <a href="<?=$this->data['category_url']?>/<?=$category->getId()?>" class="text-decoration-none">
+                    <a href="<?=$this->data['category_url']?>/<?=$category->getId()?>?cache=0" class="text-decoration-none">
                         <?=$category->getTitle()?>
                         <?=$category->getEmoji()?>
 

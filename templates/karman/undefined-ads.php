@@ -1,8 +1,3 @@
-<?php
-use Palto\Categories;
-use Palto\Category;
-use Palto\Debug;
-?>
 <?php /** @var $this League\Plates\Template\Template */?>
 
 <?php $this->layout('layout'); ?>

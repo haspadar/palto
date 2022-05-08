@@ -182,7 +182,8 @@ $(function () {
         });
     }
 
-    let moveUndefinedModal = new bootstrap.Modal(document.getElementById('moveUndefinedModal'));
+    let modal = document.getElementById('moveUndefinedModal');
+    let moveUndefinedModal = modal ? new bootstrap.Modal(modal) : null;
     $('.move-ad').on('click', function () {
         $('#adId').val($(this).data('adId'));
         $('#adCategoryId').val($(this).data('categoryId'));

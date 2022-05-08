@@ -145,9 +145,9 @@ class Categories extends Model
         return self::getDb()->queryFirstField('SELECT MAX(level) FROM categories') ?: 0;
     }
 
-    public static function findByUrlAll(string $url): array
+    public static function findByUrlAll(string $url, string $orderBy = 'level'): array
     {
-        return self::getDb()->query('SELECT * FROM categories WHERE url LIKE %s ORDER BY level', $url . '%') ?: [];
+        return self::getDb()->query("SELECT * FROM categories WHERE url LIKE %s ORDER BY $orderBy", $url . '%') ?: [];
     }
 
     public static function getRoots(): array

@@ -21,13 +21,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         $title = Parser::getText($adDocument, ['#titletextonly']);
         $text = trim(strtr(strip_tags($adDocument->filter('#postingbody')->html()), ['QR Code Link to This Post' => '']));
         if ($title) {
-            $parentCategory = $this->findParentCategory([$title, mb_substr($text, 0, 200)]);
-            if ($parentCategory && $parentCategory->getLevel() == 2) {
-                $category = $parentCategory;
-            } else {
-                $category = $this->findCategory([$title, mb_substr($text, 0, 200)], $parentCategory);
-            }
-
+            $category = \Palto\Synonyms::findCategory([$title, mb_substr($text, 0, 200)]);
             $priceWithCurrency = Parser::getHtml($adDocument, ['.postingtitletext .price']);
             $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
             $price = $priceWithCurrency ? Parser::filterPrice(mb_substr($priceWithCurrency, 1)) : 0;
@@ -75,26 +69,6 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         $url = $resultRow->filter('h3.result-heading a')->attr('href');
 
         return $url ? new Url($url) : null;
-    }
-
-    private function findParentCategory(array $texts): ?Category
-    {
-        $synonyms = \Palto\Synonyms::getAll();
-        foreach ($synonyms as $categoryId => $categorySynonyms) {
-            foreach ($texts as $text) {
-                for ($length = 3; $length >= 1; $length--) {
-                    if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
-                        foreach ($wordsCombinations as $combination) {
-                            if (in_array($combination, $categorySynonyms)) {
-                                return Categories::getById($categoryId);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return null;
     }
 
     private function getDetails(Crawler $adDocument): array

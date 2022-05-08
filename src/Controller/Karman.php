@@ -17,6 +17,7 @@ use Palto\Plural;
 use Palto\Regions;
 use Palto\Synonyms;
 use Palto\Url;
+use Palto\Validator;
 
 class Karman
 {
@@ -143,7 +144,7 @@ class Karman
         $this->templatesEngine->addData([
             'title' => 'Undefined-категории',
             'categories' => $undefinedCategories,
-            'synonyms' => Synonyms::getAll(),
+            'synonyms' => Synonyms::getGropedAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $undefinedCategories)),
             'breadcrumbs' => [],
             'category_url' => '/karman/undefined-ads'
@@ -182,7 +183,7 @@ class Karman
             'title' => 'Категория',
             'category' => $category,
             'categories' => $categories,
-            'synonyms' => Synonyms::getAll(),
+            'synonyms' => Synonyms::getGropedAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), $category->getLevel() + 1),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
@@ -201,7 +202,7 @@ class Karman
             'title' => 'Категории',
             'breadcrumbs' => [],
             'categories' => $categories,
-            'synonyms' => Synonyms::getAll(),
+            'synonyms' => Synonyms::getGropedAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1),
             'category_url' => '/karman/categories'
         ]);
@@ -221,33 +222,43 @@ class Karman
     {
         $params = $this->getPutParams();
         $adId = intval($params['ad_id']);
-        $error = Ads::moveAd(
+        $error = Validator::validateMoveAd(
             $adId,
             intval($params['category_level_1']),
             Filter::get($params['new_category_level_1'] ?? ''),
-            intval($params['category_level_2'] ?? 0),
             Filter::get($params['new_category_level_2'] ?? ''),
         );
         if ($error) {
             $this->showJsonResponse(['error' => $error]);
         } else {
-            $category = Ads::getById(intval($params['ad_id']))->getCategory();
-            $synonyms = Filter::getSynonyms($params['synonyms'], $category->getId());
-            $addedCount = Categories::addSynonyms($synonyms, $category->getId());
-//            $foundCount = Synonyms::updateUndefinedAds($synonyms, $category->getId());
-            Flash::add(json_encode([
-                'message' => "Объявление $adId перемещено в \"" . $category->getTitle() . "\". "
-                    . ($synonyms
-                        ? Plural::get($addedCount, 'Добавлен', 'Добавлено', 'Добавлено')
-                            . ' '
-                            . $addedCount
-                            . ' '
-                            . Plural::get($addedCount, 'синоним', 'синонима', 'синонимов')
-                            . '.'
-                        : ''
-                    ),
-                'type' => 'success'
-            ]));
+            Ads::moveAd(
+                $adId,
+                intval($params['category_level_1']),
+                Filter::get($params['new_category_level_1'] ?? ''),
+                intval($params['category_level_2'] ?? 0),
+                Filter::get($params['new_category_level_2'] ?? ''),
+            );
+            try {
+                $category = Ads::getById(intval($params['ad_id']))->getCategory();
+                $newSynonyms = Filter::getSynonyms($params['synonyms']);
+                $error = Validator::validateSynonyms($newSynonyms);
+                if (!$error) {
+                    $synonyms = Categories::addSynonyms($newSynonyms, $category->getId());
+                    $foundCount = Synonyms::updateUndefinedAds($synonyms);
+                    Flash::add(json_encode([
+                        'message' => "Объявление $adId перемещено в \""
+                            . $category->getTitle()
+                            . "\". "
+                            . ($foundCount ? 'Обвнолено ещё ' . $foundCount . ' объявлений.' : ''),
+                        'type' => 'success'
+                    ]));
+                }
+
+//                \Palto\Model\Ads::getDb()->rollback();
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
             $this->showJsonResponse(['success' => true]);
         }
     }
@@ -271,9 +282,9 @@ class Karman
             'url' => Filter::get($putParams['url']),
             'emoji' => Filter::get($putParams['emoji'])
         ], $id);
-        $synonyms = Filter::getSynonyms($putParams['synonyms'], $id);
+        $synonyms = Filter::getSynonyms($putParams['synonyms']);
         Categories::addSynonyms($synonyms, $id);
-//        Ads::findBySynonyms()
+//        Ads::findBySynonyms()¡
         Flash::add(json_encode([
             'message' => 'Категория <a href="/karman/categories/' . $id . '">"' . $title . '"</a> обновлена',
             'type' => 'success'

@@ -26,13 +26,13 @@ class Filter
         return array_filter($values);
     }
 
-    public static function getSynonyms(string $values, int $categoryId): array
+    public static function getSynonyms(string $values): array
     {
         $filtered = [];
         $synonyms = self::getArray(explode(',', $values));
         foreach ($synonyms as $synonym) {
-            if ($synonym && !Synonyms::has($synonym, $categoryId)) {
-                $filtered[] = $synonym;
+            if ($synonym) {
+                $filtered[] = mb_strtolower($synonym);
             }
         }
 

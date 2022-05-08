@@ -163,11 +163,11 @@ class Categories
     /**
      * @return Category[]
      */
-    public static function getUndefinedAll(): array
+    public static function getUndefinedAll(string $orderBy = 'level'): array
     {
         return array_map(
             fn($category) => new Category($category),
-            \Palto\Model\Categories::findByUrlAll('undefined')
+            \Palto\Model\Categories::findByUrlAll('undefined', $orderBy)
         );
     }
 
@@ -182,18 +182,20 @@ class Categories
         );
     }
 
-    public static function addSynonyms(array $synonyms, int $id): int
+    /**
+     * @param string[] $synonyms
+     * @param int $id
+     * @return int
+     */
+    public static function addSynonyms(array $synonyms, int $id): array
     {
-        $addedCount = 0;
+        $result = [];
         foreach ($synonyms as $synonym) {
-            $synonym = mb_strtolower($synonym);
-            if ($synonym && !Synonyms::has($synonym, $id)) {
-                Synonyms::add($synonym, $id);
-                $addedCount++;
-            }
+            $id = Synonyms::add($synonym, $id);
+            $result[] = new Synonym(Synonyms::getById($id));
         }
 
-        return $addedCount;
+        return $result;
     }
 
     private static function getChildCategories(array $category): array

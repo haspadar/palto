@@ -43,8 +43,9 @@ use Palto\Debug;
 
                     <div class="mb-3">
                         <label for="categoryLevel1" class="form-label">Категория</label>
+                        <a href="javascript:void(0);" class="add-category-level-1 small">Добавить</a>
                         <select class="form-select" id="categoryLevel1" name="category_level_1">
-                            <?php foreach ($this->data['categories_level_1'] as $categoryLevel1) :?>
+                            <?php foreach ($this->data['categories_level_1'] ?? [] as $categoryLevel1) :?>
                                 <option value="<?=$categoryLevel1['id']?>" <?php if (in_array($categoryLevel1['id'], [$this->data['category']->getId(), $this->data['category']->getParentId()])) :?>selected<?php endif;?>>
                                     <?=$categoryLevel1['title']?>
                                 </option>
@@ -59,9 +60,10 @@ use Palto\Debug;
 
                     <div class="mb-3">
                         <label for="categoryLevel2" class="form-label">Подкатегория</label>
+                        <a href="javascript:void(0);" class="add-category-level-2 small">Добавить</a>
                         <select class="form-select" id="categoryLevel2" name="category_level_2">
                             <?php if ($this->data['category']->getLevel() == 2) :?>
-                                <?php foreach ($this->data['categories_level_2'] as $categoryLevel2) :?>
+                                <?php foreach ($this->data['categories_level_2'] ?? [] as $categoryLevel2) :?>
                                     <?php if ($categoryLevel2['parent_id'] == $this->data['category']->getParentId()) :?>
                                         <option value="<?=$categoryLevel2['id']?>" <?php if ($categoryLevel2['id'] == $this->data['category']->getId()) :?>selected<?php endif;?>>
                                             <?=$categoryLevel2['title']?>

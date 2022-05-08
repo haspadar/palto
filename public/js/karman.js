@@ -187,9 +187,16 @@ $(function () {
         $('#adId').val($(this).data('adId'));
         $('#adCategoryId').val($(this).data('categoryId'));
         $('#adCategoryParentId').val($(this).data('categoryParentId'));
+
+        $('#categoryLevel1').parents('div:first').removeClass('d-none');
+        $('#newCategoryLevel1').parents('div:first').addClass('d-none');
+        $('#categoryLevel2').parents('div:first').removeClass('d-none');
+        $('#newCategoryLevel2').parents('div:first').addClass('d-none');
+
         updateCategoriesLevel1();
         updateCategoriesLevel2($(this).data('categoryParentId'));
         $('#moveUndefinedModal').find('.alert').addClass('d-none');
+
         moveUndefinedModal.show();
     });
 
@@ -225,6 +232,17 @@ $(function () {
         });
     });
 
+    $('.add-category-level-1').on('click', function () {
+        $('#categoryLevel1').parents('div:first').addClass('d-none');
+        $('#categoryLevel1').val(0);
+        $('#newCategoryLevel1').parents('div:first').removeClass('d-none');
+    });
+    $('.add-category-level-2').on('click', function () {
+        $('#categoryLevel2').parents('div:first').addClass('d-none');
+        $('#categoryLevel2').val(0);
+        $('#newCategoryLevel2').parents('div:first').removeClass('d-none');
+    });
+
     $('#categoryLevel2').on('change', function () {
         let categoryLevel2 = $(this).val();
         if (categoryLevel2) {
@@ -243,7 +261,6 @@ $(function () {
             success: function (response) {
                 let $categoryLevel1 = $('#categoryLevel1');
                 $categoryLevel1.find('option[value!="0"]').remove();
-                $categoryLevel1.append('<option value="">Новая</option>');
                 $.each(response, function (key, categoryLevel1) {
                     let isSelected = $('#adCategoryId').val() == categoryLevel1.id
                         || $('#adCategoryParentId').val() == categoryLevel1.id;
@@ -269,8 +286,10 @@ $(function () {
             success: function (response) {
                 let $categoryLevel2 = $('#categoryLevel2');
                 $categoryLevel2.find('option').remove();
+                let $newCategoryLevel2 = $('#newCategoryLevel2').parents('div:first');
                 if (response.length) {
-                    $categoryLevel2.append('<option value="">Новая</option>');
+                    $categoryLevel2.parents('div:first').addClass('d-none');
+                    $newCategoryLevel2.addClass('d-none');
                     $categoryLevel2.parents('div:first').removeClass('d-none');
                     $.each(response, function (key, categoryLevel2) {
                         let isSelected = $('#adCategoryId').val() == categoryLevel2.id;
@@ -285,6 +304,7 @@ $(function () {
                     });
                 } else {
                     $categoryLevel2.parents('div:first').addClass('d-none');
+                    $newCategoryLevel2.removeClass('d-none');
                 }
             }
         });

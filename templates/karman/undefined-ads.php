@@ -42,8 +42,15 @@ use Palto\Debug;
                     <input type="hidden" id="adCategoryParentId">
 
                     <div class="mb-3">
-                        <label for="categoryLevel1" class="form-label">Категория</label>
-                        <a href="javascript:void(0);" class="add-category-level-1 small">Добавить</a>
+                        <div class="d-flex justify-content-between">
+                            <label for="categoryLevel1" class="form-label">Категория</label>
+                            <a href="javascript:void(0);" class="btn btn-sm add-category-level-1 small">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                                </svg>
+                                Добавить
+                            </a>
+                        </div>
                         <select class="form-select" id="categoryLevel1" name="category_level_1">
                             <?php foreach ($this->data['categories_level_1'] ?? [] as $categoryLevel1) :?>
                                 <option value="<?=$categoryLevel1['id']?>" <?php if (in_array($categoryLevel1['id'], [$this->data['category']->getId(), $this->data['category']->getParentId()])) :?>selected<?php endif;?>>
@@ -59,8 +66,17 @@ use Palto\Debug;
                     </div>
 
                     <div class="mb-3">
-                        <label for="categoryLevel2" class="form-label">Подкатегория</label>
-                        <a href="javascript:void(0);" class="add-category-level-2 small">Добавить</a>
+                        <div class="d-flex justify-content-between">
+                            <label for="categoryLevel2" class="form-label">Подкатегория</label>
+                            <a href="javascript:void(0);" class="btn btn-sm add-category-level-2 small">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                                </svg>
+                                Добавить
+                            </a>
+                        </div>
+
+
                         <select class="form-select" id="categoryLevel2" name="category_level_2">
                             <?php if ($this->data['category']->getLevel() == 2) :?>
                                 <?php foreach ($this->data['categories_level_2'] ?? [] as $categoryLevel2) :?>

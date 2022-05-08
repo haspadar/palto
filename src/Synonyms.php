@@ -133,6 +133,7 @@ class Synonyms
     /**
      * @param Ad $ad
      * @param Synonym[] $synonyms
+     * @param string $adField
      * @return bool
      */
     private static function hasAdSynonyms(Ad $ad, array $synonyms, string $adField): bool

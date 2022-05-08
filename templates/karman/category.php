@@ -29,8 +29,7 @@ use Palto\Debug;
         <button type="submit" class="btn btn-primary" data-id="<?=$this->data['category']->getId()?>">Сохранить</button>
     </form>
 
-<?php $categories = Categories::getLiveCategories($this->data['category']);?>
-<?php if ($categories) :?>
+<?php if ($this->data['categories']) :?>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -39,12 +38,6 @@ use Palto\Debug;
         </tr>
         </thead>
         <tbody>
-
-        <?php
-        /**
-         * @var $this->data['category'] Category
-         */
-        ?>
 
         <?php foreach ($this->data['categories'] as $category) :?>
             <tr>

@@ -32,7 +32,10 @@ class Karman
         $this->url = new Url();
         $this->templatesEngine->addData([
             'flash' => Flash::receive(),
-            'url' => $this->url
+            'url' => $this->url,
+            'undefined_ads_count' => \Palto\Ads::getUndefinedCount(),
+            'undefined_categories' => \Palto\Categories::getUndefinedAll('level ASC'),
+            'actual_complaints_count' => \Palto\Complaints::getActualComplaintsCount()
         ]);
     }
 
@@ -236,27 +239,22 @@ class Karman
                 intval($params['category_level_2'] ?? 0),
                 Filter::get($params['new_category_level_2'] ?? ''),
             );
-            try {
-                $category = Ads::getById(intval($params['ad_id']))->getCategory();
-                $newSynonyms = Filter::getSynonyms($params['synonyms']);
-                $error = Validator::validateSynonyms($newSynonyms);
-                if (!$error) {
-                    $synonyms = $category->addSynonyms($newSynonyms);
-                    foreach (['title', 'text'] as $adField) {
-                        $movedAdsCount = Synonyms::moveCategoryAds($category, $synonyms, $adField);
-                    }
-
-                    Flash::add(json_encode([
-                        'message' => "Объявление $adId перемещено в \""
-                            . $category->getTitle()
-                            . "\". "
-                            . ($movedAdsCount ? 'Найдено ещё ' . $movedAdsCount . ' объявлений.' : ''),
-                        'type' => 'success'
-                    ]));
+            $category = Ads::getById(intval($params['ad_id']))->getCategory();
+            $newSynonyms = Filter::getSynonyms($params['synonyms']);
+            $error = Validator::validateSynonyms($newSynonyms);
+            if (!$error) {
+                $synonyms = $category->addSynonyms($newSynonyms);
+                foreach (['title', 'text'] as $adField) {
+                    $movedAdsCount = Synonyms::moveCategoryAds($category, $synonyms, $adField);
                 }
 
-            } catch (\Exception $e) {
-                throw $e;
+                Flash::add(json_encode([
+                    'message' => "Объявление $adId перемещено в \""
+                        . $category->getTitle()
+                        . "\". "
+                        . ($movedAdsCount ? 'Найдено ещё ' . $movedAdsCount . ' объявлений.' : ''),
+                    'type' => 'success'
+                ]));
             }
 
             $this->showJsonResponse(['success' => true]);

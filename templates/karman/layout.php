@@ -31,8 +31,8 @@
                         <a class="nav-link" href="/karman/complaints?cache=0">
                             <h7 class="<?php if ($this->data['url']->getPath() == '/karman/complaints') : ?>fw-bold<?php endif; ?>">
                                 Жалобы
-                                <?php if ($count = \Palto\Complaints::getActualComplaintsCount()) : ?>
-                                    <span class="badge bg-warning"><?= $count ?></span>
+                                <?php if ($this->data['actual_complaints_count']) : ?>
+                                    <span class="badge bg-warning"><?= $this->data['actual_complaints_count'] ?></span>
                                 <?php endif; ?>
                             </h7>
                         </a>
@@ -45,13 +45,13 @@
                         </a>
                     </li>
 
-                    <?php if (\Palto\Categories::getUndefinedAll('level ASC')) :?>
+                    <?php if ($this->data['undefined_categories']) :?>
                         <li class="nav-item">
                             <a class="nav-link" href="/karman/undefined-categories?cache=0">
                                 <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/undefined-categories', '/karman/undefined-ads'])) :?>fw-bold<?php endif;?>">
                                     Undefined
-                                    <?php if ($count = \Palto\Ads::getUndefinedCount()) : ?>
-                                        <span class="badge bg-secondary"><?= $count ?></span>
+                                    <?php if ($this->data['undefined_ads_count']) : ?>
+                                        <span class="badge bg-secondary"><?= $this->data['undefined_ads_count'] ?></span>
                                     <?php endif; ?>
                                 </h7>
                             </a>

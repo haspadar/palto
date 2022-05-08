@@ -17,7 +17,7 @@ use Palto\Debug;
         </div>
         <div class="mb-3">
             <label class="form-label">Синонимы (через запятую)</label>
-            <input type="text" class="form-control" name="synonyms" value="<?=implode(', ', $this->data['synonyms'][$this->data['category']->getId()] ?? [])?>">
+            <input type="text" class="form-control" name="synonyms" value="<?=$this->data['category']->getGroupedSynonyms()?>">
         </div>
         <div class="mb-3">
             <button id="emoji-button" class="btn btn-outline-secondary" type="button"><?=$this->data['category']->getEmoji() ?: 'Emoji'?></button>
@@ -59,7 +59,7 @@ use Palto\Debug;
                     </a>
                 </td>
                 <td>
-                    <?=implode(', ', $this->data['synonyms'][$category->getId()] ?? [])?>
+                    <?=$category->getGroupedSynonyms()?>
                 </td>
             </tr>
         <?php endforeach;?>

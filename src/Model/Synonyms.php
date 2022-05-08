@@ -2,6 +2,7 @@
 
 namespace Palto\Model;
 
+use Palto\Debug;
 use Palto\Synonym;
 
 class Synonyms extends Model
@@ -9,6 +10,11 @@ class Synonyms extends Model
     public static function has(Synonym $synonym, int $categoryId): bool
     {
         return (bool)self::getDb()->queryFirstRow('SELECT * FROM synonyms WHERE title = %s AND category_id = %d', $synonym->getTitle(), $categoryId);
+    }
+
+    public static function remove(string $title, int $categoryId): void
+    {
+        self::getDb()->delete('synonyms', 'title = %s AND category_id = %d', $title, $categoryId);
     }
 
     public static function add(string $title, int $categoryId): int
@@ -34,5 +40,10 @@ class Synonyms extends Model
     public static function getByTitle(string $title): array
     {
         return self::getDb()->queryFirstRow('SELECT * FROM synonyms WHERE title = %s', $title) ?: [];
+    }
+
+    public static function getCategoryAll(int $categoryId): array
+    {
+        return self::getDb()->query('SELECT * FROM synonyms WHERE category_id = %d ORDER BY title DESC', $categoryId) ?: [];
     }
 }

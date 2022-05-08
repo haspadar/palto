@@ -163,7 +163,7 @@ class Categories
     /**
      * @return Category[]
      */
-    public static function getUndefinedAll(string $orderBy = 'level'): array
+    public static function getUndefinedAll(string $orderBy = 'level DESC'): array
     {
         return array_map(
             fn($category) => new Category($category),
@@ -180,33 +180,5 @@ class Categories
             fn($category) => new Category($category),
             \Palto\Model\Categories::getRoots()
         );
-    }
-
-    /**
-     * @param string[] $synonyms
-     * @param int $id
-     * @return int
-     */
-    public static function addSynonyms(array $synonyms, int $id): array
-    {
-        $result = [];
-        foreach ($synonyms as $synonym) {
-            $id = Synonyms::add($synonym, $id);
-            $result[] = new Synonym(Synonyms::getById($id));
-        }
-
-        return $result;
-    }
-
-    private static function getChildCategories(array $category): array
-    {
-        $childrenIds = [];
-        $nextLevelCategoriesIds = [$category['id']];
-        $level = $category['level'];
-        while ($nextLevelCategoriesIds = Model\Categories::getChildrenIds($nextLevelCategoriesIds, ++$level)) {
-            $childrenIds = array_merge($nextLevelCategoriesIds, $childrenIds);
-        }
-
-        return Model\Categories::getCategoriesByIds($childrenIds);
     }
 }

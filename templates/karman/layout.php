@@ -45,7 +45,7 @@
                         </a>
                     </li>
 
-                    <?php if (\Palto\Categories::getUndefinedAll()) :?>
+                    <?php if (\Palto\Categories::getUndefinedAll('level ASC')) :?>
                         <li class="nav-item">
                             <a class="nav-link" href="/karman/undefined-categories?cache=0">
                                 <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/undefined-categories', '/karman/undefined-ads'])) :?>fw-bold<?php endif;?>">

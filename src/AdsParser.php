@@ -71,11 +71,11 @@ abstract class AdsParser
         $scheduler = new Scheduler(Config::getEnv());
         $scheduler->run(
             function () use ($pid) {
-                $leaf = $this->getTreeLeafs();
-                if ($leaf) {
-                    shuffle($leaf);
-                    $leafsCount = count($leaf);
-                    foreach ($leaf as $leafKey => $leaf) {
+                $leafs = $this->getTreeLeafs();
+                if ($leafs) {
+                    shuffle($leafs);
+                    $leafsCount = count($leafs);
+                    foreach ($leafs as $leafKey => $leaf) {
                         $logContent = [
                             'iteration' => ($leafKey + 1) . '/' . $leafsCount
                         ];
@@ -149,34 +149,5 @@ abstract class AdsParser
         } else {
             Logger::warning('Ignored next page number ' . $nextPageNumber);
         }
-    }
-
-    public function findCategory(array $texts, ?Category $parent): ?Category
-    {
-        foreach ($texts as $text) {
-            for ($length = 5; $length >= 1; $length--) {
-                if ($wordsCombinations = $this->getWordsCombinations($text, $length)) {
-                    foreach ($wordsCombinations as $combinationKey => $combination) {
-                        if ($found = Categories::findByTitle($combination, $parent)) {
-                            return $found;
-                        }
-                    }
-                }
-            }
-        }
-
-        return Categories::createUndefined($parent);
-    }
-
-    protected function getWordsCombinations(string $text, int $length): array
-    {
-        $combinations = [];
-        $text = mb_strtolower($text);
-        $words = array_values(array_filter(explode(' ', strtr($text, ['.' => '', ',' => '', '!' => '']))));
-        for ($offset = 0; $offset <= count($words) - $length; $offset++) {
-            $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));
-        }
-
-        return $combinations;
     }
 }

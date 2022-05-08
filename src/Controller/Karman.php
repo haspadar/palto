@@ -140,7 +140,7 @@ class Karman
 
     public function showUndefinedCategories()
     {
-        $undefinedCategories = \Palto\Categories::getUndefinedAll();
+        $undefinedCategories = \Palto\Categories::getUndefinedAll('level ASC');
         $this->templatesEngine->addData([
             'title' => 'Undefined-категории',
             'categories' => $undefinedCategories,
@@ -183,7 +183,6 @@ class Karman
             'title' => 'Категория',
             'category' => $category,
             'categories' => $categories,
-            'synonyms' => Synonyms::getGropedAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), $category->getLevel() + 1),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
@@ -202,7 +201,6 @@ class Karman
             'title' => 'Категории',
             'breadcrumbs' => [],
             'categories' => $categories,
-            'synonyms' => Synonyms::getGropedAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1),
             'category_url' => '/karman/categories'
         ]);
@@ -243,18 +241,17 @@ class Karman
                 $newSynonyms = Filter::getSynonyms($params['synonyms']);
                 $error = Validator::validateSynonyms($newSynonyms);
                 if (!$error) {
-                    $synonyms = Categories::addSynonyms($newSynonyms, $category->getId());
-                    $foundCount = Synonyms::updateUndefinedAds($synonyms);
+                    $synonyms = $category->addSynonyms($newSynonyms);
+                    $movedAdsCount = Synonyms::moveCategoryAds($category, $synonyms);
                     Flash::add(json_encode([
                         'message' => "Объявление $adId перемещено в \""
                             . $category->getTitle()
                             . "\". "
-                            . ($foundCount ? 'Обвнолено ещё ' . $foundCount . ' объявлений.' : ''),
+                            . ($movedAdsCount ? 'Найдено ещё ' . $movedAdsCount . ' объявлений.' : ''),
                         'type' => 'success'
                     ]));
                 }
 
-//                \Palto\Model\Ads::getDb()->rollback();
             } catch (\Exception $e) {
                 throw $e;
             }
@@ -277,16 +274,20 @@ class Karman
     {
         $putParams = $this->getPutParams();
         $title = Filter::get($putParams['title']);
-        \Palto\Categories::update([
+        $category = Categories::getById($id);
+        $category->update([
             'title' => $title,
             'url' => Filter::get($putParams['url']),
             'emoji' => Filter::get($putParams['emoji'])
-        ], $id);
-        $synonyms = Filter::getSynonyms($putParams['synonyms']);
-        Categories::addSynonyms($synonyms, $id);
-//        Ads::findBySynonyms()¡
+        ]);
+        $movedAdsCount = Synonyms::updateCategory($category, Filter::getSynonyms($putParams['synonyms']));
         Flash::add(json_encode([
-            'message' => 'Категория <a href="/karman/categories/' . $id . '">"' . $title . '"</a> обновлена',
+            'message' => 'Категория <a href="/karman/categories/'
+                . $id
+                . '">"'
+                . $title
+                . '"</a> обновлена.'
+                . ($movedAdsCount ? ' Перемещено ' . $movedAdsCount . ' объявлений.' : ''),
             'type' => 'success'
         ]));
         $this->showJsonResponse(['success' => true]);
@@ -294,9 +295,10 @@ class Karman
 
     public function removeEmoji(int $id)
     {
-        \Palto\Categories::update([
+        $category = Categories::getById($id);
+        $category->update([
             'emoji' => ''
-        ], $id);
+        ]);
         Flash::add(json_encode([
             'message' => 'Emoji удалена',
             'type' => 'success'

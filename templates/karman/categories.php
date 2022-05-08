@@ -30,7 +30,7 @@
                     </a>
                 </td>
                 <td>
-                    <?=implode(', ', $this->data['synonyms'][$category->getId()] ?? [])?>
+                    <?=$category->getGroupedSynonyms()?>
                 </td>
 
             </tr>

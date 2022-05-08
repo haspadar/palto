@@ -6,7 +6,7 @@ class Synonyms
 {
     public static function getGropedAll(): array
     {
-        $synonyms = \Palto\Model\Synonyms::getAll();
+        $synonyms = Model\Synonyms::getAll();
         $grouped = [];
         foreach ($synonyms as $synonym) {
             $grouped[$synonym['category_id']][] = new Synonym($synonym);
@@ -36,51 +36,6 @@ class Synonyms
         return Categories::createUndefined();
     }
 
-    public static function updateUndefinedAds(array $synonyms): int
-    {
-        $updatedCount = 0;
-        foreach ([fn(Ad $ad) => $ad->getTitle(), fn(Ad $ad) => $ad->getText()] as $callback) {
-            $undefinedCategories = Categories::getUndefinedAll('level DESC');
-            foreach ($undefinedCategories as $undefinedCategory) {
-                $limit = 1000;
-                $offset = 0;
-                foreach (Ads::getAds(null, $undefinedCategory, $limit, $offset) as $ad) {
-                    if (self::hasInText($synonyms, $callback($ad))) {
-                        Ads::update([
-                            'category_id' => $synonyms[0]->getCategory()->getId(),
-                            'category_level_1_id' => $synonyms[0]->getCategory()->getLevel() == 1
-                                ? $synonyms[0]->getCategory()->getId()
-                                : $synonyms[0]->getCategory()->getParentId(),
-                            'category_level_2_id' => $synonyms[0]->getCategory()->getLevel() == 2
-                                ? $synonyms[0]->getCategory()->getId()
-                                : null
-                        ], $ad->getId());
-                        $updatedCount++;
-                    }
-
-                    $offset += $limit;
-                }
-            }
-        }
-
-        return $updatedCount;
-    }
-
-    public static function hasInText(array $synonyms, string $text): bool
-    {
-        for ($length = 5; $length >= 1; $length--) {
-            if ($wordsCombinations = self::getWordsCombinations(mb_substr($text, 0, 200), $length)) {
-                foreach ($wordsCombinations as $combination) {
-                    if (in_array($combination, array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms))) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     private static function getWordsCombinations(string $text, int $length): array
     {
         $combinations = [];
@@ -91,5 +46,116 @@ class Synonyms
         }
 
         return $combinations;
+    }
+
+    public static function findAndMoveAds(): int
+    {
+        $movedAdsCount = 0;
+        $gropedSynonyms = Synonyms::getGropedAll();
+        $iterator = 0;
+        foreach ($gropedSynonyms as $categoryId => $synonyms) {
+            $toCategory = Categories::getById($categoryId);
+            Logger::debug('Поиск по синонимам "'
+                . $toCategory->groupSynonyms($synonyms)
+                . '" ('
+                . (++$iterator)
+                . '/'
+                . count($gropedSynonyms)
+                . ')'
+            );
+            $movedAdsCount += self::moveCategoryAds($toCategory, $synonyms);
+        }
+        
+        return $movedAdsCount;
+    }
+    
+    public static function updateCategory(Category $category, array $synonyms): int
+    {
+        $existsSynonyms = Model\Synonyms::getCategoryAll($category->getId());
+        $removableSynonyms = array_diff($existsSynonyms, $synonyms);
+        foreach ($removableSynonyms as $removableSynonym) {
+            Model\Synonyms::remove($removableSynonym, $category->getId());
+        }
+
+        $addingSynonyms = array_diff($synonyms, $existsSynonyms);
+        $addedSynonyms = [];
+        foreach ($addingSynonyms as $addingSynonym) {
+            $id = Model\Synonyms::add($addingSynonym, $category->getId());
+            $addedSynonyms[] = self::getById($id);
+        }
+
+        return self::moveCategoryAds($category, $addedSynonyms);
+    }
+
+    private static function getById(int $id): Synonym
+    {
+        return new Synonym(Model\Synonyms::getById($id));
+    }
+
+    /**
+     * @param Category $toCategory
+     * @param Synonym[] $synonyms
+     * @return int
+     */
+    public static function moveCategoryAds(Category $toCategory, array $synonyms): int
+    {
+        $movedAdsCount = 0;
+        if ($synonyms) {
+            $categories = Categories::getUndefinedAll();
+            foreach ($categories as $key => $category) {
+                $limit = 1000;
+                $offset = 0;
+                Logger::debug('Поиск объявлений в "' . $category->getTitle() . '" (' . ($key + 1) . '/' . count($categories) . ')');
+                while ($ads = Ads::getAds(null, $category, $limit, $offset)) {
+                    foreach ($ads as $ad) {
+                        if (self::hasAdSynonyms($ad, $synonyms)) {
+                            Logger::debug('Найдено объявление!');
+                            self::moveAd($ad, $toCategory);
+                            $movedAdsCount++;
+                        }
+                    }
+
+                    $offset += $limit;
+                }
+            }   
+        }
+
+        return $movedAdsCount;
+    }
+
+    /**
+     * @param Ad $ad
+     * @param Synonym[] $synonyms
+     * @return bool
+     */
+    private static function hasAdSynonyms(Ad $ad, array $synonyms): bool
+    {
+        $spacesCount = max(array_map(fn(Synonym $synonym) => $synonym->getSpacesCount(), $synonyms));
+        for ($length = $spacesCount + 1; $length >= 1; $length--) {
+            foreach ([$ad->getTitle(), $ad->getText()] as $text) {
+                if ($wordsCombinations = self::getWordsCombinations(mb_substr($text, 0, 200), $length)) {
+                    foreach ($wordsCombinations as $combination) {
+                        if (in_array($combination, array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms))) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static function moveAd(Ad $ad, Category $category): void
+    {
+        Ads::update([
+            'category_id' => $category->getId(),
+            'category_level_1_id' => $category->getLevel() == 1
+                ? $category->getId()
+                : $category->getParentId(),
+            'category_level_2_id' => $category->getLevel() == 2
+                ? $category->getId()
+                : null
+        ], $ad->getId());
     }
 }

@@ -242,7 +242,10 @@ class Karman
                 $error = Validator::validateSynonyms($newSynonyms);
                 if (!$error) {
                     $synonyms = $category->addSynonyms($newSynonyms);
-                    $movedAdsCount = Synonyms::moveCategoryAds($category, $synonyms);
+                    foreach (['title', 'text'] as $adField) {
+                        $movedAdsCount = Synonyms::moveCategoryAds($category, $synonyms, $adField);
+                    }
+
                     Flash::add(json_encode([
                         'message' => "Объявление $adId перемещено в \""
                             . $category->getTitle()

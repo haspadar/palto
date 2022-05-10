@@ -54,6 +54,8 @@ class Synonyms
      */
     public static function findAndMoveAds(array $categories): int
     {
+        $executionTime = new ExecutionTime();
+        $executionTime->start();
         $movedAdsCount = 0;
         $gropedSynonyms = Synonyms::getGropedAll();
         $iterator = 0;
@@ -71,6 +73,9 @@ class Synonyms
                 $movedAdsCount += self::moveCategoryAds($toCategory, $synonyms, $adField, $categories);
             }
         }
+
+        $executionTime->end();
+        Logger::info('Moved ' . $movedAdsCount . ' ads for ' . $executionTime->get());
         
         return $movedAdsCount;
     }

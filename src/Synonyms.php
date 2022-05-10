@@ -48,7 +48,11 @@ class Synonyms
         return $combinations;
     }
 
-    public static function findAndMoveAds(): int
+    /**
+     * @param Category[] $categories
+     * @return int
+     */
+    public static function findAndMoveAds(array $categories): int
     {
         $movedAdsCount = 0;
         $gropedSynonyms = Synonyms::getGropedAll();
@@ -64,14 +68,14 @@ class Synonyms
                     . count($gropedSynonyms)
                     . ')'
                 );
-                $movedAdsCount += self::moveCategoryAds($toCategory, $synonyms, $adField);
+                $movedAdsCount += self::moveCategoryAds($toCategory, $synonyms, $adField, $categories);
             }
         }
         
         return $movedAdsCount;
     }
     
-    public static function updateCategory(Category $category, array $synonyms): int
+    public static function updateCategory(Category $category, array $synonyms): void
     {
         $existsSynonyms = Model\Synonyms::getCategoryAll($category->getId());
         $removableSynonyms = array_diff($existsSynonyms, $synonyms);
@@ -80,18 +84,9 @@ class Synonyms
         }
 
         $addingSynonyms = array_diff($synonyms, $existsSynonyms);
-        $addedSynonyms = [];
         foreach ($addingSynonyms as $addingSynonym) {
-            $id = Model\Synonyms::add($addingSynonym, $category->getId());
-            $addedSynonyms[] = self::getById($id);
+            Model\Synonyms::add($addingSynonym, $category->getId());
         }
-
-        $movedAdsCount = 0;
-        foreach (['title', 'text'] as $adField) {
-            $movedAdsCount += self::moveCategoryAds($category, $addedSynonyms, $adField);
-        }
-
-        return $movedAdsCount;
     }
 
     private static function getById(int $id): Synonym
@@ -102,13 +97,14 @@ class Synonyms
     /**
      * @param Category $toCategory
      * @param Synonym[] $synonyms
+     * @param string $adField
+     * @param Category[] $categories
      * @return int
      */
-    public static function moveCategoryAds(Category $toCategory, array $synonyms, string $adField): int
+    public static function moveCategoryAds(Category $toCategory, array $synonyms, string $adField, array $categories): int
     {
         $movedAdsCount = 0;
         if ($synonyms) {
-            $categories = Categories::getUndefinedAll();
             foreach ($categories as $key => $category) {
                 $limit = 1000;
                 $offset = 0;

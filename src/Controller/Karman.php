@@ -243,16 +243,11 @@ class Karman
             $newSynonyms = Filter::getSynonyms($params['synonyms']);
             $error = Validator::validateSynonyms($newSynonyms);
             if (!$error) {
-                $synonyms = $category->addSynonyms($newSynonyms);
-                foreach (['title', 'text'] as $adField) {
-                    $movedAdsCount = Synonyms::moveCategoryAds($category, $synonyms, $adField);
-                }
-
+                $category->addSynonyms($newSynonyms);
                 Flash::add(json_encode([
                     'message' => "Объявление $adId перемещено в \""
                         . $category->getTitle()
-                        . "\". "
-                        . ($movedAdsCount ? 'Найдено ещё ' . $movedAdsCount . ' объявлений.' : ''),
+                        . "\". ",
                     'type' => 'success'
                 ]));
             }
@@ -281,14 +276,13 @@ class Karman
             'url' => Filter::get($putParams['url']),
             'emoji' => Filter::get($putParams['emoji'])
         ]);
-        $movedAdsCount = Synonyms::updateCategory($category, Filter::getSynonyms($putParams['synonyms']));
+        Synonyms::updateCategory($category, Filter::getSynonyms($putParams['synonyms']));
         Flash::add(json_encode([
             'message' => 'Категория <a href="/karman/categories/'
                 . $id
                 . '">"'
                 . $title
-                . '"</a> обновлена.'
-                . ($movedAdsCount ? ' Перемещено ' . $movedAdsCount . ' объявлений.' : ''),
+                . '"</a> обновлена.',
             'type' => 'success'
         ]));
         $this->showJsonResponse(['success' => true]);

@@ -5,8 +5,8 @@ use Palto\Categories;
 
 require_once __DIR__ . '/autoload_require_composer.php';
 
-if (Categories::getLiveCategories()) {
-    \Palto\Synonyms::findAndMoveAds(Categories::getUndefinedAll());
+if (Categories::getUndefinedAll()) {
+    \Palto\Synonyms::findAndMoveAds(Categories::getLiveCategories());
 } else {
     \Palto\Logger::warning('Undefined categories not found');
 }

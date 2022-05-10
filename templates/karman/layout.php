@@ -39,7 +39,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/categories?cache=0">
-                            <h7 class="<?php if ($this->data['url']->getPath() == '/karman/categories') : ?>fw-bold<?php endif; ?>">
+                            <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/categories', '/karman/ads'])) : ?>fw-bold<?php endif; ?>">
                                 Категории
                             </h7>
                         </a>
@@ -48,7 +48,7 @@
                     <?php if ($this->data['undefined_categories']) :?>
                         <li class="nav-item">
                             <a class="nav-link" href="/karman/undefined-categories?cache=0">
-                                <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/undefined-categories', '/karman/undefined-ads'])) :?>fw-bold<?php endif;?>">
+                                <h7 class="<?php if ($this->data['url']->getPath() == '/karman/undefined-categories') :?>fw-bold<?php endif;?>">
                                     Undefined
                                     <?php if ($this->data['undefined_ads_count']) : ?>
                                         <span class="badge bg-secondary"><?= $this->data['undefined_ads_count'] ?></span>

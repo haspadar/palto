@@ -7,6 +7,7 @@
         <thead>
         <tr>
             <th>Название</th>
+            <th>Объявления</th>
             <th>Синонимы</th>
         </tr>
         </thead>
@@ -20,11 +21,14 @@
         <?php foreach ($this->data['categories'] as $category) :?>
             <tr>
                 <td>
-                    <a href="<?=$this->data['category_url']?>/<?=$category->getId()?>?cache=0" class="text-decoration-none">
+                    <a href="/karman/categories/<?=$category->getId()?>?cache=0" class="text-decoration-none">
                         <?=$category->getTitle()?>
                         <?=$category->getEmoji()?>
-
-                        <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
+                    </a>
+                </td>
+                <td>
+                    <a href="/karman/ads/<?=$category->getId()?>?cache=0">
+                        <span class="badge bg-primary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
                             <?=$this->data['ads_counts'][$category->getId()] ?? 0?>
                         </span>
                     </a>

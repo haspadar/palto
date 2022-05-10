@@ -40,8 +40,7 @@ class Categories
         $rows = Model\Categories::getChildren($ids, $limit);
         $children = [];
         foreach ($rows as $row) {
-            $category = new Category($row);
-            $children[$category->getParentId()][] = $category;
+            $children[(new Category($row))->getParentId()][] = new Category($row);
         }
 
         return $children;
@@ -78,7 +77,7 @@ class Categories
     /**
      * @param Category|null $parentCategory
      * @param Region|null $region
-     * @param $count
+     * @param int $count
      * @return Category[]
      */
     public static function getLiveCategories(?Category $parentCategory = null, ?Region $region = null, int $count = 0): array

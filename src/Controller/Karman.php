@@ -2,9 +2,11 @@
 
 namespace Palto\Controller;
 
+use Exception;
 use League\Plates\Engine;
 use League\Plates\Extension\Asset;
 use Palto\Ads;
+use Palto\Auth;
 use Palto\Categories;
 use Palto\Category;
 use Palto\Cli;
@@ -26,15 +28,15 @@ class Karman
 
     public function __construct()
     {
-        \Palto\Auth::check();
+        Auth::check();
         $this->templatesEngine = new Engine(Directory::getKarmanTemplatesDirectory());
         $this->templatesEngine->loadExtension(new Asset(Directory::getPublicDirectory(), false));
         $this->url = new Url();
         $this->templatesEngine->addData([
             'flash' => Flash::receive(),
             'url' => $this->url,
-            'undefined_ads_count' => \Palto\Ads::getUndefinedCount(),
-            'undefined_categories' => \Palto\Categories::getUndefinedAll('level ASC'),
+            'undefined_ads_count' => Ads::getUndefinedCount(),
+            'undefined_categories' => Categories::getUndefinedAll('level ASC'),
             'actual_complaints_count' => \Palto\Complaints::getActualComplaintsCount()
         ]);
     }
@@ -63,7 +65,7 @@ class Karman
         $complaint = \Palto\Complaints::getComplaint($id);
         $this->templatesEngine->addData([
             'complaint' => $complaint,
-            'ad' => \Palto\Ads::getById($complaint['id']),
+            'ad' => Ads::getById($complaint['id']),
             'title' => 'Жалоба #' . $complaint['id'],
             'breadcrumbs' => [[
                 'title' => 'Жалобы',
@@ -117,7 +119,7 @@ class Karman
                     'type' => 'success'
                 ]));
                 $this->showJsonResponse(['success' => true]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->showJsonResponse(['error' => $e->getTraceAsString()]);
             }
         } else {
@@ -143,21 +145,20 @@ class Karman
 
     public function showUndefinedCategories()
     {
-        $undefinedCategories = \Palto\Categories::getUndefinedAll('level ASC');
+        $undefinedCategories = Categories::getUndefinedAll('level ASC');
         $this->templatesEngine->addData([
             'title' => 'Undefined-категории',
             'categories' => $undefinedCategories,
             'synonyms' => Synonyms::getGropedAll(),
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $undefinedCategories)),
             'breadcrumbs' => [],
-            'category_url' => '/karman/undefined-ads'
         ]);
         echo $this->templatesEngine->make('categories');
     }
 
-    public function showUndefinedAds(int $id)
+    public function showAds(int $id)
     {
-        $category = \Palto\Categories::getById($id);
+        $category = Categories::getById($id);
         $this->templatesEngine->addData([
             'title' => 'Объявления ' . $category->getTitle(),
             'category' => $category,
@@ -168,25 +169,28 @@ class Karman
             ]], [[
                 'title' => 'Категория "' . $category->getTitle() . '"',
             ]]),
-            'ads_count' => \Palto\Ads::getCategoriesAdsCount([$category->getId()])
+            'ads_count' => Ads::getCategoriesAdsCount([$category->getId()])
         ]);
-        echo $this->templatesEngine->make('undefined-ads');
+        echo $this->templatesEngine->make('ads');
     }
 
     public function showCategory(int $id)
     {
-        $category = \Palto\Categories::getById($id);
+        $category = Categories::getById($id);
         $parents = $category->getParents();
         $parentsUrls = array_map(fn(Category $parent) => [
             'title' => $parent->getTitle(),
             'url' => '/karman/categories/' . $parent->getId()
         ], $parents);
-        $categories = \Palto\Categories::getLiveCategories($category);
+        $categories = Categories::getChildren([$category->getId()])[$category->getId()] ?? [];
         $this->templatesEngine->addData([
             'title' => 'Категория',
             'category' => $category,
             'categories' => $categories,
-            'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), $category->getLevel() + 1),
+            'ads_counts' => Ads::getCategoriesAdsCounts(
+                array_map(fn(Category $category) => $category->getId(), $categories),
+                $category->getLevel() + 1
+            ),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
                 'url' => '/karman/categories?cache=0'
@@ -199,13 +203,12 @@ class Karman
 
     public function showCategories()
     {
-        $categories = \Palto\Categories::getLiveCategories();
+        $categories = Categories::getLiveCategories();
         $this->templatesEngine->addData([
             'title' => 'Категории',
             'breadcrumbs' => [],
             'categories' => $categories,
             'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1),
-            'category_url' => '/karman/categories'
         ]);
         echo $this->templatesEngine->make('categories');
     }
@@ -216,7 +219,7 @@ class Karman
             'id' => $category->getId(),
             'parent_id' => $category->getParentId() ?: null,
             'title' => $category->getTitle()
-        ], \Palto\Categories::getRoots()));
+        ], Categories::getRoots()));
     }
 
     public function moveAd(): void
@@ -257,7 +260,7 @@ class Karman
 
     public function getCategoriesChildren(int $parentId): void
     {
-        $children = $parentId ? \Palto\Categories::getChildren([$parentId]) : [];
+        $children = $parentId ? Categories::getChildren([$parentId]) : [];
         $this->showJsonResponse(array_map(fn(Category $category) => [
             'id' => $category->getId(),
             'parent_id' => $category->getParentId() ?: null,

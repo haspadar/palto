@@ -44,7 +44,7 @@ class Categories extends Model
 
     public static function getChildrenIds(array $categoriesIds, int $level): array
     {
-        return array_column(self::getChildren($categoriesIds), 'id');
+        return array_column(self::getChildren($categoriesIds, $level), 'id');
     }
 
     public static function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array

@@ -46,4 +46,9 @@ class Synonyms extends Model
     {
         return self::getDb()->query('SELECT * FROM synonyms WHERE category_id = %d ORDER BY title DESC', $categoryId) ?: [];
     }
+
+    public static function getCount(): int
+    {
+        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM synonyms') ?: 0;
+    }
 }

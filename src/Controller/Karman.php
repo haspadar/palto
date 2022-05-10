@@ -25,7 +25,7 @@ class Karman
 {
     protected Engine $templatesEngine;
     protected Url $url;
-    const LIMIT = 30;
+    const LIMIT = 100;
 
     public function __construct()
     {

@@ -84,9 +84,11 @@ class Synonyms
         }
     }
 
-    public static function getByTitle(string $title): array
+    public static function getByTitle(string $title): ?Synonym
     {
-        return Model\Synonyms::getByTitle($title);
+        $found = Model\Synonyms::getByTitle($title);
+
+        return $found ? new Synonym($found) : null;
     }
 
     /**

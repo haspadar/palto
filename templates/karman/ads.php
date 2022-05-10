@@ -2,7 +2,7 @@
 
 <?php $this->layout('layout'); ?>
 
-<ol class="list-group list-group-numbered">
+<ol class="list-group list-group">
     <?php foreach ($this->data['ads'] as $ad) :?>
         <li class="list-group-item">
             <a href="<?=$ad->getUrl()?>" target="_blank">
@@ -19,9 +19,12 @@
         </li>
 
     <?php endforeach;?>
-
-    <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">Всего <?=$this->data['ads_count']?> объявлений</a>
 </ol>
+
+<br>
+<?php $this->insert('partials/karman-pagination', [
+    'url' => '/karman/ads/' . $this->data['category']->getId() . '/%s?cache=0'
+])?>
 
 <div class="modal fade" id="moveUndefinedModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">

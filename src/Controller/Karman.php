@@ -25,7 +25,7 @@ class Karman
 {
     protected Engine $templatesEngine;
     protected Url $url;
-    const LIMIT = 20;
+    const LIMIT = 5;
 
     public function __construct()
     {
@@ -142,13 +142,18 @@ class Karman
         }
     }
 
-    public function showAds(int $id)
+    public function showAds(int $id, $page)
     {
         $category = Categories::getById($id);
+        $page = Filter::getPageNumber($page);
+        $offset = ($page - 1) * self::LIMIT;
+        $adsCount = Ads::getCategoriesAdsCount([$category->getId()]);
         $this->templatesEngine->addData([
             'title' => 'Объявления ' . $category->getTitle(),
             'category' => $category,
-            'ads' => Ads::getAds(null, $category, 25),
+            'ads' => Ads::getAds(null, $category, self::LIMIT, $offset),
+            'page' => $page,
+            'pages_count' => ceil($adsCount / self::LIMIT),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
                 'url' => '/karman/categories?cache=0'
@@ -157,13 +162,12 @@ class Karman
                 'url' => '/karman/categories/' . $category->getId() . '?cache=0'
             ]], [[
                 'title' => 'Объявления',
-            ]]),
-            'ads_count' => Ads::getCategoriesAdsCount([$category->getId()])
+            ]])
         ]);
         echo $this->templatesEngine->make('ads');
     }
 
-    public function showCategory(int $id, $page)
+    public function showCategory(int $id)
     {
         $category = Categories::getById($id);
         $parents = $category->getParents();
@@ -171,16 +175,11 @@ class Karman
             'title' => $parent->getTitle(),
             'url' => '/karman/categories/' . $parent->getId()
         ], $parents);
-        $page = Filter::getPageNumber($page);
-        $offset = ($page - 1) * self::LIMIT;
-        $categories = Categories::getChildren([$category->getId()], self::LIMIT, $offset)[$category->getId()] ?? [];
-        $pagesCount = ceil(Categories::getChildrenCount([$category->getId()]) / self::LIMIT);
+        $categories = Categories::getChildren([$category->getId()])[$category->getId()] ?? [];
         $this->templatesEngine->addData([
             'title' => 'Категория',
             'category' => $category,
             'categories' => $categories,
-            'page' => $page,
-            'pages_count' => $pagesCount,
             'ads_counts' => Ads::getCategoriesAdsCounts(
                 array_map(fn(Category $category) => $category->getId(), $categories),
                 $category->getLevel() + 1

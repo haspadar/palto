@@ -83,35 +83,6 @@ use Palto\Debug;
         </tbody>
     </table>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <?php if ($this->data['page'] > 1) :?>
-                <li class="page-item">
-                    <a class="page-link" href="/karman/categories/<?=$this->data['category']->getId()?>/<?=$this->data['page'] - 1?>?cache=0" aria-label="Предыдущая">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            <?php endif;?>
-
-            <?php for ($page = max(1, $this->data['page'] - 2); $page <= min($this->data['page'] + 2, $this->data['pages_count']); $page++) :?>
-                <li class="page-item <?php if ($this->data['page'] == $page) :?>active<?php endif;?>">
-                    <a class="page-link" href="/karman/categories/<?=$this->data['category']->getId()?>/<?=$page?>?cache=0">
-                        <?=$page?>
-                    </a>
-                </li>
-            <?php endfor;?>
-
-            <?php if ($this->data['page'] < $this->data['pages_count']) :?>
-                <li class="page-item">
-                    <a class="page-link" href="/karman/categories/<?=$this->data['category']->getId()?>/<?=$this->data['page'] + 1?>?cache=0" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            <?php endif;?>
-
-            <span class="text-muted p-2">из <?=$this->data['pages_count']?></span>
-        </ul>
-    </nav>
 <?php else : ?>
     <div class="alert alert-secondary mt-3" role="alert">
         Подкатегорий нет

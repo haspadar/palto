@@ -164,10 +164,13 @@ class Karman
             'category' => $category,
             'ads' => Ads::getAds(null, $category, 25),
             'breadcrumbs' => array_merge([[
-                'title' => 'Undefined',
-                'url' => '/karman/undefined-categories?cache=0'
+                'title' => 'Категории',
+                'url' => '/karman/categories?cache=0'
+            ], [
+                'title' => $category->getTitle(),
+                'url' => '/karman/categories/' . $category->getId() . '?cache=0'
             ]], [[
-                'title' => 'Категория "' . $category->getTitle() . '"',
+                'title' => 'Объявления',
             ]]),
             'ads_count' => Ads::getCategoriesAdsCount([$category->getId()])
         ]);

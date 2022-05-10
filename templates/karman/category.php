@@ -39,7 +39,8 @@ use Palto\Debug;
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Подкатегории</th>
+            <th>Подкатегория</th>
+            <th>Объявления</th>
             <th>Синонимы</th>
         </tr>
         </thead>
@@ -51,8 +52,11 @@ use Palto\Debug;
                     <a href="/karman/categories/<?= $category->getId() ?>" class="text-decoration-none">
                         <?= $category->getTitle() ?>
                         <?= $category->getEmoji() ?>
-
-                        <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Количество объявлений"
+                    </a>
+                </td>
+                <td>
+                    <a href="/karman/ads/<?=$category->getId()?>?cache=0">
+                        <span class="badge bg-primary" data-bs-toggle="tooltip" title="Количество объявлений"
                               data-bs-placement="right">
                             <?= $this->data['ads_counts'][$category->getId()] ?? 0 ?>
                         </span>

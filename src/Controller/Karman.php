@@ -233,7 +233,7 @@ class Karman
             $adId = intval($params['ad_id']);
             Ads::moveAd(
                 $adId,
-                intval($params['category_level_1']),
+                intval($params['category_level_1'] ?? 0),
                 Filter::get($params['new_category_level_1'] ?? ''),
                 intval($params['category_level_2'] ?? 0),
                 Filter::get($params['new_category_level_2'] ?? ''),

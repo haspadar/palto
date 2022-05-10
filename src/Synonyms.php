@@ -4,6 +4,8 @@ namespace Palto;
 
 class Synonyms
 {
+    const FIND_AND_MOVE_SCRIPT = 'bin/find_and_move.php';
+
     public static function getGropedAll(): array
     {
         $synonyms = Model\Synonyms::getAll();

@@ -127,7 +127,7 @@ class Synonyms
      * @param string $adField
      * @return bool
      */
-    private static function hasAdSynonyms(Ad $ad, array $synonyms, string $adField): bool
+    public static function hasAdSynonyms(Ad $ad, array $synonyms, string $adField): bool
     {
         $spacesCount = max(array_map(fn(Synonym $synonym) => $synonym->getSpacesCount(), $synonyms));
         for ($length = $spacesCount + 1; $length >= 1; $length--) {

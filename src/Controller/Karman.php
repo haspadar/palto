@@ -25,6 +25,7 @@ class Karman
 {
     protected Engine $templatesEngine;
     protected Url $url;
+    const LIMIT = 20;
 
     public function __construct()
     {
@@ -162,7 +163,7 @@ class Karman
         echo $this->templatesEngine->make('ads');
     }
 
-    public function showCategory(int $id)
+    public function showCategory(int $id, $page)
     {
         $category = Categories::getById($id);
         $parents = $category->getParents();
@@ -170,11 +171,16 @@ class Karman
             'title' => $parent->getTitle(),
             'url' => '/karman/categories/' . $parent->getId()
         ], $parents);
-        $categories = Categories::getChildren([$category->getId()])[$category->getId()] ?? [];
+        $page = Filter::getPageNumber($page);
+        $offset = ($page - 1) * self::LIMIT;
+        $categories = Categories::getChildren([$category->getId()], self::LIMIT, $offset)[$category->getId()] ?? [];
+        $pagesCount = ceil(Categories::getChildrenCount([$category->getId()]) / self::LIMIT);
         $this->templatesEngine->addData([
             'title' => 'Категория',
             'category' => $category,
             'categories' => $categories,
+            'page' => $page,
+            'pages_count' => $pagesCount,
             'ads_counts' => Ads::getCategoriesAdsCounts(
                 array_map(fn(Category $category) => $category->getId(), $categories),
                 $category->getLevel() + 1

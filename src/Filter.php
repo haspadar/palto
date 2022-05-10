@@ -65,4 +65,9 @@ class Filter
 
         return preg_replace('/['. $symbols . ']+/u', '', $string);
     }
+
+    public static function getPageNumber($page): int
+    {
+        return intval($page) ?: 1;
+    }
 }

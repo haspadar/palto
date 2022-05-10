@@ -134,7 +134,13 @@ class Synonyms
             $adMethod = 'get' . ucfirst($adField);
             if ($wordsCombinations = self::getWordsCombinations(mb_substr($ad->$adMethod(), 0, 200), $length)) {
                 foreach ($wordsCombinations as $combination) {
-                    if (in_array($combination, array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms))) {
+                    if (in_array(
+                        mb_strtolower($combination),
+                        array_map(
+                            fn(Synonym $synonym) => mb_strtolower($synonym->getTitle()),
+                            $synonyms)
+                        )
+                    ) {
                         return true;
                     }
                 }

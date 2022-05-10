@@ -3,44 +3,14 @@
 <?php $this->layout('layout');?>
 
 <?php if ($this->data['categories'] ?? []) :?>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Название</th>
-            <th>Объявления</th>
-            <th>Синонимы</th>
-        </tr>
-        </thead>
-        <tbody>
+    <?php $this->insert('partials/karman-categories', ['categories' => $this->data['categories']])?>
 
-        <?php
-        /**
-         * @var $category \Palto\Category
-         */
-        ?>
-        <?php foreach ($this->data['categories'] as $category) :?>
-            <tr>
-                <td>
-                    <a href="/karman/categories/<?=$category->getId()?>?cache=0" class="text-decoration-none">
-                        <?=$category->getTitle()?>
-                        <?=$category->getEmoji()?>
-                    </a>
-                </td>
-                <td>
-                    <a href="/karman/ads/<?=$category->getId()?>?cache=0">
-                        <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
-                            <?=$this->data['ads_counts'][$category->getId()] ?? 0?>
-                        </span>
-                    </a>
-                </td>
-                <td>
-                    <?=$category->getGroupedSynonyms()?>
-                </td>
+    <br>
+    <?php if ($this->data['undefined_categories']) :?>
+        <h3>Undefined</h3>
+        <?php $this->insert('partials/karman-categories', ['categories' => $this->data['undefined_categories']])?>
 
-            </tr>
-        <?php endforeach;?>
-        </tbody>
-    </table>
+    <?php endif;?>
 <?php else :?>
     <div class="alert alert-secondary mt-3" role="alert">
         Категорий нет

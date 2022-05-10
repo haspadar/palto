@@ -45,19 +45,6 @@
                         </a>
                     </li>
 
-                    <?php if ($this->data['undefined_categories']) :?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/karman/undefined-categories?cache=0">
-                                <h7 class="<?php if ($this->data['url']->getPath() == '/karman/undefined-categories') :?>fw-bold<?php endif;?>">
-                                    Undefined
-                                    <?php if ($this->data['undefined_ads_count']) : ?>
-                                        <span class="badge bg-secondary"><?= $this->data['undefined_ads_count'] ?></span>
-                                    <?php endif; ?>
-                                </h7>
-                            </a>
-                        </li>
-                    <?php endif;?>
-
                 </ul>
             </div>
         </nav>

@@ -213,6 +213,56 @@ $(function () {
         }
     });
 
+    let removeCategoryModalElement = document.getElementById('removeCategoryModal');
+    let removeCategoryModal = removeCategoryModalElement ? new bootstrap.Modal(removeCategoryModalElement) : null;
+    let $removeCategoryModal = $('#removeCategoryModal');
+    $('.remove-category').on('click', function () {
+        let adsCount = parseInt($(this).data('adsCount'))
+        let categoriesCount = parseInt($(this).data('categoriesCount'));
+        let message = '';
+        if (adsCount > 0 && categoriesCount > 0) {
+            message = 'У категории есть '
+                + categoriesCount
+                + ' '
+                + pluralForm(categoriesCount, 'подкатегория', 'подкатегории', 'подкатегорий')
+                + ' и '
+                + adsCount
+                + ' '
+                + pluralForm(adsCount, 'объявление', 'объявления', 'объявлений')
+                + '. Удалить всё?';
+        } else if (categoriesCount > 0) {
+            message = 'У категории есть ' + categoriesCount + ' подкатегорий. Удалить всё?';
+        } else if (adsCount > 0) {
+            message = 'У категории есть ' + adsCount + ' объявлений. Удалить всё?';
+        }
+
+        if (message) {
+            $removeCategoryModal.find('.alert').html(message);
+            $removeCategoryModal.find('#categoryId').val($(this).data('id'));
+            removeCategoryModal.show();
+        } else {
+            removeCategory($(this).data('id'));
+        }
+    });
+
+    $removeCategoryModal.find('.remove').on('click', function () {
+        removeCategory($removeCategoryModal.find('#categoryId').val())
+    });
+
+    function removeCategory(id) {
+        $.ajax({
+            url: '/karman/remove-category/' + id,
+            dataType: "json",
+            type: 'DELETE',
+            data: "",
+            success: function (response) {
+                removeCategoryModal.hide();
+                document.location = '/karman/categories?cache=0';
+            }
+        });
+    }
+
+
     $('#moveUndefinedModal .save').on('click', function () {
         let $moveUndefinedModal = $('#moveUndefinedModal');
         $moveUndefinedModal.find('.alert').addClass('d-none');
@@ -309,5 +359,20 @@ $(function () {
                 }
             }
         });
+    }
+
+    function pluralForm(count, formFor1, formFor2, formFor5) {
+        let intCount = parseInt(count);
+        let lastNumber = intCount.toString().substring(-1);
+        let form;
+        if (lastNumber % 10 == 1 && intCount % 100 != 11) {
+            form = formFor1;
+        } else if ($.inArray(lastNumber % 10, [2, 3, 4]) !== -1 && $.inArray(count % 100, [12, 13, 14]) == -1) {
+            form = formFor2;
+        } else {
+            form = formFor5;
+        }
+
+        return form;
     }
 });

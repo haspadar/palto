@@ -35,8 +35,6 @@ class Karman
         $this->templatesEngine->addData([
             'flash' => Flash::receive(),
             'url' => $this->url,
-            'undefined_ads_count' => Ads::getUndefinedCount(),
-            'undefined_categories' => Categories::getUndefinedAll('level ASC'),
             'actual_complaints_count' => \Palto\Complaints::getActualComplaintsCount()
         ]);
     }
@@ -143,19 +141,6 @@ class Karman
         }
     }
 
-    public function showUndefinedCategories()
-    {
-        $undefinedCategories = Categories::getUndefinedAll('level ASC');
-        $this->templatesEngine->addData([
-            'title' => 'Undefined-категории',
-            'categories' => $undefinedCategories,
-            'synonyms' => Synonyms::getGropedAll(),
-            'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $undefinedCategories)),
-            'breadcrumbs' => [],
-        ]);
-        echo $this->templatesEngine->make('categories');
-    }
-
     public function showAds(int $id)
     {
         $category = Categories::getById($id);
@@ -193,7 +178,10 @@ class Karman
             'ads_counts' => Ads::getCategoriesAdsCounts(
                 array_map(fn(Category $category) => $category->getId(), $categories),
                 $category->getLevel() + 1
-            ),
+            ) + Ads::getCategoriesAdsCounts(
+                    array_map(fn(Category $category) => $category->getId(), [$category]),
+                    $category->getLevel()
+                ),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
                 'url' => '/karman/categories?cache=0'
@@ -207,11 +195,15 @@ class Karman
     public function showCategories()
     {
         $categories = Categories::getLiveCategories();
+        $undefinedCategories = Categories::getUndefinedAll('level ASC');
         $this->templatesEngine->addData([
             'title' => 'Категории',
             'breadcrumbs' => [],
             'categories' => $categories,
-            'ads_counts' => Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1),
+            'ads_counts' =>
+                Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1)
+                + Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $undefinedCategories)),
+            'undefined_categories' => $undefinedCategories,
         ]);
         echo $this->templatesEngine->make('categories');
     }
@@ -288,6 +280,17 @@ class Karman
                 . '">"'
                 . $title
                 . '"</a> обновлена.',
+            'type' => 'success'
+        ]));
+        $this->showJsonResponse(['success' => true]);
+    }
+
+    public function removeCategory(int $id)
+    {
+        $category = Categories::getById($id);
+        $category->remove();
+        Flash::add(json_encode([
+            'message' => 'Категория "' . $category->getTitle() . '" удалена.',
             'type' => 'success'
         ]));
         $this->showJsonResponse(['success' => true]);

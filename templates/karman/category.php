@@ -31,11 +31,21 @@ use Palto\Debug;
         <?php endif; ?>
     </div>
 
-    <button type="submit" class="btn btn-primary" data-id="<?= $this->data['category']->getId() ?>">Сохранить
-    </button>
+    <br>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary" data-id="<?= $this->data['category']->getId() ?>">Сохранить</button>
+        <button type="button"
+                class="btn btn-danger remove-category bi-text-right"
+                data-ads-count="<?=$this->data['ads_counts'][$this->data['category']->getId()] ?? 0?>"
+                data-categories-count="<?=count($this->data['categories'])?>"
+                data-id="<?= $this->data['category']->getId() ?>"
+        >Удалить</button>
+    </div>
+
 </form>
 
 <?php if ($this->data['categories']) : ?>
+    <br>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -76,4 +86,28 @@ use Palto\Debug;
     <div class="alert alert-secondary mt-3" role="alert">
         Подкатегорий нет
     </div>
-<?php endif;
+<?php endif;?>
+
+<div class="modal fade" id="removeCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Удаление категории</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="categoryId" name="category_id">
+                </form>
+                <div class="alert alert-danger" role="alert">
+                    A simple danger alert—check it out!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+                <button type="button" class="btn btn-danger remove">Удалить</button>
+            </div>
+        </div>
+    </div>
+</div>
+

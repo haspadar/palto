@@ -225,4 +225,9 @@ class Category
     {
         Categories::update($updates, $this->getId());
     }
+
+    public function remove(): void
+    {
+        Categories::remove($this->getId());
+    }
 }

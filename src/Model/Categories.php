@@ -155,4 +155,8 @@ class Categories extends Model
         return self::getDb()->query('SELECT * FROM categories WHERE level = %d', 1) ?: [];
     }
 
+    public static function remove(int $id)
+    {
+        self::getDb()->delete('categories', 'id = %d', $id);
+    }
 }

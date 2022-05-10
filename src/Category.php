@@ -46,7 +46,7 @@ class Category
 
     public function getSynonyms(): array
     {
-        return array_map(fn($synonym) => new Synonym($synonym), Synonyms::getTitles($this->getId()));
+        return array_map(fn($synonym) => new Synonym($synonym), Synonyms::getAll($this->getId()));
     }
 
     public function getGroupedSynonyms(): string

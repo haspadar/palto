@@ -27,9 +27,13 @@ class Synonyms extends Model
         return self::getDb()->insertId();
     }
 
-    public static function getAll(): array
+    public static function getAll(int $categoryId = 0): array
     {
-        return self::getDb()->query('SELECT s.*, c.level FROM synonyms AS s INNER JOIN categories AS c ON s.category_id = c.id ORDER BY c.level DESC, s.title DESC');
+        return self::getDb()->query(
+            'SELECT s.*, c.level FROM synonyms AS s INNER JOIN categories AS c ON s.category_id = c.id '
+                . ($categoryId ? 'WHERE category_id=' . $categoryId : '')
+                . ' ORDER BY c.level DESC, s.title DESC'
+        );
     }
 
     public static function getById(int $id): array

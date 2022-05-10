@@ -19,7 +19,7 @@ class Synonyms extends Model
 
     public static function add(string $title, int $categoryId): int
     {
-        self::getDb()->insert('synonyms', [
+        self::getDb()->insertIgnore('synonyms', [
             'title' => $title,
             'category_id' => $categoryId
         ]);

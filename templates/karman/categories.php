@@ -28,7 +28,7 @@
                 </td>
                 <td>
                     <a href="/karman/ads/<?=$category->getId()?>?cache=0">
-                        <span class="badge bg-primary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
+                        <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
                             <?=$this->data['ads_counts'][$category->getId()] ?? 0?>
                         </span>
                     </a>

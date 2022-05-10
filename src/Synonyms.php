@@ -102,22 +102,19 @@ class Synonyms
     {
         $movedAdsCount = 0;
         if ($synonyms) {
-            foreach ($categories as $key => $category) {
-                $limit = 1000;
-                $offset = 0;
-                Logger::debug('Поиск объявлений в "' . $category->getTitle() . '" (' . ($key + 1) . '/' . count($categories) . ')');
-                while ($ads = Ads::getAds(null, $category, $limit, $offset)) {
-                    foreach ($ads as $ad) {
-                        if (self::hasAdSynonyms($ad, $synonyms, $adField)) {
-                            Logger::debug('Найдено объявление!');
-                            self::moveAd($ad, $toCategory);
-                            $movedAdsCount++;
-                        }
+            $limit = 1000;
+            $offset = 0;
+            while ($ads = Ads::getCategoriesAds($categories, $limit, $offset)) {
+                foreach ($ads as $ad) {
+                    if (self::hasAdSynonyms($ad, $synonyms, $adField)) {
+                        Logger::debug('Найдено объявление!');
+                        self::moveAd($ad, $toCategory);
+                        $movedAdsCount++;
                     }
-
-                    $offset += $limit;
                 }
-            }   
+
+                $offset += $limit;
+            }
         }
 
         return $movedAdsCount;

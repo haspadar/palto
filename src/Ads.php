@@ -60,6 +60,13 @@ class Ads
         );
     }
 
+    public static function getCategoriesAds(array $categories, int $limit, int $offset): array
+    {
+        $categoriesIds = array_map(fn(Category $category) => $category->getId(), $categories);
+
+        return \Palto\Model\Ads::getCategoriesAds($categoriesIds, $limit, $offset);
+    }
+
     public static function getAds(
         ?Region $region,
         ?Category $category,

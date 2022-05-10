@@ -125,4 +125,9 @@ class Ads extends Model
     {
         self::getDb()->update('ads', $updates, 'id = %d', $id);
     }
+
+    public static function getCategoriesAds(array $categoriesIds, int $limit, int $offset): array
+    {
+        return self::getDb()->query("SELECT * FROM ads WHERE category_id IN %ld LIMIT %d OFFSET %d", $categoriesIds, $limit, $offset);
+    }
 }

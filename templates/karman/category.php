@@ -49,15 +49,18 @@ use Palto\Debug;
         <?php foreach ($this->data['categories'] as $category) : ?>
             <tr>
                 <td>
-                    <a href="/karman/categories/<?= $category->getId() ?>" class="text-decoration-none">
+                    <a href="/karman/categories/<?= $category->getId() ?>?cache=0" class="text-decoration-none">
                         <?= $category->getTitle() ?>
                         <?= $category->getEmoji() ?>
                     </a>
                 </td>
                 <td>
                     <a href="/karman/ads/<?=$category->getId()?>?cache=0">
-                        <span class="badge bg-primary" data-bs-toggle="tooltip" title="Количество объявлений"
-                              data-bs-placement="right">
+                        <span class="badge bg-primary"
+                              data-bs-toggle="tooltip"
+                              title="Количество объявлений"
+                              data-bs-placement="right"
+                        >
                             <?= $this->data['ads_counts'][$category->getId()] ?? 0 ?>
                         </span>
                     </a>

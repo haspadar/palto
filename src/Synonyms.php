@@ -70,10 +70,9 @@ class Synonyms
         return $movedAdsCount;
     }
     
-    public static function updateCategory(Category $category, array $synonyms): void
+    public static function updateCategory(Category $category, array $synonymTitles): void
     {
         $existsSynonymTitles = Model\Synonyms::getTitles($category->getId());
-        $synonymTitles = array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms) ;
         $removableSynonymTitles = array_diff($existsSynonymTitles, $synonymTitles);
         foreach ($removableSynonymTitles as $removableSynonymTitle) {
             Model\Synonyms::remove($removableSynonymTitle, $category->getId());

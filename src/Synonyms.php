@@ -6,11 +6,6 @@ class Synonyms
 {
     const FIND_AND_MOVE_SCRIPT = 'bin/find_and_move.php';
 
-    public static function getCount(): int
-    {
-        return Model\Synonyms::getCount();
-    }
-
     public static function getGropedAll(): array
     {
         $synonyms = Model\Synonyms::getAll();
@@ -66,8 +61,6 @@ class Synonyms
         $movedAdsCount = 0;
         $gropedSynonyms = Synonyms::getGropedAll();
         $iterator = 0;
-        $synonymsCount = Synonyms::getCount();
-        $categoriesAdsCount = Ads::getCategoriesAdsCount(array_map(fn(Category $category) => $category->getId(), $categories));
         foreach (['title', 'text'] as $adField) {
             foreach ($gropedSynonyms as $categoryId => $synonyms) {
                 $toCategory = Categories::getById($categoryId);
@@ -76,7 +69,7 @@ class Synonyms
                     . '" ('
                     . (++$iterator)
                     . '/'
-                    . ($categoriesAdsCount * $synonymsCount * 2)
+                    . count($gropedSynonyms)
                     . ')'
                 );
                 $movedAdsCount += self::moveCategoryAds($toCategory, $synonyms, $adField, $categories);

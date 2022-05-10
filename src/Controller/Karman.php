@@ -222,16 +222,15 @@ class Karman
     public function moveAd(): void
     {
         $params = $this->getPutParams();
-        $adId = intval($params['ad_id']);
         $error = Validator::validateMoveAd(
-            $adId,
-            intval($params['category_level_1']),
+            intval($params['category_level_1'] ?? 0),
             Filter::get($params['new_category_level_1'] ?? ''),
             Filter::get($params['new_category_level_2'] ?? ''),
         );
         if ($error) {
             $this->showJsonResponse(['error' => $error]);
         } else {
+            $adId = intval($params['ad_id']);
             Ads::moveAd(
                 $adId,
                 intval($params['category_level_1']),

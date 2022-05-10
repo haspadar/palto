@@ -5,7 +5,6 @@ namespace Palto;
 class Validator
 {
     public static function validateMoveAd(
-        int $adId,
         int $categoryLevel1Id,
         string $newCategoryLevel1Title,
         string $newCategoryLevel2Title

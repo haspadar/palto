@@ -161,6 +161,11 @@ class Categories extends Model
         return self::getDb()->query('SELECT * FROM categories WHERE level = %d', 1) ?: [];
     }
 
+    public static function removeChildren(int $parentId)
+    {
+        self::getDb()->delete('categories', 'parent_id = %d', $parentId);
+    }
+
     public static function remove(int $id)
     {
         self::getDb()->delete('categories', 'id = %d', $id);

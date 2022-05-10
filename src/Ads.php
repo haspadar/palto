@@ -242,7 +242,7 @@ class Ads
             ], $adId);
         } elseif ($newCategoryLevel2Title) {
             $category = Categories::safeAdd([
-                'title' => $newCategoryLevel1Title,
+                'title' => $newCategoryLevel2Title,
                 'parent_id' => $categoryLevel1Id
             ]);
             self::update([

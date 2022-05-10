@@ -228,6 +228,7 @@ class Category
 
     public function remove(): void
     {
+        Categories::removeChildren($this->getId());
         Categories::remove($this->getId());
     }
 }

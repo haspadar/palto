@@ -72,21 +72,22 @@ class Synonyms
     
     public static function updateCategory(Category $category, array $synonyms): void
     {
-        $existsSynonyms = Model\Synonyms::getCategoryAll($category->getId());
-        $removableSynonyms = array_diff($existsSynonyms, $synonyms);
-        foreach ($removableSynonyms as $removableSynonym) {
-            Model\Synonyms::remove($removableSynonym, $category->getId());
+        $existsSynonymTitles = Model\Synonyms::getTitles($category->getId());
+        $synonymTitles = array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms) ;
+        $removableSynonymTitles = array_diff($existsSynonymTitles, $synonymTitles);
+        foreach ($removableSynonymTitles as $removableSynonymTitle) {
+            Model\Synonyms::remove($removableSynonymTitle, $category->getId());
         }
 
-        $addingSynonyms = array_diff($synonyms, $existsSynonyms);
-        foreach ($addingSynonyms as $addingSynonym) {
-            Model\Synonyms::add($addingSynonym, $category->getId());
+        $addingSynonymTitles = array_diff($synonymTitles, $existsSynonymTitles);
+        foreach ($addingSynonymTitles as $addingSynonymTitle) {
+            Model\Synonyms::add($addingSynonymTitle, $category->getId());
         }
     }
 
     public static function getByTitle(string $title): array
     {
-        return \Palto\Model\Synonyms::getByTitle($title);
+        return Model\Synonyms::getByTitle($title);
     }
 
     /**

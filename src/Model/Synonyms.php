@@ -42,8 +42,11 @@ class Synonyms extends Model
         return self::getDb()->queryFirstRow('SELECT * FROM synonyms WHERE title = %s', $title) ?: [];
     }
 
-    public static function getCategoryAll(int $categoryId): array
+    public static function getTitles(int $categoryId): array
     {
-        return self::getDb()->query('SELECT * FROM synonyms WHERE category_id = %d ORDER BY title DESC', $categoryId) ?: [];
+        return array_column(
+            self::getDb()->query('SELECT title FROM synonyms WHERE category_id = %d ORDER BY title DESC', $categoryId) ?: [],
+            'title'
+        );
     }
 }

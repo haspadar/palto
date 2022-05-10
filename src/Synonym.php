@@ -13,11 +13,6 @@ class Synonym
         $this->category = Categories::getById($synonym['category_id']);
     }
 
-    public function getByTitle(string $title): array
-    {
-        return \Palto\Model\Synonyms::getByTitle($title);
-    }
-
     public function getSpacesCount(): int
     {
         return count(explode(' ', $this->getTitle())) - 1;

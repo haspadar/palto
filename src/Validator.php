@@ -22,7 +22,7 @@ class Validator
     public static function validateSynonyms(array $synonyms): string
     {
         foreach ($synonyms as $synonym) {
-            if ($found = Synonym::getByTitle($synonym)) {
+            if ($found = Synonyms::getByTitle($synonym)) {
                 return 'Синоним ' . $synonym . ' уже есть у категории ' . Categories::getById($found['category_id'])->getTitle();
             }
         }

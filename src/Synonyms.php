@@ -38,18 +38,6 @@ class Synonyms
         return Categories::createUndefined();
     }
 
-    private static function getWordsCombinations(string $text, int $length): array
-    {
-        $combinations = [];
-        $text = mb_strtolower($text);
-        $words = array_values(array_filter(explode(' ', strtr($text, ['.' => '', ',' => '', '!' => '', '/']))));
-        for ($offset = 0; $offset <= count($words) - $length; $offset++) {
-            $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));
-        }
-
-        return $combinations;
-    }
-
     /**
      * @param Category[] $categories
      * @return int
@@ -96,9 +84,9 @@ class Synonyms
         }
     }
 
-    private static function getById(int $id): Synonym
+    public static function getByTitle(string $title): array
     {
-        return new Synonym(Model\Synonyms::getById($id));
+        return \Palto\Model\Synonyms::getByTitle($title);
     }
 
     /**
@@ -167,5 +155,17 @@ class Synonyms
                 ? $category->getId()
                 : null
         ], $ad->getId());
+    }
+
+    private static function getWordsCombinations(string $text, int $length): array
+    {
+        $combinations = [];
+        $text = mb_strtolower($text);
+        $words = array_values(array_filter(explode(' ', strtr($text, ['.' => '', ',' => '', '!' => '', '/']))));
+        for ($offset = 0; $offset <= count($words) - $length; $offset++) {
+            $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));
+        }
+
+        return $combinations;
     }
 }

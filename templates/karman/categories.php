@@ -25,7 +25,7 @@
                         <?=$category->getEmoji()?>
 
                         <span class="badge bg-secondary" data-bs-toggle="tooltip" title="Количество объявлений" data-bs-placement="right">
-                            <?=$this->data['ads_counts'][$category->getId()]?>
+                            <?=$this->data['ads_counts'][$category->getId()] ?? 0?>
                         </span>
                     </a>
                 </td>

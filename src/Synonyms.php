@@ -57,7 +57,7 @@ class Synonyms
                     . '" ('
                     . (++$iterator)
                     . '/'
-                    . count($gropedSynonyms)
+                    . count($gropedSynonyms) * 2
                     . ')'
                 );
                 $movedAdsCount += self::moveCategoryAds($toCategory, $synonyms, $adField, $categories);

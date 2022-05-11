@@ -106,7 +106,7 @@ class Synonyms
             $offset = 0;
             while ($ads = Ads::getCategoriesAds($categories, $limit, $offset)) {
                 foreach ($ads as $ad) {
-                    if (self::hasAdSynonyms($ad, $synonyms, $adField)) {
+                    if (self::hasAdSynonyms($ad[$adField], $synonyms)) {
                         Logger::debug('Найдено объявление!');
                         self::moveAd($ad, $toCategory);
                         $movedAdsCount++;
@@ -121,17 +121,15 @@ class Synonyms
     }
 
     /**
-     * @param Ad $ad
+     * @param string $adText
      * @param Synonym[] $synonyms
-     * @param string $adField
      * @return bool
      */
-    public static function hasAdSynonyms(Ad $ad, array $synonyms, string $adField): bool
+    private static function hasAdSynonyms(string $adText, array $synonyms): bool
     {
         $spacesCount = max(array_map(fn(Synonym $synonym) => $synonym->getSpacesCount(), $synonyms));
         for ($length = $spacesCount + 1; $length >= 1; $length--) {
-            $adMethod = 'get' . ucfirst($adField);
-            if ($wordsCombinations = self::getWordsCombinations(mb_substr($ad->$adMethod(), 0, 200), $length)) {
+            if ($wordsCombinations = self::getWordsCombinations(mb_substr($adText, 0, 200), $length)) {
                 foreach ($wordsCombinations as $combination) {
                     if (in_array(
                         mb_strtolower($combination),

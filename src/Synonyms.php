@@ -2,6 +2,8 @@
 
 namespace Palto;
 
+use ICanBoogie\Inflector;
+
 class Synonyms
 {
     const FIND_AND_MOVE_SCRIPT = 'bin/find_and_move.php';
@@ -118,6 +120,32 @@ class Synonyms
         }
 
         return $movedAdsCount;
+    }
+
+    public static function add(array $synonyms, int $categoryId): void
+    {
+        foreach ($synonyms as $synonym) {
+            Model\Synonyms::add($synonym, $categoryId);
+        }
+    }
+
+    public static function generateForms(array $forms): array
+    {
+        $combinations = array_map(fn($form) => mb_strtolower($form), $forms);
+        $inflector = Inflector::get('en');
+        foreach ($forms as $uniqueForm) {
+            $plural = $inflector->pluralize($uniqueForm);
+            if ($plural != $uniqueForm) {
+                $combinations[] = $plural;
+            }
+
+            $singular = $inflector->singularize($uniqueForm);
+            if ($singular != $uniqueForm) {
+                $combinations[] = $singular;
+            }
+        }
+
+        return $combinations;
     }
 
     /**

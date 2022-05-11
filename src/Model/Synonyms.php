@@ -2,6 +2,7 @@
 
 namespace Palto\Model;
 
+use ICanBoogie\Inflector;
 use Palto\Debug;
 use Palto\Synonym;
 

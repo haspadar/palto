@@ -104,11 +104,11 @@ class Synonyms
         if ($synonyms) {
             $limit = 1000;
             $offset = 0;
-            while ($ads = Ads::getCategoriesAds($categories, $limit, $offset)) {
+            while ($ads = Ads::getFields($categories, ['id', $adField], $limit, $offset)) {
                 foreach ($ads as $ad) {
                     if (self::hasAdSynonyms($ad[$adField], $synonyms)) {
                         Logger::debug('Найдено объявление!');
-                        self::moveAd($ad, $toCategory);
+                        self::moveAd($ad['id'], $toCategory);
                         $movedAdsCount++;
                     }
                 }
@@ -147,7 +147,7 @@ class Synonyms
         return false;
     }
 
-    private static function moveAd(Ad $ad, Category $category): void
+    private static function moveAd(int $adId, Category $category): void
     {
         Ads::update([
             'category_id' => $category->getId(),
@@ -157,7 +157,7 @@ class Synonyms
             'category_level_2_id' => $category->getLevel() == 2
                 ? $category->getId()
                 : null
-        ], $ad->getId());
+        ], $adId);
     }
 
     private static function getWordsCombinations(string $text, int $length): array

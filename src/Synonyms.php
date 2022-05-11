@@ -164,7 +164,7 @@ class Synonyms
     {
         $combinations = [];
         $text = mb_strtolower($text);
-        $words = array_values(array_filter(explode(' ', strtr($text, ['.' => '', ',' => '', '!' => '', '/']))));
+        $words = array_values(array_filter(explode(' ', strtr($text, ['.' => ' ', ',' => ' ', '!' => ' ', '/' => ' ']))));
         for ($offset = 0; $offset <= count($words) - $length; $offset++) {
             $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));
         }

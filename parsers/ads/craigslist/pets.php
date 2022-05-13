@@ -18,6 +18,16 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
     protected function parseAd(Crawler $adDocument, \Palto\Region $region, Url $adUrl): int
     {
+        if ($category = \Palto\Synonyms::findCategory(Ads::getById(126805))) {
+            \Palto\Debug::dump($category);exit;
+            Ads::update([
+                'category_id' => $category->getId(),
+                'category_level_1_id' => $category->getLevel() == 1 ? $category->getId() : $category->getParentId(),
+                'category_level_2_id' => $category->getLevel() == 1 ? null : $category->getId()
+            ], 126805);
+        }
+
+
         $title = Parser::getText($adDocument, ['#titletextonly']);
         $text = trim(strtr(strip_tags(Parser::getHtml($adDocument, ['#postingbody'])), ['QR Code Link to This Post' => '']));
         if ($title && $text) {

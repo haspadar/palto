@@ -147,11 +147,13 @@ class Karman
     {
         $ad = Ads::getById($id);
         if ($category = \Palto\Synonyms::findCategory([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)])) {
+            $synonyms = $category->getGroupedSynonyms();
             $response = 'Нашлась категория <i>"'
                 . implode('/', array_reverse($category->getWithParentsTitles()))
-                . '"</i> с синонимами <i>"'
-                . $category->getGroupedSynonyms()
-                . '"</i>';
+                . ($synonyms
+                    ? '"</i> с синонимами <i>"' . $synonyms . '"</i>'
+                    : ' без синонимов'
+                );
         } else {
             $response = 'Категория не нашлась';
         }

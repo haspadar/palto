@@ -19,11 +19,13 @@ final class Synonyms extends AbstractMigration
     public function change(): void
     {
         $this->execute("CREATE TABLE IF NOT EXISTS `synonyms` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `category_id` int(10) unsigned NULL,
-  `title` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '',
-  FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
-    UNIQUE KEY `title_category_id` (`title`, `category_id`);
-);");
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `category_id` int(10) unsigned DEFAULT NULL,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `title_category_id` (`title`,`category_id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `synonyms_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
     }
 }

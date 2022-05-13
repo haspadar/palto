@@ -175,7 +175,12 @@ class Karman
             'title' => $parent->getTitle(),
             'url' => '/karman/categories/' . $parent->getId()
         ], $parents);
-        $categories = Categories::getChildren([$category->getId()])[$category->getId()] ?? [];
+        $categories = Categories::getChildren(
+            [$category->getId()],
+            0, 
+            0,
+            'ORDER BY title'
+        )[$category->getId()] ?? [];
         $this->templatesEngine->addData([
             'title' => 'Категория',
             'category' => $category,

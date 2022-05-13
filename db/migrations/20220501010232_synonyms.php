@@ -18,13 +18,12 @@ final class Synonyms extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute("CREATE TABLE `synonyms` (
+        $this->execute("CREATE TABLE IF NOT EXISTS `synonyms` (
   `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `category_id` int(10) unsigned NULL,
   `title` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '',
-  FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+  FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+    UNIQUE KEY `title_category_id` (`title`, `category_id`);
 );");
-        $this->execute("ALTER TABLE `synonyms`
-ADD UNIQUE `title_category_id` (`title`, `category_id`);");
     }
 }

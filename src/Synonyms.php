@@ -200,7 +200,10 @@ class Synonyms
             '/' => ' ',
             '\'' => ' ',
             '"' => ' ',
-            '*' => ' '
+            '*' => ' ',
+            ':' => ' ',
+            ';' => ' ',
+            '-' => ' '
         ]))));
         for ($offset = 0; $offset <= count($words) - $length; $offset++) {
             $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));

@@ -24,7 +24,7 @@ class Synonyms
         $synonyms = self::getGropedAll();
         foreach ($synonyms as $categoryId => $categorySynonyms) {
             foreach ($texts as $text) {
-                $spacesCount = max(array_map(fn(Synonym $synonym) => $synonym->getSpacesCount(), $synonyms));
+                $spacesCount = max(array_map(fn(Synonym $synonym) => $synonym->getSpacesCount(), $categorySynonyms));
                 for ($length = $spacesCount + 1; $length >= 1; $length--) {
                     if ($wordsCombinations = self::getWordsCombinations($text, $length)) {
                         foreach ($wordsCombinations as $combination) {

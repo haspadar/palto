@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $this->data['title'] ?></title>
     <link rel="stylesheet" href="<?= $this->asset('/bootstrap/css/bootstrap.css') ?>">
+    <link rel="stylesheet" href="<?=$this->asset('/css/karman.css')?>">
     <meta name="theme-color" content="#7952b3">
 </head>
 <body>
@@ -46,7 +47,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/ads?cache=0">
-                            <h7 class="<?php if ($this->data['url']->getPath() == '/karman/ads') : ?>fw-bold<?php endif; ?>">
+                            <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/ads', '/karman/ad'])) : ?>fw-bold<?php endif; ?>">
                                 Объявления
                             </h7>
                         </a>

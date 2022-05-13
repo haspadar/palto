@@ -201,6 +201,27 @@ $(function () {
         moveUndefinedModal.show();
     });
 
+    $('.find-and-move-ad').on('click', function () {
+        let $report = $('.find-and-move-ad-report');
+        let $loading = $report.find('.loading');
+        let $text = $report.find('.text');
+        $loading.removeClass('d-none');
+        $report.removeClass('d-none');
+        $text.addClass('d-none');
+        let adId = $(this).data('adId');
+        $.ajax({
+            url: '/karman/find-ad-category/' + adId,
+            dataType: "json",
+            type: 'GET',
+            data: "",
+            success: function (response) {
+                $loading.addClass('d-none');
+                $text.html(response['report']);
+                $text.removeClass('d-none')
+            }
+        });
+    });
+
     $('#categoryLevel1').on('change', function () {
         let categoryLevel1 = $(this).val();
         if (categoryLevel1) {

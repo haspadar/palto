@@ -39,6 +39,8 @@ $router->mount('/karman', function() use ($router) {
     $router->delete('/remove-emoji/{id}', '\Palto\Controller\Karman@removeEmoji');
     $router->get("/ads(/\d+)?", '\Palto\Controller\Karman@showAds');
     $router->get("/category-ads/{id}(/\d+)?", '\Palto\Controller\Karman@showCategoryAds');
+    $router->get("/ad/{id}", '\Palto\Controller\Karman@showKarmanAd');
+    $router->get("/find-ad-category/{id}", '\Palto\Controller\Karman@findAdCategory');
 });
 
 $router->get('/', '\Palto\Controller\Client@showIndex');

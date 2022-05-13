@@ -17,6 +17,7 @@ use Palto\Filter;
 use Palto\Flash;
 use Palto\Plural;
 use Palto\Regions;
+use Palto\Synonym;
 use Palto\Synonyms;
 use Palto\Url;
 use Palto\Validator;
@@ -140,6 +141,34 @@ class Karman
         } else {
             $this->showJsonResponse(['error' => 'Не указан ID']);
         }
+    }
+
+    public function findAdCategory(int $id)
+    {
+        $ad = Ads::getById($id);
+        if ($category = \Palto\Synonyms::findCategory([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)])) {
+            $response = 'Нашлась категория <i>"' . $category->getTitle() . '"</i> с синонимами <i>"' . $category->getGroupedSynonyms() . '"</i>';
+        } else {
+            $response = 'Категория не нашлась';
+        }
+
+        $this->showJsonResponse(['report' => $response]);
+    }
+
+    public function showKarmanAd(int $id)
+    {
+        $ad = Ads::getById($id);
+        $this->templatesEngine->addData([
+            'title' => 'Объявление ' . $id,
+            'ad' => $ad,
+            'breadcrumbs' => array_merge([[
+                'title' => 'Объявления',
+                'url' => '/karman/ads?cache=0'
+            ], [
+                'title' => 'Объявление ' . $ad->getId()
+            ]])
+        ]);
+        echo $this->templatesEngine->make('ad');
     }
 
     public function showAds($page)

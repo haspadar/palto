@@ -40,14 +40,6 @@
     Перенести
 </button>
 
-<button class="btn btn-secondary btn-dark find-and-move-ad"
-        type="button"
-        data-ad-id="<?=$this->data['ad']->getId()?>"
-        data-category-id="<?=$this->data['ad']->getCategory()->getId()?>"
-        data-category-parent-id="<?=$this->data['ad']->getCategory()->getParentId()?>"
->
-    Найти по синонимам
-</button>
 
 <div class="alert alert-dark find-and-move-ad-report d-none col-6" role="alert">
     <div class="loading">
@@ -57,3 +49,11 @@
     <div class="text"></div>
 </div>
 
+<button class="btn btn-secondary btn-dark find-and-move-ad"
+        type="button"
+        data-ad-id="<?=$this->data['ad']->getId()?>"
+        data-category-id="<?=$this->data['ad']->getCategory()->getId()?>"
+        data-category-parent-id="<?=$this->data['ad']->getCategory()->getParentId()?>"
+>
+    Найти по синонимам
+</button>

@@ -19,6 +19,7 @@ class Synonyms
     public static function findCategory(Ad $ad): Category
     {
         $synonyms = self::getAll();
+        Debug::dump($synonyms);exit;
         foreach ($synonyms as $synonym) {
             for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
                 Debug::dump($synonym->getTitle(), '$synonym');

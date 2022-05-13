@@ -30,7 +30,6 @@ class Synonyms extends Model
 
     public static function getAll(int $categoryId = 0): array
     {
-        self::getDb()->debugMode();
         return self::getDb()->query(
             "SELECT s.*, c.level, SUM(LENGTH(s.title) - LENGTH(REPLACE(s.title, ' ', '')) + 1) as spaces_count FROM synonyms AS s INNER JOIN categories AS c ON s.category_id = c.id "
                 . ($categoryId ? 'WHERE category_id=' . $categoryId : '')

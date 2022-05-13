@@ -19,8 +19,8 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
     protected function parseAd(Crawler $adDocument, \Palto\Region $region, Url $adUrl): int
     {
         $title = Parser::getText($adDocument, ['#titletextonly']);
-        $text = trim(strtr(strip_tags($adDocument->filter('#postingbody')->html()), ['QR Code Link to This Post' => '']));
-        if ($title) {
+        $text = trim(strtr(strip_tags(Parser::getHtml($adDocument, ['#postingbody'])), ['QR Code Link to This Post' => '']));
+        if ($title && $text) {
             $category = \Palto\Synonyms::findCategory([$title, mb_substr($text, 0, 200)]);
             $priceWithCurrency = Parser::getHtml($adDocument, ['.postingtitletext .price']);
             $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';

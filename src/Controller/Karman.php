@@ -196,7 +196,7 @@ class Karman
             [$category->getId()],
             0,
             0,
-            'ORDER BY title'
+            'title'
         )[$category->getId()] ?? [];
         $this->templatesEngine->addData([
             'title' => 'Категория',

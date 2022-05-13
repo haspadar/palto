@@ -74,6 +74,7 @@ class Ads
         string $orderBy = 'create_time DESC'
     ): array
     {
+        Model\Ads::getDb()->debugMode();
         $ads = Model\Ads::getAds(
             $region,
             $category,
@@ -82,6 +83,7 @@ class Ads
             $excludeId,
             $orderBy
         );
+        Model\Ads::getDb()->debugMode(false);
         $adIds = array_column($ads, 'id');
         $images = Ads::getAdsImages($adIds);
         $details = self::getAdsDetails($adIds);

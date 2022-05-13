@@ -40,7 +40,7 @@ class Categories
         return $ids ? Model\Categories::getChildrenCount($ids) : 0;
     }
 
-    public static function getChildren(array $ids, int $limit = 0, int $offset = 0, string $orderBy = 'ORDER BY id'): array
+    public static function getChildren(array $ids, int $limit = 0, int $offset = 0, string $orderBy = 'id'): array
     {
         $rows = Model\Categories::getChildren($ids, $limit, $offset, $orderBy);
         $children = [];

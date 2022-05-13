@@ -35,16 +35,16 @@ class Categories extends Model
         return self::getDb()->queryFirstField('SELECT COUNT(*) FROM categories WHERE parent_id IN %ld', $categoriesIds) ?: 0;
     }
 
-    public static function getChildren(array $categoriesIds, int $limit = 0, int $offset = 0, string $orderBy = 'ORDER BY id'): array
+    public static function getChildren(array $categoriesIds, int $limit = 0, int $offset = 0, string $orderBy = 'id'): array
     {
         return $limit
             ? self::getDb()->query(
-                'SELECT * FROM categories WHERE parent_id IN %ld ' . $orderBy . ' LIMIT %d OFFSET %d',
+                'SELECT * FROM categories WHERE parent_id IN %ld ORDER BY ' . $orderBy . ' LIMIT %d OFFSET %d',
                 $categoriesIds,
                 $limit,
                 $offset
             ) : self::getDb()->query(
-                'SELECT * FROM categories WHERE parent_id IN %ld ' . $orderBy,
+                'SELECT * FROM categories WHERE parent_id IN %ld ORDER BY ' . $orderBy,
                 $categoriesIds,
             );
     }

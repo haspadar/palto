@@ -55,9 +55,13 @@ class Ads extends Model
         return array_column($counts, 'count', $field);
     }
 
-    public static function getCategoriesAdsCount(array $categoriesIds): int
+    public static function getAdsCount(array $categoriesIds): int
     {
-        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
+        if ($categoriesIds) {
+            return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
+        }
+
+        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads');
     }
 
     /**

@@ -39,12 +39,18 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/categories?cache=0">
-                            <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/categories', '/karman/ads'])) : ?>fw-bold<?php endif; ?>">
+                            <h7 class="<?php if ($this->data['url']->getPath() == '/karman/categories') : ?>fw-bold<?php endif; ?>">
                                 Категории
                             </h7>
                         </a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="/karman/ads?cache=0">
+                            <h7 class="<?php if ($this->data['url']->getPath() == '/karman/ads') : ?>fw-bold<?php endif; ?>">
+                                Объявления
+                            </h7>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

@@ -44,11 +44,9 @@ class Ads
             : [];
     }
 
-    public static function getCategoriesAdsCount(array $categoriesIds): int
+    public static function getAdsCount(array $categoriesIds = []): int
     {
-        return $categoriesIds
-            ? Model\Ads::getCategoriesAdsCount($categoriesIds)
-            : 0;
+        return Model\Ads::getAdsCount($categoriesIds);
     }
 
     public static function getHotAds(?Region $region, int $limit): array
@@ -275,12 +273,5 @@ class Ads
     public static function update(array $updates, int $id): void
     {
         \Palto\Model\Ads::update($updates, $id);
-    }
-
-    public static function getUndefinedCount(): int
-    {
-        $categories = Categories::getUndefinedAll();
-
-        return self::getCategoriesAdsCount(array_map(fn(Category $category) => $category->getId(), $categories));
     }
 }

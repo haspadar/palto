@@ -1,13 +1,15 @@
 <?php /** @var $this League\Plates\Template\Template */?>
 
 <?php $this->layout('layout'); ?>
-
 <ol class="list-group list-group">
     <?php foreach ($this->data['ads'] as $ad) :?>
         <li class="list-group-item">
             <a href="<?=$ad->getUrl()?>" target="_blank">
                 <?=$ad->getTitle();?>
             </a>
+            <small class="text-muted text-decoration-none">
+                <?=(new DateTime())->format('d.m.Y H:i:s')?>
+            </small>
             <button class="btn btn-secondary btn-sm float-end move-ad"
                     type="button"
                     data-ad-id="<?=$ad->getId()?>"
@@ -23,7 +25,9 @@
 
 <br>
 <?php $this->insert('partials/karman-pagination', [
-    'url' => '/karman/ads/' . $this->data['category']->getId() . '/%s?cache=0'
+    'url' => isset($this->data['category'])
+        ? '/karman/category-ads/' . $this->data['category']->getId() . '/%s?cache=0'
+        : '/karman/ads/%s?cache=0'
 ])?>
 
 <div class="modal fade" id="moveUndefinedModal" tabindex="-1" aria-hidden="true">
@@ -76,7 +80,7 @@
 
 
                         <select class="form-select" id="categoryLevel2" name="category_level_2">
-                            <?php if ($this->data['category']->getLevel() == 2) :?>
+                            <?php if ($this->data['category'] && $this->data['category']->getLevel() == 2) :?>
                                 <?php foreach ($this->data['categories_level_2'] ?? [] as $categoryLevel2) :?>
                                     <?php if ($categoryLevel2['parent_id'] == $this->data['category']->getParentId()) :?>
                                         <option value="<?=$categoryLevel2['id']?>" <?php if ($categoryLevel2['id'] == $this->data['category']->getId()) :?>selected<?php endif;?>>

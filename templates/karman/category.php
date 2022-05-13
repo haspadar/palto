@@ -65,7 +65,7 @@ use Palto\Debug;
                     </a>
                 </td>
                 <td>
-                    <a href="/karman/ads/<?=$category->getId()?>?cache=0">
+                    <a href="/karman/category-ads/<?=$category->getId()?>?cache=0">
                         <span class="badge bg-secondary "
                               data-bs-toggle="tooltip"
                               title="Количество объявлений"

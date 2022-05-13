@@ -142,12 +142,29 @@ class Karman
         }
     }
 
-    public function showAds(int $id, $page)
+    public function showAds($page)
+    {
+        $page = Filter::getPageNumber($page);
+        $offset = ($page - 1) * self::LIMIT;
+        $adsCount = Ads::getAdsCount();
+        $this->templatesEngine->addData([
+            'title' => 'Объявления',
+            'ads' => Ads::getAds(null, null, self::LIMIT, $offset),
+            'page' => $page,
+            'pages_count' => ceil($adsCount / self::LIMIT),
+            'breadcrumbs' => array_merge([[
+                'title' => 'Объявления'
+            ]])
+        ]);
+        echo $this->templatesEngine->make('ads');
+    }
+
+    public function showCategoryAds(int $id, $page)
     {
         $category = Categories::getById($id);
         $page = Filter::getPageNumber($page);
         $offset = ($page - 1) * self::LIMIT;
-        $adsCount = Ads::getCategoriesAdsCount([$category->getId()]);
+        $adsCount = Ads::getAdsCount([$category->getId()]);
         $this->templatesEngine->addData([
             'title' => 'Объявления ' . $category->getTitle(),
             'category' => $category,

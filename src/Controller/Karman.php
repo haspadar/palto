@@ -150,8 +150,9 @@ class Karman
             $synonyms = $category->getGroupedSynonyms();
             $response = 'Нашлась категория <i>"'
                 . implode('/', array_reverse($category->getWithParentsTitles()))
+                . '"</i>'
                 . ($synonyms
-                    ? '"</i> с синонимами <i>"' . $synonyms . '"</i>'
+                    ? ' с синонимами <i>"' . $synonyms . '"</i>'
                     : ' без синонимов'
                 );
         } else {

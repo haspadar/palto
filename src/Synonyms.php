@@ -84,7 +84,7 @@ class Synonyms
                     foreach ($synonyms as $synonym) {
                         if (self::hasAdSynonym($ad, $synonym)) {
                             Logger::debug('Найдено объявление!');
-                            self::moveAd($ad['id'], $synonym->getCategory());
+                            self::moveAd($ad->getId(), $synonym->getCategory());
                             $movedAdsCount++;
                         }
                     }

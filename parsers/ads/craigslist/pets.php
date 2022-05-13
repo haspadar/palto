@@ -48,6 +48,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $adId = Ads::add($ad, $images, $details);
             $category = \Palto\Synonyms::findCategory(Ads::getById($adId));
             \Palto\Debug::dump($category, '$category');
+            \Palto\Debug::dump($adId, '$adId');
             if ($category) {
                 Ads::update([
                     'category_id' => $category->getId(),

@@ -60,7 +60,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             \Palto\Logger::debug('Empty ad title: ' . $adUrl->getFull());
         }
         echo 'done';
-exit;
+
         return 0;
     }
 

@@ -78,7 +78,7 @@ class Synonyms
         if ($synonyms) {
             $limit = 1000;
             $offset = 0;
-            while ($ads = Ads::getFields($categories, ['id', 'title', 'text', 'category_id', 'deleted_time'], $limit, $offset)) {
+            while ($ads = Ads::getFields($categories, ['id', 'title', 'text', 'category_id', 'region_id', 'deleted_time'], $limit, $offset)) {
                 foreach ($ads as $adFields) {
                     $ad = new Ad($adFields, [], []);
                     foreach ($synonyms as $synonym) {

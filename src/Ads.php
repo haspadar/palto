@@ -108,7 +108,9 @@ class Ads
             $ad = self::addLevels($ad);
             try {
                 $adId = Model\Ads::add($ad);
-                CategoriesRegionsWithAds::add($ad['category_id'], $ad['region_id']);
+                if ($ad['category_id']) {
+                    CategoriesRegionsWithAds::add($ad['category_id'], $ad['region_id']);
+                }
             } catch (Exception $e) {
                 Logger::error(var_export($ad, true));
                 Logger::error($e->getMessage());

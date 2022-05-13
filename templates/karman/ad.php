@@ -31,6 +31,15 @@
 
 <?php $this->insert('partials/karman-move-ad-modal')?>
 
+<button class="btn btn-secondary btn-dark find-and-move-ad"
+        type="button"
+        data-ad-id="<?=$this->data['ad']->getId()?>"
+        data-category-id="<?=$this->data['ad']->getCategory()->getId()?>"
+        data-category-parent-id="<?=$this->data['ad']->getCategory()->getParentId()?>"
+>
+    Найти по синонимам
+</button>
+
 <button class="btn btn-secondary move-ad"
         type="button"
         data-ad-id="<?=$this->data['ad']->getId()?>"
@@ -48,12 +57,3 @@
     </div>
     <div class="text"></div>
 </div>
-
-<button class="btn btn-secondary btn-dark find-and-move-ad"
-        type="button"
-        data-ad-id="<?=$this->data['ad']->getId()?>"
-        data-category-id="<?=$this->data['ad']->getCategory()->getId()?>"
-        data-category-parent-id="<?=$this->data['ad']->getCategory()->getParentId()?>"
->
-    Найти по синонимам
-</button>

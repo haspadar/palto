@@ -78,8 +78,9 @@ class Synonyms
         if ($synonyms) {
             $limit = 1000;
             $offset = 0;
-            while ($ads = Ads::getFields($categories, ['id', 'title', 'text'], $limit, $offset)) {
-                foreach ($ads as $ad) {
+            while ($ads = Ads::getFields($categories, ['id', 'title', 'text', 'category_id', 'region_id'], $limit, $offset)) {
+                foreach ($ads as $adFields) {
+                    $ad = new Ad($adFields, [], []);
                     foreach ($synonyms as $synonym) {
                         if (self::hasAdSynonym($ad, $synonym)) {
                             Logger::debug('Найдено объявление!');

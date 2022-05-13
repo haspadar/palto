@@ -19,10 +19,8 @@ class Synonyms
     public static function findCategory(Ad $ad): Category
     {
         $synonyms = self::getAll();
-        Debug::dump($synonyms);exit;
         foreach ($synonyms as $synonym) {
             for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
-                Debug::dump($synonym->getTitle(), '$synonym');
                 if (self::hasAdSynonym($ad, $synonym)) {
                     return $synonym->getCategory();
                 }
@@ -136,10 +134,6 @@ class Synonyms
             foreach ([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)] as $text) {
                 if ($wordsCombinations = self::getWordsCombinations($text, $length)) {
                     foreach ($wordsCombinations as $combination) {
-                        if (mb_strtolower($synonym->getTitle()) == 'Corgi') {
-                            Debug::dump(mb_strtolower($combination), 'mb_strtolower($combination)');
-                        }
-
                         if (mb_strtolower($combination) == mb_strtolower($synonym->getTitle())) {
                             return true;
                         }

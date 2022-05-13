@@ -7,9 +7,6 @@
             <a href="/karman/ad/<?=$ad->getId()?>?cache=0">
                 <?=$ad->getTitle();?>
             </a>
-            <small class="text-muted text-decoration-none">
-                <?=$ad->getCreateTime()->format('d.m.Y H:i:s')?>
-            </small>
             <button class="btn btn-secondary btn-sm float-end move-ad"
                     type="button"
                     data-ad-id="<?=$ad->getId()?>"

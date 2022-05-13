@@ -26,9 +26,5 @@ final class Synonyms extends AbstractMigration
 );");
         $this->execute("ALTER TABLE `synonyms`
 ADD UNIQUE `title_category_id` (`title`, `category_id`);");
-
-        $this->execute('INSERT INTO synonyms (category_id, title) values (7, "dog"),(7, "dogs"),(7, "puppy"),(7, "pup"),(7, "puppies"),(7, "pups")');
-        $this->execute('INSERT INTO synonyms (category_id, title) values (684, "bird"),(684, "birds"),(684, "parrot"),(684, "parrots")');
-        $this->execute('INSERT INTO synonyms (category_id, title) values (573, "cat"),(573, "cats"),(573, "kitty"),(573, "kitten"),(573, "kitties"),(573, "kittens")');
     }
 }

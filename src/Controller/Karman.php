@@ -177,7 +177,7 @@ class Karman
         ], $parents);
         $categories = Categories::getChildren(
             [$category->getId()],
-            0, 
+            0,
             0,
             'ORDER BY title'
         )[$category->getId()] ?? [];

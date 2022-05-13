@@ -21,7 +21,6 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         $title = Parser::getText($adDocument, ['#titletextonly']);
         $text = trim(strtr(strip_tags(Parser::getHtml($adDocument, ['#postingbody'])), ['QR Code Link to This Post' => '']));
         if ($title && $text) {
-            $category = \Palto\Synonyms::findCategory([$title, mb_substr($text, 0, 200)]);
             $priceWithCurrency = Parser::getHtml($adDocument, ['.postingtitletext .price']);
             $currency = $priceWithCurrency ? mb_substr($priceWithCurrency, 0, 1) : '';
             $price = $priceWithCurrency ? Parser::filterPrice(mb_substr($priceWithCurrency, 1)) : 0;
@@ -29,7 +28,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $ad = [
                 'title' => $title,
                 'url' => $adUrl,
-                'category_id' => $category->getId(),
+                'category_id' => null,
                 'text' => $text,
                 'address' => strtr(trim(Parser::getHtml($adDocument, ['.postingtitletext small'])), [
                     '(' => '',
@@ -45,8 +44,14 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             ];
             $images = $this->getImages($adDocument);
             $details = $this->getDetails($adDocument);
-
-            return Ads::add($ad, $images, $details);
+            $adId = Ads::add($ad, $images, $details);
+            if ($category = \Palto\Synonyms::findCategory(Ads::getById($adId))) {
+                Ads::update([
+                    'category_id' => $category->getId(),
+                    'category_level_1_id' => $category->getLevel() == 1 ? $category->getId() : $category->getParentId(),
+                    'category_level_2_id' => $category->getLevel() == 1 ? null : $category->getId()
+                ], $adId);
+            }
         } else {
             \Palto\Logger::debug('Empty ad title: ' . $adUrl->getFull());
         }

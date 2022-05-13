@@ -15,7 +15,7 @@ class Synonym
 
     public function getSpacesCount(): int
     {
-        return count(explode(' ', $this->getTitle())) - 1;
+        return $this->synonym['spaces_count'];
     }
 
     public function getTitle(): string

@@ -8,31 +8,21 @@ class Synonyms
 {
     const FIND_AND_MOVE_SCRIPT = 'bin/find_and_move.php';
 
-    public static function getGropedAll(): array
+    /**
+     * @return Synonym[]
+     */
+    public static function getAll(): array
     {
-        $synonyms = Model\Synonyms::getAll();
-        $grouped = [];
-        foreach ($synonyms as $synonym) {
-            $grouped[$synonym['category_id']][] = new Synonym($synonym);
-        }
-
-        return $grouped;
+        return array_map(fn(array $synonym) => new Synonym($synonym), Model\Synonyms::getAll());
     }
 
-    public static function findCategory(array $texts): Category
+    public static function findCategory(Ad $ad): Category
     {
-        $synonyms = self::getGropedAll();
-        foreach ($synonyms as $categoryId => $categorySynonyms) {
-            foreach ($texts as $text) {
-                $spacesCount = max(array_map(fn(Synonym $synonym) => $synonym->getSpacesCount(), $categorySynonyms));
-                for ($length = $spacesCount + 1; $length >= 1; $length--) {
-                    if ($wordsCombinations = self::getWordsCombinations($text, $length)) {
-                        foreach ($wordsCombinations as $combination) {
-                            if (in_array($combination, array_map(fn(Synonym $synonym) => $synonym->getTitle(), $categorySynonyms))) {
-                                return Categories::getById($categoryId);
-                            }
-                        }
-                    }
+        $synonyms = self::getAll();
+        foreach ($synonyms as $synonym) {
+            for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
+                if (self::hasAdSynonym($ad, $synonym)) {
+                    return $synonym->getCategory();
                 }
             }
         }
@@ -48,24 +38,8 @@ class Synonyms
     {
         $executionTime = new ExecutionTime();
         $executionTime->start();
-        $movedAdsCount = 0;
-        $gropedSynonyms = Synonyms::getGropedAll();
-        $iterator = 0;
-        foreach (['title', 'text'] as $adField) {
-            foreach ($gropedSynonyms as $categoryId => $synonyms) {
-                $toCategory = Categories::getById($categoryId);
-                Logger::debug('Поиск по синонимам "'
-                    . $toCategory->groupSynonyms($synonyms)
-                    . '" ('
-                    . (++$iterator)
-                    . '/'
-                    . count($gropedSynonyms) * 2
-                    . ')'
-                );
-                $movedAdsCount += self::moveCategoryAds($toCategory, $synonyms, $adField, $categories);
-            }
-        }
-
+        $synonyms = Synonyms::getAll();
+        $movedAdsCount = self::moveCategoryAds($synonyms, $categories);
         $executionTime->end();
         Logger::info('Moved ' . $movedAdsCount . ' ads for ' . $executionTime->get());
         
@@ -94,24 +68,24 @@ class Synonyms
     }
 
     /**
-     * @param Category $toCategory
      * @param Synonym[] $synonyms
-     * @param string $adField
      * @param Category[] $categories
      * @return int
      */
-    public static function moveCategoryAds(Category $toCategory, array $synonyms, string $adField, array $categories): int
+    public static function moveCategoryAds(array $synonyms, array $categories): int
     {
         $movedAdsCount = 0;
         if ($synonyms) {
             $limit = 1000;
             $offset = 0;
-            while ($ads = Ads::getFields($categories, ['id', $adField], $limit, $offset)) {
+            while ($ads = Ads::getFields($categories, ['id', 'title', 'text'], $limit, $offset)) {
                 foreach ($ads as $ad) {
-                    if (self::hasAdSynonyms($ad[$adField], $synonyms)) {
-                        Logger::debug('Найдено объявление!');
-                        self::moveAd($ad['id'], $toCategory);
-                        $movedAdsCount++;
+                    foreach ($synonyms as $synonym) {
+                        if (self::hasAdSynonym($ad, $synonym)) {
+                            Logger::debug('Найдено объявление!');
+                            self::moveAd($ad['id'], $synonym->getCategory());
+                            $movedAdsCount++;
+                        }
                     }
                 }
 
@@ -149,24 +123,19 @@ class Synonyms
     }
 
     /**
-     * @param string $adText
-     * @param Synonym[] $synonyms
+     * @param Ad $ad
+     * @param Synonym $synonym
      * @return bool
      */
-    private static function hasAdSynonyms(string $adText, array $synonyms): bool
+    private static function hasAdSynonym(Ad $ad, Synonym $synonym): bool
     {
-        $spacesCount = max(array_map(fn(Synonym $synonym) => $synonym->getSpacesCount(), $synonyms));
-        for ($length = $spacesCount + 1; $length >= 1; $length--) {
-            if ($wordsCombinations = self::getWordsCombinations(mb_substr($adText, 0, 200), $length)) {
-                foreach ($wordsCombinations as $combination) {
-                    if (in_array(
-                        mb_strtolower($combination),
-                        array_map(
-                            fn(Synonym $synonym) => mb_strtolower($synonym->getTitle()),
-                            $synonyms)
-                        )
-                    ) {
-                        return true;
+        for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
+            foreach ([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)] as $text) {
+                if ($wordsCombinations = self::getWordsCombinations($text, $length)) {
+                    foreach ($wordsCombinations as $combination) {
+                        if (mb_strtolower($combination) == mb_strtolower($synonym->getTitle())) {
+                            return true;
+                        }
                     }
                 }
             }

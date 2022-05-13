@@ -146,7 +146,7 @@ class Karman
     public function findAdCategory(int $id)
     {
         $ad = Ads::getById($id);
-        if ($category = \Palto\Synonyms::findCategory([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)])) {
+        if ($category = \Palto\Synonyms::findCategory($ad)) {
             $synonyms = $category->getGroupedSynonyms();
             $response = 'Нашлась категория <i>"'
                 . implode('/', array_reverse($category->getWithParentsTitles()))

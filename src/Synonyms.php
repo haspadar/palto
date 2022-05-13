@@ -21,6 +21,7 @@ class Synonyms
         $synonyms = self::getAll();
         foreach ($synonyms as $synonym) {
             for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
+                Debug::dump($synonym->getTitle(), '$synonym');
                 if (self::hasAdSynonym($ad, $synonym)) {
                     return $synonym->getCategory();
                 }
@@ -137,7 +138,7 @@ class Synonyms
                         if (mb_strtolower($synonym->getTitle()) == 'Corgi') {
                             Debug::dump(mb_strtolower($combination), 'mb_strtolower($combination)');
                         }
-                        
+
                         if (mb_strtolower($combination) == mb_strtolower($synonym->getTitle())) {
                             return true;
                         }

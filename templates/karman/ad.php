@@ -11,7 +11,7 @@
     </dd>
 
     <dt class="col-sm-3">Дата парсинга</dt>
-    <dd class="col-sm-9"><?=$this->data['ad']->getCreateTime()->format('d.m.Y H:i:s')?></dd>
+    <dd class="col-sm-9 text-muted"><?=$this->data['ad']->getCreateTime()->format('d.m.Y H:i:s')?></dd>
 
 
     <dt class="col-sm-3">Категория</dt>

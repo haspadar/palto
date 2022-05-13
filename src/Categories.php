@@ -5,16 +5,47 @@ namespace Palto;
 use Cocur\Slugify\Slugify;
 use DateTime;
 use Monolog\Handler\ZendMonitorHandler;
+use Palto\Model\Synonyms;
+use function Symfony\Component\String\s;
 
 class Categories
 {
-    public static function getChildren(array $ids, int $level, int $limit = 0): array
+    public static function findByTitle(string $title, ?Category $parent): ?Category
     {
-        $rows = Model\Categories::getChildren($ids, $level, $limit);
+        $category = Model\Categories::findByTitle($title, $parent ? $parent->getId() : 0);
+
+        return $category ? new Category($category) : null;
+    }
+
+    public static function createUndefined(?Category $category = null): Category
+    {
+        $url = 'undefined' . ($category ? '-' . $category->getUrl() : '');
+        $level = $category ? $category->getLevel() + 1 : 1;
+        $foundCategory = Model\Categories::getByUrl($url, $level);
+        if (!$foundCategory) {
+            $id = Model\Categories::add([
+                'title' => 'Undefined' . ($category ? ' ' . $category->getTitle() : ''),
+                'url' => $url,
+                'parent_id' => $category?->getId(),
+                'level' => $level
+            ]);
+            $foundCategory = Model\Categories::getById($id);
+        }
+
+        return new Category($foundCategory);
+    }
+
+    public static function getChildrenCount(array $ids): int
+    {
+        return $ids ? Model\Categories::getChildrenCount($ids) : 0;
+    }
+
+    public static function getChildren(array $ids, int $limit = 0, int $offset = 0, string $orderBy = 'ORDER BY id'): array
+    {
+        $rows = Model\Categories::getChildren($ids, $limit, $offset, $orderBy);
         $children = [];
         foreach ($rows as $row) {
-            $category = new Category($row);
-            $children[$category->getParentId()][] = $category;
+            $children[(new Category($row))->getParentId()][] = new Category($row);
         }
 
         return $children;
@@ -34,6 +65,13 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
+    public static function getByTitle(string $categoryTitle, int $parentId = 0): ?Category
+    {
+        $category = Model\Categories::getByTitle($categoryTitle, $parentId);
+
+        return $category ? new Category($category) : null;
+    }
+
     public static function getByUrl(string $categoryUrl, int $level): ?Category
     {
         $category = Model\Categories::getByUrl($categoryUrl, $level);
@@ -44,7 +82,7 @@ class Categories
     /**
      * @param Category|null $parentCategory
      * @param Region|null $region
-     * @param $count
+     * @param int $count
      * @return Category[]
      */
     public static function getLiveCategories(?Category $parentCategory = null, ?Region $region = null, int $count = 0): array
@@ -126,15 +164,25 @@ class Categories
         return \Palto\Model\Categories::getMaxLevel();
     }
 
-    private static function getChildCategories(array $category): array
+    /**
+     * @return Category[]
+     */
+    public static function getUndefinedAll(string $orderBy = 'level DESC'): array
     {
-        $childrenIds = [];
-        $nextLevelCategoriesIds = [$category['id']];
-        $level = $category['level'];
-        while ($nextLevelCategoriesIds = Model\Categories::getChildrenIds($nextLevelCategoriesIds, ++$level)) {
-            $childrenIds = array_merge($nextLevelCategoriesIds, $childrenIds);
-        }
+        return array_map(
+            fn($category) => new Category($category),
+            \Palto\Model\Categories::findByUrlAll('undefined', $orderBy)
+        );
+    }
 
-        return Model\Categories::getCategoriesByIds($childrenIds);
+    /**
+     * @return Category[]
+     */
+    public static function getRoots(): array
+    {
+        return array_map(
+            fn($category) => new Category($category),
+            \Palto\Model\Categories::getRoots()
+        );
     }
 }

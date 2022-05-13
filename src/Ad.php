@@ -16,7 +16,7 @@ class Ad
         $this->images = $images;
         $this->details = $details;
         $this->region = Regions::getById($this->getRegionId());
-        $this->category = Category::getById($this->getCategoryId());
+        $this->category = Categories::getById($this->getCategoryId());
     }
 
     public function getTitle(): string

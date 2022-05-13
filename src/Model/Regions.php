@@ -21,6 +21,16 @@ class Regions extends Model
         return [];
     }
 
+    public static function getLeafs(int $limit): array
+    {
+        $query = "SELECT * FROM regions WHERE id NOT IN (SELECT parent_id FROM regions WHERE parent_id IS NOT NULL)";
+        if ($limit) {
+            $query .= " LIMIT $limit";
+        }
+
+        return self::getDb()->query($query);
+    }
+
     public static function getRegionsByIds(array $ids): array
     {
         return self::getDb()->query('SELECT * FROM regions WHERE id IN %ld', $ids);

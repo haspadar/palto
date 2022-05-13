@@ -31,19 +31,20 @@
                         <a class="nav-link" href="/karman/complaints?cache=0">
                             <h7 class="<?php if ($this->data['url']->getPath() == '/karman/complaints') : ?>fw-bold<?php endif; ?>">
                                 Жалобы
-                                <?php if ($count = \Palto\Complaints::getActualComplaintsCount()) : ?>
-                                    <span class="badge bg-warning"><?= $count ?></span>
+                                <?php if ($this->data['actual_complaints_count']) : ?>
+                                    <span class="badge bg-warning"><?= $this->data['actual_complaints_count'] ?></span>
                                 <?php endif; ?>
                             </h7>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/categories?cache=0">
-                            <h7 class="<?php if ($this->data['url']->getPath() == '/karman/categories') : ?>fw-bold<?php endif; ?>">
+                            <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/categories', '/karman/ads'])) : ?>fw-bold<?php endif; ?>">
                                 Категории
                             </h7>
                         </a>
                     </li>
+
                 </ul>
             </div>
         </nav>
@@ -66,7 +67,7 @@
             <?php endif; ?>
 
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                <h1 class="h2"><?= $this->data['title'] ?></h1>
+                <h1><?= $this->data['title'] ?></h1>
             </div>
 
             <?php if ($this->data['flash']) : ?>
@@ -83,8 +84,8 @@
 
 <script src="<?=$this->asset('/js/jquery.min.js')?>"></script>
 <script src="<?=$this->asset('/bootstrap/js/bootstrap.js')?>"></script>
+<script src="<?=$this->asset('/bootstrap/js/bootstrap.bundle.js')?>"></script>
 <script src="<?=$this->asset('/clipboard/dist/clipboard.min.js')?>"></script>
-<!--https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js-->
 <script src="<?=$this->asset('/js/emoji.min.js')?>"></script>
 <script src="<?=$this->asset('/js/karman.js')?>"></script>
 

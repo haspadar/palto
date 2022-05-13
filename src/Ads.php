@@ -37,6 +37,13 @@ class Ads
             : 0;
     }
 
+    public static function getCategoriesAdsCounts(array $categoriesIds, int $level = 0): array
+    {
+        return $categoriesIds
+            ? Model\Ads::getCategoriesAdsCounts($categoriesIds, $level)
+            : [];
+    }
+
     public static function getCategoriesAdsCount(array $categoriesIds): int
     {
         return $categoriesIds
@@ -51,6 +58,13 @@ class Ads
             Categories::getById(Config::get('HOT_LAYOUT_HOT_CATEGORY')),
             $limit
         );
+    }
+
+    public static function getFields(array $categories, array $fields, int $limit, int $offset): array
+    {
+        $categoriesIds = array_map(fn(Category $category) => $category->getId(), $categories);
+
+        return \Palto\Model\Ads::getFields($categoriesIds, $fields, $limit, $offset);
     }
 
     public static function getAds(
@@ -186,9 +200,11 @@ class Ads
     {
         if (isset($ad['category_id']) && $ad['category_id']) {
             $category = Categories::getById($ad['category_id']);
-            while ($category) {
+            while ($category && $category->getLevel()) {
                 $ad['category_level_' . $category->getLevel() . '_id'] = $category->getId();
-                $category = $category->getParentId() ? Categories::getById($category->getParentId()) : null;
+                $category = $category->getParentId()
+                    ? Categories::getById($category->getParentId())
+                    : null;
             }
         }
 
@@ -215,5 +231,56 @@ class Ads
     public static function getFieldNames(): array
     {
         return Model\Ads::getFieldNames('ads');
+    }
+
+    public static function moveAd(
+        int $adId,
+        int $categoryLevel1Id,
+        string $newCategoryLevel1Title,
+        int $categoryLevel2Id,
+        string $newCategoryLevel2Title
+    ): void {
+        if ($newCategoryLevel1Title) {
+            $category = Categories::safeAdd(['title' => $newCategoryLevel1Title]);
+            self::update([
+                'category_id' => $category->getId(),
+                'category_level_1_id' => $category->getId(),
+                'category_level_2_id' => null,
+            ], $adId);
+        } elseif ($newCategoryLevel2Title) {
+            $category = Categories::safeAdd([
+                'title' => $newCategoryLevel2Title,
+                'parent_id' => $categoryLevel1Id
+            ]);
+            self::update([
+                'category_id' => $category->getId(),
+                'category_level_1_id' => $categoryLevel1Id,
+                'category_level_2_id' => $category->getId(),
+            ], $adId);
+        } elseif ($categoryLevel2Id) {
+            self::update([
+                'category_id' => $categoryLevel2Id,
+                'category_level_1_id' => $categoryLevel1Id,
+                'category_level_2_id' => $categoryLevel2Id,
+            ], $adId);
+        } elseif ($categoryLevel1Id) {
+            self::update([
+                'category_id' => $categoryLevel1Id,
+                'category_level_1_id' => $categoryLevel1Id,
+                'category_level_2_id' => null,
+            ], $adId);
+        }
+    }
+
+    public static function update(array $updates, int $id): void
+    {
+        \Palto\Model\Ads::update($updates, $id);
+    }
+
+    public static function getUndefinedCount(): int
+    {
+        $categories = Categories::getUndefinedAll();
+
+        return self::getCategoriesAdsCount(array_map(fn(Category $category) => $category->getId(), $categories));
     }
 }

@@ -13,11 +13,12 @@ class Categories extends Controller
     {
         $title = Filter::get($this->getDispatcher()->getPutParameter('title'));
         $id = intval($this->getDispatcher()->getRouter()->getQueryParameter('id'));
-        \Palto\Categories::update([
+        $category = \Palto\Categories::getById($id);
+        $category->update([
             'title' => $title,
             'url' => Filter::get($this->getDispatcher()->getPutParameter('url')),
             'emoji' => Filter::get($this->getDispatcher()->getPutParameter('emoji'))
-        ], $id);
+        ]);
         Flash::add(json_encode([
             'message' => 'Категория <a href="/karman/categories?id=' . $id . '">"' . $title . '"</a> обновлена',
             'type' => 'success'
@@ -29,9 +30,10 @@ class Categories extends Controller
     public function removeEmoji()
     {
         $id = intval($this->getDispatcher()->getRouter()->getQueryParameter('id'));
-        \Palto\Categories::update([
+        $category = \Palto\Categories::getById($id);
+        $category->update([
             'emoji' => ''
-        ], $id);
+        ]);
         Flash::add(json_encode([
             'message' => 'Emoji удалена',
             'type' => 'success'

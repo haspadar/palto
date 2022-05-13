@@ -149,7 +149,6 @@ class Cli
                 $projectName,
                 $projectName
             );
-
             $filename = Config::getNginxDomainFilename();
 
             return "echo '$nginxDomain' > $filename";

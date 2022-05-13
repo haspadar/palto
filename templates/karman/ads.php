@@ -8,7 +8,7 @@
                 <?=$ad->getTitle();?>
             </a>
             <small class="text-muted text-decoration-none">
-                <?=(new DateTime())->format('d.m.Y H:i:s')?>
+                <?=$ad->getCreateTime()->format('d.m.Y H:i:s')?>
             </small>
             <button class="btn btn-secondary btn-sm float-end move-ad"
                     type="button"

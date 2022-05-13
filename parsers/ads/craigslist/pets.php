@@ -18,7 +18,6 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
     protected function parseAd(Crawler $adDocument, \Palto\Region $region, Url $adUrl): int
     {
-        $adUrl = new Url('https://phoenix.craigslist.org/wvl/pet/d/glendale-golden-retriever-pup/7481452909.html');
         $title = Parser::getText($adDocument, ['#titletextonly']);
         $text = trim(strtr(strip_tags(Parser::getHtml($adDocument, ['#postingbody'])), ['QR Code Link to This Post' => '']));
         if ($title && $text) {
@@ -47,8 +46,6 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $details = $this->getDetails($adDocument);
             $adId = Ads::add($ad, $images, $details);
             $category = \Palto\Synonyms::findCategory(Ads::getById($adId));
-            \Palto\Debug::dump($category, '$category');
-            \Palto\Debug::dump($adId, '$adId');
             if ($category) {
                 Ads::update([
                     'category_id' => $category->getId(),
@@ -59,7 +56,6 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         } else {
             \Palto\Logger::debug('Empty ad title: ' . $adUrl->getFull());
         }
-        echo 'done';
 
         return 0;
     }

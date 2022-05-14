@@ -28,7 +28,7 @@ class Status
         Debug::dump($withoutShLines, '$withoutShLines');
         foreach ($withoutShLines as $withoutShLine) {
             $processes[] = [
-                'name' => $withoutShLines[count($withoutShLines) - 1],
+                'name' => $withoutShLine[count($withoutShLine) - 1],
                 'run_time' => $withoutShLine[8],
                 'work_time' => $withoutShLine[9]
             ];

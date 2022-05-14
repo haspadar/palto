@@ -26,6 +26,13 @@
         <p>
             <?=$this->data['ad']->getText()?>
         </p>
+        <?php if ($this->data['ad']->getImages()) :?>
+            <p>
+                <?php foreach ($this->data['ad']->getImages() as $image) :?>
+                    <img src="<?=$image['small']?>" style="max-width:100px" loading="lazy">
+                <?php endforeach;?>
+            </p>
+        <?php endif;?>
     </dd>
 </dl>
 

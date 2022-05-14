@@ -29,7 +29,9 @@
         <?php if ($this->data['ad']->getImages()) :?>
             <p>
                 <?php foreach ($this->data['ad']->getImages() as $image) :?>
-                    <img src="<?=$image['small']?>" style="max-width:100px" loading="lazy">
+                    <a href="<?=$image['big']?>" target="_blank">
+                        <img src="<?=$image['small']?>" style="max-width:100px" loading="lazy">
+                    </a>
                 <?php endforeach;?>
             </p>
         <?php endif;?>

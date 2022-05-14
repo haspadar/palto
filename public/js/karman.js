@@ -405,7 +405,10 @@ $(function () {
                             className = 'text-secondary';
                         }
 
-                        $('.logs').append('<li class="' + className + '">' + log + '</li>');
+                        let logParts = log.replace('[', '').split(']');
+                        let date = new Date(logParts[0]);
+                        let logText = logParts[1];
+                        $('.logs').append('<li class="' + className + '">[' + formatTime(date) + '] ' + logText + '</li>');
                     });
                     clearInterval(t);
                     t = setInterval(function () {
@@ -416,6 +419,16 @@ $(function () {
         }
         loadLogs($('.logs').data('directory'), $('.logs').data('type'));
     }
+
+    function formatTime(jsDateTime) {
+        function formatTimePart(part) {
+            return parseInt(part) > 9 ? part : '0' + part;
+        }
+
+        return [formatTimePart(jsDateTime.getDate()), formatTimePart(jsDateTime.getMonth() + 1), jsDateTime.getFullYear()].join('.') +
+            ' ' + [formatTimePart(jsDateTime.getHours()), formatTimePart(jsDateTime.getMinutes()), formatTimePart(jsDateTime.getSeconds())].join(':');
+    }
+
 
     function pluralForm(count, formFor1, formFor2, formFor5) {
         let intCount = parseInt(count);

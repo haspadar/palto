@@ -177,7 +177,6 @@ class Karman
             'title' => 'Логи "' . $name . '"',
             'type' => 'info',
             'directory' => $name,
-            'logs' => Logs::getLogs($name, 'info'),
             'breadcrumbs' => array_merge([[
                 'title' => 'Все логи',
                 'url' => '/karman/info-logs-directories?cache=0'
@@ -199,7 +198,6 @@ class Karman
             'title' => 'Логи "' . $name . '"',
             'type' => 'error',
             'directory' => $name,
-            'logs' => Logs::getLogs($name, 'error'),
             'breadcrumbs' => array_merge([[
                 'title' => 'Все ошибки',
                 'url' => '/karman/error-logs-directories?cache=0'

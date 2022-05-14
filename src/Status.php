@@ -23,7 +23,7 @@ class Status
     public static function getPhpProcesses(): array
     {
         $processes = Cli::getPsGrepProcesses('/usr/bin/php');
-        
+
         return array_values(array_filter($processes, fn(array $process) => $process[7] != 'sh'));
     }
 

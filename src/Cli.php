@@ -88,6 +88,7 @@ class Cli
     public static function getPsGrepProcesses(string $grepPattern): array
     {
         $commands = self::getPsProcesses("ps -eo pid,lstart,etime,cmd | grep \"$grepPattern\"");
+        Debug::dump($commands, '$commands');
         $parsed = [];
         foreach ($commands as $command) {
             $parsed[] = [

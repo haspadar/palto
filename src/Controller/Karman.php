@@ -189,7 +189,7 @@ class Karman
 
     public function getLogs(string $name, string $type)
     {
-        $this->showJsonResponse(['logs' => array_reverse(Logs::getLogs($name, $type), true)]);
+        $this->showJsonResponse(['logs' => Logs::getLogs($name, $type)]);
     }
 
     public function showErrorLogs(string $name)

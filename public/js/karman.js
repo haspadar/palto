@@ -394,7 +394,7 @@ $(function () {
                 data: {},
                 success: function (response) {
                     $logs.html('');
-                    $.each(response.logs, function (lineNumber, log) {
+                    $.each(response.logs.reverse(), function (lineNumber, log) {
                         let className = '';
                         if (log.includes('.INFO')) {
                             className = 'text-primary';

@@ -85,21 +85,23 @@ class Cli
             && mb_strpos(file_get_contents(Directory::getRootDirectory() . '/.env'), 'AUTH=1') !== false;
     }
 
-    public static function getParsedProcesses(string $grepPattern): array
+    public static function getPsGrepProcesses(string $grepPattern): array
     {
-        $commands = self::getProcesses("ps -eo pid,lstart,etime,cmd | grep \"/usr/bin/php\"");
+        $commands = self::getPsProcesses("ps -eo pid,lstart,etime,cmd | grep \"$grepPattern\"");
         $parsed = [];
         foreach ($commands as $command) {
-            $parsed['pid'] = $command[0];
-            $parsed['name'] = $command[count($command) - 1];
-            $parsed['run_time'] = $command[1] . ' ' . $command[2] . ' ' . $command[3] . ' ' . $command[5];
-            $parsed['work_time'] = $command[6];
+            $parsed[] = [
+                'pid' => $command[0],
+                'name' => $command[count($command) - 1],
+                'run_time' => $command[1] . ' ' . $command[2] . ' ' . $command[3] . ' ' . $command[5],
+                'work_time' => $command[6],
+            ];
         }
-Debug::dump($parsed);exit;
+
         return $parsed;
     }
 
-    public static function getProcesses(string $psCommand): array
+    public static function getPsProcesses(string $psCommand): array
     {
         $response = `$psCommand`;
         $lines = array_values(array_filter(explode(PHP_EOL, $response)));

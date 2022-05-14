@@ -58,10 +58,6 @@ class Category
 
     public function groupSynonyms(array $synonyms): string
     {
-        foreach ($synonyms as $synonym) {
-            Debug::dump($synonym->getTitle(), '$synonym->getTitle()');
-        }
-
         return implode(', ', array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms));
     }
 

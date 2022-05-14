@@ -95,7 +95,7 @@ class Cli
             $parsed['run_time'] = $command[1] . ' ' . $command[2] . ' ' . $command[3] . ' ' . $command[5];
             $parsed['work_time'] = $command[6];
         }
-
+Debug::dump($parsed);exit;
         return $parsed;
     }
 

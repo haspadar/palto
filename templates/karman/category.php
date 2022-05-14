@@ -31,7 +31,6 @@ use Palto\Debug;
         <?php endif; ?>
     </div>
 
-    <br>
     <div class="d-flex justify-content-between">
         <button type="submit" class="btn btn-primary" data-id="<?= $this->data['category']->getId() ?>">Сохранить</button>
         <button type="button"

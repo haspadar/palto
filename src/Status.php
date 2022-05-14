@@ -23,14 +23,13 @@ class Status
     public static function getPhpProcesses(): array
     {
         $linesColumns = Cli::getPsGrepProcesses('/usr/bin/php');
-        Debug::dump($linesColumns, '$linesColumns');
-        $withoutShLines = array_values(array_filter($linesColumns, fn(array $columns) => $columns[10] != 'sh'));
+        $filtered = array_values(array_filter($linesColumns, fn(array $columns) => $columns[10] != 'sh'));
         $processes = [];
-        foreach ($withoutShLines as $withoutShLine) {
+        foreach ($filtered as $process) {
             $processes[] = [
-                'name' => $withoutShLine[count($withoutShLine) - 1],
-                'run_time' => $withoutShLine[8],
-                'work_time' => $withoutShLine[9]
+                'name' => $process[count($process) - 1],
+                'run_time' => $process[8],
+                'work_time' => $process[9]
             ];
         }
 

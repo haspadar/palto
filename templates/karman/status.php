@@ -34,6 +34,7 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
+                <th scope="col">PID</th>
                 <th scope="col">Процесс</th>
                 <th scope="col">Время запуска</th>
                 <th scope="col">Время работы</th>
@@ -43,6 +44,7 @@
             <?php foreach (\Palto\Status::getPhpProcesses() as $key => $phpProcess) :?>
                 <tr>
                     <th scope="row"><?=$key + 1?></th>
+                    <td><?=$phpProcess['pid']?></td>
                     <td><?=$phpProcess['name']?></td>
                     <td><?=$phpProcess['run_time']?></td>
                     <td><?=$phpProcess['work_time']?></td>

@@ -36,7 +36,6 @@ class Synonyms
      */
     public static function findAndMoveAds(array $categories): int
     {
-        Logger::info('Find and move ads started');
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $synonyms = Synonyms::getAll();

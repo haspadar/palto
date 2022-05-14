@@ -196,12 +196,12 @@ class Karman
     {
         $ad = Ads::getById($id);
         if ($category = \Palto\Synonyms::findCategory($ad)) {
-            $synonyms = $category->getGroupedSynonyms();
+            $synonyms = $category->getSynonyms();
             $response = 'Нашлась категория <i>"'
                 . implode('/', array_reverse($category->getWithParentsTitles()))
                 . '"</i>'
                 . ($synonyms
-                    ? ' с синонимами <ul><i>"' . array_map(fn(Synonym $synonym) => '<li>' . $synonym->getTitle() . '</li>', $synonyms) . '"</ul></i>'
+                    ? ' с синонимами <ul><i>"' . implode('', array_map(fn(Synonym $synonym) => '<li>' . $synonym->getTitle() . '</li>', $synonyms)) . '"</ul></i>'
                     : ' без синонимов'
                 );
         } else {

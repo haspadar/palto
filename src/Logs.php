@@ -46,10 +46,9 @@ class Logs
             $file = file($file);
             $lines = [];
             for ($i = max(0, count($file) - $limit - 1); $i < count($file); $i++) {
-                Debug::dump(count($file) - $limit + $i, 'min(count($file) - $limit + $i');
                 $lines[min(count($file) - $limit + $i, 1)] = $file[$i];
             }
-
+Debug::dump($lines);
             return $lines;
         }
 

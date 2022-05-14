@@ -383,8 +383,9 @@ $(function () {
         });
     }
 
-    if ($('.logs').length) {
-        let t;
+    let $logs = $('.logs');
+    if ($logs.length) {
+        let logInterval;
         function loadLogs (directory, type) {
             $.ajax({
                 url: '/karman/get-logs/' + directory + '/' + type,
@@ -392,7 +393,7 @@ $(function () {
                 type: 'GET',
                 data: {},
                 success: function (response) {
-                    $('.logs').html('');
+                    $logs.html('');
                     $.each(response.logs, function (lineNumber, log) {
                         let className = '';
                         if (log.includes('.INFO')) {
@@ -410,16 +411,45 @@ $(function () {
                         let logParts = log.replace('[', '').split(']');
                         let date = new Date(logParts[0]);
                         let logText = logParts[1];
-                        $('.logs').append('<li class="ms-5 ' + className + '" value="' + lineNumber + '">[' + formatTime(date) + '] ' + logText + '</li>');
+                        $logs.append('<li class="ms-5 '
+                            + className
+                            + '" value="'
+                            + lineNumber
+                            + '">['
+                            + formatTime(date)
+                            + '] '
+                            + addLinks(logText)
+                            + '</li>'
+                        );
                     });
-                    clearInterval(t);
-                    t = setInterval(function () {
-                        loadLogs(directory, type, t);
+                    clearInterval(logInterval);
+                    logInterval = setInterval(function () {
+                        loadLogs(directory, type, logInterval);
                     }, 1000);
                 }
             });
         }
-        loadLogs($('.logs').data('directory'), $('.logs').data('type'));
+        loadLogs($logs.data('directory'), $logs.data('type'));
+    }
+
+    function addLinks(inputText) {
+        // var pattern = '/(http(s)?://)(([a-zA-Z])([-\w]+\.)+([^\s\.]+[^\s]*)+[^,.\s])/i';
+
+        var replacedText, replacePattern1, replacePattern2, replacePattern3;
+
+        //URLs starting with http://, https://, or ftp://
+        replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+        replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+
+        //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+        replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+        replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+
+        //Change email addresses to mailto:: links.
+        replacePattern3 = /(([a-zA-Z0-9\-\_\.])+@[a-zA-Z\_]+?(\.[a-zA-Z]{2,6})+)/gim;
+        replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
+
+        return replacedText;
     }
 
     function formatTime(jsDateTime) {

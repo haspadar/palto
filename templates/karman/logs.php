@@ -2,7 +2,7 @@
 
 <?php $this->layout('layout');?>
 
-<ul class="list-group list-group logs" data-directory="<?=$this->data['directory']?>" data-type="<?=$this->data['type']?>">
+<ol class="list-group list-group logs" data-directory="<?=$this->data['directory']?>" data-type="<?=$this->data['type']?>">
 
-</ul>
+</ol>
 

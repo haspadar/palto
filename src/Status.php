@@ -22,7 +22,7 @@ class Status
 
     public static function getPhpProcesses(): array
     {
-        $linesColumns = Cli::getProcesses('/usr/bin/php');
+        $linesColumns = Cli::getParsedProcesses('/usr/bin/php');
         $withoutShLines = array_values(array_filter($linesColumns, fn(array $columns) => $columns[10] != 'sh'));
         $processes = [];
         foreach ($withoutShLines as $withoutShLine) {

@@ -87,7 +87,7 @@ class Cli
 
     public static function getParsedProcesses(string $grepPattern): array
     {
-        $commands = self::getProcesses('ps -eo pid,lstart,cmd,etime | grep "/usr/bin/php"');
+        $commands = self::getProcesses("ps -eo pid,lstart,cmd,etime | grep \"/usr/bin/php\"");
         Debug::dump($commands);
         $parsed = [];
         Debug::dump($commands);exit;

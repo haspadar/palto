@@ -52,7 +52,8 @@ class Category
     public function getGroupedSynonyms(): string
     {
         $synonyms = $this->getSynonyms();
-
+Debug::dump($synonyms, '$synonyms');;
+Debug::dump($this->groupSynonyms($synonyms), '$this->groupSynonyms($synonyms)');
         return $this->groupSynonyms($synonyms);
     }
 

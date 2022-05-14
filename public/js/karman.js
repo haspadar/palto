@@ -394,7 +394,18 @@ $(function () {
                 success: function (response) {
                     $('.logs').html('');
                     $.each(response.logs, function (i, log) {
-                        $('.logs').append('<li>' + log + '</li>');
+                        let className = '';
+                        if (log.includes('.INFO')) {
+                            className = 'text-primary';
+                        } else if (log.includes('.ERROR')) {
+                            className = 'text-danger';
+                        } else if (log.includes('.WARNING')) {
+                            className = 'text-warning';
+                        }  else if (log.includes('.DEBUG')) {
+                            className = 'text-secondary';
+                        }
+
+                        $('.logs').append('<li class="' + className + '">' + log + '</li>');
                     });
                     clearInterval(t);
                     t = setInterval(function () {

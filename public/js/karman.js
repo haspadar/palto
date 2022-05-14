@@ -397,7 +397,9 @@ $(function () {
                         let className = '';
                         if (log.includes('.INFO')) {
                             className = 'text-primary';
-                        } else if (log.includes('.ERROR')) {
+                        } else if (log.includes('.ERROR')
+                            || log.includes('.CRITICAL')
+                        ) {
                             className = 'text-danger';
                         } else if (log.includes('.WARNING')) {
                             className = 'text-warning';

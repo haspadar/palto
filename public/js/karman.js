@@ -222,6 +222,7 @@ $(function () {
         });
     });
 
+
     $('#categoryLevel1').on('change', function () {
         let categoryLevel1 = $(this).val();
         if (categoryLevel1) {
@@ -380,6 +381,29 @@ $(function () {
                 }
             }
         });
+    }
+
+    if ($('.logs').length) {
+        let t;
+        function loadLogs (directory, type) {
+            $.ajax({
+                url: '/karman/get-logs/' + directory + '/' + type,
+                dataType: "json",
+                type: 'GET',
+                data: {},
+                success: function (response) {
+                    $('.logs').html('');
+                    $.each(response.logs, function (i, log) {
+                        $('.logs').append('<li>' + log + '</li>');
+                    });
+                    clearInterval(t);
+                    t = setInterval(function () {
+                        loadLogs(directory, type, t);
+                    }, 3000);
+                }
+            });
+        }
+        loadLogs($('.logs').data('directory'), $('.logs').data('type'));
     }
 
     function pluralForm(count, formFor1, formFor2, formFor5) {

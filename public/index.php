@@ -47,6 +47,7 @@ $router->mount('/karman', function() use ($router) {
 
     $router->get("/info-logs/{name}", '\Palto\Controller\Karman@showInfoLogs');
     $router->get("/error-logs/{name}", '\Palto\Controller\Karman@showErrorLogs');
+    $router->get("/get-logs/{name}/{type}", '\Palto\Controller\Karman@getLogs');
 
 //    $router->get("/log-directories", '\Palto\Controller\Karman@showLogDirectories');
 //    $router->get("/log-directories/{name}", '\Palto\Controller\Karman@showLogDirectory');

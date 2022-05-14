@@ -171,7 +171,7 @@ class Karman
         echo $this->templatesEngine->make('logs-directories');
     }
 
-    public function showInfoLogs($name)
+    public function showInfoLogs(string $name)
     {
         $this->templatesEngine->addData([
             'title' => 'Логи "' . $name . '"',
@@ -188,7 +188,12 @@ class Karman
         echo $this->templatesEngine->make('logs');
     }
 
-    public function showErrorLogs($name)
+    public function getLogs(string $name, string $type)
+    {
+        $this->showJsonResponse(['logs' => Logs::getLogs($name, $type, 50)]);
+    }
+
+    public function showErrorLogs(string $name)
     {
         $this->templatesEngine->addData([
             'title' => 'Логи "' . $name . '"',
@@ -204,54 +209,6 @@ class Karman
         ]);
         echo $this->templatesEngine->make('logs');
     }
-
-//    public function showLogDirectories()
-//    {
-//        $this->templatesEngine->addData([
-//            'title' => 'Логи',
-//            'directories' => Directory::getLogsDirectories(),
-//            'breadcrumbs' => array_merge([[
-//                'title' => 'Логи',
-//            ]])
-//        ]);
-//        echo $this->templatesEngine->make('logs');
-//    }
-//
-//    public function showLogType(string $directory, string $type)
-//    {
-//        $this->templatesEngine->addData([
-//            'title' => 'Тип "' . $type . '"',
-//            'directory' => $directory,
-//            'type' => $type,
-//            'rows' => Directory::getLastLogs($directory, $type),
-//            'breadcrumbs' => array_merge([[
-//                'title' => 'Логи',
-//                'url' => '/karman/log-directories?cache=0'
-//            ], [
-//                'title' => 'Директория "' . $directory . '"',
-//                'url' => '/karman/log-directories/' . $directory . '?cache=0'
-//            ], [
-//                'title' => 'Тип "' . $type . '"',
-//            ]])
-//        ]);
-//        echo $this->templatesEngine->make('log-type');
-//    }
-//
-//    public function showLogDirectory(string $name)
-//    {
-//        $this->templatesEngine->addData([
-//            'title' => 'Директория "' . $name . '"',
-//            'directory' => $name,
-//            'types' => Directory::getLogTypes($name),
-//            'breadcrumbs' => array_merge([[
-//                'title' => 'Логи',
-//                'url' => '/karman/log-directories?cache=0'
-//            ], [
-//                'title' => 'Директория "' . $name . '"',
-//            ]])
-//        ]);
-//        echo $this->templatesEngine->make('log');
-//    }
 
     public function findAdCategory(int $id)
     {

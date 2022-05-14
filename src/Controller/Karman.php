@@ -383,7 +383,7 @@ class Karman
 
     public function getCategoriesChildren(int $parentId): void
     {
-        $children = $parentId ? Categories::getChildren([$parentId]) : [];
+        $children = $parentId ? Categories::getChildren([$parentId], 0, 0, 'title') : [];
         $this->showJsonResponse(array_map(fn(Category $category) => [
             'id' => $category->getId(),
             'parent_id' => $category->getParentId() ?: null,

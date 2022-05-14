@@ -159,7 +159,7 @@ class Categories extends Model
 
     public static function getRoots(): array
     {
-        return self::getDb()->query('SELECT * FROM categories WHERE level = %d', 1) ?: [];
+        return self::getDb()->query('SELECT * FROM categories WHERE level = %d ORDER BY title', 1) ?: [];
     }
 
     public static function removeChildren(int $parentId)

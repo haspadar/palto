@@ -18,7 +18,7 @@
 <div class="container-fluid">
     <div class="row">
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div class="navbar-brand col-md-3 col-lg-2 me-0 px-3">Karman</div>
+            <div class="navbar-brand col-md-3 col-lg-2 me-0 px-3"><img src="/img/coat-with-pockets.png" alt="Karman" height="30"> Karman</div>
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">

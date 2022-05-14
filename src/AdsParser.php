@@ -50,6 +50,7 @@ abstract class AdsParser
 
     public function run(string $file)
     {
+        Logger::info('Ads parser started');
         if (self::IS_CRON_DISABLED && Cli::isCron()) {
             Logger::error('Cron parsing disabled');
 

@@ -201,7 +201,7 @@ class Karman
                 . implode('/', array_reverse($category->getWithParentsTitles()))
                 . '"</i>'
                 . ($synonyms
-                    ? ' с синонимами <i>"' . $synonyms . '"</i>'
+                    ? ' с синонимами <ul><i>"' . array_map(fn(Synonym $synonym) => '<li>' . $synonym->getTitle() . '</li>', $synonyms) . '"</ul></i>'
                     : ' без синонимов'
                 );
         } else {

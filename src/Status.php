@@ -25,10 +25,11 @@ class Status
         $linesColumns = Cli::getProcesses('/usr/bin/php');
         $withoutShLines = array_filter($linesColumns, fn(array $columns) => $columns[10] != 'sh');
         $processes = [];
+        Debug::dump($withoutShLines, '$withoutShLines');
         foreach ($withoutShLines as $withoutShLine) {
             $processes[] = [
                 'name' => $withoutShLines[count($withoutShLines) - 1],
-                'run_time' => new \DateTime($withoutShLine[8]),
+                'run_time' => $withoutShLine[8],
                 'work_time' => $withoutShLine[9]
             ];
         }

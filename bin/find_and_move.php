@@ -5,6 +5,7 @@ use Palto\Categories;
 
 require_once __DIR__ . '/autoload_require_composer.php';
 
+\Palto\Logger::info('Find and move started');
 if (Categories::getUndefinedAll()) {
     \Palto\Synonyms::findAndMoveAds(Categories::getUndefinedAll());
 } else {

@@ -30,12 +30,11 @@ class Synonyms extends Model
 
     public static function getAll(int $categoryId = 0): array
     {
-        self::getDb()->debugMode();
         return self::getDb()->query(
             "SELECT s.*, s.category_id, SUM(LENGTH(s.title) - LENGTH(REPLACE(s.title, ' ', '')) + 1) as spaces_count FROM synonyms AS s "
                 . " INNER JOIN categories AS c ON s.category_id = c.id "
                 . ($categoryId ? 'WHERE category_id=' . $categoryId : '')
-                . " GROUP BY c.title ORDER BY IF(c.url like 'undefined%', 1, 0), spaces_count DESC"
+                . " GROUP BY s.id ORDER BY IF(c.url like 'undefined%', 1, 0), spaces_count DESC"
         );
     }
 

@@ -85,9 +85,22 @@ class Cli
             && mb_strpos(file_get_contents(Directory::getRootDirectory() . '/.env'), 'AUTH=1') !== false;
     }
 
-    public static function getProcesses(string $grepPattern): array
+    public static function getParsedProcesses(string $grepPattern): array
     {
-        $response = `ps aux | grep "$grepPattern"`;
+        $commands = self::getProcesses('ps -eo pid,lstart,cmd,etime | grep "/usr/bin/php"');
+        $parsed = [];
+        Debug::dump($commands);exit;
+        foreach ($commands as $commands) {
+            $parsed[''] = '';
+        }
+
+
+        return $parsed;
+    }
+
+    public static function getProcesses(string $psCommand): array
+    {
+        $response = `$psCommand`;
         $lines = array_values(array_filter(explode(PHP_EOL, $response)));
         $processes = array_map(fn(string $line) => array_values(array_filter(explode(' ', $line))), $lines);
         array_pop($processes);

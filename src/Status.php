@@ -23,17 +23,8 @@ class Status
     public static function getPhpProcesses(): array
     {
         $processes = Cli::getPsGrepProcesses('/usr/bin/php');
-        $filtered = array_values(array_filter($processes, fn(array $process) => $process[7] != 'sh'));
-        $processes = [];
-        foreach ($filtered as $process) {
-            $processes[] = [
-                'name' => $process[count($process) - 1],
-                'run_time' => $process[8],
-                'work_time' => $process[9]
-            ];
-        }
-
-        return $processes;
+        
+        return array_values(array_filter($processes, fn(array $process) => $process[7] != 'sh'));
     }
 
     public static function getDirectoryUsePercent($directory): string

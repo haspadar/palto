@@ -2,9 +2,9 @@
 
 <?php $this->layout('layout');?>
 
-<dl class="dl-">
-    <dt>Сайт включен</dt>
-    <dd>
+<dl class="row">
+    <dt class="col-sm-3">Сайт включен</dt>
+    <dd class="col-sm-9">
         <?php if (\Palto\Status::isSiteEnabled()) :?>
             <span class="badge rounded-pill bg-success">Да</span>
             <a href="javascript:void(0);" class="small disable-site text-decoration-none">Выключить</a>
@@ -13,8 +13,8 @@
             <a href="javascript:void(0);" class="small enable-site text-decoration-none">Включить</a>
         <?php endif;?>
     </dd>
-    <dt>Кеш включен</dt>
-    <dd>
+    <dt class="col-sm-3">Кеш включен</dt>
+    <dd class="col-sm-9">
         <?php if (\Palto\Status::isCacheEnabled()) :?>
             <span class="badge rounded-pill bg-success">Да</span>
             <a href="javascript:void(0);" class="small disable-cache text-decoration-none">Выключить</a>
@@ -23,13 +23,13 @@
             <a href="javascript:void(0);" class="small enable-cache text-decoration-none">Включить</a>
         <?php endif;?>
     </dd>
-    <dt>Занятое место на диске</dt>
-    <dd><?=\Palto\Status::getDirectoryUsePercent('/')?>%</dd>
+    <dt class="col-sm-3">Занятое место на диске</dt>
+    <dd class="col-sm-9"><?=\Palto\Status::getDirectoryUsePercent('/')?>%</dd>
 
-    <dt>Запущенные процессы</dt>
+    <dt class="col-sm-3">Запущенные процессы</dt>
 
 
-    <dd>
+    <dd class="col-sm-9">
         <table class="table">
             <thead>
             <tr>

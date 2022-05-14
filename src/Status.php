@@ -24,7 +24,7 @@ class Status
     {
         $processes = Cli::getPsGrepProcesses('/usr/bin/php');
 Debug::dump($processes, '$processes');
-        return array_values(array_filter($processes, fn(array $process) => $process[7] != 'sh'));
+        return array_values(array_filter($processes, fn(array $process) => $process['command'] != 'sh'));
     }
 
     public static function getDirectoryUsePercent($directory): string

@@ -399,7 +399,7 @@ $(function () {
                     clearInterval(t);
                     t = setInterval(function () {
                         loadLogs(directory, type, t);
-                    }, 3000);
+                    }, 1000);
                 }
             });
         }

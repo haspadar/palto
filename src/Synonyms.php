@@ -84,8 +84,7 @@ class Synonyms
                     $ad = new Ad($adFields, [], []);
                     foreach ($synonyms as $synonym) {
                         if (self::hasAdSynonym($ad, $synonym)) {
-                            Logger::debug('Найдено объявление!');
-                            self::moveAd($ad->getId(), $synonym->getCategory());
+                            self::moveAd($ad, $synonym->getCategory());
                             $movedAdsCount++;
                         }
                     }
@@ -146,17 +145,20 @@ class Synonyms
         return false;
     }
 
-    private static function moveAd(int $adId, Category $category): void
+    private static function moveAd(Ad $ad, Category $category): void
     {
-        Ads::update([
-            'category_id' => $category->getId(),
-            'category_level_1_id' => $category->getLevel() == 1
-                ? $category->getId()
-                : $category->getParentId(),
-            'category_level_2_id' => $category->getLevel() == 2
-                ? $category->getId()
-                : null
-        ], $adId);
+        if ($ad->getCategory()->getId() != $category->getId()) {
+            Logger::info('Moved ad ' . $ad->getId() . ' "' . $ad->getTitle() . '" to category "' . $category->getTitle() . '"');
+            Ads::update([
+                'category_id' => $category->getId(),
+                'category_level_1_id' => $category->getLevel() == 1
+                    ? $category->getId()
+                    : $category->getParentId(),
+                'category_level_2_id' => $category->getLevel() == 2
+                    ? $category->getId()
+                    : null
+            ], $ad->getId());
+        }
     }
 
     private static function getWordsCombinations(string $text, int $length): array

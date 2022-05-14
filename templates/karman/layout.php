@@ -24,7 +24,7 @@
                     <li class="nav-item">
                         <a class="nav-link " aria-current="page" href="/karman/status?cache=0">
                             <h7 class="<?php if ($this->data['url']->getPath() == '/karman/status') : ?>fw-bold<?php endif; ?>">
-                                Статус
+                                Приборы
                             </h7>
                         </a>
                     </li>

@@ -46,7 +46,7 @@ class Karman
     public function showStatus()
     {
         $this->templatesEngine->addData([
-            'title' => 'Статус',
+            'title' => 'Приборы',
             'breadcrumbs' => [['title' => 'Статус']]
         ]);
         echo $this->templatesEngine->make('status');

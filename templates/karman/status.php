@@ -2,7 +2,7 @@
 
 <?php $this->layout('layout');?>
 
-<dl>
+<dl class="dl-">
     <dt>Сайт включен</dt>
     <dd>
         <?php if (\Palto\Status::isSiteEnabled()) :?>

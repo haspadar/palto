@@ -85,6 +85,14 @@ class Cli
             && mb_strpos(file_get_contents(Directory::getRootDirectory() . '/.env'), 'AUTH=1') !== false;
     }
 
+    public static function getProcesses(string $grepPattern): array
+    {
+        $response = `ps aux | grep "$grepPattern"`;
+        $lines = array_values(array_filter(explode(PHP_EOL, $response)));
+
+        return array_map(fn(string $line) => explode('  ', $line), $lines);
+    }
+
     public static function generateGeneralEnv(string $databaseName, string $databaseUser, string $databasePassword): string
     {
         $replaces = [

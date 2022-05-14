@@ -25,4 +25,30 @@
     </dd>
     <dt>Занятое место на диске</dt>
     <dd><?=\Palto\Status::getDirectoryUsePercent('/')?>%</dd>
+
+    <dt>Запущенные процессы</dt>
+
+
+    <dd>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Процесс</th>
+                <th scope="col">Время запуска</th>
+                <th scope="col">Время работы</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach (\Palto\Status::getPhpProcesses() as $key => $phpProcess) :?>
+                <tr>
+                    <th scope="row"><?=$key + 1?></th>
+                    <td><?=$phpProcess['name']?></td>
+                    <td><?=$phpProcess['run_time']->format('d.m.Y H:i:s')?></td>
+                    <td><?=$phpProcess['work_time']?></td>
+                </tr>
+            <?php endforeach;?>
+            </tbody>
+        </table>
+    </dd>
 </dl>

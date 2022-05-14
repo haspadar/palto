@@ -4,12 +4,11 @@
 
 <ol class="list-group list-group">
 
-    <?php foreach ($this->data['types'] as $type) :?>
+    <?php foreach ($this->data['directories'] as $directory) :?>
         <li class="list-group-item">
-            <a href="/karman/log-types/<?=$this->data['directory']?>/<?=$type?>?cache=0">
-                <?=$type?>
+            <a href="/karman/<?=$this->data['type']?>-logs/<?=$directory?>?cache=0">
+                <?=$directory?>
             </a>
         </li>
     <?php endforeach;?>
 </ol>
-

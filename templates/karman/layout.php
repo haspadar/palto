@@ -53,13 +53,21 @@
                         </a>
                     </li>
 
-<!--                    <li class="nav-item">-->
-<!--                        <a class="nav-link" href="/karman/log-directories?cache=0">-->
-<!--                            <h7 class="--><?php //if (in_array($this->data['url']->getPath(), ['/karman/log-directories'])) : ?><!--fw-bold--><?php //endif; ?><!--">-->
-<!--                                Логи-->
-<!--                            </h7>-->
-<!--                        </a>-->
-<!--                    </li>-->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/karman/info-logs-directories?cache=0">
+                            <h7 class="<?php if ($this->data['url']->isStartsAt(['/karman/info-logs-directories', '/karman/info-logs'])) : ?>fw-bold<?php endif; ?>">
+                                Логи
+                            </h7>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/karman/error-logs-directories?cache=0">
+                            <h7 class="<?php if ($this->data['url']->isStartsAt(['/karman/error-logs-directories', '/karman/error-logs'])) : ?>fw-bold<?php endif; ?>">
+                                Ошибки
+                            </h7>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

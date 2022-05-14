@@ -41,9 +41,16 @@ $router->mount('/karman', function() use ($router) {
     $router->get("/category-ads/{id}(/\d+)?", '\Palto\Controller\Karman@showCategoryAds');
     $router->get("/ad/{id}", '\Palto\Controller\Karman@showKarmanAd');
     $router->get("/find-ad-category/{id}", '\Palto\Controller\Karman@findAdCategory');
-    $router->get("/log-directories", '\Palto\Controller\Karman@showLogDirectories');
-    $router->get("/log-directories/{name}", '\Palto\Controller\Karman@showLogDirectory');
-    $router->get("/log-types/{name}/{type}", '\Palto\Controller\Karman@showLogType');
+
+    $router->get("/info-logs-directories", '\Palto\Controller\Karman@showInfoLogsDirectories');
+    $router->get("/error-logs-directories", '\Palto\Controller\Karman@showErrorLogsDirectories');
+
+    $router->get("/info-logs/{name}", '\Palto\Controller\Karman@showInfoLogs');
+    $router->get("/error-logs/{name}", '\Palto\Controller\Karman@showErrorLogs');
+
+//    $router->get("/log-directories", '\Palto\Controller\Karman@showLogDirectories');
+//    $router->get("/log-directories/{name}", '\Palto\Controller\Karman@showLogDirectory');
+//    $router->get("/log-types/{name}/{type}", '\Palto\Controller\Karman@showLogType');
 });
 
 $router->get('/', '\Palto\Controller\Client@showIndex');

@@ -19,6 +19,13 @@ class Validator
         return $error;
     }
 
+    public static function isDateValid(string $date, string $format = 'Y-m-d'): bool
+    {
+        $d = \DateTime::createFromFormat($format, $date);
+        // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits so changing the comparison from == to === fixes the issue.
+        return $d && $d->format($format) === $date;
+    }
+
     public static function validateSynonyms(array $synonyms): string
     {
         foreach ($synonyms as $synonym) {

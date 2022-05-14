@@ -2,13 +2,12 @@
 
 <?php $this->layout('layout');?>
 
-<ol class="list-group list-group">
+<ul class="list-group list-group">
 
-    <?php foreach ($this->data['directories'] as $directory) :?>
-        <li class="list-group-item">
-            <a href="/karman/log-directories/<?=$directory?>?cache=0">
-                <?=$directory?>
-            </a>
+    <?php foreach ($this->data['logs'] as $log) :?>
+        <li>
+            <?=$log?>
         </li>
     <?php endforeach;?>
-</ol>
+</ul>
+

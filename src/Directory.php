@@ -116,6 +116,57 @@ class Directory
         return self::$rootDirectory;
     }
 
+    public static function getLastLogs(string $directory, string $type)
+    {
+        $files = self::getDirectories(self::getLogsDirectory() . '/' . $directory);
+        $typeFiles = [];
+        foreach ($files as $file) {
+            $parts = explode('-', $file);
+            if ($parts[0] == $type) {
+                $typeFiles[] = $file;
+            }
+        }
+
+        $files = scandir(self::getLogsDirectory());
+        usort($files, function($a, $b) use ($type) {
+            Debug::dump(filemtime(str_replace($type . '-', '', $b)));
+            return filemtime(str_replace($type . '-', '', $b)) - filemtime(str_replace($type . '-', '', $a));
+        });
+
+        Debug::dump($files);exit;
+        Debug::dump($typeFiles);
+
+        return $typeFiles;
+    }
+
+    public static function getLogTypes(string $name): array
+    {
+        $files = self::getDirectories(self::getLogsDirectory() . '/' . $name);
+        $types = [];
+        foreach ($files as $file) {
+            $parts = explode('-', $file);
+            if (!in_array($parts[0], $types)) {
+                $types[] = $parts[0];
+            }
+        }
+
+        return $types;
+    }
+
+    public static function getLogsDirectory(): string
+    {
+        return self::getRootDirectory() . '/logs';
+    }
+
+    public static function getLogsDirectories(): array
+    {
+        $directories = self::getDirectories(self::getLogsDirectory());
+
+        return array_filter($directories, function (string $directory) {
+            return is_dir(self::getLogsDirectory() . '/' . $directory);
+        });
+    }
+
     public static function getPaltoDirectories(string $directory = '/var/www'): array
     {
         return array_values(array_filter(

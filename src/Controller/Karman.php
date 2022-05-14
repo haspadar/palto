@@ -15,6 +15,7 @@ use Palto\Debug;
 use Palto\Directory;
 use Palto\Filter;
 use Palto\Flash;
+use Palto\Logger;
 use Palto\Plural;
 use Palto\Regions;
 use Palto\Synonym;
@@ -141,6 +142,54 @@ class Karman
         } else {
             $this->showJsonResponse(['error' => 'Не указан ID']);
         }
+    }
+
+    public function showLogDirectories()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Логи',
+            'directories' => Directory::getLogsDirectories(),
+            'breadcrumbs' => array_merge([[
+                'title' => 'Логи',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('logs');
+    }
+
+    public function showLogType(string $directory, string $type)
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Тип "' . $type . '"',
+            'directory' => $directory,
+            'type' => $type,
+            'rows' => Directory::getLastLogs($directory, $type),
+            'breadcrumbs' => array_merge([[
+                'title' => 'Логи',
+                'url' => '/karman/log-directories?cache=0'
+            ], [
+                'title' => 'Директория "' . $directory . '"',
+                'url' => '/karman/log-directories/' . $directory . '?cache=0'
+            ], [
+                'title' => 'Тип "' . $type . '"',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('log-type');
+    }
+
+    public function showLogDirectory(string $name)
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Директория "' . $name . '"',
+            'directory' => $name,
+            'types' => Directory::getLogTypes($name),
+            'breadcrumbs' => array_merge([[
+                'title' => 'Логи',
+                'url' => '/karman/log-directories?cache=0'
+            ], [
+                'title' => 'Директория "' . $name . '"',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('log');
     }
 
     public function findAdCategory(int $id)

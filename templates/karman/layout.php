@@ -52,6 +52,14 @@
                             </h7>
                         </a>
                     </li>
+
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" href="/karman/log-directories?cache=0">-->
+<!--                            <h7 class="--><?php //if (in_array($this->data['url']->getPath(), ['/karman/log-directories'])) : ?><!--fw-bold--><?php //endif; ?><!--">-->
+<!--                                Логи-->
+<!--                            </h7>-->
+<!--                        </a>-->
+<!--                    </li>-->
                 </ul>
             </div>
         </nav>

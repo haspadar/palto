@@ -41,6 +41,9 @@ $router->mount('/karman', function() use ($router) {
     $router->get("/category-ads/{id}(/\d+)?", '\Palto\Controller\Karman@showCategoryAds');
     $router->get("/ad/{id}", '\Palto\Controller\Karman@showKarmanAd');
     $router->get("/find-ad-category/{id}", '\Palto\Controller\Karman@findAdCategory');
+    $router->get("/log-directories", '\Palto\Controller\Karman@showLogDirectories');
+    $router->get("/log-directories/{name}", '\Palto\Controller\Karman@showLogDirectory');
+    $router->get("/log-types/{name}/{type}", '\Palto\Controller\Karman@showLogType');
 });
 
 $router->get('/', '\Palto\Controller\Client@showIndex');

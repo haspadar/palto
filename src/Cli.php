@@ -91,6 +91,7 @@ class Cli
         $parsed = [];
         Debug::dump($commands, '$commands');
         foreach ($commands as $command) {
+            Debug::dump($command[count($command) - 1], '$command[count($command) - 1]');
             $parsed['pid'] = $command[0];
             $parsed['name'] = $command[count($command) - 1];
             $parsed['run_time'] = $command[1] . ' ' . $command[2] . ' ' . $command[3] . ' ' . $command[5];

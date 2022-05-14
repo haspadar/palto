@@ -95,7 +95,7 @@ class Cli
                 'pid' => $command[0],
                 'command' => $command[7],
                 'name' => $command[count($command) - 1],
-                'run_time' => new \DateTime($command[2] . ' ' . $command[3] . ' ' . $command[5]),
+                'run_time' => new \DateTime(implode(' ', [$command[2], $command[3], $command[5], $command[4]])),
                 'work_time' => $command[6],
             ];
         }

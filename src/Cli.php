@@ -88,7 +88,6 @@ class Cli
     public static function getParsedProcesses(string $grepPattern): array
     {
         $commands = self::getProcesses("ps -eo pid,lstart,cmd,etime | grep \"/usr/bin/php\"");
-        Debug::dump($commands);
         $parsed = [];
         Debug::dump($commands);exit;
         foreach ($commands as $commands) {
@@ -101,9 +100,7 @@ class Cli
 
     public static function getProcesses(string $psCommand): array
     {
-        Debug::dump($psCommand, '$psCommand');
         $response = `$psCommand`;
-        Debug::dump($response, '$response');
         $lines = array_values(array_filter(explode(PHP_EOL, $response)));
         $processes = array_map(fn(string $line) => array_values(array_filter(explode(' ', $line))), $lines);
         array_pop($processes);

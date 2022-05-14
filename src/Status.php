@@ -23,12 +23,17 @@ class Status
     public static function getPhpProcesses(): array
     {
         $linesColumns = Cli::getProcesses('/usr/bin/php');
+        $withoutShLines = array_filter($linesColumns, fn(array $columns) => $columns[10] != 'sh');
+        $processes = [];
+        foreach ($withoutShLines as $withoutShLine) {
+            $processes[] = [
+                'name' => $withoutShLines[count($withoutShLines) - 1],
+                'run_time' => new \DateTime($withoutShLine[8]),
+                'work_time' => $withoutShLine[9]
+            ];
+        }
 
-
-        $withoutShLines = array_filter($linesColumns, fn(array $columns) => !str_starts_with($columns[count($columns) - 1], 'sh -c'));
-        Debug::dump($withoutShLines);exit;
-        return array_values(array_filter(explode(PHP_EOL, $response)));
-//        return array_map(fn($line) => array_filter(explode('  ', $line)),array_values(array_filter(explode(PHP_EOL, $response))));
+        return $processes;
     }
 
     public static function getDirectoryUsePercent($directory): string

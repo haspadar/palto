@@ -103,6 +103,7 @@ class Cli
         $response = `$psCommand`;
         $lines = array_values(array_filter(explode(PHP_EOL, $response)));
         $processes = array_map(fn(string $line) => array_values(array_filter(explode(' ', $line))), $lines);
+        Debug::dump($processes);exit;
         array_pop($processes);
 
         return $processes;

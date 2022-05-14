@@ -22,8 +22,8 @@ class Status
 
     public static function getPhpProcesses(): array
     {
-        $linesColumns = Cli::getPsGrepProcesses('/usr/bin/php');
-        $filtered = array_values(array_filter($linesColumns, fn(array $columns) => $columns[10] != 'sh'));
+        $processes = Cli::getPsGrepProcesses('/usr/bin/php');
+        $filtered = array_values(array_filter($processes, fn(array $process) => $process[7] != 'sh'));
         $processes = [];
         foreach ($filtered as $process) {
             $processes[] = [

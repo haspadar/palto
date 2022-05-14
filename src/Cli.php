@@ -101,6 +101,7 @@ class Cli
     public static function getProcesses(string $psCommand): array
     {
         $response = `$psCommand`;
+        Debug::dump($response, '$response');
         $lines = array_values(array_filter(explode(PHP_EOL, $response)));
         Debug::dump($lines, '$lines');
         $processes = array_map(fn(string $line) => array_values(array_filter(explode(' ', $line))), $lines);

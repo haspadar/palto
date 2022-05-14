@@ -197,9 +197,9 @@ class Karman
         $ad = Ads::getById($id);
         if ($category = \Palto\Synonyms::findCategory($ad)) {
             $synonyms = $category->getSynonyms();
-            $response = 'Нашлась категория <i>"'
+            $response = 'Нашлась категория <span class="fw-bolder">"'
                 . implode('/', array_reverse($category->getWithParentsTitles()))
-                . '"</i>'
+                . '"</span>'
                 . ($synonyms
                     ? ' с синонимами: <ul class="fst-italic mt-2">' . implode('', array_map(fn(Synonym $synonym) => '<li>' . $synonym->getTitle() . '</li>', $synonyms)) . '</ul>'
                     : ' без синонимов'

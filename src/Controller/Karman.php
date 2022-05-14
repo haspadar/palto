@@ -47,7 +47,7 @@ class Karman
     {
         $this->templatesEngine->addData([
             'title' => 'Приборы',
-            'breadcrumbs' => [['title' => 'Статус']]
+            'breadcrumbs' => [['title' => 'Приборы']]
         ]);
         echo $this->templatesEngine->make('status');
     }

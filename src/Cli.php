@@ -89,6 +89,7 @@ class Cli
     {
         $commands = self::getProcesses("ps -eo pid,lstart,etime,cmd | grep \"/usr/bin/php\"");
         $parsed = [];
+        Debug::dump($commands, '$commands');
         foreach ($commands as $command) {
             $parsed['pid'] = $command[0];
             $parsed['name'] = $command[count($command) - 1];

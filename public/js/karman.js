@@ -409,8 +409,8 @@ $(function () {
                         }
 
                         let logParts = log.replace('[', '').split(']');
-                        let date = new Date(logParts[0]);
-                        let logText = logParts[1];
+                        let date = new Date(logParts.shift());
+                        let logText = logParts.join(']');
                         $logs.append('<li class="ms-5 '
                             + className
                             + '" value="'

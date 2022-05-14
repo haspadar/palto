@@ -396,19 +396,19 @@ $(function () {
                     $logs.html('');
                     $.each(response.logs, function (log) {
                         let className = '';
-                        if (log.includes('.INFO')) {
+                        if (log.text.includes('.INFO')) {
                             className = 'text-primary';
-                        } else if (log.includes('.ERROR')
-                            || log.includes('.CRITICAL')
+                        } else if (log.text.includes('.ERROR')
+                            || log.text.includes('.CRITICAL')
                         ) {
                             className = 'text-danger';
-                        } else if (log.includes('.WARNING')) {
+                        } else if (log.text.includes('.WARNING')) {
                             className = 'text-warning';
-                        }  else if (log.includes('.DEBUG')) {
+                        }  else if (log.text.includes('.DEBUG')) {
                             className = 'text-secondary';
                         }
 
-                        let logParts = log.replace('[', '').split(']');
+                        let logParts = log.text.replace('[', '').split(']');
                         let date = new Date(logParts.shift());
                         let logText = logParts.join(']');
                         $logs.append('<li class="ms-5 '
@@ -418,7 +418,7 @@ $(function () {
                             + '">['
                             + formatTime(date)
                             + '] '
-                            + addLinks(log.text)
+                            + addLinks(logText)
                             + '</li>'
                         );
                     });

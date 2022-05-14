@@ -47,7 +47,10 @@ class Logs
             $lines = [];
             for ($i = max(0, count($file) - $limit - 1); $i < count($file); $i++) {
                 $lineNumber = count($file) - $limit + $i;
-                $lines[max($lineNumber, 1)] = $file[$i];
+                $lines[] = [
+                    'line' => max($lineNumber, 1),
+                    'text' => $file[$i]
+                ];
             }
 
             return $lines;

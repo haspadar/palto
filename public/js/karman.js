@@ -394,7 +394,7 @@ $(function () {
                 data: {},
                 success: function (response) {
                     $logs.html('');
-                    $.each(response.logs.reverse(), function (lineNumber, log) {
+                    $.each(response.logs, function (log) {
                         let className = '';
                         if (log.includes('.INFO')) {
                             className = 'text-primary';
@@ -414,11 +414,11 @@ $(function () {
                         $logs.append('<li class="ms-5 '
                             + className
                             + '" value="'
-                            + lineNumber
+                            + log.line
                             + '">['
                             + formatTime(date)
                             + '] '
-                            + addLinks(logText)
+                            + addLinks(log.text)
                             + '</li>'
                         );
                     });

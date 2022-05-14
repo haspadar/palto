@@ -177,7 +177,7 @@ class Karman
             'title' => 'Логи "' . $name . '"',
             'type' => 'info',
             'directory' => $name,
-            'logs' => Logs::getLogs($name, 'info', 20),
+            'logs' => Logs::getLogs($name, 'info', 10),
             'breadcrumbs' => array_merge([[
                 'title' => 'Список логов',
                 'url' => '/karman/log-directories?cache=0'
@@ -190,7 +190,7 @@ class Karman
 
     public function getLogs(string $name, string $type)
     {
-        $this->showJsonResponse(['logs' => Logs::getLogs($name, $type, 20)]);
+        $this->showJsonResponse(['logs' => Logs::getLogs($name, $type, 10)]);
     }
 
     public function showErrorLogs(string $name)
@@ -199,7 +199,7 @@ class Karman
             'title' => 'Логи "' . $name . '"',
             'type' => 'error',
             'directory' => $name,
-            'logs' => Logs::getLogs($name, 'error', 20),
+            'logs' => Logs::getLogs($name, 'error', 10),
             'breadcrumbs' => array_merge([[
                 'title' => 'Список логов',
                 'url' => '/karman/log-directories?cache=0'

@@ -46,6 +46,7 @@ class Category
 
     public function getSynonyms(): array
     {
+        Debug::dump(Synonyms::getAll($this->getId()), 'Synonyms::getAll($this->getId())');
         return array_map(fn($synonym) => new Synonym($synonym), Synonyms::getAll($this->getId()));
     }
 

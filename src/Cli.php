@@ -89,12 +89,13 @@ class Cli
     {
         $commands = self::getPsProcesses("ps -eo pid,lstart,etime,cmd | grep \"$grepPattern\"");
         $parsed = [];
+        Debug::dump($commands);
         foreach ($commands as $command) {
             $parsed[] = [
                 'pid' => $command[0],
                 'command' => $command[7],
                 'name' => $command[count($command) - 1],
-                'run_time' => $command[1] . ' ' . $command[2] . ' ' . $command[3] . ' ' . $command[5],
+                'run_time' => new \DateTime($command[2] . ' ' . $command[3] . ' ' . $command[5]),
                 'work_time' => $command[6],
             ];
         }

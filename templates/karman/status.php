@@ -46,7 +46,7 @@
                     <th scope="row"><?=$key + 1?></th>
                     <td><?=$phpProcess['pid']?></td>
                     <td><?=$phpProcess['name']?></td>
-                    <td><?=$phpProcess['run_time']?></td>
+                    <td><?=$phpProcess['run_time']->format('d.m.Y H:i:s')?></td>
                     <td><?=$phpProcess['work_time']?></td>
                 </tr>
             <?php endforeach;?>

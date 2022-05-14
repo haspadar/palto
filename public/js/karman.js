@@ -393,7 +393,7 @@ $(function () {
                 data: {},
                 success: function (response) {
                     $('.logs').html('');
-                    $.each(response.logs, function (i, log) {
+                    $.each(response.logs, function (lineNumber, log) {
                         let className = '';
                         if (log.includes('.INFO')) {
                             className = 'text-primary';
@@ -408,7 +408,7 @@ $(function () {
                         let logParts = log.replace('[', '').split(']');
                         let date = new Date(logParts[0]);
                         let logText = logParts[1];
-                        $('.logs').append('<li class="' + className + '">[' + formatTime(date) + '] ' + logText + '</li>');
+                        $('.logs').append('<li class="' + className + '">' + lineNumber + '. [' + formatTime(date) + '] ' + logText + '</li>');
                     });
                     clearInterval(t);
                     t = setInterval(function () {

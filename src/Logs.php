@@ -46,7 +46,7 @@ class Logs
             $file = file($file);
             $lines = [];
             for ($i = max(0, count($file) - $limit - 1); $i < count($file); $i++) {
-                $lines[] = $file[$i];
+                $lines[min(count($file) - $limit + $i, 1)] = $file[$i];
             }
 
             return $lines;

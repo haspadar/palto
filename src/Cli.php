@@ -91,7 +91,7 @@ class Cli
         $lines = array_values(array_filter(explode(PHP_EOL, $response)));
         $processes = array_map(fn(string $line) => array_values(array_filter(explode(' ', $line))), $lines);
         array_pop($processes);
-        
+
         return $processes;
     }
 

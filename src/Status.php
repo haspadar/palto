@@ -25,7 +25,6 @@ class Status
         $linesColumns = Cli::getProcesses('/usr/bin/php');
         $withoutShLines = array_values(array_filter($linesColumns, fn(array $columns) => $columns[10] != 'sh'));
         $processes = [];
-        Debug::dump($withoutShLines, '$withoutShLines');
         foreach ($withoutShLines as $withoutShLine) {
             $processes[] = [
                 'name' => $withoutShLine[count($withoutShLine) - 1],

@@ -89,7 +89,6 @@ class Cli
     {
         $commands = self::getPsProcesses("ps -eo pid,lstart,etime,cmd | grep \"$grepPattern\"");
         $parsed = [];
-        Debug::dump($commands);
         foreach ($commands as $command) {
             $parsed[] = [
                 'pid' => $command[0],
@@ -106,7 +105,7 @@ class Cli
     public static function getPsProcesses(string $psCommand): array
     {
         $response = `$psCommand`;
-        $lines = array_values(array_filter(explode(PHP_EOL, $response)));
+        $lines = array_values(array_filter(explode(PHP_EOL, $response ?? '')));
         $processes = array_map(fn(string $line) => array_values(array_filter(explode(' ', $line))), $lines);
         array_pop($processes);
         array_pop($processes);

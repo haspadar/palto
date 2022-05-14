@@ -41,16 +41,22 @@
             </tr>
             </thead>
             <tbody>
-            <?php foreach (\Palto\Status::getPhpProcesses() as $key => $phpProcess) :?>
-                <tr>
-                    <th scope="row"><?=$key + 1?></th>
-                    <td><?=$phpProcess['pid']?></td>
-                    <td><?=$phpProcess['name']?></td>
-                    <td><?=$phpProcess['run_time']->format('d.m.Y H:i:s')?></td>
-                    <td><?=$phpProcess['work_time']?></td>
-                </tr>
-            <?php endforeach;?>
+                <?php foreach (\Palto\Status::getPhpProcesses() as $key => $phpProcess) :?>
+                    <tr>
+                        <th scope="row"><?=$key + 1?></th>
+                        <td><?=$phpProcess['pid']?></td>
+                        <td><?=$phpProcess['name']?></td>
+                        <td><?=$phpProcess['run_time']->format('d.m.Y H:i:s')?></td>
+                        <td><?=$phpProcess['work_time']?></td>
+                    </tr>
+                <?php endforeach;?>
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">Команда для удаления: <code>kill -9 <i>PID</i></code></td>
+            </tr>
+            </tfoot>
         </table>
+
     </dd>
 </dl>

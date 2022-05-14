@@ -82,6 +82,7 @@ class Synonyms
                 foreach ($ads as $adFields) {
                     $ad = new Ad($adFields, [], []);
                     foreach ($synonyms as $synonym) {
+                        Logger::debug('Synonym "' . $synonym->getTitle() . '" for ad "' . $ad->getTitle() . '"');
                         if (self::hasAdSynonym($ad, $synonym)) {
                             self::moveAd($ad, $synonym->getCategory());
                             $movedAdsCount++;

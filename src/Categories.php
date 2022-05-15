@@ -4,15 +4,12 @@ namespace Palto;
 
 use Cocur\Slugify\Slugify;
 use DateTime;
-use Monolog\Handler\ZendMonitorHandler;
-use Palto\Model\Synonyms;
-use function Symfony\Component\String\s;
 
 class Categories
 {
     public static function findByTitle(string $title, ?Category $parent): ?Category
     {
-        $category = Model\Categories::findByTitle($title, $parent ? $parent->getId() : 0);
+        $category = (new Model\Categories)->findByTitle($title, $parent ? $parent->getId() : 0);
 
         return $category ? new Category($category) : null;
     }
@@ -21,15 +18,15 @@ class Categories
     {
         $url = 'undefined' . ($category ? '-' . $category->getUrl() : '');
         $level = $category ? $category->getLevel() + 1 : 1;
-        $foundCategory = Model\Categories::getByUrl($url, $level);
+        $foundCategory = (new Model\Categories)->getByUrl($url);
         if (!$foundCategory) {
-            $id = Model\Categories::add([
+            $id = (new Model\Categories)->add([
                 'title' => 'Undefined' . ($category ? ' ' . $category->getTitle() : ''),
                 'url' => $url,
                 'parent_id' => $category?->getId(),
                 'level' => $level
             ]);
-            $foundCategory = Model\Categories::getById($id);
+            $foundCategory = (new Model\Categories)->getById($id);
         }
 
         return new Category($foundCategory);
@@ -37,12 +34,12 @@ class Categories
 
     public static function getChildrenCount(array $ids): int
     {
-        return $ids ? Model\Categories::getChildrenCount($ids) : 0;
+        return $ids ? (new Model\Categories)->getChildrenCount($ids) : 0;
     }
 
     public static function getChildren(array $ids, int $limit = 0, int $offset = 0, string $orderBy = 'id'): array
     {
-        $rows = Model\Categories::getChildren($ids, $limit, $offset, $orderBy);
+        $rows = (new Model\Categories)->getChildren($ids, $limit, $offset, $orderBy);
         $children = [];
         foreach ($rows as $row) {
             $children[(new Category($row))->getParentId()][] = new Category($row);
@@ -53,28 +50,28 @@ class Categories
 
     public static function getById(int $id): ?Category
     {
-        $category = Model\Categories::getById($id);
+        $category = (new Model\Categories)->getById($id);
 
         return $category ? new Category($category) : null;
     }
 
     public static function getByDonorUrl(string $donorCategoryUrl, int $level): ?Category
     {
-        $category = Model\Categories::getByDonorUrl($donorCategoryUrl, $level);
+        $category = (new Model\Categories)->getByDonorUrl($donorCategoryUrl, $level);
 
         return $category ? new Category($category) : null;
     }
 
     public static function getByTitle(string $categoryTitle, int $parentId = 0): ?Category
     {
-        $category = Model\Categories::getByTitle($categoryTitle, $parentId);
+        $category = (new Model\Categories)->getByTitle($categoryTitle, $parentId);
 
         return $category ? new Category($category) : null;
     }
 
     public static function getByUrl(string $categoryUrl, int $level): ?Category
     {
-        $category = Model\Categories::getByUrl($categoryUrl, $level);
+        $category = (new Model\Categories)->getByUrl($categoryUrl);
 
         return $category ? new Category($category) : null;
     }
@@ -87,7 +84,7 @@ class Categories
      */
     public static function getLiveCategories(?Category $parentCategory = null, ?Region $region = null, int $count = 0): array
     {
-        $categories = Model\Categories::getLiveCategories($parentCategory, $region, $count);
+        $categories = (new Model\Categories)->getLiveCategories($parentCategory, $region, $count);
 
         return array_map(fn($category) => new Category($category), $categories);
     }
@@ -95,8 +92,8 @@ class Categories
     public static function getLiveCategoriesWithChildren($count = 0, int $childrenMinimumCount = 0): array
     {
         $rows = $childrenMinimumCount > 0
-            ? Model\Categories::getLiveCategoriesWithChildren($count, $childrenMinimumCount)
-            : Model\Categories::getLiveCategories(null, null, $count);
+            ? (new Model\Categories)->getLiveCategoriesWithChildren($count, $childrenMinimumCount)
+            : (new Model\Categories)->getLiveCategories(null, null, $count);
 
         return array_map(fn($category) => new Category($category), $rows);
     }
@@ -108,7 +105,7 @@ class Categories
     {
         return array_map(
             fn($category) => new Category($category),
-            Model\Categories::getLeafs($limit)
+            (new Model\Categories)->getLeafs($limit)
         );
     }
 
@@ -130,9 +127,9 @@ class Categories
             return $found;
         }
 
-        $id = Model\Categories::add($category);
+        $id = (new Model\Categories)->add($category);
 
-        return new Category(Model\Categories::getById($id));
+        return new Category((new Model\Categories)->getById($id));
     }
 
     public static function generateUrl(string $title, int $level, bool $addSuffix = false): string
@@ -141,7 +138,7 @@ class Categories
         $url = $urlPattern;
         $counter = 0;
         if ($addSuffix) {
-            while (Model\Categories::getByUrl($url, $level)) {
+            while ((new Model\Categories)->getByUrl($url)) {
                 $url = $urlPattern . '-' . (++$counter);
             }
         }
@@ -151,17 +148,17 @@ class Categories
 
     public static function getMaxTreeId(): int
     {
-        return \Palto\Model\Categories::getMaxTreeId();
+        return (new Model\Categories)->getMaxTreeId();
     }
 
     public static function update(array $updates, int $id)
     {
-        \Palto\Model\Categories::update($updates, $id);
+        (new Model\Categories)->update($updates, $id);
     }
 
     public static function getMaxLevel(): int
     {
-        return \Palto\Model\Categories::getMaxLevel();
+        return (new Model\Categories)->getMaxLevel();
     }
 
     /**
@@ -171,7 +168,7 @@ class Categories
     {
         return array_map(
             fn($category) => new Category($category),
-            \Palto\Model\Categories::findByUrlAll('undefined', $orderBy)
+            (new Model\Categories)->findByUrlAll('undefined', $orderBy)
         );
     }
 
@@ -182,7 +179,7 @@ class Categories
     {
         return array_map(
             fn($category) => new Category($category),
-            \Palto\Model\Categories::getRoots()
+            (new Model\Categories)->getRoots()
         );
     }
 }

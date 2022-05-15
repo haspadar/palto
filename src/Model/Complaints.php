@@ -4,36 +4,33 @@ namespace Palto\Model;
 
 class Complaints extends Model
 {
-    public static function add(array $complaint)
+    protected string $name = 'complaints';
+
+    public function getActualComplaintsCount()
     {
-        self::getDb()->insert('complaints', $complaint);
+        return self::getDb()->queryFirstField("SELECT COUNT(*) FROM " . $this->name . " WHERE response_time IS NULL AND ignore_time IS NULL");
     }
 
-    public static function getActualComplaintsCount()
+    public function getActualComplaints()
     {
-        return self::getDb()->queryFirstField("SELECT COUNT(*) FROM complaints WHERE response_time IS NULL AND ignore_time IS NULL");
+        return self::getDb()->query("SELECT * FROM " . $this->name . " WHERE response_time IS NULL AND ignore_time IS NULL");
     }
 
-    public static function getActualComplaints()
+    public function getComplaint(int $id)
     {
-        return self::getDb()->query("SELECT * FROM complaints WHERE response_time IS NULL AND ignore_time IS NULL");
+        return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE id=%d', $id);
     }
 
-    public static function getComplaint(int $id)
+    public function updateResponseTime(array $ids)
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM complaints WHERE id=%d', $id);
-    }
-
-    public static function updateResponseTime(array $ids)
-    {
-        self::getDb()->update('complaints', [
+        self::getDb()->update($this->name, [
             'response_time' => (new \DateTime())->format('Y-m-d H:i:s')
         ], "id IN %ld", $ids);
     }
 
-    public static function updateIgnoreTime(array $ids)
+    public function updateIgnoreTime(array $ids)
     {
-        self::getDb()->update('complaints', [
+        self::getDb()->update($this->name, [
             'ignore_time' => (new \DateTime())->format('Y-m-d H:i:s')
         ], "id IN %ld", $ids);
     }

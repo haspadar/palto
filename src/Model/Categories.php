@@ -3,60 +3,20 @@
 namespace Palto\Model;
 
 use Palto\Category;
-use Palto\Debug;
 use Palto\Region;
 
-class Categories extends Model
+class Categories extends Tree
 {
-    public static function findByTitle(string $title, int $parentId): array
+    protected string $name = 'categories';
+
+    public function findByTitle(string $title, int $parentId): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE LOWER(title) = LOWER(%s)' . ($parentId ? ' AND parent_id = ' . $parentId : ''), $title) ?: [];
+        return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE LOWER(title) = LOWER(%s)' . ($parentId ? ' AND parent_id = ' . $parentId : ''), $title) ?: [];
     }
 
-    public static function getById(int $id): array
+    public function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array
     {
-        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id) ?: [];
-    }
-
-    public static function getMaxTreeId(): int
-    {
-        return self::getDb()->queryFirstField('SELECT MAX(tree_id) FROM categories') ?: 0;
-    }
-
-    public static function getCategoriesByIds(array $categoryIds): array
-    {
-        return $categoryIds
-            ? self::getDb()->query('SELECT * FROM categories WHERE id IN %ld', $categoryIds)
-            : [];
-    }
-
-    public static function getChildrenCount(array $categoriesIds): int
-    {
-        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM categories WHERE parent_id IN %ld', $categoriesIds) ?: 0;
-    }
-
-    public static function getChildren(array $categoriesIds, int $limit = 0, int $offset = 0, string $orderBy = 'id'): array
-    {
-        return $limit
-            ? self::getDb()->query(
-                'SELECT * FROM categories WHERE parent_id IN %ld ORDER BY ' . $orderBy . ' LIMIT %d OFFSET %d',
-                $categoriesIds,
-                $limit,
-                $offset
-            ) : self::getDb()->query(
-                'SELECT * FROM categories WHERE parent_id IN %ld ORDER BY ' . $orderBy,
-                $categoriesIds,
-            );
-    }
-
-    public static function getChildrenIds(array $categoriesIds, int $level): array
-    {
-        return array_column(self::getChildren($categoriesIds, $level), 'id');
-    }
-
-    public static function getLiveCategoriesWithChildren(int $limit = 0, int $childrenMinimumCount = 5): array
-    {
-        $query = 'SELECT c.*, COUNT(c2.id) AS count FROM categories AS c INNER JOIN categories AS c2 ON c.id = c2.parent_id';
+        $query = 'SELECT c.*, COUNT(c2.id) AS count FROM categories AS c INNER JOIN ' . $this->name . ' AS c2 ON c.id = c2.parent_id';
         $query .= " WHERE (c.id IN (SELECT DISTINCT category_level_1_id FROM ads) OR c.id IN (SELECT DISTINCT category_level_2_id FROM ads))";
         $query .= " AND c.parent_id IS NULL";
         $query .= ' GROUP BY c.id HAVING count >= %d_count';
@@ -69,9 +29,9 @@ class Categories extends Model
         return self::getDb()->query($query, $values);
     }
 
-    public static function getLiveCategories(?Category $category, ?Region $region, int $limit = 0): array
+    public function getLiveCategories(?Category $category, ?Region $region, int $limit = 0): array
     {
-        $query = 'SELECT * FROM categories AS c';
+        $query = 'SELECT * FROM ' . $this->name . ' AS c';
         $values = [];
         if ($region && $region->getId()) {
             $query .= " INNER JOIN categories_regions_with_ads AS crwa ON c.id = crwa.category_id WHERE crwa.region_id = " . $region->getId();
@@ -92,83 +52,5 @@ class Categories extends Model
         }
 
         return self::getDb()->query($query, $values);
-    }
-    
-    public static function getByTitle(string $title, int $parentId = 0): array
-    {
-        return self::getDb()->queryFirstRow(
-            'SELECT * FROM categories WHERE url = %s AND parent_id ' . ($parentId ? '=' . $parentId : 'IS NULL'),
-            $title
-        ) ?: [];
-    }
-
-    public static function getByUrl(string $url, int $level, int $excludeId = 0): array
-    {
-        return self::getDb()->queryFirstRow(
-            'SELECT * FROM categories WHERE url = %s AND level = %d AND id <> %d',
-            $url,
-            $level,
-            $excludeId
-        ) ?: [];
-    }
-
-    public static function getLeafs(int $limit): array
-    {
-        $query = "SELECT * FROM categories WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)";
-        if ($limit) {
-            $query .= " LIMIT $limit";
-        }
-
-        return self::getDb()->query($query);
-    }
-
-    public static function add(array $category): int
-    {
-        self::getDb()->insert('categories', $category);
-
-        return self::getDb()->insertId();
-    }
-
-    public static function getByDonorUrl(string $donorUrl, int $level): array
-    {
-        if ($donorUrl) {
-            return self::getDb()->queryFirstRow(
-                'SELECT * FROM categories WHERE donor_url = %s AND level = %d',
-                $donorUrl,
-                $level
-            ) ?: [];
-        }
-
-        return [];
-    }
-
-    public static function update(array $updates, int $id)
-    {
-        self::getDb()->update('categories', $updates, 'id = %d', $id);
-    }
-
-    public static function getMaxLevel(): int
-    {
-        return self::getDb()->queryFirstField('SELECT MAX(level) FROM categories') ?: 0;
-    }
-
-    public static function findByUrlAll(string $url, string $orderBy = 'level'): array
-    {
-        return self::getDb()->query("SELECT * FROM categories WHERE url LIKE %s ORDER BY $orderBy", $url . '%') ?: [];
-    }
-
-    public static function getRoots(): array
-    {
-        return self::getDb()->query('SELECT * FROM categories WHERE level = %d ORDER BY title', 1) ?: [];
-    }
-
-    public static function removeChildren(int $parentId)
-    {
-        self::getDb()->delete('categories', 'parent_id = %d', $parentId);
-    }
-
-    public static function remove(int $id)
-    {
-        self::getDb()->delete('categories', 'id = %d', $id);
     }
 }

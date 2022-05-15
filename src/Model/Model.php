@@ -7,9 +7,11 @@ use Palto\Config;
 use Palto\Debug;
 use Palto\Logger;
 
-class Model
+abstract class Model
 {
     private static \MeekroDB $db;
+
+    protected string $name;
 
     public static function getDb(): \MeekroDB
     {
@@ -39,7 +41,36 @@ class Model
         return self::$db;
     }
 
-    public static function getFieldNames(string $name): array
+    public function getById(int $id): array
+    {
+        return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE id = %d', $id) ?: [];
+    }
+
+    public function addIgnore(array $data): int
+    {
+        self::getDb()->insertIgnore($this->name, $data);
+
+        return self::getDb()->insertId();
+    }
+
+    public function add(array $data): int
+    {
+        self::getDb()->insert($this->name, $data);
+
+        return self::getDb()->insertId();
+    }
+
+    public function update(array $updates, int $id)
+    {
+        self::getDb()->update($this->name, $updates, 'id = %d', $id);
+    }
+
+    public function remove(int $id)
+    {
+        self::getDb()->delete($this->name, 'id = %d', $id);
+    }
+
+    public function getFieldNames(string $name): array
     {
         return array_column(self::getDb()->query("SELECT COLUMN_NAME 
             FROM INFORMATION_SCHEMA.COLUMNS 
@@ -49,7 +80,7 @@ class Model
         ), 'COLUMN_NAME');
     }
 
-    protected static function groupByField(array $unGrouped, string $field): array
+    protected function groupByField(array $unGrouped, string $field): array
     {
         $grouped = [];
         foreach ($unGrouped as $data) {

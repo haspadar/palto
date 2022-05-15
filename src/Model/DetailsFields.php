@@ -8,15 +8,17 @@ use Palto\Region;
 
 class DetailsFields extends Model
 {
-    public static function getDetailsFieldId(int $categoryId, string $field): int
+    protected string $name = 'details_fields';
+
+    public function getDetailsFieldId(int $categoryId, string $field): int
     {
         $fieldId = self::getDb()->queryFirstField(
-            'SELECT id FROM details_fields WHERE category_id = %d AND field = %s LIMIT 1',
+            'SELECT id FROM ' . $this->name . ' WHERE category_id = %d AND field = %s LIMIT 1',
             $categoryId,
             $field
         );
         if (!$fieldId) {
-            self::getDb()->insert('details_fields', [
+            self::getDb()->insert($this->name, [
                 'category_id' => $categoryId,
                 'field' => $field
             ]);

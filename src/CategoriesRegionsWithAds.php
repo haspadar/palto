@@ -6,18 +6,18 @@ class CategoriesRegionsWithAds
 {
     public static function add(int $categoryId, ?int $regionId)
     {
-        $childCategory = new Category(\Palto\Model\Categories::getById($categoryId));
-        $childRegion = $regionId ? new Region(\Palto\Model\Regions::getById($regionId)) : null;
+        $childCategory = new Category((new \Palto\Model\Categories)->getById($categoryId));
+        $childRegion = $regionId ? new Region((new \Palto\Model\Regions)->getById($regionId)) : null;
         foreach (array_merge($childCategory->getParents(), [$childCategory]) as $category) {
             if ($childRegion) {
                 foreach (array_merge($childRegion->getParents(), [$childRegion]) as $region) {
-                    \Palto\Model\CategoriesRegionsWithAds::add(
-                        $category->getId(),
-                        $region->getId()
-                    );
+                    (new \Palto\Model\CategoriesRegionsWithAds)->add([
+                        'category_id' => $category->getId(),
+                        'region_id' => $region->getId()
+                    ]);
                 }
             } else {
-                \Palto\Model\CategoriesRegionsWithAds::add($category->getId(), null);
+                (new \Palto\Model\CategoriesRegionsWithAds)->add($category->getId(), null);
             }
         }
     }

@@ -7,17 +7,17 @@ class Complaints
 {
     public static function ignoreComplaints(array $ids)
     {
-        Model\Complaints::updateIgnoreTime($ids);
+        (new Model\Complaints)->updateIgnoreTime($ids);
     }
 
     public static function ignoreComplaint(int $id)
     {
-        Model\Complaints::updateIgnoreTime([$id]);
+        (new Model\Complaints)->updateIgnoreTime([$id]);
     }
 
     public static function getComplaint($id)
     {
-        return Model\Complaints::getComplaint($id);
+        return (new Model\Complaints)->getComplaint($id);
     }
     
     public static function removeAd($id)
@@ -28,7 +28,7 @@ class Complaints
             self::sendUserMail($id);
         }
 
-        Model\Complaints::updateResponseTime([$id]);
+        (new Model\Complaints)->updateResponseTime([$id]);
     }
 
     public static function removeAds(array $ids)
@@ -41,17 +41,17 @@ class Complaints
             }
         }
 
-        Model\Complaints::updateResponseTime($ids);
+        (new Model\Complaints)->updateResponseTime($ids);
     }
 
     public static function getActualComplaintsCount(): int
     {
-        return Model\Complaints::getActualComplaintsCount();
+        return (new Model\Complaints)->getActualComplaintsCount();
     }
 
     public static function getActualComplaints(): array
     {
-        return Model\Complaints::getActualComplaints();
+        return (new Model\Complaints)->getActualComplaints();
     }
 
     public static function getSmtpEmail(): string
@@ -68,7 +68,7 @@ class Complaints
             . '">Зайти в админку</a>';
 
         Email::send(Config::get('SMTP_EMAIL'), $subject, $body);
-        Model\Complaints::add($complaint);
+        (new Model\Complaints)->add($complaint);
     }
 
     private static function sendUserMail(int $id)

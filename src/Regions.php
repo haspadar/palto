@@ -9,7 +9,7 @@ class Regions
 {
     public static function getWithAdsRegions(?Region $parentRegion = null, $limit = 0): array
     {
-        $regions = Model\Regions::getWithAdsRegions($parentRegion, $limit);
+        $regions = (new Model\Regions)->getWithAdsRegions($parentRegion, $limit);
 
         return array_map(fn($region) => new Region($region), $regions);
     }
@@ -22,14 +22,14 @@ class Regions
     {
         return array_map(
             fn($region) => new Region($region),
-            Model\Regions::getLeafs($limit)
+            (new Model\Regions)->getLeafs($limit)
         );
     }
 
     public static function getRegionsByIds(array $ids): array
     {
         if ($ids) {
-            $regions = Model\Regions::getRegionsByIds($ids);
+            $regions = (new Model\Regions)->getByIds($ids);
 
             return $regions;
         }
@@ -39,7 +39,7 @@ class Regions
 
     public static function getById(int $regionId): Region
     {
-        $region = Model\Regions::getById($regionId);
+        $region = (new Model\Regions)->getById($regionId);
 
         return new Region($region);
     }
@@ -48,7 +48,7 @@ class Regions
     {
         if (!$regionUrl || $regionUrl == Config::get('DEFAULT_REGION_URL')) {
             return new Region([]);
-        } elseif ($found = Model\Regions::getByUrl($regionUrl)) {
+        } elseif ($found = (new Model\Regions)->getByUrl($regionUrl)) {
             return new Region($found);
         } else {
             return null;
@@ -73,15 +73,15 @@ class Regions
             return $found;
         }
 
-        $id = Model\Regions::add($region);
+        $id = (new Model\Regions)->add($region);
         Levels::checkRegionsFields();
 
-        return new Region(Model\Regions::getById($id));
+        return new Region((new Model\Regions)->getById($id));
     }
 
     public static function getMaxLevel(): int
     {
-        return \Palto\Model\Regions::getMaxLevel();
+        return (new \Palto\Model\Regions)->getMaxLevel();
     }
 
     public static function generateUrl(string $title, bool $addSuffix = false): string
@@ -90,7 +90,7 @@ class Regions
         $url = $urlPattern;
         $counter = 0;
         if ($addSuffix) {
-            while (Model\Regions::getByUrl($url)) {
+            while ((new Model\Regions)->getByUrl($url)) {
                 $url = $urlPattern . '-' . (++$counter);
             }
         }
@@ -100,7 +100,7 @@ class Regions
 
     public static function getMaxTreeId(): int
     {
-        return Model\Regions::getMaxTreeId();
+        return (new Model\Regions)->getMaxTreeId();
     }
 
     private static function groupByField(array $unGrouped, string $field): array
@@ -117,10 +117,10 @@ class Regions
     {
         $childrenIds = [];
         $nextLevelRegionsIds = [$region['id']];
-        while ($nextLevelRegionsIds = Model\Regions::getChildRegionsIds($nextLevelRegionsIds)) {
+        while ($nextLevelRegionsIds = (new Model\Regions)->getChildRegionsIds($nextLevelRegionsIds)) {
             $childrenIds = array_merge($nextLevelRegionsIds, $childrenIds);
         }
 
-        return $childrenIds ? Model\Regions::getRegionsByIds($childrenIds) : [];
+        return $childrenIds ? (new Model\Regions)->getByIds($childrenIds) : [];
     }
 }

@@ -5,7 +5,7 @@ namespace Palto\Model;
 use Palto\Debug;
 use Palto\Region;
 
-class Regions extends Tree
+class Regions extends NestedSet
 {
     protected string $name = 'regions';
 

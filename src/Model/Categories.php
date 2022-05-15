@@ -5,7 +5,7 @@ namespace Palto\Model;
 use Palto\Category;
 use Palto\Region;
 
-class Categories extends Tree
+class Categories extends NestedSet
 {
     protected string $name = 'categories';
 

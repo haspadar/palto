@@ -225,5 +225,6 @@ class Category
     {
         (new Categories)->removeChildren($this->getId());
         (new Categories)->remove($this->getId());
+        \Palto\Categories::rebuildTree();
     }
 }

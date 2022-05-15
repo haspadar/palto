@@ -156,7 +156,7 @@ class Synonyms
                 . ' "'
                 . $ad->getTitle()
                 . '" to category "'
-                . $parentsTitle
+                . ($parentsTitle ? $parentsTitle . '/' : '')
                 . $category->getTitle()
                 . '"'
             );

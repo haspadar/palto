@@ -14,6 +14,11 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
+    public static function rebuildTree()
+    {
+        (new \Palto\Model\Categories())->rebuildTree();
+    }
+
     public static function createUndefined(?Category $category = null): Category
     {
         $url = 'undefined' . ($category ? '-' . $category->getUrl() : '');
@@ -26,6 +31,7 @@ class Categories
                 'parent_id' => $category?->getId(),
                 'level' => $level
             ]);
+            self::rebuildTree();
             $foundCategory = (new Model\Categories)->getById($id);
         }
 
@@ -128,6 +134,7 @@ class Categories
         }
 
         $id = (new Model\Categories)->add($category);
+        self::rebuildTree();
 
         return new Category((new Model\Categories)->getById($id));
     }

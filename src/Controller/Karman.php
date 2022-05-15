@@ -187,7 +187,7 @@ class Karman
     public function showErrorLogs(string $name)
     {
         $this->templatesEngine->addData([
-            'title' => 'Логи "' . $name . '"',
+            'title' => 'Ошибки "' . $name . '"',
             'type' => 'error',
             'directory' => $name,
             'breadcrumbs' => array_merge([[

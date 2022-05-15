@@ -74,6 +74,7 @@ class Regions
         }
 
         $id = (new Model\Regions)->add($region);
+        self::rebuildTree();
         Levels::checkRegionsFields();
 
         return new Region((new Model\Regions)->getById($id));
@@ -101,6 +102,11 @@ class Regions
     public static function getMaxTreeId(): int
     {
         return (new Model\Regions)->getMaxTreeId();
+    }
+
+    public static function rebuildTree()
+    {
+        (new \Palto\Model\Regions())->rebuildTree();
     }
 
     private static function groupByField(array $unGrouped, string $field): array

@@ -7,11 +7,23 @@ use DateTime;
 
 class Regions
 {
-    public static function getWithAdsRegions(?Region $parentRegion = null, $limit = 0): array
+    public static function getLiveRegions(?Region $parentRegion = null, $limit = 0): array
     {
-        $regions = (new Model\Regions)->getWithAdsRegions($parentRegion, $limit);
+        $regions = (new Model\Regions)->getLiveRegions($parentRegion, $limit);
 
         return array_map(fn($region) => new Region($region), $regions);
+    }
+
+    /**
+     * @param int $id
+     * @return Region[]
+     */
+    public static function getParents(int $id): array
+    {
+        return array_map(
+            fn(array $region) => new Region($region),
+            (new \Palto\Model\Regions())->getParents($id)
+        );
     }
 
     /**

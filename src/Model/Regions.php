@@ -17,7 +17,7 @@ class Regions extends NestedSet
         );
     }
 
-    public function getWithAdsRegions(?Region $parentRegion, int $limit = 0, $offset = 0, $orderBy = ''): array
+    public function getLiveRegions(?Region $parentRegion, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
         if (!$parentRegion || $parentRegion->getLevel() < 2) {
             $query = 'SELECT * FROM ' . $this->name;

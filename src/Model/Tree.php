@@ -95,4 +95,16 @@ abstract class Tree extends Model
     {
         self::getDb()->delete($this->name, 'parent_id = %d', $parentId);
     }
+
+    public function getParents(int $id): array
+    {
+        $category = $this->getById($id);
+        $parents = [];
+        while ($category['parent_id']) {
+            $category = $this->getById($category['parent_id']);
+            $parents[] = $category;
+        }
+
+        return $parents;
+    }
 }

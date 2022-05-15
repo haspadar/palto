@@ -14,6 +14,18 @@ class Categories
         return $category ? new Category($category) : null;
     }
 
+    /**
+     * @param int $id
+     * @return Category[]
+     */
+    public static function getParents(int $id): array
+    {
+        return array_map(
+            fn(array $category) => new Category($category),
+            (new \Palto\Model\Categories())->getParents($id)
+        );
+    }
+
     public static function rebuildTree()
     {
         (new \Palto\Model\Categories())->rebuildTree();

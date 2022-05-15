@@ -132,4 +132,14 @@ class Ads extends Model
             $offset
         );
     }
+
+    public function getPairsCount(): int
+    {
+        return self::getDb()->queryFirstField('SELECT COUNT(distinct category_id, region_id) FROM ' . $this->name);
+    }
+
+    public function getPairs(int $limit, int $offset): array
+    {
+        return self::getDb()->query('SELECT distinct category_id, region_id FROM ' . $this->name . ' LIMIT %d OFFSET %d', $limit, $offset);
+    }
 }

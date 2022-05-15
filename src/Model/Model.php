@@ -46,6 +46,13 @@ abstract class Model
         return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE id = %d', $id) ?: [];
     }
 
+    public function addUpdate(array $data, array $onDuplicateUpdates): int
+    {
+        self::getDb()->insertUpdate($this->name, $data, $onDuplicateUpdates);
+
+        return self::getDb()->insertId();
+    }
+
     public function addIgnore(array $data): int
     {
         self::getDb()->insertIgnore($this->name, $data);

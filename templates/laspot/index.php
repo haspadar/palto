@@ -14,7 +14,7 @@
 <h2><?=$this->translate('Категории')?></h2>
 
 <?php /** @var $level1Category \Palto\Category */?>
-<?php foreach (\Palto\Categories::getLiveCategories(null, $this->data['region']) as $level1Category) :?>
+<?php foreach ($this->data['live_categories'] as $level1Category) :?>
     <div class="span-d">
         <p><a href="<?=$level1Category->generateUrl($this->data['region'])?>">
                 <?php if ($level1Category->getEmoji()) :?>

@@ -32,5 +32,9 @@ final class NestedSets extends AbstractMigration
         $this->execute("/* 17:17:01 MacOS uspets */ UPDATE `regions` SET parent_id=" . $this->getAdapter()->getConnection()->lastInsertId() . ' WHERE parent_id IS NULL AND level=1');
         \Palto\Regions::rebuildTree();
 
+        $this->execute("ALTER TABLE `categories_regions_with_ads` DROP `ads_count`, RENAME TO `live`;");
+        $this->execute("ALTER TABLE `live` ADD `create_time` timestamp NULL;");
+        $this->execute("ALTER TABLE `live` ADD INDEX `create_time` (`create_time`);");
+
     }
 }

@@ -72,7 +72,7 @@
             </div>
         </nav>
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <?php if ($this->data['breadcrumbs']) : ?>
+            <?php if ($this->data['breadcrumbs'] ?? []) : ?>
                 <nav aria-label="breadcrumb" class="pt-3 pb-1 mb-1">
                     <ol class="breadcrumb">
                         <?php foreach ($this->data['breadcrumbs'] as $breadcrumbUrl) : ?>
@@ -89,8 +89,8 @@
 
             <?php endif; ?>
 
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                <h1><?= $this->data['title'] ?></h1>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+                <h1 class="mt-2"><?= $this->data['title'] ?></h1>
             </div>
 
             <?php if ($this->data['flash']) : ?>

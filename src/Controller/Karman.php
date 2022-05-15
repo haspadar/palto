@@ -46,8 +46,7 @@ class Karman
     public function showStatus()
     {
         $this->templatesEngine->addData([
-            'title' => 'Приборы',
-            'breadcrumbs' => [['title' => 'Приборы']]
+            'title' => 'Приборы'
         ]);
         echo $this->templatesEngine->make('status');
     }
@@ -57,7 +56,6 @@ class Karman
         $this->templatesEngine->addData([
             'complaints' => \Palto\Complaints::getActualComplaints(),
             'title' => 'Жалобы',
-            'breadcrumbs' => [['title' => 'Жалобы']]
         ]);
         echo $this->templatesEngine->make('complaints');
     }
@@ -151,9 +149,6 @@ class Karman
             'title' => 'Все логи',
             'type' => 'info',
             'directories' => Directory::getLogsDirectories(),
-            'breadcrumbs' => array_merge([[
-                'title' => 'Все логи',
-            ]])
         ]);
         echo $this->templatesEngine->make('logs-directories');
     }
@@ -164,9 +159,6 @@ class Karman
             'title' => 'Все ошибки',
             'type' => 'error',
             'directories' => Directory::getLogsDirectories(),
-            'breadcrumbs' => array_merge([[
-                'title' => 'Все ошибки',
-            ]])
         ]);
         echo $this->templatesEngine->make('logs-directories');
     }
@@ -253,9 +245,6 @@ class Karman
             'ads' => Ads::getAds(null, null, self::LIMIT, $offset),
             'page' => $page,
             'pages_count' => ceil($adsCount / self::LIMIT),
-            'breadcrumbs' => array_merge([[
-                'title' => 'Объявления'
-            ]])
         ]);
         echo $this->templatesEngine->make('ads');
     }
@@ -326,7 +315,6 @@ class Karman
         $undefinedCategories = Categories::getUndefinedAll('level ASC');
         $this->templatesEngine->addData([
             'title' => 'Категории',
-            'breadcrumbs' => [],
             'categories' => $categories,
             'ads_counts' =>
                 Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1)

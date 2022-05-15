@@ -78,11 +78,12 @@ class Synonyms
         if ($synonyms) {
             $limit = 1000;
             $offset = 0;
+            $adsCount = Ads::getAdsCount(array_map(fn(Category $category)=> $category->getId(), $categories));
             while ($ads = Ads::getFields($categories, ['id', 'title', 'text', 'category_id', 'region_id', 'deleted_time'], $limit, $offset)) {
+                Logger::info('Search in ' . ($offset + count($ads)) . '/' . $adsCount . ' ads...');
                 foreach ($ads as $adFields) {
                     $ad = new Ad($adFields, [], []);
                     foreach ($synonyms as $synonym) {
-                        Logger::debug('Synonym "' . $synonym->getTitle() . '" for ad "' . $ad->getTitle() . '"');
                         if (self::hasAdSynonym($ad, $synonym)) {
                             self::moveAd($ad, $synonym->getCategory());
                             $movedAdsCount++;

@@ -47,9 +47,21 @@ class Ads extends Model
         return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE region_id IN %ld', $regionsIds);
     }
 
-    public static function getCategoriesAdsCount(array $categoriesIds): int
+    public static function getCategoriesAdsCounts(array $categoriesIds, int $level = 0): array
     {
-        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
+        $field = $level ? "category_level_{$level}_id" : 'category_id';
+        $counts = self::getDb()->query("SELECT COUNT(*) AS count, $field FROM ads WHERE $field IN %ld GROUP BY $field", $categoriesIds);
+
+        return array_column($counts, 'count', $field);
+    }
+
+    public static function getAdsCount(array $categoriesIds): int
+    {
+        if ($categoriesIds) {
+            return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads WHERE category_id IN %ld', $categoriesIds);
+        }
+
+        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ads');
     }
 
     /**
@@ -111,5 +123,17 @@ class Ads extends Model
         $query = self::getAdsQuery();
 
         return self::getDb()->queryFirstRow($query . ' WHERE a.donor_url = %s', $donorUrl) ?: [] ;
+    }
+
+    public static function update(array $updates, int $id)
+    {
+        self::getDb()->update('ads', $updates, 'id = %d', $id);
+    }
+
+    public static function getFields(array $categoriesIds, array $fields, int $limit, int $offset): array
+    {
+        return self::getDb()->query("SELECT "
+            . implode(',', $fields)
+            . " FROM ads WHERE category_id IN %ld LIMIT %d OFFSET %d", $categoriesIds, $limit, $offset);
     }
 }

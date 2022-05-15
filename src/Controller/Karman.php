@@ -2,9 +2,12 @@
 
 namespace Palto\Controller;
 
+use Exception;
 use League\Plates\Engine;
 use League\Plates\Extension\Asset;
 use Palto\Ads;
+use Palto\Auth;
+use Palto\Categories;
 use Palto\Category;
 use Palto\Cli;
 use Palto\Config;
@@ -12,31 +15,38 @@ use Palto\Debug;
 use Palto\Directory;
 use Palto\Filter;
 use Palto\Flash;
+use Palto\Logger;
+use Palto\Logs;
+use Palto\Plural;
 use Palto\Regions;
+use Palto\Synonym;
+use Palto\Synonyms;
 use Palto\Url;
+use Palto\Validator;
 
 class Karman
 {
     protected Engine $templatesEngine;
     protected Url $url;
+    const LIMIT = 100;
 
     public function __construct()
     {
-        \Palto\Auth::check();
+        Auth::check();
         $this->templatesEngine = new Engine(Directory::getKarmanTemplatesDirectory());
         $this->templatesEngine->loadExtension(new Asset(Directory::getPublicDirectory(), false));
         $this->url = new Url();
         $this->templatesEngine->addData([
             'flash' => Flash::receive(),
-            'url' => $this->url
+            'url' => $this->url,
+            'actual_complaints_count' => \Palto\Complaints::getActualComplaintsCount()
         ]);
     }
 
     public function showStatus()
     {
         $this->templatesEngine->addData([
-            'title' => 'Статус',
-            'breadcrumbs' => [['title' => 'Статус']]
+            'title' => 'Приборы'
         ]);
         echo $this->templatesEngine->make('status');
     }
@@ -46,7 +56,6 @@ class Karman
         $this->templatesEngine->addData([
             'complaints' => \Palto\Complaints::getActualComplaints(),
             'title' => 'Жалобы',
-            'breadcrumbs' => [['title' => 'Жалобы']]
         ]);
         echo $this->templatesEngine->make('complaints');
     }
@@ -56,7 +65,7 @@ class Karman
         $complaint = \Palto\Complaints::getComplaint($id);
         $this->templatesEngine->addData([
             'complaint' => $complaint,
-            'ad' => \Palto\Ads::getById($complaint['id']),
+            'ad' => Ads::getById($complaint['id']),
             'title' => 'Жалоба #' . $complaint['id'],
             'breadcrumbs' => [[
                 'title' => 'Жалобы',
@@ -110,7 +119,7 @@ class Karman
                     'type' => 'success'
                 ]));
                 $this->showJsonResponse(['success' => true]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->showJsonResponse(['error' => $e->getTraceAsString()]);
             }
         } else {
@@ -134,18 +143,162 @@ class Karman
         }
     }
 
+    public function showInfoLogsDirectories()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Все логи',
+            'type' => 'info',
+            'directories' => Directory::getLogsDirectories(),
+        ]);
+        echo $this->templatesEngine->make('logs-directories');
+    }
+
+    public function showErrorLogsDirectories()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Все ошибки',
+            'type' => 'error',
+            'directories' => Directory::getLogsDirectories(),
+        ]);
+        echo $this->templatesEngine->make('logs-directories');
+    }
+
+    public function showInfoLogs(string $name)
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Логи "' . $name . '"',
+            'type' => 'info',
+            'directory' => $name,
+            'breadcrumbs' => array_merge([[
+                'title' => 'Все логи',
+                'url' => '/karman/info-logs-directories?cache=0'
+            ], [
+                'title' => 'Логи "' . $name . '"',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('logs');
+    }
+
+    public function getLogs(string $name, string $type)
+    {
+        $this->showJsonResponse(['logs' => array_reverse(Logs::getLogs($name, $type))]);
+    }
+
+    public function showErrorLogs(string $name)
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Логи "' . $name . '"',
+            'type' => 'error',
+            'directory' => $name,
+            'breadcrumbs' => array_merge([[
+                'title' => 'Все ошибки',
+                'url' => '/karman/error-logs-directories?cache=0'
+            ], [
+                'title' => 'Ошибки "' . $name . '"',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('logs');
+    }
+
+    public function findAdCategory(int $id)
+    {
+        $ad = Ads::getById($id);
+        if ($category = \Palto\Synonyms::findCategory($ad)) {
+            $synonyms = $category->getSynonyms();
+            $response = 'Нашлась категория <span class="fw-bolder">"'
+                . implode('/', array_reverse($category->getWithParentsTitles()))
+                . '"</span>'
+                . ($synonyms
+                    ? ' с синонимами: <ul class="fst-italic mt-2">' . implode('', array_map(fn(Synonym $synonym) => '<li>' . $synonym->getTitle() . '</li>', $synonyms)) . '</ul>'
+                    : ' без синонимов'
+                );
+        } else {
+            $response = 'Категория не нашлась';
+        }
+
+        $this->showJsonResponse(['report' => $response]);
+    }
+
+    public function showKarmanAd(int $id)
+    {
+        $ad = Ads::getById($id);
+        $this->templatesEngine->addData([
+            'title' => 'Объявление ' . $id,
+            'ad' => $ad,
+            'breadcrumbs' => array_merge([[
+                'title' => 'Объявления',
+                'url' => '/karman/ads?cache=0'
+            ], [
+                'title' => 'Объявление ' . $ad->getId()
+            ]])
+        ]);
+        echo $this->templatesEngine->make('ad');
+    }
+
+    public function showAds($page)
+    {
+        $page = Filter::getPageNumber($page);
+        $offset = ($page - 1) * self::LIMIT;
+        $adsCount = Ads::getAdsCount();
+        $this->templatesEngine->addData([
+            'title' => 'Объявления',
+            'ads' => Ads::getAds(null, null, self::LIMIT, $offset),
+            'page' => $page,
+            'pages_count' => ceil($adsCount / self::LIMIT),
+        ]);
+        echo $this->templatesEngine->make('ads');
+    }
+
+    public function showCategoryAds(int $id, $page)
+    {
+        $category = Categories::getById($id);
+        $page = Filter::getPageNumber($page);
+        $offset = ($page - 1) * self::LIMIT;
+        $adsCount = Ads::getAdsCount([$category->getId()]);
+        $this->templatesEngine->addData([
+            'title' => 'Объявления ' . $category->getTitle(),
+            'category' => $category,
+            'ads' => Ads::getAds(null, $category, self::LIMIT, $offset),
+            'page' => $page,
+            'pages_count' => ceil($adsCount / self::LIMIT),
+            'breadcrumbs' => array_merge([[
+                'title' => 'Категории',
+                'url' => '/karman/categories?cache=0'
+            ], [
+                'title' => $category->getTitle(),
+                'url' => '/karman/categories/' . $category->getId() . '?cache=0'
+            ]], [[
+                'title' => 'Объявления',
+            ]])
+        ]);
+        echo $this->templatesEngine->make('ads');
+    }
+
     public function showCategory(int $id)
     {
-        $category = \Palto\Categories::getById($id);
+        $category = Categories::getById($id);
         $parents = $category->getParents();
         $parentsUrls = array_map(fn(Category $parent) => [
             'title' => $parent->getTitle(),
             'url' => '/karman/categories/' . $parent->getId()
         ], $parents);
+        $categories = Categories::getChildren(
+            [$category->getId()],
+            0,
+            0,
+            'title'
+        )[$category->getId()] ?? [];
         $this->templatesEngine->addData([
             'title' => 'Категория',
             'category' => $category,
-            'categories' => \Palto\Categories::getLiveCategories($category),
+            'categories' => $categories,
+            'ads_counts' => Ads::getCategoriesAdsCounts(
+                array_map(fn(Category $category) => $category->getId(), $categories),
+                $category->getLevel() + 1
+            ) + Ads::getCategoriesAdsCounts(
+                    array_map(fn(Category $category) => $category->getId(), [$category]),
+                    $category->getLevel()
+                ),
             'breadcrumbs' => array_merge([[
                 'title' => 'Категории',
                 'url' => '/karman/categories?cache=0'
@@ -158,24 +311,102 @@ class Karman
 
     public function showCategories()
     {
+        $categories = Categories::getLiveCategories();
+        $undefinedCategories = Categories::getUndefinedAll('level ASC');
         $this->templatesEngine->addData([
             'title' => 'Категории',
-            'breadcrumbs' => [],
-            'categories' => \Palto\Categories::getLiveCategories()
+            'categories' => $categories,
+            'ads_counts' =>
+                Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $categories), 1)
+                + Ads::getCategoriesAdsCounts(array_map(fn(Category $category) => $category->getId(), $undefinedCategories)),
+            'undefined_categories' => $undefinedCategories,
         ]);
         echo $this->templatesEngine->make('categories');
     }
 
+    public function getCategoriesRoots(): void
+    {
+        $this->showJsonResponse(array_map(fn(Category $category) => [
+            'id' => $category->getId(),
+            'parent_id' => $category->getParentId() ?: null,
+            'title' => $category->getTitle()
+        ], Categories::getRoots()));
+    }
+
+    public function moveAd(): void
+    {
+        $params = $this->getPutParams();
+        $error = Validator::validateMoveAd(
+            intval($params['category_level_1'] ?? 0),
+            Filter::get($params['new_category_level_1'] ?? ''),
+            Filter::get($params['new_category_level_2'] ?? ''),
+        );
+        if ($error) {
+            $this->showJsonResponse(['error' => $error]);
+        } else {
+            $adId = intval($params['ad_id']);
+            Ads::moveAd(
+                $adId,
+                intval($params['category_level_1'] ?? 0),
+                Filter::get($params['new_category_level_1'] ?? ''),
+                intval($params['category_level_2'] ?? 0),
+                Filter::get($params['new_category_level_2'] ?? ''),
+            );
+            $category = Ads::getById(intval($params['ad_id']))->getCategory();
+            $newSynonyms = Filter::getSynonyms($params['synonyms']);
+            $error = Validator::validateSynonyms($newSynonyms);
+            if (!$error) {
+                $category->addSynonyms($newSynonyms);
+                Flash::add(json_encode([
+                    'message' => "Объявление $adId перемещено в \""
+                        . $category->getTitle()
+                        . "\". ",
+                    'type' => 'success'
+                ]));
+            }
+
+            $this->showJsonResponse(['success' => true]);
+        }
+    }
+
+    public function getCategoriesChildren(int $parentId): void
+    {
+        $children = $parentId ? Categories::getChildren([$parentId], 0, 0, 'title') : [];
+        $this->showJsonResponse(array_map(fn(Category $category) => [
+            'id' => $category->getId(),
+            'parent_id' => $category->getParentId() ?: null,
+            'title' => $category->getTitle()
+        ], $children ? $children[$parentId] : []));
+    }
+
     public function updateCategory(int $id)
     {
-        $title = Filter::get($this->getPutParams()['title']);
-        \Palto\Categories::update([
+        $putParams = $this->getPutParams();
+        $title = Filter::get($putParams['title']);
+        $category = Categories::getById($id);
+        $category->update([
             'title' => $title,
-            'url' => Filter::get($this->getPutParams()['url']),
-            'emoji' => Filter::get($this->getPutParams()['emoji'])
-        ], $id);
+            'url' => Filter::get($putParams['url']),
+            'emoji' => Filter::get($putParams['emoji'])
+        ]);
+        Synonyms::updateCategory($category, Filter::getSynonyms($putParams['synonyms']));
         Flash::add(json_encode([
-            'message' => 'Категория <a href="/karman/categories/' . $id . '">"' . $title . '"</a> обновлена',
+            'message' => 'Категория <a href="/karman/categories/'
+                . $id
+                . '">"'
+                . $title
+                . '"</a> обновлена.',
+            'type' => 'success'
+        ]));
+        $this->showJsonResponse(['success' => true]);
+    }
+
+    public function removeCategory(int $id)
+    {
+        $category = Categories::getById($id);
+        $category->remove();
+        Flash::add(json_encode([
+            'message' => 'Категория "' . $category->getTitle() . '" удалена.',
             'type' => 'success'
         ]));
         $this->showJsonResponse(['success' => true]);
@@ -183,9 +414,10 @@ class Karman
 
     public function removeEmoji(int $id)
     {
-        \Palto\Categories::update([
+        $category = Categories::getById($id);
+        $category->update([
             'emoji' => ''
-        ], $id);
+        ]);
         Flash::add(json_encode([
             'message' => 'Emoji удалена',
             'type' => 'success'

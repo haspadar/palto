@@ -31,8 +31,27 @@ $router->mount('/karman', function() use ($router) {
     $router->put('/enable-cache', '\Palto\Controller\Karman@enableCache');
     $router->get('/categories/{id}', '\Palto\Controller\Karman@showCategory');
     $router->get('/categories', '\Palto\Controller\Karman@showCategories');
+    $router->get('/get-categories', '\Palto\Controller\Karman@getCategoriesRoots');
+    $router->get('/get-categories/{id}', '\Palto\Controller\Karman@getCategoriesChildren');
+    $router->put('/move-ad', '\Palto\Controller\Karman@moveAd');
     $router->put('/update-category/{id}', '\Palto\Controller\Karman@updateCategory');
+    $router->delete('/remove-category/{id}', '\Palto\Controller\Karman@removeCategory');
     $router->delete('/remove-emoji/{id}', '\Palto\Controller\Karman@removeEmoji');
+    $router->get("/ads(/\d+)?", '\Palto\Controller\Karman@showAds');
+    $router->get("/category-ads/{id}(/\d+)?", '\Palto\Controller\Karman@showCategoryAds');
+    $router->get("/ad/{id}", '\Palto\Controller\Karman@showKarmanAd');
+    $router->get("/find-ad-category/{id}", '\Palto\Controller\Karman@findAdCategory');
+
+    $router->get("/info-logs-directories", '\Palto\Controller\Karman@showInfoLogsDirectories');
+    $router->get("/error-logs-directories", '\Palto\Controller\Karman@showErrorLogsDirectories');
+
+    $router->get("/info-logs/{name}", '\Palto\Controller\Karman@showInfoLogs');
+    $router->get("/error-logs/{name}", '\Palto\Controller\Karman@showErrorLogs');
+    $router->get("/get-logs/{name}/{type}", '\Palto\Controller\Karman@getLogs');
+
+//    $router->get("/log-directories", '\Palto\Controller\Karman@showLogDirectories');
+//    $router->get("/log-directories/{name}", '\Palto\Controller\Karman@showLogDirectory');
+//    $router->get("/log-types/{name}/{type}", '\Palto\Controller\Karman@showLogType');
 });
 
 $router->get('/', '\Palto\Controller\Client@showIndex');

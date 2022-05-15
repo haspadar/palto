@@ -14,6 +14,17 @@ class Regions
         return array_map(fn($region) => new Region($region), $regions);
     }
 
+    /**
+     * @param int $limit
+     * @return Region[]
+     */
+    public static function getLeafs(int $limit = 0): array
+    {
+        return array_map(
+            fn($region) => new Region($region),
+            Model\Regions::getLeafs($limit)
+        );
+    }
 
     public static function getRegionsByIds(array $ids): array
     {

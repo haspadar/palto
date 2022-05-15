@@ -13,7 +13,7 @@ class Flash
     {
         $message = $_COOKIE['flash_message'] ?? '';
         unset($_COOKIE['flash_message']);
-        setcookie('flash_message', null, -1, '/');
+        setcookie('flash_message', '', -1, '/');
 
         return $message;
     }

@@ -20,6 +20,13 @@ class Status
         return '';
     }
 
+    public static function getPhpProcesses(): array
+    {
+        $processes = Cli::getPsGrepProcesses('/usr/bin/php');
+
+        return array_values(array_filter($processes, fn(array $process) => $process['command'] != 'sh'));
+    }
+
     public static function getDirectoryUsePercent($directory): string
     {
         $result = `df -Ph $directory`;

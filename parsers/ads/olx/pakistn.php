@@ -75,7 +75,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         return $categoryDocument->filter('article');
     }
 
-    protected function findAdUrl(Crawler $resultRow, Category $category): ?Url
+    protected function findAdUrl(Crawler $resultRow, Category|\Palto\Region $category): ?Url
     {
         $adUrl = $resultRow->filter('a[href]')->attr('href');
         $domain = (new Url($category->getDonorUrl()))->getDomain();

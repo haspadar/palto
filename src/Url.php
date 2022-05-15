@@ -151,6 +151,17 @@ class Url
         return array_values(array_filter(explode('/', $this->path)));
     }
 
+    public function isStartsAt(array $paths): bool
+    {
+        foreach ($paths as $path) {
+            if (mb_strpos($this->getPath(), $path) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function hasUrlPageNumber(): bool
     {
         $withoutQueryUrl = parse_url($this->url)['path'] ?? '/';

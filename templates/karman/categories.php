@@ -3,32 +3,14 @@
 <?php $this->layout('layout');?>
 
 <?php if ($this->data['categories'] ?? []) :?>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Название</th>
-        </tr>
-        </thead>
-        <tbody>
+    <?php $this->insert('partials/karman-categories', ['categories' => $this->data['categories']])?>
 
-        <?php
-        /**
-         * @var $category \Palto\Category
-         */
-        ?>
-        <?php foreach ($this->data['categories'] as $category) :?>
-            <tr>
-                <td>
-                    <a href="/karman/categories/<?=$category->getId()?>" class="text-decoration-none">
-                        <?=$category->getTitle()?>
-                        <?=$category->getEmoji()?>
-                    </a>
-                </td>
+    <br>
+    <?php if ($this->data['undefined_categories']) :?>
+        <h3>Undefined</h3>
+        <?php $this->insert('partials/karman-categories', ['categories' => $this->data['undefined_categories']])?>
 
-            </tr>
-        <?php endforeach;?>
-        </tbody>
-    </table>
+    <?php endif;?>
 <?php else :?>
     <div class="alert alert-secondary mt-3" role="alert">
         Категорий нет

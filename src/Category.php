@@ -3,6 +3,7 @@
 namespace Palto;
 
 use Palto\Model\Categories;
+use Palto\Model\Synonyms;
 
 class Category
 {
@@ -20,11 +21,44 @@ class Category
         $this->category = $category;
     }
 
-    public static function getById(int $categoryId)
+    public function getById(int $categoryId): Category
     {
-        $region = \Palto\Model\Categories::getById($categoryId);
+        $region = Categories::getById($categoryId);
 
         return new Category($region);
+    }
+
+    public static function updateSynonyms(array $synonyms, int $id): array
+    {
+
+    }
+
+    public function addSynonyms(array $synonyms): array
+    {
+        $result = [];
+        foreach ($synonyms as $synonym) {
+            $categoryId = Synonyms::add($synonym, $this->getId());
+            $result[] = new Synonym(Synonyms::getById($categoryId));
+        }
+
+        return $result;
+    }
+
+    public function getSynonyms(): array
+    {
+        return array_map(fn($synonym) => new Synonym($synonym), Synonyms::getAll($this->getId()));
+    }
+
+    public function getGroupedSynonyms(): string
+    {
+        $synonyms = $this->getSynonyms();
+
+        return $this->groupSynonyms($synonyms);
+    }
+
+    public function groupSynonyms(array $synonyms): string
+    {
+        return implode(', ', array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms));
     }
 
     public function getParents(): array
@@ -33,8 +67,11 @@ class Category
             $parents = [];
             $category = $this;
             while ($category->getParentId()) {
-                $category = new self(Categories::getById($category->getParentId()));
-                $parents[] = $category;
+                $categoryRow = Categories::getById($category->getParentId());
+                if ($categoryRow) {
+                    $category = new self($categoryRow);
+                    $parents[] = $category;
+                }
             }
 
             $this->parents = array_reverse($parents);
@@ -155,7 +192,7 @@ class Category
         if (!isset($this->children)) {
             $this->children = array_map(
                 fn($category) => new self($category),
-                Categories::getChildren([$this->getId()], $this->getLevel() + 1)
+                Categories::getChildren([$this->getId()])
             );
         }
 
@@ -182,5 +219,16 @@ class Category
         $parentUrls = array_map(fn(self $category) => $category->getUrl(), $this->getParents());
 
         return $urls == $parentUrls;
+    }
+
+    public function update(array $updates): void
+    {
+        Categories::update($updates, $this->getId());
+    }
+
+    public function remove(): void
+    {
+        Categories::removeChildren($this->getId());
+        Categories::remove($this->getId());
     }
 }

@@ -85,6 +85,34 @@ class Cli
             && mb_strpos(file_get_contents(Directory::getRootDirectory() . '/.env'), 'AUTH=1') !== false;
     }
 
+    public static function getPsGrepProcesses(string $grepPattern): array
+    {
+        $commands = self::getPsProcesses("ps -eo pid,lstart,etime,cmd | grep \"$grepPattern\"");
+        $parsed = [];
+        foreach ($commands as $command) {
+            $parsed[] = [
+                'pid' => $command[0],
+                'command' => $command[7],
+                'name' => $command[count($command) - 1],
+                'run_time' => new \DateTime(implode(' ', [$command[2], $command[3], $command[5], $command[4]])),
+                'work_time' => $command[6],
+            ];
+        }
+
+        return $parsed;
+    }
+
+    public static function getPsProcesses(string $psCommand): array
+    {
+        $response = `$psCommand`;
+        $lines = array_values(array_filter(explode(PHP_EOL, $response ?? '')));
+        $processes = array_map(fn(string $line) => array_values(array_filter(explode(' ', $line))), $lines);
+        array_pop($processes);
+        array_pop($processes);
+
+        return $processes;
+    }
+
     public static function generateGeneralEnv(string $databaseName, string $databaseUser, string $databasePassword): string
     {
         $replaces = [
@@ -149,7 +177,6 @@ class Cli
                 $projectName,
                 $projectName
             );
-
             $filename = Config::getNginxDomainFilename();
 
             return "echo '$nginxDomain' > $filename";

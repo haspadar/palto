@@ -30,6 +30,11 @@ class Logger
         self::getLogger()->debug($message, $context);
     }
 
+    public static function notice($message, array $context = [])
+    {
+        self::getLogger()->notice($message, $context);
+    }
+
     public static function info($message, array $context = [])
     {
         self::getLogger()->info($message, $context);
@@ -47,13 +52,37 @@ class Logger
             $handler = new StreamHandler('php://stdout');
             $handler->setFormatter(new ColoredLineFormatter());
             self::$logger->pushHandler($handler);
+            $directory = self::getDirectory();
             self::$logger->pushHandler(new RotatingFileHandler(
-                Directory::getRootDirectory() . '/logs/parser',
+                $directory . '/info',
                 20,
                 \Monolog\Logger::INFO
+            ));
+            self::$logger->pushHandler(new RotatingFileHandler(
+                $directory . '/error',
+                20,
+                \Monolog\Logger::ERROR
             ));
         }
 
         return self::$logger;
+    }
+
+    private static function getDirectory(): string
+    {
+        $scriptParts = array_values(array_filter(explode('/', $_SERVER['SCRIPT_FILENAME'])));
+        if ($scriptParts[count($scriptParts) - 1] == 'index.php') {
+            $isKarman = array_values(array_filter(explode('/', $_SERVER['REQUEST_URI'])))[0] == 'karman';
+            if ($isKarman) {
+                return Directory::getRootDirectory() . '/logs/karman';
+            } else {
+                return Directory::getRootDirectory() . '/logs/site';
+            }
+
+        } else {
+            $name = str_replace('.php', '', $scriptParts[count($scriptParts) - 1]);
+
+            return Directory::getRootDirectory() . '/logs/' . $name ;
+        }
     }
 }

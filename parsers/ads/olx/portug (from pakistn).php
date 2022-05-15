@@ -75,7 +75,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         return $categoryDocument->filter('article');
     }
 
-    protected function findAdUrl(Crawler $resultRow, Category $category): ?Url
+    protected function findAdUrl(Crawler $resultRow, Category|\Palto\Region $category): ?Url
     {
         $adUrl = $resultRow->filter('a[href]')->attr('href');
         $domain = (new Url($category->getDonorUrl()))->getDomain();
@@ -128,7 +128,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         );
     }
 
-    protected function getNextPageUrl(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): ?Url
+    protected function getNextPageUrl(Crawler $categoryDocument, Category|\Palto\Region $category, Url $url, int $pageNumber): ?Url
     {
         return new Url($url->getDomain() . $url->getPath() . '?page=' . $this->getNextPageNumber($categoryDocument,$category, $url, $pageNumber));
     }

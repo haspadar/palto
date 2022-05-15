@@ -116,6 +116,36 @@ class Directory
         return self::$rootDirectory;
     }
 
+
+
+//    public static function getLogTypes(string $name): array
+//    {
+//        $files = self::getDirectories(self::getLogsDirectory() . '/' . $name);
+//        $types = [];
+//        foreach ($files as $file) {
+//            $parts = explode('-', $file);
+//            if (!in_array($parts[0], $types)) {
+//                $types[] = $parts[0];
+//            }
+//        }
+//
+//        return $types;
+//    }
+
+    public static function getLogsDirectory(): string
+    {
+        return self::getRootDirectory() . '/logs';
+    }
+
+    public static function getLogsDirectories(): array
+    {
+        $directories = self::getDirectories(self::getLogsDirectory());
+
+        return array_filter($directories, function (string $directory) {
+            return is_dir(self::getLogsDirectory() . '/' . $directory);
+        });
+    }
+
     public static function getPaltoDirectories(string $directory = '/var/www'): array
     {
         return array_values(array_filter(

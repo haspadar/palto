@@ -3,10 +3,16 @@
 namespace Palto\Model;
 
 use Palto\Category;
+use Palto\Debug;
 use Palto\Region;
 
 class Categories extends Model
 {
+    public static function findByTitle(string $title, int $parentId): array
+    {
+        return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE LOWER(title) = LOWER(%s)' . ($parentId ? ' AND parent_id = ' . $parentId : ''), $title) ?: [];
+    }
+
     public static function getById(int $id): array
     {
         return self::getDb()->queryFirstRow('SELECT * FROM categories WHERE id = %d', $id) ?: [];
@@ -24,18 +30,22 @@ class Categories extends Model
             : [];
     }
 
-    public static function getChildren(array $categoriesIds, int $level, int $limit = 0): array
+    public static function getChildrenCount(array $categoriesIds): int
+    {
+        return self::getDb()->queryFirstField('SELECT COUNT(*) FROM categories WHERE parent_id IN %ld', $categoriesIds) ?: 0;
+    }
+
+    public static function getChildren(array $categoriesIds, int $limit = 0, int $offset = 0, string $orderBy = 'id'): array
     {
         return $limit
             ? self::getDb()->query(
-                'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d LIMIT %d',
+                'SELECT * FROM categories WHERE parent_id IN %ld ORDER BY ' . $orderBy . ' LIMIT %d OFFSET %d',
                 $categoriesIds,
-                $level,
-                $limit
-            ) : self::getDb()->queryFirstColumn(
-                'SELECT * FROM categories WHERE parent_id IN %ld AND level = %d',
+                $limit,
+                $offset
+            ) : self::getDb()->query(
+                'SELECT * FROM categories WHERE parent_id IN %ld ORDER BY ' . $orderBy,
                 $categoriesIds,
-                $level
             );
     }
 
@@ -84,18 +94,22 @@ class Categories extends Model
         return self::getDb()->query($query, $values);
     }
     
+    public static function getByTitle(string $title, int $parentId = 0): array
+    {
+        return self::getDb()->queryFirstRow(
+            'SELECT * FROM categories WHERE url = %s AND parent_id ' . ($parentId ? '=' . $parentId : 'IS NULL'),
+            $title
+        ) ?: [];
+    }
+
     public static function getByUrl(string $url, int $level, int $excludeId = 0): array
     {
-        if ($url) {
-            return self::getDb()->queryFirstRow(
-                'SELECT * FROM categories WHERE url = %s AND level = %d AND id <> %d',
-                $url,
-                $level,
-                $excludeId
-            ) ?: [];
-        }
-
-        return [];
+        return self::getDb()->queryFirstRow(
+            'SELECT * FROM categories WHERE url = %s AND level = %d AND id <> %d',
+            $url,
+            $level,
+            $excludeId
+        ) ?: [];
     }
 
     public static function getLeafs(int $limit): array
@@ -138,4 +152,23 @@ class Categories extends Model
         return self::getDb()->queryFirstField('SELECT MAX(level) FROM categories') ?: 0;
     }
 
+    public static function findByUrlAll(string $url, string $orderBy = 'level'): array
+    {
+        return self::getDb()->query("SELECT * FROM categories WHERE url LIKE %s ORDER BY $orderBy", $url . '%') ?: [];
+    }
+
+    public static function getRoots(): array
+    {
+        return self::getDb()->query('SELECT * FROM categories WHERE level = %d ORDER BY title', 1) ?: [];
+    }
+
+    public static function removeChildren(int $parentId)
+    {
+        self::getDb()->delete('categories', 'parent_id = %d', $parentId);
+    }
+
+    public static function remove(int $id)
+    {
+        self::getDb()->delete('categories', 'id = %d', $id);
+    }
 }

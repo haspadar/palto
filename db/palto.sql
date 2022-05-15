@@ -1,3 +1,5 @@
+-- Adminer 4.8.1 MySQL 10.3.34-MariaDB-0ubuntu0.20.04.1 dump
+
 SET NAMES utf8;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -16,6 +18,7 @@ CREATE TABLE `categories` (
                               `donor_url` varchar(500) NOT NULL DEFAULT '',
                               `icon_url` varchar(1024) NOT NULL DEFAULT '',
                               `icon_text` text DEFAULT NULL,
+                              `emoji` text DEFAULT NULL,
                               `create_time` timestamp NULL DEFAULT NULL,
                               PRIMARY KEY (`id`),
                               UNIQUE KEY `url_level` (`url`,`level`),
@@ -46,7 +49,6 @@ CREATE TABLE `regions` (
                            KEY `tree_id` (`tree_id`),
                            CONSTRAINT `regions_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
 
 DROP TABLE IF EXISTS `ads`;
@@ -123,6 +125,19 @@ CREATE TABLE `ads_images` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+DROP TABLE IF EXISTS `categories_regions_with_ads`;
+CREATE TABLE `categories_regions_with_ads` (
+                                               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                                               `category_id` int(11) unsigned DEFAULT NULL,
+                                               `region_id` int(11) unsigned DEFAULT NULL,
+                                               `ads_count` int(10) unsigned NOT NULL DEFAULT 0,
+                                               PRIMARY KEY (`id`),
+                                               UNIQUE KEY `category_id_region_id` (`category_id`,`region_id`),
+                                               KEY `region_id` (`region_id`),
+                                               CONSTRAINT `categories_regions_with_ads_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+                                               CONSTRAINT `categories_regions_with_ads_ibfk_2` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 DROP TABLE IF EXISTS `complaints`;
 CREATE TABLE `complaints` (
@@ -169,6 +184,17 @@ CREATE TABLE `phinxlog` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS `synonyms`;
+CREATE TABLE `synonyms` (
+                            `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                            `category_id` int(10) unsigned DEFAULT NULL,
+                            `title` varchar(255) NOT NULL DEFAULT '',
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `title_category_id` (`title`,`category_id`),
+                            KEY `category_id` (`category_id`),
+                            CONSTRAINT `synonyms_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 DROP TABLE IF EXISTS `translates`;
 CREATE TABLE `translates` (
@@ -183,28 +209,4 @@ CREATE TABLE `translates` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-INSERT INTO `phinxlog` (`version`, `migration_name`, `start_time`, `end_time`, `breakpoint`) VALUES
-                                                                                                 (20210917121732,	'IncreaseComplaintDomainLength',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
-                                                                                                 (20211216220534,	'UpdateStructure',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
-                                                                                                 (20211217120937,	'UpdateRegistrationUrl',	'2021-12-24 16:31:54',	'2021-12-24 16:31:54',	0),
-                                                                                                 (20211226011720,	'LayoutsWithObjects',	'2022-01-03 04:09:41',	'2022-01-03 04:09:41',	0),
-                                                                                                 (20220103011805,	'LayoutsWithObjectsReplaces',	'2022-01-03 21:03:04',	'2022-01-03 21:03:11',	0),
-                                                                                                 (20220103221149,	'RegionLevel3',	'2022-01-04 02:25:03',	'2022-01-04 02:29:43',	0),
-                                                                                                 (20220104043706,	'CraigslistLayoutsChanged',	'2022-01-04 09:30:03',	'2022-01-04 09:30:03',	0),
-                                                                                                 (20220104133345,	'CraigsListLayoutsReplaces',	'2022-01-04 18:25:03',	'2022-01-04 18:25:03',	0),
-                                                                                                 (20220104152745,	'DonorUrlComplete',	'2022-01-04 19:40:03',	'2022-01-04 19:40:03',	0),
-                                                                                                 (20220107120308,	'RegionsCategoriesDuplicatesRemove',	'2022-01-07 23:26:03',	'2022-01-07 23:26:09',	0);
-
-
-DROP TABLE IF EXISTS `categories_regions_with_ads`;
-CREATE TABLE `categories_regions_with_ads` (
-                                               `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                               `category_id` int(11) unsigned NULL,
-                                               `region_id` int(11) unsigned NULL,
-                                               FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
-                                               FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE CASCADE
-);
-
-ALTER TABLE `categories_regions_with_ads` ADD UNIQUE `category_id_region_id` (`category_id`, `region_id`);
-
--- 2022-01-10 20:57:19
+-- 2022-05-01 18:18:47

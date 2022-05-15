@@ -2,6 +2,8 @@
 <?php
 
 use Palto\Categories;
+use Palto\Category;
+use Palto\Logger;
 
 require_once __DIR__ . '/autoload_require_composer.php';
 

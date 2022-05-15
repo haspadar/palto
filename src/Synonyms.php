@@ -148,13 +148,14 @@ class Synonyms
     private static function moveAd(Ad $ad, Category $category): void
     {
         if ($ad->getCategory()->getId() != $category->getId()) {
-            $parent = $ad->getCategory()->getParentId() ? Categories::getById($ad->getCategory()->getParentId()) : null;
+            $parents = $category->getParents();
+            $parentsTitle = implode('/', array_map(fn(Category $category) => $category->getTitle(), $category->getParents(), $parents));
             Logger::info('Moved ad '
                 . $ad->getId()
                 . ' "'
                 . $ad->getTitle()
                 . '" to category "'
-                . ($parent ? $parent->getTitle() . '/' : '')
+                . $parentsTitle
                 . $category->getTitle()
                 . '"'
             );

@@ -144,7 +144,7 @@ abstract class AdsParser
                 Logger::debug('Parsing next page ' . $nextUrl);
                 $this->parseLeaf($leaf, $nextUrl, $nextPageNumber + 1, $logContent);
             } else {
-                Logger::warning('Not found next page on url ' . $nextUrl);
+                Logger::warning('Not found next page on url ' . $url);
             }
 
         } else {

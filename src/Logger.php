@@ -30,6 +30,11 @@ class Logger
         self::getLogger()->debug($message, $context);
     }
 
+    public static function notice($message, array $context = [])
+    {
+        self::getLogger()->notice($message, $context);
+    }
+
     public static function info($message, array $context = [])
     {
         self::getLogger()->info($message, $context);

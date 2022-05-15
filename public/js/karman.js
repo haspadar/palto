@@ -397,6 +397,8 @@ $(function () {
                     $.each(response.logs, function (i, log) {
                         let className = '';
                         if (log.text.includes('.INFO')) {
+                            className = 'text-muted';
+                        } else if (log.text.includes('.NOTICE')) {
                             className = 'text-primary';
                         } else if (log.text.includes('.ERROR')
                             || log.text.includes('.CRITICAL')

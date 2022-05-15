@@ -151,7 +151,7 @@ class Synonyms
         if ($ad->getCategory()->getId() != $category->getId()) {
             $parents = $category->getParents();
             $parentsTitle = implode('/', array_map(fn(Category $category) => $category->getTitle(), $category->getParents(), $parents));
-            Logger::info('Moved ad '
+            Logger::notice('Moved ad '
                 . $ad->getId()
                 . ' "'
                 . $ad->getTitle()

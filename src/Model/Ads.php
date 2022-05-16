@@ -3,6 +3,7 @@
 namespace Palto\Model;
 
 use Palto\Category;
+use Palto\Debug;
 use Palto\Region;
 use Palto\Url;
 

@@ -7,7 +7,7 @@ class NestedSet extends Tree
     public function rebuildTree()
     {
         $this->rebuild(
-            self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE parent_id IS NULL'),
+            ['id' => 0, 'level' => 0, 'parent_id' => null],
             (object)['value' => 0, 'level' => 0]
         );
     }
@@ -20,7 +20,7 @@ class NestedSet extends Tree
             $this->update(['right_id' => ++$iterator->value, 'left_id' => ++$iterator->value], $node['id']);
         }
 
-        $children = self::getDb()->query('SELECT * FROM ' . $this->name . ' WHERE parent_id = %d', $node['id']);
+        $children = self::getDb()->query('SELECT * FROM ' . $this->name . ' WHERE parent_id ' . ($node['id'] ? '= %d' : ' IS NULL'), $node['id']);
         foreach ($children as $child) {
             $this->rebuild($child, $iterator);
         }

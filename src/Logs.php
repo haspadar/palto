@@ -4,7 +4,7 @@ namespace Palto;
 
 class Logs
 {
-    public static function getLogs(string $directory, string $type, int $limit = 15): array
+    public static function getLogs(string $directory, string $type, int $limit = 30): array
     {
         $lastLogFile = self::getLastLogFile($directory, $type);
 

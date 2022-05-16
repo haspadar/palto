@@ -28,7 +28,7 @@ class Sitemap
         $this->generateRegionsFiles('/regions', $groupedRegions);
         $groupedCategories = $this->groupTrees(
             array_map(fn ($category) => new Category($category),
-                \Palto\Model\Categories::getDb()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_id FROM categories_regions_with_ads) ORDER BY tree_id, level')
+                \Palto\Model\Categories::getDb()->query('SELECT * FROM categories WHERE id IN (SELECT DISTINCT category_id FROM live) ORDER BY tree_id, level')
             )
         );
         /**
@@ -112,7 +112,7 @@ class Sitemap
     private function hasAds(Category $category, ?Region $region): bool
     {
         if ($region && $region->getId()) {
-            return (bool)\Palto\Model\Ads::getDb()->queryFirstField('SELECT * FROM categories_regions_with_ads WHERE category_id = %d AND region_id = %d', $category->getId(), $region->getId());
+            return (bool)\Palto\Model\Ads::getDb()->queryFirstField('SELECT * FROM live WHERE category_id = %d AND region_id = %d', $category->getId(), $region->getId());
         }
 
         $field = 'category_level_' . $category->getLevel() . '_id';

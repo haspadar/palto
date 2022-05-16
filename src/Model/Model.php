@@ -69,7 +69,11 @@ abstract class Model
 
     public function update(array $updates, int $id)
     {
-        self::getDb()->update($this->name, $updates, 'id = %d', $id);
+        if ($id) {
+            self::getDb()->update($this->name, $updates, 'id = %d', $id);
+        } else {
+            Logger::warning('Ignore update for id=0', $updates);
+        }
     }
 
     public function remove(int $id)

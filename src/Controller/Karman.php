@@ -51,6 +51,11 @@ class Karman
         echo $this->templatesEngine->make('status');
     }
 
+    public function showKarmanIndex()
+    {
+        $this->redirect('/karman/complaints?cache=0');
+    }
+
     public function showComplaints()
     {
         $this->templatesEngine->addData([
@@ -460,5 +465,10 @@ class Karman
     {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data);
+    }
+
+    private function redirect(string $url)
+    {
+        header('Location: ' . $url, true, 301);
     }
 }

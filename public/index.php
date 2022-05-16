@@ -17,7 +17,7 @@ $templatesEngine->loadExtension(new Translate());
 
 $router = new Router();
 $router->mount('/karman', function() use ($router) {
-    $router->get('/', '\Palto\Controller\Karman@showComplaints');
+    $router->get('/', '\Palto\Controller\Karman@showKarmanIndex');
     $router->get('/complaints/{id}', '\Palto\Controller\Karman@showComplaint');
     $router->get('/complaints', '\Palto\Controller\Karman@showComplaints');
     $router->put('/ignore-complaint/{id}', '\Palto\Controller\Karman@ignoreComplaint');

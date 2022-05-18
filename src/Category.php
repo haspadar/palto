@@ -32,7 +32,7 @@ class Category
     {
         $result = [];
         foreach ($synonyms as $synonym) {
-            $categoryId = (new Synonyms)->add($synonym, $this->getId());
+            $categoryId = (new Synonyms)->add(['title' => $synonym, 'category_id' => $this->getId()]);
             $result[] = new Synonym((new Synonyms)->getById($categoryId));
         }
 

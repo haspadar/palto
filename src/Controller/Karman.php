@@ -409,12 +409,16 @@ class Karman
     public function removeCategory(int $id)
     {
         $category = Categories::getById($id);
-        $category->remove();
-        Flash::add(json_encode([
-            'message' => 'Категория "' . $category->getTitle() . '" удалена.',
-            'type' => 'success'
-        ]));
-        $this->showJsonResponse(['success' => true]);
+        if ($category) {
+            $category->remove();
+            Flash::add(json_encode([
+                'message' => 'Категория "' . $category->getTitle() . '" удалена.',
+                'type' => 'success'
+            ]));
+            $this->showJsonResponse(['success' => true]);
+        } else {
+            $this->showJsonResponse(['error' => 'Категория с id="' . $id . '" не найдена']);
+        }
     }
 
     public function removeEmoji(int $id)

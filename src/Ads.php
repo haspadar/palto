@@ -14,39 +14,54 @@ class Ads
 
     public static function getById(int $adId): ?Ad
     {
-        $row = Model\Ads::getById($adId);
+        $adsModel = new \Palto\Model\Ads();
+        $row = $adsModel->getById($adId);
+
+        $adsImagesModel = new AdsImages();
+        $adsDetailsModel = new AdsDetails();
 
         return $row
-            ? new Ad($row, AdsImages::getAdsImages([$adId]), AdsDetails::getAdsDetails([$adId]))
+            ? new Ad($row, $adsImagesModel->getAdsImages([$adId]), $adsDetailsModel->getAdsDetails([$adId]))
             : null;
+    }
+
+    public static function getAdLastTime(Url $url): array
+    {
+        $model = new Ads();
+
+        return $model->getAdLastTime($url);
     }
 
     public static function getByUrl(Url $adUrl): ?Ad
     {
-        $row = Model\Ads::getByUrl($adUrl);
+        $adsModel = new \Palto\Model\Ads();
+        $row = $adsModel->getByUrl($adUrl);
+
+        $adsImagesModel = new AdsImages();
+        $adsDetailsModel = new AdsDetails();
 
         return $row
-            ? new Ad($row, AdsImages::getAdsImages([$row['id']]), AdsDetails::getAdsDetails([$row['id']]))
+            ? new Ad($row, $adsImagesModel->getAdsImages([$row['id']]), $adsDetailsModel->getAdsDetails([$row['id']]))
             : null;
     }
 
     public static function getRegionsAdsCount(array $regionsIds): int
     {
         return $regionsIds
-            ? Model\Ads::getRegionsAdsCount($regionsIds)
+            ? (new Model\Ads)->getRegionsAdsCount($regionsIds)
             : 0;
     }
 
     public static function getCategoriesAdsCounts(array $categoriesIds, int $level = 0): array
     {
         return $categoriesIds
-            ? Model\Ads::getCategoriesAdsCounts($categoriesIds, $level)
+            ? (new Model\Ads)->getCategoriesAdsCounts($categoriesIds, $level)
             : [];
     }
 
     public static function getAdsCount(array $categoriesIds = []): int
     {
-        return Model\Ads::getAdsCount($categoriesIds);
+        return (new Model\Ads)->getAdsCount($categoriesIds);
     }
 
     public static function getHotAds(?Region $region, int $limit): array
@@ -62,7 +77,7 @@ class Ads
     {
         $categoriesIds = array_map(fn(Category $category) => $category->getId(), $categories);
 
-        return \Palto\Model\Ads::getFields($categoriesIds, $fields, $limit, $offset);
+        return (new Model\Ads)->getFields($categoriesIds, $fields, $limit, $offset);
     }
 
     public static function getAds(
@@ -74,7 +89,7 @@ class Ads
         string $orderBy = 'id DESC'
     ): array
     {
-        $ads = Model\Ads::getAds(
+        $ads = (new Model\Ads)->getAds(
             $region,
             $category,
             $limit,
@@ -83,7 +98,7 @@ class Ads
             $orderBy
         );
         $adIds = array_column($ads, 'id');
-        $images = Ads::getAdsImages($adIds);
+        $images = self::getAdsImages($adIds);
         $details = self::getAdsDetails($adIds);
 
         return array_map(
@@ -94,7 +109,7 @@ class Ads
 
     public static function markAsDelete(int $adId)
     {
-        Model\Ads::markAsDeleted($adId);
+        (new Model\Ads)->markAsDeleted($adId);
     }
 
     public static function add(array $ad, array $images = [], array $details = []): int
@@ -107,9 +122,9 @@ class Ads
             $ad['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
             $ad = self::addLevels($ad);
             try {
-                $adId = Model\Ads::add($ad);
+                $adId = (new Model\Ads)->add($ad);
                 if ($ad['category_id']) {
-                    CategoriesRegionsWithAds::add($ad['category_id'], $ad['region_id']);
+                    Live::addIgnore($ad['category_id'], $ad['region_id']);
                 }
             } catch (Exception $e) {
                 Logger::error(var_export($ad, true));
@@ -121,7 +136,7 @@ class Ads
 
             foreach ($images as $image) {
                 if ($image['small'] || $image['big']) {
-                    AdsImages::add([
+                    (new AdsImages)->add([
                         'small' => $image['small'],
                         'big' => $image['big'],
                         'ad_id' => $adId,
@@ -131,9 +146,9 @@ class Ads
 
             foreach ($details as $detailField => $detailValue) {
                 if ($detailField && $detailValue) {
-                    $fieldId = DetailsFields::getDetailsFieldId($ad['category_id'], $detailField);
+                    $fieldId = (new DetailsFields)->getDetailsFieldId($ad['category_id'], $detailField);
                     try {
-                        AdsDetails::add([
+                        (new AdsDetails)->add([
                             'details_field_id' => $fieldId,
                             'ad_id' => $adId,
                             'value' => Filter::get($detailValue)
@@ -158,7 +173,7 @@ class Ads
     private static function getAdsImages(array $adIds): array
     {
         if ($adIds) {
-            $images = AdsImages::getAdsImages($adIds);
+            $images = (new AdsImages)->getAdsImages($adIds);
 
             return self::groupByField($images, 'ad_id');
         }
@@ -169,7 +184,7 @@ class Ads
     private static function getAdsDetails(array $adIds): array
     {
         if ($adIds) {
-            $details = AdsDetails::getAdsDetails($adIds);
+            $details = (new AdsDetails)->getAdsDetails($adIds);
             $groupedByAdId = self::groupByField($details, 'ad_id');
             $groupedWithDetails = [];
             foreach ($groupedByAdId as $adId => $adDetails) {
@@ -221,16 +236,16 @@ class Ads
 
     private static function getByDonorUrl(string $donorUrl): ?Ad
     {
-        $row = Model\Ads::getByDonorUrl($donorUrl);
+        $row = (new Model\Ads)->getByDonorUrl($donorUrl);
 
         return $row
-            ? new Ad($row, AdsImages::getAdsImages([$row['id']]), AdsDetails::getAdsDetails([$row['id']]))
+            ? new Ad($row, (new AdsImages)->getAdsImages([$row['id']]), (new AdsDetails)->getAdsDetails([$row['id']]))
             : null;
     }
 
     public static function getFieldNames(): array
     {
-        return Model\Ads::getFieldNames('ads');
+        return (new Model\Ads)->getFieldNames('ads');
     }
 
     public static function moveAd(
@@ -274,6 +289,6 @@ class Ads
 
     public static function update(array $updates, int $id): void
     {
-        \Palto\Model\Ads::update($updates, $id);
+        (new \Palto\Model\Ads)->update($updates, $id);
     }
 }

@@ -9,7 +9,7 @@ echo json_encode([
         Status::getMySqlDirectory(\Palto\Model\Ads::getDb())
     ) . '%',
     'disk_root_used' => Status::getDirectoryUsePercent('/') . '%',
-    'ad_last_time' => \Palto\Model\Ads::getAdLastTime(),
+    'ad_last_time' => \Palto\Ads::getAdLastTime(),
     'parser_pid' => $parserPid ?: '',
     'parser_elapsed_time' => $parserPid ? Status::getParserElapsedTime($parserPid) : ''
 ]);

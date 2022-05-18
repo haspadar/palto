@@ -7,7 +7,7 @@ use League\Plates\Extension\Asset;
 use Palto\Ad;
 use Palto\Ads;
 use Palto\Breadcrumbs;
-use Palto\CategoriesRegionsWithAds;
+use Palto\Live;
 use Palto\Category;
 use Palto\Config;
 use Palto\Debug;
@@ -56,8 +56,9 @@ class Client
             'description' => $this->translate('index_description'),
             'h1' => $isHot ? $this->translate('hot_h1') : $this->translate('index_h1'),
             'regions' => !is_numeric($limit) || intval($limit) > 0
-                ? Regions::getWithAdsRegions(null, intval($limit))
-                : []
+                ? Regions::getLiveRegions(null, intval($limit))
+                : [],
+            'live_categories' => \Palto\Categories::getLiveCategories(null, $this->region)
         ]);
         echo $this->templatesEngine->make($isHot ? 'hot' : 'index');
     }

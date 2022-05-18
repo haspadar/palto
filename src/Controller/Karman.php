@@ -51,6 +51,11 @@ class Karman
         echo $this->templatesEngine->make('status');
     }
 
+    public function showKarmanIndex()
+    {
+        $this->redirect('/karman/complaints?cache=0');
+    }
+
     public function showComplaints()
     {
         $this->templatesEngine->addData([
@@ -187,7 +192,7 @@ class Karman
     public function showErrorLogs(string $name)
     {
         $this->templatesEngine->addData([
-            'title' => 'Логи "' . $name . '"',
+            'title' => 'Ошибки "' . $name . '"',
             'type' => 'error',
             'directory' => $name,
             'breadcrumbs' => array_merge([[
@@ -404,12 +409,16 @@ class Karman
     public function removeCategory(int $id)
     {
         $category = Categories::getById($id);
-        $category->remove();
-        Flash::add(json_encode([
-            'message' => 'Категория "' . $category->getTitle() . '" удалена.',
-            'type' => 'success'
-        ]));
-        $this->showJsonResponse(['success' => true]);
+        if ($category) {
+            $category->remove();
+            Flash::add(json_encode([
+                'message' => 'Категория "' . $category->getTitle() . '" удалена.',
+                'type' => 'success'
+            ]));
+            $this->showJsonResponse(['success' => true]);
+        } else {
+            $this->showJsonResponse(['error' => 'Категория с id="' . $id . '" не найдена']);
+        }
     }
 
     public function removeEmoji(int $id)
@@ -460,5 +469,10 @@ class Karman
     {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data);
+    }
+
+    private function redirect(string $url)
+    {
+        header('Location: ' . $url, true, 301);
     }
 }

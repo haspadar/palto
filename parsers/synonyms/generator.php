@@ -13,6 +13,6 @@ foreach ($categories as $key => $category) {
         \Palto\Model\Synonyms::getDb()->query('SELECT * FROM synonyms WHERE category_id = %d', $category['id']),
         'title'
     );
-    $combinations = \Palto\Synonyms::generateForms(array_values(array_filter(array_unique(array_merge($synonyms, [$title])))));
+    $combinations = (new \Palto\Synonyms)->generateForms(array_values(array_filter(array_unique(array_merge($synonyms, [$title])))));
     \Palto\Synonyms::add($combinations, $category['id']);
 }

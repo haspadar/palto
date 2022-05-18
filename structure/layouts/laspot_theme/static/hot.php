@@ -17,7 +17,7 @@ $this->partial('header.inc', [
 <h1><?=$this->translate('hot_h1')?></h1>
 
 <?php $regionsLimit = \Palto\Config::get('HOT_LAYOUT_REGIONS');?>
-<?php $regions = Regions::getWithAdsRegions(null, intval($regionsLimit));?>
+<?php $regions = Regions::getLiveRegions(null, intval($regionsLimit));?>
 <?php $hasRegions = $regions && !is_numeric($regionsLimit) || intval($regionsLimit) > 0;?>
 <?php if ($hasRegions) :?>
     <?php foreach ($regions as $region) :?>

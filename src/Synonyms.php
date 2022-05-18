@@ -13,7 +13,7 @@ class Synonyms
      */
     public static function getAll(): array
     {
-        return array_map(fn(array $synonym) => new Synonym($synonym), Model\Synonyms::getAll());
+        return array_map(fn(array $synonym) => new Synonym($synonym), (new Model\Synonyms)->getAll());
     }
 
     public static function findCategory(Ad $ad): Category
@@ -48,21 +48,21 @@ class Synonyms
     
     public static function updateCategory(Category $category, array $synonymTitles): void
     {
-        $existsSynonymTitles = Model\Synonyms::getTitles($category->getId());
+        $existsSynonymTitles = (new Model\Synonyms)->getTitles($category->getId());
         $removableSynonymTitles = array_diff($existsSynonymTitles, $synonymTitles);
         foreach ($removableSynonymTitles as $removableSynonymTitle) {
-            Model\Synonyms::remove($removableSynonymTitle, $category->getId());
+            (new Model\Synonyms)->removeBy($removableSynonymTitle, $category->getId());
         }
 
         $addingSynonymTitles = array_diff($synonymTitles, $existsSynonymTitles);
         foreach ($addingSynonymTitles as $addingSynonymTitle) {
-            Model\Synonyms::add($addingSynonymTitle, $category->getId());
+            (new Model\Synonyms)->add(['title' => $addingSynonymTitle, 'category_id' => $category->getId()]);
         }
     }
 
     public static function getByTitle(string $title): ?Synonym
     {
-        $found = Model\Synonyms::getByTitle($title);
+        $found = (new Model\Synonyms)->getByTitle($title);
 
         return $found ? new Synonym($found) : null;
     }
@@ -101,7 +101,7 @@ class Synonyms
     public static function add(array $synonyms, int $categoryId): void
     {
         foreach ($synonyms as $synonym) {
-            Model\Synonyms::add($synonym, $categoryId);
+            (new Model\Synonyms)->add(['title' => $synonym, 'category_id' => $categoryId]);
         }
     }
 
@@ -156,7 +156,7 @@ class Synonyms
                 . ' "'
                 . $ad->getTitle()
                 . '" to category "'
-                . $parentsTitle
+                . ($parentsTitle ? $parentsTitle . '/' : '')
                 . $category->getTitle()
                 . '"'
             );

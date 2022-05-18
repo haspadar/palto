@@ -22,7 +22,7 @@ final class SynonymsEqualCategoryTitle extends AbstractMigration
         foreach ($leafs as $category) {
             $titles = array_map(fn(\Palto\Synonym $synonym) => mb_strtolower($synonym->getTitle()), $category->getSynonyms());
             if (!in_array(mb_strtolower($category->getTitle()), $titles)) {
-                \Palto\Model\Synonyms::add(mb_strtolower($category->getTitle()), $category->getId());
+                (new \Palto\Model\Synonyms)->addIgnore(['title' => mb_strtolower($category->getTitle()), 'category_id' => $category->getId()]);
             }
         }
     }

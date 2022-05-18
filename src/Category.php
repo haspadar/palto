@@ -23,22 +23,17 @@ class Category
 
     public function getById(int $categoryId): Category
     {
-        $region = Categories::getById($categoryId);
+        $region = (new Categories)->getById($categoryId);
 
         return new Category($region);
-    }
-
-    public static function updateSynonyms(array $synonyms, int $id): array
-    {
-
     }
 
     public function addSynonyms(array $synonyms): array
     {
         $result = [];
         foreach ($synonyms as $synonym) {
-            $categoryId = Synonyms::add($synonym, $this->getId());
-            $result[] = new Synonym(Synonyms::getById($categoryId));
+            $categoryId = (new Synonyms)->add(['title' => $synonym, 'category_id' => $this->getId()]);
+            $result[] = new Synonym((new Synonyms)->getById($categoryId));
         }
 
         return $result;
@@ -46,7 +41,7 @@ class Category
 
     public function getSynonyms(): array
     {
-        return array_map(fn($synonym) => new Synonym($synonym), Synonyms::getAll($this->getId()));
+        return array_map(fn($synonym) => new Synonym($synonym), (new Synonyms)->getAll($this->getId()));
     }
 
     public function getGroupedSynonyms(): string
@@ -67,7 +62,7 @@ class Category
             $parents = [];
             $category = $this;
             while ($category->getParentId()) {
-                $categoryRow = Categories::getById($category->getParentId());
+                $categoryRow = (new Categories)->getById($category->getParentId());
                 if ($categoryRow) {
                     $category = new self($categoryRow);
                     $parents[] = $category;
@@ -133,7 +128,7 @@ class Category
             $childrenIds = [];
             $nextLevelCategoriesIds = [$this->getId()];
             $level = $this->getLevel();
-            while ($nextLevelCategoriesIds = Categories::getChildrenIds($nextLevelCategoriesIds, ++$level)) {
+            while ($nextLevelCategoriesIds = (new Categories)->getChildrenIds($nextLevelCategoriesIds, ++$level)) {
                 $childrenIds = array_merge($nextLevelCategoriesIds, $childrenIds);
             }
 
@@ -177,7 +172,7 @@ class Category
         if (!isset($this->liveChildren)) {
             $this->liveChildren = array_map(
                 fn($category) => new self($category),
-                Categories::getLiveCategories($this, $region, $limit)
+                (new Categories)->getLiveCategories($this, $region, $limit)
             );
         }
 
@@ -192,7 +187,7 @@ class Category
         if (!isset($this->children)) {
             $this->children = array_map(
                 fn($category) => new self($category),
-                Categories::getChildren([$this->getId()])
+                (new Categories)->getChildren([$this->getId()])
             );
         }
 
@@ -223,12 +218,13 @@ class Category
 
     public function update(array $updates): void
     {
-        Categories::update($updates, $this->getId());
+        (new Categories)->update($updates, $this->getId());
     }
 
     public function remove(): void
     {
-        Categories::removeChildren($this->getId());
-        Categories::remove($this->getId());
+        (new Categories)->removeChildren($this->getId());
+        (new Categories)->remove($this->getId());
+        \Palto\Categories::rebuildTree();
     }
 }

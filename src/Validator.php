@@ -30,7 +30,7 @@ class Validator
     {
         foreach ($synonyms as $synonym) {
             if ($found = Synonyms::getByTitle($synonym)) {
-                return 'Синоним ' . $synonym . ' уже есть у категории ' . Categories::getById($found['category_id'])->getTitle();
+                return 'Синоним ' . $synonym . ' уже есть у категории ' . $found->getCategory()->getTitle();
             }
         }
 

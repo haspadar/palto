@@ -52,7 +52,7 @@ class Region
             $parents = [];
             $region = $this;
             while ($region->getParentId()) {
-                $region = new self(Regions::getById($region->getParentId()));
+                $region = new self((new Regions)->getById($region->getParentId()));
                 $parents[] = $region;
             }
 
@@ -77,7 +77,7 @@ class Region
         if (!isset($this->childrenIds)) {
             $childrenIds = [];
             $nextLevelRegionsIds = [$this->getId()];
-            while ($nextLevelRegionsIds = Regions::getChildRegionsIds($nextLevelRegionsIds)) {
+            while ($nextLevelRegionsIds = (new Regions)->getChildRegionsIds($nextLevelRegionsIds)) {
                 $childrenIds = array_merge($nextLevelRegionsIds, $childrenIds);
             }
 
@@ -102,7 +102,7 @@ class Region
     {
         if (!isset($this->children)) {
             $childrenIds = $this->getChildrenIds();
-            $this->children = Categories::getCategoriesByIds($childrenIds);
+            $this->children = (new Categories)->getByIds($childrenIds);
         }
 
         return $this->children;

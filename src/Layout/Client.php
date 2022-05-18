@@ -182,7 +182,7 @@ class Client extends Layout
      */
     public function getWithAdsRegions(?Region $parentRegion = null, int $limit = 0): array
     {
-        return Regions::getWithAdsRegions($parentRegion, $limit);
+        return Regions::getLiveRegions($parentRegion, $limit);
     }
 
     /**

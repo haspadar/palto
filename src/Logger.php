@@ -55,12 +55,12 @@ class Logger
             $directory = self::getDirectory();
             self::$logger->pushHandler(new RotatingFileHandler(
                 $directory . '/info',
-                20,
+                3,
                 \Monolog\Logger::INFO
             ));
             self::$logger->pushHandler(new RotatingFileHandler(
                 $directory . '/error',
-                20,
+                3,
                 \Monolog\Logger::ERROR
             ));
         }

@@ -56,7 +56,7 @@ class Synonyms
 
         $addingSynonymTitles = array_diff($synonymTitles, $existsSynonymTitles);
         foreach ($addingSynonymTitles as $addingSynonymTitle) {
-            (new Model\Synonyms)->add($addingSynonymTitle, $category->getId());
+            (new Model\Synonyms)->add(['title' => $addingSynonymTitle, 'category_id' => $category->getId()]);
         }
     }
 
@@ -101,7 +101,7 @@ class Synonyms
     public static function add(array $synonyms, int $categoryId): void
     {
         foreach ($synonyms as $synonym) {
-            (new Model\Synonyms)->add($synonym, $categoryId);
+            (new Model\Synonyms)->add(['title' => $synonym, 'category_id' => $categoryId]);
         }
     }
 

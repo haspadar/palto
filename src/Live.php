@@ -14,6 +14,8 @@ class Live
 
     public static function rebuild()
     {
+        $executionTime = new ExecutionTime();
+        $executionTime->start();
         $adsModel = new \Palto\Model\Ads();
         $pairsCount = $adsModel->getPairsCount();
         $limit = 1000;
@@ -36,6 +38,8 @@ class Live
 
         $removedCount = (new \Palto\Model\Live())->removeEarly($createTime);
         Logger::info('Removed ' . $removedCount . ' old pairs');
+        $executionTime->end();
+        Logger::info('Rebuilt links for ' . $executionTime->get());
     }
 
     private static function getPairCombinations(array $pair): array

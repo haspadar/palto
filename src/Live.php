@@ -43,11 +43,11 @@ class Live
         $categoryIds = array_merge([$pair['category_id']], array_map(
             fn(Category $category) => $category->getId(),
             Categories::getParents($pair['category_id'])
-        ));
+        ), [null]);
         $regionIds = array_merge([$pair['region_id']], array_map(
             fn(Region $region) => $region->getId(),
             Regions::getParents($pair['region_id'])
-        ));
+        ), [null]);
         $pairs = [];
         foreach ($categoryIds as $categoryId) {
             foreach ($regionIds as $regionId) {

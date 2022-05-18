@@ -31,7 +31,7 @@ class Live extends Model
 //    }
     public function removeEarly(string $createTime): int
     {
-        self::getDb()->delete($this->name, 'create_time < %s', $createTime);
+        self::getDb()->delete($this->name, 'create_time < %s OR create_time IS NULL', $createTime);
 
         return self::getDb()->queryFirstField('SELECT ROW_COUNT()');
     }

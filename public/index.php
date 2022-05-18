@@ -69,4 +69,5 @@ try {
 } catch (Exception $e) {
     \Palto\Logger::error($e->getMessage());
     \Palto\Logger::error($e->getTrace());
+    throw $e;
 }

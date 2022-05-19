@@ -6,6 +6,7 @@
         <th>Заголовок</th>
         <th>Категория</th>
         <th>Время</th>
+        <th></th>
     </thead>
     <?php foreach ($this->data['ads'] as $ad) :?>
         <?php $categoriesTitle = $ad->getCategoriesTitle();?>
@@ -32,19 +33,19 @@
                     <?php else : ?>
                         <?=$ad->getCreateTime()->format('d.m.Y H:i:s')?>
                     <?php endif; ?>
-                    
+
                 </small>
             </td>
             <td>
 
-                <!--<button class="btn btn-secondary btn-sm float-end move-ad"
+                <button class="btn btn-secondary btn-sm float-end move-ad"
                         type="button"
-                        data-ad-id="<?/*=$ad->getId()*/?>"
-                        data-category-id="<?/*=$ad->getCategory()->getId()*/?>"
-                        data-category-parent-id="<?/*=$ad->getCategory()->getParentId()*/?>"
+                        data-ad-id="<?=$ad->getId()?>"
+                        data-category-id="<?=$ad->getCategory()->getId()?>"
+                        data-category-parent-id="<?=$ad->getCategory()->getParentId()?>"
                 >
                     Перенести
-                </button>-->
+                </button>
             </td>
         </tr>
     <?php endforeach;?>

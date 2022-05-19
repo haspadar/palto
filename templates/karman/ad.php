@@ -17,7 +17,7 @@
     <dt class="col-sm-3">Категория</dt>
     <dd class="col-sm-9">
         <a href="/karman/categories/<?=$this->data['ad']->getCategory()->getId()?>?cache=0">
-            <?=$this->data['ad']->getCategory()->getTitle()?>
+            <?=$this->data['ad']->getCategoriesTitle()?>
         </a>
     </dd>
 

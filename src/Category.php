@@ -227,4 +227,9 @@ class Category
         (new Categories)->remove($this->getId());
         \Palto\Categories::rebuildTree();
     }
+
+    public function isUndefined(): bool
+    {
+        return mb_strpos($this->getUrl(), 'undefined') === 0;
+    }
 }

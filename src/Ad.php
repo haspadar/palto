@@ -24,6 +24,23 @@ class Ad
         }
     }
 
+    public function getCategoriesTitle(): string
+    {
+        if ($this->getCategory()) {
+            $parents = array_merge($this->getCategory()->getParents(), [$this->getCategory()]);
+
+            return implode(
+                '/',
+                array_map(
+                    fn(Category $category) => $category->getTitle(),
+                    $parents
+                )
+            );
+        }
+
+        return '';
+    }
+
     public function getTitle(): string
     {
         return !$this->isDeleted() ? html_entity_decode($this->ad['title']) : '[DELETED]';

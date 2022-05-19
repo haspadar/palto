@@ -22,8 +22,17 @@
                 <?=$categoriesTitle?>
             </td>
             <td>
-                <small class="text-muted text-decoration-none">
-                    <?=$ad->getCreateTime()->format('d.m.Y H:i:s')?>
+                <small class="text-muted text-decoration-none" title="<?=$ad->getCreateTime()->format('d.m.Y H:i:s')?>">
+                    <?php if ($ad->getCreateTime()->format('d.m.Y') == (new DateTime())->format('d.m.Y')) :?>
+                        сегодня в <?=$ad->getCreateTime()->format('H:i:s')?>
+                    <?php elseif ($ad->getCreateTime()->format('d.m.Y') == (new DateTime())->modify('1 DAY')->format('d.m.Y')) :?>
+                        вчера в <?=$ad->getCreateTime()->format('H:i:s')?>
+                    <?php elseif ($ad->getCreateTime()->format('d.m.Y') == (new DateTime())->modify('2 DAY')->format('d.m.Y')) :?>
+                        позавчера в <?=$ad->getCreateTime()->format('H:i:s')?>
+                    <?php else : ?>
+                        <?=$ad->getCreateTime()->format('d.m.Y H:i:s')?>
+                    <?php endif; ?>
+                    
                 </small>
             </td>
             <td>

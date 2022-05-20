@@ -11,6 +11,7 @@ use Palto\Model\DetailsFields;
 class Ads
 {
     const LIMIT = 30;
+    const CLEAN_UP_SCRIPT = 'bin/clean_up.php';
 
     public static function getById(int $adId): ?Ad
     {
@@ -290,5 +291,25 @@ class Ads
     public static function update(array $updates, int $id): void
     {
         (new \Palto\Model\Ads)->update($updates, $id);
+    }
+
+    public static function cleanUp(): void
+    {
+        $executionTime = new ExecutionTime();
+        $executionTime->start();
+        $oldCount = \Palto\Model\Ads::getOldCount();
+        $limit = 1000;
+        $offset = 0;
+        $model = new \Palto\Model\Ads();
+        while ($ads = \Palto\Model\Ads::getOldAll($limit, $offset)) {
+            Logger::info('Next ' . ($offset + count($ads)) . '/' . $oldCount . ' ads');
+            foreach ($ads as $ad) {
+                $model->remove($ad['id']);
+                Logger::debug('Deleted ad ' . $ad['id'] . ' with create_time="' . $ad['create_time'] . '"') ;
+            }
+        }
+
+        $executionTime->end();
+        Logger::info('Cleaned up links for ' . $executionTime->get());
     }
 }

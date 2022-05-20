@@ -11,6 +11,22 @@ class Ads extends Model
 {
     protected string $name = 'ads';
 
+    public static function getOldCount(): int
+    {
+        return self::getDb()->queryFirstField(
+            'SELECT COUNT(*) FROM ads WHERE create_time > %s OR create_time IS NULL',
+            (new \DateTime())->modify('-1 YEAR')->format('Y-m-d H:i:s')
+        ) ?: 0;
+    }
+
+    public static function getOldAll(int $limit, int $offset): array
+    {
+        return self::getDb()->queryFirstField(
+            'SELECT * FROM ads WHERE create_time > %s OR create_time IS NULL',
+            (new \DateTime())->modify('-1 YEAR')->format('Y-m-d H:i:s')
+        ) ?: [];
+    }
+
     public function getById(int $adId): array
     {
         $query = $this->getAdsQuery();

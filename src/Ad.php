@@ -15,10 +15,9 @@ class Ad
         $this->ad = $ad;
         $this->images = $images;
         $this->details = $details;
-        if ($this->getRegionId()) {
-            $this->region = Regions::getById($this->getRegionId());
-        }
-
+        $this->region = $this->getRegionId()
+            ? Regions::getById($this->getRegionId())
+            : new Region([]);
         if ($this->getCategoryId()) {
             $this->category = Categories::getById($this->getCategoryId());
         }
@@ -66,9 +65,9 @@ class Ad
         return $this->category;
     }
 
-    public function getRegion(): ?Region
+    public function getRegion(): Region
     {
-        return $this->region ?? new Region();
+        return $this->region;
     }
 
     public function generateUrl(): string

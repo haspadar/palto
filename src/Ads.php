@@ -303,7 +303,7 @@ class Ads
         $offset = 0;
         $model = new \Palto\Model\Ads();
         while ($ads = \Palto\Model\Ads::getOldAll($limit, $offset)) {
-            Logger::info('Next ' . ($offset + count($ads)) . '/' . $oldCount . ' ads');
+            Logger::info('Removing ' . ($offset + count($ads)) . '/' . $oldCount . ' ads');
             foreach ($ads as $adKey => $ad) {
                 $model->remove($ad['id']);
                 Logger::debug('Deleted ad ' . $ad['id'] . ' (' . ($offset + $adKey + 1) . '/' . $oldCount . ') with create_time="' . $ad['create_time'] . '"') ;

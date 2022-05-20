@@ -308,6 +308,8 @@ class Ads
                 $model->remove($ad['id']);
                 Logger::debug('Deleted ad ' . $ad['id'] . ' (' . ($offset + $adKey + 1) . '/' . $oldCount . ') with create_time="' . $ad['create_time'] . '"') ;
             }
+
+            $offset += $limit;
         }
 
         $executionTime->end();

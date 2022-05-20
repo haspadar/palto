@@ -13,7 +13,7 @@ class Region
     private array $children;
     private array $childrenIds;
 
-    public function __construct(array $region)
+    public function __construct(array $region = [])
     {
         $this->region = $region ?: [
             'title' => Config::get('DEFAULT_REGION_TITLE'),

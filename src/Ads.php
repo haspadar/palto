@@ -298,6 +298,7 @@ class Ads
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $oldCount = \Palto\Model\Ads::getOldCount();
+        Logger::info('Found ' . $oldCount . ' old ads');
         $limit = 1000;
         $offset = 0;
         $model = new \Palto\Model\Ads();

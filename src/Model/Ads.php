@@ -21,9 +21,11 @@ class Ads extends Model
 
     public static function getOldAll(int $limit, int $offset): array
     {
-        return self::getDb()->queryFirstField(
-            'SELECT * FROM ads WHERE create_time > %s OR create_time IS NULL',
-            (new \DateTime())->modify('-1 YEAR')->format('Y-m-d H:i:s')
+        return self::getDb()->query(
+            'SELECT * FROM ads WHERE create_time > %s OR create_time IS NULL LIMIT %d OFFSET %d',
+            (new \DateTime())->modify('-1 YEAR')->format('Y-m-d H:i:s'),
+            $limit,
+            $offset
         ) ?: [];
     }
 

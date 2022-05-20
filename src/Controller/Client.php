@@ -140,13 +140,7 @@ class Client
 
     public function showAd()
     {
-        if (Config::isDebug()) {
-            Debug::dump($this->region, '$this->region');
-            Debug::dump($this->category, '$this->category');
-            Debug::dump($this->ad, '$this->ad');
-        }
-
-        if ($this->region && $this->category && $this->ad) {
+        if ($this->category && $this->ad) {
             $this->templatesEngine->addData([
                 'title' => $this->translate('ad_title'),
                 'description' => Filter::shortText($this->ad->getText()),

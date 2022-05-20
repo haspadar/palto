@@ -21,4 +21,4 @@
 /public/.DS_Store
 /configs/.parsers
 */*.lock
-/public/img/
+/public/img/*

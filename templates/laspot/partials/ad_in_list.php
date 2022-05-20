@@ -26,7 +26,14 @@
                 <div class="serp_price">🏷 <?= number_format($this->data['ad']->getPrice()) ?> <?= $this->data['ad']->getCurrency() ?></div>
             <?php endif;?>
 
-            <div class="serp_region">📍<a class="bread_link" href="<?= $this->data['ad']->getRegion()->generateUrl()?>"><?=$this->data['ad']->getRegion()->getTitle()?></a></div>
+            <?php if ($region = $this->data['ad']->getRegion()) :?>
+                <div class="serp_region">
+                    <i class="bi bi-pin-map"></i>
+                    <a class="card-link" href="<?= $region->generateUrl() ?>">
+                        <?= $region->getTitle() ?>
+                    </a>
+                </div>
+            <?php endif;?>
         </td>
     </tr>
 <?php else :?>

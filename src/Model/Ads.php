@@ -78,9 +78,9 @@ class Ads extends Model
             . ' LEFT JOIN regions AS r ON a.region_id = r.id';
     }
 
-    public function getAdLastTime(): ?string
+    public function getLastTime(): string
     {
-        return self::getDb()->queryFirstField("SELECT MAX(create_time) FROM " . $this->name);
+        return self::getDb()->queryFirstField("SELECT MAX(create_time) FROM " . $this->name) ?: '';
     }
 
     private function getAdsWhere(?Region $region, ?Category $category, int $excludeId): array

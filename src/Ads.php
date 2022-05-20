@@ -25,11 +25,11 @@ class Ads
             : null;
     }
 
-    public static function getAdLastTime(Url $url): array
+    public static function getLastTime(): string
     {
-        $model = new Ads();
+        $model = new \Palto\Model\Ads();
 
-        return $model->getAdLastTime($url);
+        return $model->getLastTime();
     }
 
     public static function getByUrl(Url $adUrl): ?Ad

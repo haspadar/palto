@@ -1,6 +1,12 @@
 <?php /** @var $this League\Plates\Template\Template */?>
 
 <?php $this->layout('layout'); ?>
+<!--<div class="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">-->
+<!--    <button type="button" class="btn btn-outline-primary active">Все</button>-->
+<!--    <button type="button" class="btn btn-outline-primary">Сегодня</button>-->
+<!--    <button type="button" class="btn btn-outline-primary">Вчера</button>-->
+<!--</div>-->
+
 <table class="table">
     <thead>
         <th>Заголовок</th>
@@ -8,6 +14,7 @@
         <th>Время</th>
         <th></th>
     </thead>
+    <tbody>
     <?php foreach ($this->data['ads'] as $ad) :?>
         <?php $categoriesTitle = $ad->getCategoriesTitle();?>
         <tr class="<?php if ($ad->getCategory()->isUndefined()) :?>
@@ -49,6 +56,7 @@
             </td>
         </tr>
     <?php endforeach;?>
+    </tbody>
 </table>
 
 <br>

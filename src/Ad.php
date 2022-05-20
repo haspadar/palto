@@ -61,14 +61,14 @@ class Ad
         return !$this->isDeleted() ? html_entity_decode($this->ad['text']) : 'Deleted';
     }
 
-    public function getCategory(): Category
+    public function getCategory(): ?Category
     {
-        return $this->category;
+        return $this->category ?? null;
     }
 
-    public function getRegion(): Region
+    public function getRegion(): ?Region
     {
-        return $this->region;
+        return $this->region ?? null;
     }
 
     public function generateUrl(): string

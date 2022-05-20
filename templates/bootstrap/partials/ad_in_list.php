@@ -36,12 +36,14 @@
                     <?= number_format($this->data['ad']->getPrice()) ?> <?= $this->data['ad']->getCurrency() ?></div>
             <?php endif; ?>
 
+            <?php if ($region = $this->data['ad']->getRegion()) :?>
             <div class="serp_region">
                 <i class="bi bi-pin-map"></i>
-                <a class="card-link" href="<?= $this->data['ad']->getRegion()->generateUrl() ?>">
-                    <?= $this->data['ad']->getRegion()->getTitle() ?>
+                <a class="card-link" href="<?= $region->generateUrl() ?>">
+                    <?= $region->getTitle() ?>
                 </a>
             </div>
+            <?php endif;?>
         </div>
     </div>
 

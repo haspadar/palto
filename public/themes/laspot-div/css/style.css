@@ -618,7 +618,7 @@ img {
 	color: #015b86;
 }
 
-.hot-ads {
+.hot-obs {
 	padding: 0 15px 50px;
 	background-color: #fff;
 }
@@ -635,17 +635,17 @@ img {
 	margin-bottom: 10px;
 }
 
-.ad__image {
+.ob__image {
 	margin-right: 20px;
 	max-width: 100px;
 	width: 100%;
 }
 
-.ad__image img {
+.ob__image img {
 	width: 100%;
 }
 
-.ad__headline {
+.ob__headline {
 	font-size: 16px;
 	letter-spacing: 0.8px;
 	font-weight: 700;
@@ -658,18 +658,18 @@ img {
 	transition: all 0.3s ease 0s;
 }
 
-.ad__headline:hover {
+.ob__headline:hover {
 	border-bottom: 1px solid #000;
 }
 
-.ad__text {
+.ob__text {
 	letter-spacing: 0.5px;
 	line-height: 130%;
 	color: #000;
 	margin-bottom: 5px;
 }
 
-.ad__city {
+.ob__city {
 	font-size: 12px;
 	color: #999;
 	display: inline-block;
@@ -679,17 +679,17 @@ img {
 	transition: all 0.3s ease 0s;
 }
 
-.ad__city:hover {
+.ob__city:hover {
 	color: #595959;
 }
 
-.ad__price {
+.ob__price {
 	display: block;
 	color: #157ee1;
 	margin: -2px 0 8px;
 }
 
-.ad__block {
+.ob__block {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
@@ -698,12 +698,12 @@ img {
 	align-items: center;
 }
 
-.ad__block img {
+.ob__block img {
 	width: 12px;
 	margin-right: 5px;
 }
 
-.ad__block a {
+.ob__block a {
 	font-size: 12px;
 	color: #999;
 	letter-spacing: 0.2px;
@@ -711,16 +711,16 @@ img {
 	transition: all 0.3s ease 0s;
 }
 
-.ad__block a:hover {
+.ob__block a:hover {
 	color: #595959;
 }
 
-.new-ads__content {
+.new-obs__content {
 	padding: 0 15px 30px;
 	background-color: #fff;
 }
 
-.new-ads__next {
+.new-obs__next {
 	display: inline-block;
 	margin-top: 10px;
 	color: #000;
@@ -730,7 +730,7 @@ img {
 	border-bottom: 1px solid transparent;
 }
 
-.new-ads__next:hover {
+.new-obs__next:hover {
 	border-bottom: 1px solid #000;
 }
 
@@ -995,17 +995,17 @@ img {
 	color: darkred;
 }
 
-.ad__city-chains {
+.ob__city-chains {
 	padding: 0;
 	margin: 0;
 }
 
-.ad__city-chains .city__content {
+.ob__city-chains .city__content {
 	border: none;
 	margin-bottom: 8px;
 }
 
-.ad__city-chains a {
+.ob__city-chains a {
 	margin-bottom: 0;
 }
 

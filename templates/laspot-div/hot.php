@@ -53,11 +53,11 @@
     </div>
 </div>
 <div class="hot-ads">
-    <div class="hot-ads__content">
-        <div class="hot-ads__headline headline">
+    <div class="hot-obs__content">
+        <div class="hot-obs__headline headline">
             <h2><?=$this->translate('Горячие объявления')?></h2>
         </div>
-        <div class="hot-ads__items">
+        <div class="hot-obs__items">
             <?php foreach (\Palto\Ads::getHotAds($this->data['region'], 5) as $ad) :?>
                 <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
             <?php endforeach;?>
@@ -65,11 +65,11 @@
     </div>
 </div>
 <div class="new-ads">
-    <div class="new-ads__content">
-        <div class="hot-ads__headline headline">
+    <div class="new-obs__content">
+        <div class="hot-obs__headline headline">
             <h2><?=$this->translate('Новые объявления')?></h2>
         </div>
-        <div class="new-ads__items">
+        <div class="new-obs__items">
             <?php foreach (\Palto\Ads::getAds($this->data['region'], $this->data['category'], \Palto\Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>
                 <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
             <?php endforeach;?>

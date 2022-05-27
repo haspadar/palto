@@ -48,7 +48,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
                     'region_id' => $level2Region->getId(),
                     'price' => $price,
                     'currency' => $currency,
-                    'seller_name' => $adDocument->filter('h2')->text()
+                    'seller_name' => $adDocument->filter('h2') ? $adDocument->filter('h2')->text() : ''
                 ];
 
                 return Ads::add($ad, $this->getImages($adDocument), $this->getDetails($adDocument));

@@ -42,12 +42,14 @@ use Palto\Categories;
         <header class="header">
             <div class="container">
                 <div class="header__content">
-                    <a href="#" class="header__logo">
                         <?php if (file_exists(\Palto\Directory::getPublicDirectory() . '/img/logo.png')) : ?>
-                            <a href="/"><img src="/img/logo.png" alt="<?= $this->translate('logo_alt') ?>"
-                                             class="mylogo"/></a>
+                            <a href="/" class="header__logo">
+                                <img src="<?=\Palto\Directory::getPublicDirectory() . '/img/logo.png'?>"
+                                     alt="<?= $this->translate('logo_alt') ?>"
+                                     class="mylogo"/>
+                            </a>
                         <?php endif; ?>
-                    </a>
+
                     <nav class="header__menu">
                         <ul class="header__list">
                             <?php /** @var $popularLevel1Category \Palto\Category */ ?>

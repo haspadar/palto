@@ -52,7 +52,7 @@
         <?php endforeach;?>
     </div>
 </div>
-<div class="hot-ads">
+<div class="hot-obs">
     <div class="hot-obs__content">
         <div class="hot-obs__headline headline">
             <h2><?=$this->translate('Горячие объявления')?></h2>
@@ -64,7 +64,7 @@
         </div>
     </div>
 </div>
-<div class="new-ads">
+<div class="new-obs">
     <div class="new-obs__content">
         <div class="hot-obs__headline headline">
             <h2><?=$this->translate('Новые объявления')?></h2>

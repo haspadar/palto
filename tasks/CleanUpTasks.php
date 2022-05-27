@@ -1,7 +1,6 @@
 <?php
 
 use Crunz\Schedule;
-use Palto\Sitemap;
 use Symfony\Component\Lock\Store\FlockStore;
 
 $schedule = new Schedule();

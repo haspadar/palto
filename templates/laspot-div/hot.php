@@ -48,6 +48,7 @@
                         <?php endforeach;?>
                     </ul>
                 <?php endif;?>
+            </ul>
         <?php endforeach;?>
     </div>
 </div>

@@ -1082,3 +1082,50 @@ img {
 	letter-spacing: 0.5px;
 	margin-bottom: 20px;
 }
+
+
+/* Cookies notificaton */
+
+.accept_notification{
+	display: none;
+	justify-content: space-between;
+	align-items: flex-end;
+	position: fixed;
+	bottom: 15px;
+	left: 50%;
+	width: 900px;
+	max-width: 90%;
+	transform: translateX(-50%);
+	padding: 10px;
+	background-color: white;
+	border-radius: 4px;
+	box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
+	opacity: 0.8;
+}
+
+.accept_notification div{
+	margin: 0;
+	font-size: 0.7rem;
+	text-align: left;
+	color: #999;
+}
+
+@media (min-width: 576px){
+	.accept_notification.show{
+		display: flex;
+	}
+	.cookie_accept{
+		margin: 0 0 0 25px;
+	}
+}
+
+@media (max-width: 575px){
+	.accept_notification.show{
+		display: block;
+		text-align: left;
+	}
+	.cookie_accept{
+		margin: 10px 0 0 0;
+	}
+}
+/* end Cookies notificaton */

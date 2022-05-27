@@ -96,7 +96,7 @@ use Palto\Categories;
                 </div>
             </footer>
 
-            <div id="cookie_notification">
+            <div class="accept_notification">
                 <div><?= $this->translate('cookie_text') ?></div>
                 <button class="button cookie_accept"><?= $this->translate('СОГЛАСЕН') ?></button>
             </div>
@@ -106,6 +106,7 @@ use Palto\Categories;
             <script src="<?=$this->asset('/js/slider.js')?>"></script>
             <script src="<?=$this->asset('/js/moderation.js')?>"></script>
             <script src="<?=$this->asset('/js/script.js')?>"></script>
+            <script src="<?=$this->asset('/js/cookie.js')?>"></script>
 <!--            <script src="--><?//=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/js/js.js')?><!--"></script>-->
             <script src="<?=$this->asset('/js/karman-panel.js')?>"></script>
             <?= $this->section('scripts') ?>

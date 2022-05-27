@@ -1,6 +1,5 @@
 <?php if (!$this->data['ad']->isDeleted()) :?>
     <div class="hot-obs__item ob">
-        <a href="<?= $this->data['ad']->generateUrl() ?>">
             <?php if ($this->data['ad']->getImages()) : ?>
                 <img src="<?= $this->data['ad']->getImages()[0]['small'] ?>"
                      alt="<?=$this->data['ad']->getTitle()?>"
@@ -11,7 +10,6 @@
                 <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ob.jpg")?>"  class="ob__image">
             <?php endif; ?>
 
-        </a>
         <div class="ob__info">
             <a href="<?= $this->data['ad']->generateUrl() ?>" class="ob__headline">
                 <?= $this->data['ad']->getTitle() ?>

@@ -5,8 +5,7 @@ use Palto\Categories;
 /**
  * @var $this League\Plates\Template\Template
  */
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="<?= $this->translate('html_lang') ?>">
 <head>
     <meta charset="utf-8">
@@ -51,6 +50,7 @@ use Palto\Categories;
                                 <a href="/"><img src="/img/logo.png" alt="<?= $this->translate('logo_alt') ?>"
                                                  class="mylogo"/></a>
                             <?php endif; ?>
+
                             <div class="main_menu">
                                 <table class="tbl_menu">
                                     <tr>

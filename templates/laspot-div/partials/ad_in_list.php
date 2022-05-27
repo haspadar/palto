@@ -1,13 +1,14 @@
 <?php if (!$this->data['ad']->isDeleted()) :?>
     <div class="hot-obs__item ob">
-        <a href="<?= $this->data['ad']->generateUrl() ?>" class="ob__image">
+        <a href="<?= $this->data['ad']->generateUrl() ?>">
             <?php if ($this->data['ad']->getImages()) : ?>
                 <img src="<?= $this->data['ad']->getImages()[0]['small'] ?>"
                      alt="<?=$this->data['ad']->getTitle()?>"
+                     class="ob__image"
                      onerror="this.src='<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ob.jpg")?>'"
                 />
             <?php else :?>
-                <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ob.jpg")?>">
+                <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ob.jpg")?>"  class="ob__image">
             <?php endif; ?>
 
         </a>

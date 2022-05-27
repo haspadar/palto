@@ -106,7 +106,7 @@ use Palto\Categories;
             <script src="<?=$this->asset('/js/slider.js')?>"></script>
             <script src="<?=$this->asset('/js/moderation.js')?>"></script>
             <script src="<?=$this->asset('/js/script.js')?>"></script>
-            <script src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/js/js.js')?>"></script>
+<!--            <script src="--><?//=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/js/js.js')?><!--"></script>-->
             <script src="<?=$this->asset('/js/karman-panel.js')?>"></script>
             <?= $this->section('scripts') ?>
             <?= $this->insert('../karman/partials/karman-panel'); ?>

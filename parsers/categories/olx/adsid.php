@@ -13,7 +13,6 @@ if (!file_exists($donorPath)) {
     exit;
 }
 
-
 $level1Response = file_get_contents($donorPath);
 $categoriesDocument = new Crawler($level1Response);
 $categoriesDocument->filter('._1mpk1')->each(function (Crawler $menu) {

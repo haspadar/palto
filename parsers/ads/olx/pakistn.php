@@ -4,6 +4,7 @@ use Palto\Ads;
 use Palto\AdsParser;
 use Palto\Category;
 use Palto\Parser;
+use Palto\Region;
 use Palto\Regions;
 use Palto\Url;
 use Symfony\Component\DomCrawler\Crawler;
@@ -128,9 +129,9 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
         );
     }
 
-    protected function getNextPageUrl(Crawler $categoryDocument, Category $category, Url $url, int $pageNumber): ?Url
+    protected function getNextPageUrl(Crawler $leafDocument, Category|Region $leaf, Url $url, int $pageNumber): ?Url
     {
-        return new Url($url->getDomain() . $url->getPath() . '?page=' . $this->getNextPageNumber($categoryDocument,$category, $url, $pageNumber));
+        return new Url($url->getDomain() . $url->getPath() . '?page=' . $this->getNextPageNumber($leafDocument, $leaf, $url, $pageNumber));
     }
 
     protected function getFirstPageNumber(): int

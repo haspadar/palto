@@ -623,7 +623,7 @@ img {
 	background-color: #fff;
 }
 
-.ad {
+.ob {
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
@@ -631,7 +631,7 @@ img {
 	padding-bottom: 10px;
 }
 
-.ad:not(:last-child) {
+.ob:not(:last-child) {
 	margin-bottom: 10px;
 }
 

@@ -52,6 +52,11 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
                 ];
 
                 return Ads::add($ad, $this->getImages($adDocument), $this->getDetails($adDocument));
+            } else {
+                \Palto\Debug::dump($adUrl->getFull(), '$adUrl');
+                \Palto\Debug::dump($adDocument->filter('h2')->text(), '$adDocument->filter(h2)->text()');
+                \Palto\Debug::dump($adDocument->filter('h2+div'), '$adDocument->filter(h2+div)');
+                exit;
             }
         }
 

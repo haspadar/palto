@@ -4,7 +4,7 @@
             <?php if ($this->data['ad']->getImages()) : ?>
                 <img src="<?= $this->data['ad']->getImages()[0]['small'] ?>"
                      alt="<?=$this->data['ad']->getTitle()?>"
-                     onerror="this.src='/img/no-photo.png'"
+                     onerror="this.src='<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ad.jpg")?>'"
                 />
             <?php else :?>
                 <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ad.jpg")?>">

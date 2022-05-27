@@ -1086,7 +1086,7 @@ img {
 
 /* Cookies notificaton */
 
-.accept_notification{
+#accept_notification{
 	display: none;
 	justify-content: space-between;
 	align-items: flex-end;
@@ -1103,7 +1103,7 @@ img {
 	opacity: 0.8;
 }
 
-.accept_notification div{
+#accept_notification div{
 	margin: 0;
 	font-size: 0.7rem;
 	text-align: left;
@@ -1111,7 +1111,7 @@ img {
 }
 
 @media (min-width: 576px){
-	.accept_notification.show{
+	#accept_notification.show{
 		display: flex;
 	}
 	.cookie_accept{
@@ -1120,7 +1120,7 @@ img {
 }
 
 @media (max-width: 575px){
-	.accept_notification.show{
+	#accept_notification.show{
 		display: block;
 		text-align: left;
 	}

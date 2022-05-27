@@ -42,7 +42,7 @@ use Palto\Categories;
         <header class="header">
             <div class="container">
                 <div class="header__content">
-                        <?php if (file_exists('/img/logo.png')) : ?>
+                        <?php if (file_exists(\Palto\Directory::getPublicDirectory() . '/img/logo.png')) : ?>
                             <a href="/" class="header__logo">
                                 <img src="<?='/img/logo.png'?>" alt="<?= $this->translate('logo_alt') ?>" class="mylogo"/>
                             </a>

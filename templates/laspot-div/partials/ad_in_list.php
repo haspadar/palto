@@ -1,7 +1,16 @@
 <?php if (!$this->data['ad']->isDeleted()) :?>
     <div class="hot-ads__item ad">
-        <a href="#" class="ad__image">
-            <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ad.jpg")?>" alt="item">
+        <a href="<?= $this->data['ad']->generateUrl() ?>" class="ad__image">
+            <?php if ($this->data['ad']->getImages()) : ?>
+                <a href="<?= $this->data['ad']->generateUrl() ?>">
+                    <img src="<?= $this->data['ad']->getImages()[0]['small'] ?>"
+                         alt="<?=$this->data['ad']->getTitle()?>"
+                         onerror="this.src='/img/no-photo.png'"
+                    /></a>
+            <?php else :?>
+                <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ad.jpg")?>">
+            <?php endif; ?>
+            
         </a>
         <div class="ad__info">
             <a href="<?= $this->data['ad']->generateUrl() ?>" class="ad__headline">

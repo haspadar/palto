@@ -33,24 +33,26 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $title = $adDocument->filter('h1')->count() ? $adDocument->filter('h1')->text() : '';
             $html = $adDocument->filter('[data-cy="ad_description"] div')->count()
                 ? $adDocument->filter('[data-cy="ad_description"] div')->html()
-                : $adDocument->filter('h2+div')->html();
-            $priceWithCurrency = $adDocument->filter('h3')->count() > 0
-                ? $adDocument->filter('h3')->text()
-                : '';
-            list($price, $currency) = Parser::filterPriceCurrency($priceWithCurrency);
-            $ad = [
-                'title' => $title,
-                'url' => $adUrl,
-                'category_id' => $category->getId(),
-                'text' => $html,
-                'post_time' => null,
-                'region_id' => $level2Region->getId(),
-                'price' => $price,
-                'currency' => $currency,
-                'seller_name' => $adDocument->filter('h2')->text()
-            ];
+                : ($adDocument->filter('h2+div') ? $adDocument->filter('h2+div')->html() : null);
+            if ($html) {
+                $priceWithCurrency = $adDocument->filter('h3')->count() > 0
+                    ? $adDocument->filter('h3')->text()
+                    : '';
+                list($price, $currency) = Parser::filterPriceCurrency($priceWithCurrency);
+                $ad = [
+                    'title' => $title,
+                    'url' => $adUrl,
+                    'category_id' => $category->getId(),
+                    'text' => $html,
+                    'post_time' => null,
+                    'region_id' => $level2Region->getId(),
+                    'price' => $price,
+                    'currency' => $currency,
+                    'seller_name' => $adDocument->filter('h2')->text()
+                ];
 
-            return Ads::add($ad, $this->getImages($adDocument), $this->getDetails($adDocument));
+                return Ads::add($ad, $this->getImages($adDocument), $this->getDetails($adDocument));
+            }
         }
 
         return 0;

@@ -122,7 +122,6 @@ abstract class AdsParser
                     }
 
                     return 0;
-
                 });
                 if ($adId) {
                     $adNumber = $i + 1;

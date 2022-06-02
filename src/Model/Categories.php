@@ -3,11 +3,30 @@
 namespace Palto\Model;
 
 use Palto\Category;
+use Palto\Logger;
 use Palto\Region;
 
 class Categories extends NestedSet
 {
     protected string $name = 'categories';
+
+    public function rebuildAdsCount()
+    {
+        $limit = 1000;
+        $offset = 0;
+        self::getDb()->query("UPDATE categories SET ads_count = 0");
+        while ($categories = self::getDb()->query("SELECT id,title,parent_id FROM " . $this->name . " WHERE id IN(SELECT DISTINCT category_id FROM ads) LIMIT %d OFFSET %d", $limit, $offset)) {
+            foreach ($categories as $category) {
+                $adsCount = self::getDb()->queryFirstField("SELECT COUNT(*) FROM ads WHERE category_id = %d", $category['id']);
+                if ($adsCount > 0) {
+                    Logger::info('Updating ads count for category "' . $category['title'] . " and parents");
+                    $this->updateAdsCounts($adsCount, $category);
+                }
+            }
+
+            $offset += $limit;
+        }
+    }
 
     public function findByTitle(string $title, int $parentId): array
     {

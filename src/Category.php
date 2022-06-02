@@ -95,6 +95,11 @@ class Category
         return $this->category['icon_text'] ?? '';
     }
 
+    public function toArray(): array
+    {
+        return $this->category;
+    }
+
     public function getIconUrl(): string
     {
         return $this->category['icon_url'] ?? '';

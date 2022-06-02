@@ -3,6 +3,7 @@
 namespace Palto\Model;
 
 use Palto\Debug;
+use Palto\Logger;
 use Palto\Region;
 
 class Regions extends NestedSet
@@ -43,6 +44,27 @@ class Regions extends NestedSet
             return self::getDb()->query($query, $values);
         } else {
             return [];
+        }
+    }
+
+    public function rebuildAdsCount()
+    {
+        $limit = 1000;
+        $offset = 0;
+        self::getDb()->query("UPDATE regions SET ads_count = 0");
+        while ($regions = self::getDb()->query("SELECT id,title,parent_id FROM "
+            . $this->name
+            . " WHERE id IN(SELECT DISTINCT region_id FROM ads) LIMIT %d OFFSET %d", $limit, $offset
+        )) {
+            foreach ($regions as $region) {
+                $adsCount = self::getDb()->queryFirstField("SELECT COUNT(*) FROM ads WHERE region_id = %d", $region['id']);
+                if ($adsCount > 0) {
+                    Logger::info('Updating ads count for region "' . $region['title'] . " and parents");
+                    $this->updateAdsCounts($adsCount, $region);
+                }
+            }
+
+            $offset += $limit;
         }
     }
 }

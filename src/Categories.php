@@ -26,6 +26,21 @@ class Categories
         );
     }
 
+    public static function addAd(Category $category)
+    {
+        (new \Palto\Model\Categories())->addAd($category->toArray());
+    }
+
+    public static function removeAd(Category $category)
+    {
+        (new \Palto\Model\Categories())->removeAd($category->toArray());
+    }
+
+    public static function rebuildAdsCount()
+    {
+        (new \Palto\Model\Categories())->rebuildAdsCount();
+    }
+
     public static function rebuildTree()
     {
         (new \Palto\Model\Categories())->rebuildTree();

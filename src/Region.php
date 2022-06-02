@@ -21,6 +21,11 @@ class Region
         ];
     }
 
+    public function toArray(): array
+    {
+        return $this->region;
+    }
+
     public function getDonorUrl(): Url
     {
         return new Url($this->region['donor_url']);

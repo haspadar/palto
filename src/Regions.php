@@ -116,9 +116,24 @@ class Regions
         return (new Model\Regions)->getMaxTreeId();
     }
 
+    public static function rebuildAdsCount()
+    {
+        (new \Palto\Model\Regions())->rebuildAdsCount();
+    }
+
     public static function rebuildTree()
     {
         (new \Palto\Model\Regions())->rebuildTree();
+    }
+
+    public static function addAd(Region $region)
+    {
+        (new \Palto\Model\Regions())->addAd($region->toArray());
+    }
+
+    public static function removeAd(Region $region)
+    {
+        (new \Palto\Model\Regions())->removeAd($region->toArray());
     }
 
     private static function groupByField(array $unGrouped, string $field): array

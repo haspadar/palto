@@ -102,8 +102,6 @@ use Palto\Categories;
             </div>
 
             <script src="<?=$this->asset('/js/jquery.min.js')?>"></script>
-            <script src="<?=$this->asset('/js/cookies.js')?>"></script>
-            <script src="<?=$this->asset('/js/slider.js')?>"></script>
             <script src="<?=$this->asset('/js/moderation.js')?>"></script>
             <script src="<?=$this->asset('/js/script.js')?>"></script>
             <script src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/js/cookies.js')?>"></script>

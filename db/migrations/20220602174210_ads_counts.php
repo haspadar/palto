@@ -25,8 +25,5 @@ final class AdsCounts extends AbstractMigration
         $this->execute("ALTER TABLE `regions` ADD COLUMN `ads_count` INT(10)  UNSIGNED NOT NULL DEFAULT '0';");
         $this->execute("ALTER TABLE `regions` CHANGE `right_id` `right_id` int(10) unsigned NOT NULL DEFAULT '0';;");
         $this->execute("ALTER TABLE `regions` CHANGE `left_id` `left_id` int(10) unsigned NOT NULL DEFAULT '0';;");
-
-        \Palto\Categories::rebuildAdsCount();
-        \Palto\Regions::rebuildAdsCount();
     }
 }

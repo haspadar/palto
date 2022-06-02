@@ -15,6 +15,14 @@
                     <?php /** @var $childCategory \Palto\Category */ ?>
                     <li class="categories__link categories__sub-link">
                         <a href="<?= $childCategory->generateUrl($this->data['region']) ?>">
+                            <?php if ($childCategory->getEmoji()) :?>
+                                <?=$childCategory->getEmoji()?>
+                            <?php elseif ($childCategory->getIconUrl()) :?>
+                                <img src="<?=$childCategory->getIconUrl()?>"
+                                     title="<?=$childCategory->getIconText()?>"
+                                     class="icm" />
+                            <?php endif?>
+
                             <?= $childCategory->getTitle() ?>
                         </a>
                     </li>

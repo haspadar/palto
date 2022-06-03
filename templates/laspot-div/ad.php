@@ -39,79 +39,79 @@ use Palto\Categories; ?>
 <?php endif; ?>
 
 <div class="info">
-    <?php if ($ad->getDetails()) : ?>
-        <div class="info__content">
+    <div class="info__content">
+        <?php if ($ad->getDetails()) : ?>
             <div class="info__feature">
                 <?php foreach ($ad->getDetails() as $field => $value) : ?>
                     <span class="info__feature-item"><?= $field ?>: <?= $value ?></span>
                 <?php endforeach;?>
             </div>
-        </div>
-    <?php endif;?>
+        <?php endif;?>
 
-    <p class="info__description">
-        <?= urldecode($ad->getText()) ?>
-        <?= \Palto\Counters::receive('adx') ?: \Palto\Counters::get('google') ?>
-    </p>
-    <?php if ($ad->getPrice() > 0) : ?>
-        <span class="info__price"><?= $ad->getCurrency() ?><?= number_format($ad->getPrice()) ?></span>
-    <?php endif;?>
+        <p class="info__description">
+            <?= urldecode($ad->getText()) ?>
+            <?= \Palto\Counters::receive('adx') ?: \Palto\Counters::get('google') ?>
+        </p>
+        <?php if ($ad->getPrice() > 0) : ?>
+            <span class="info__price"><?= $ad->getCurrency() ?><?= number_format($ad->getPrice()) ?></span>
+        <?php endif;?>
 
-    <div class="info__block"><?= $ad->getSellerPostfix() ?></div>
+        <div class="info__block"><?= $ad->getSellerPostfix() ?></div>
 
-    <?php if ($ad->getAddress()) : ?>
-        <div class="info__block">
-            <span>Address: <?= $ad->getAddress() ?></span>
-        </div>
-    <?php endif;?>
+        <?php if ($ad->getAddress()) : ?>
+            <div class="info__block">
+                <span>Address: <?= $ad->getAddress() ?></span>
+            </div>
+        <?php endif;?>
 
-    <?php if ($ad->getCoordinates()) : ?>
-        <div class="info__cart" id="map"
-             data-latitude="<?= $ad->getLatitude() ?>"
-             data-longitude="<?= $ad->getLongitute() ?>"
-             data-accuracy="15"
-        ></div>
-    <?php endif;?>
+        <?php if ($ad->getCoordinates()) : ?>
+            <div class="info__cart" id="map"
+                 data-latitude="<?= $ad->getLatitude() ?>"
+                 data-longitude="<?= $ad->getLongitute() ?>"
+                 data-accuracy="15"
+            ></div>
+        <?php endif;?>
 
-    <?php if ($ad->getRegion()): ?>
-        <div class="info__block">
-            <span><?= $this->translate('Регион') ?>: </span>
-            <a href="<?= $ad->getRegion()->generateUrl() ?>">
-                <?= $ad->getRegion()->getTitle() ?>
-            </a>
-        </div>
-    <?php endif;?>
+        <?php if ($ad->getRegion()): ?>
+            <div class="info__block">
+                <span><?= $this->translate('Регион') ?>: </span>
+                <a href="<?= $ad->getRegion()->generateUrl() ?>">
+                    <?= $ad->getRegion()->getTitle() ?>
+                </a>
+            </div>
+        <?php endif;?>
 
-    <?php if (trim($ad->getSellerName())) : ?>
-        <div class="info__block"> <?= $ad->getSellerName() ?></div>
-    <?php endif; ?>
+        <?php if (trim($ad->getSellerName())) : ?>
+            <div class="info__block"> <?= $ad->getSellerName() ?></div>
+        <?php endif; ?>
 
-    <?php if ($ad->getSellerPhone()) : ?>
-        <div class="info__block"> <a class="show-phone phone" id="show-phone" data-phone="<?= $ad->getSellerPhone() ?>"
-                                 href="tel:<?= $ad->getSellerPhone() ?>">
-                <?php if ($ad->getSellerPhone()) : ?>
-                    <?= $this->translate('Показать телефон') ?>
-                <?php else : ?>
-                    <?= $this->translate('Нет телефона') ?>
-                <?php endif; ?></a>
-        </div>
-    <?php endif; ?>
+        <?php if ($ad->getSellerPhone()) : ?>
+            <div class="info__block"> <a class="show-phone phone" id="show-phone" data-phone="<?= $ad->getSellerPhone() ?>"
+                                     href="tel:<?= $ad->getSellerPhone() ?>">
+                    <?php if ($ad->getSellerPhone()) : ?>
+                        <?= $this->translate('Показать телефон') ?>
+                    <?php else : ?>
+                        <?= $this->translate('Нет телефона') ?>
+                    <?php endif; ?></a>
+            </div>
+        <?php endif; ?>
 
-    <?php if (\Palto\Config::get('DONOR_URL') == 1) :?>
-        <a class="info__reply"
-           href="<?= $ad->getUrl() ?>"
-           target="_blank"
-           rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
-    <?php else :?>
-        <a class="info__reply"
-           href="/registration"
-           rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
-    <?php endif;?>
+        <?php if (\Palto\Config::get('DONOR_URL') == 1) :?>
+            <a class="info__reply"
+               href="<?= $ad->getUrl() ?>"
+               target="_blank"
+               rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
+        <?php else :?>
+            <a class="info__reply"
+               href="/registration"
+               rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
+        <?php endif;?>
 
-    <span class="info__time"><?= $this->translate('Время публикации') ?>: <?= $ad->getCreateTime()->format('d.m.Y') ?></span>
-    <a href="javascript:void(0);" class="info__report" id="send-abuse">
-        <?= $this->translate('Пожаловаться на объявление') ?>
-    </a>
+        <span class="info__time"><?= $this->translate('Время публикации') ?>: <?= $ad->getCreateTime()->format('d.m.Y') ?></span>
+        <a href="javascript:void(0);" class="info__report" id="send-abuse">
+            <?= $this->translate('Пожаловаться на объявление') ?>
+        </a>
+    </div>
 </div>
 
 <div class="new-ads">

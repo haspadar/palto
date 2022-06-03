@@ -136,6 +136,39 @@ use Palto\Categories; ?>
    </div>
 </div>
 
+<div id="send-abuse-modal" class="modal" data-url="<?= \Palto\Config::getDomainUrl() ?>/send-feedback.php">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <div><?= $this->translate('Пожаловаться на объявление') ?></div>
+        </div>
+        <form class="form">
+            <table class="tbl_report">
+                <tr>
+                    <td class="td_report"><input type="hidden" name="page"
+                                                 value="http://<?= $_SERVER['HTTP_HOST'] ?><?= $_SERVER['REQUEST_URI'] ?>"><label>Email:</label>
+                    </td>
+                    <td><input type="email" name="email" required></td>
+                </tr>
+                <tr>
+                    <td class="td_report"><input type="hidden" name="ad_id"
+                                                 value="<?= $ad->getId() ?>"><label><?= $this->translate('Жалоба') ?>
+                            :</label></td>
+                    <td><textarea name="message" rows="3" width="200px"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Send" class="button"></td>
+                </tr>
+            </table>
+        </form>
+        <p class="success" style="display: none">
+            <?= $this->translate('Ваша жалоба успешно отправлена.') ?>
+        </p>
+    </div>
+</div>
+
 <?php if ($ad->getCoordinates()) : ?>
     <?php $this->push('scripts') ?>
     <script src="<?= $this->asset('/js/leaflet.js') ?>"></script>

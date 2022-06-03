@@ -24,31 +24,32 @@
     <div class="categories__content">
         <?php /** @var $level1Category \Palto\Category */?>
         <?php foreach ($this->data['live_categories'] as $level1Category) :?>
-            <ul class="categories__list">
-                <div class="categories__headline-link">
-                    <?php if ($level1Category->getEmoji()) :?>
-                        <?=$level1Category->getEmoji()?>
-                    <?php elseif ($level1Category->getIconUrl()) :?>
-                        <img src="<?=$level1Category->getIconUrl()?>"
-                             title="<?=$level1Category->getIconText()?>"
-                             class="icm"
-                             alt="list"
-                             onerror="this.src='/img/no-photo.png'"
-                        />
-                    <?php endif?>
-                    <a href="<?=$level1Category->generateUrl($this->data['region'])?>"><?=$level1Category->getTitle()?></a>
-                </div>
-                <?php /** @var $level2Category \Palto\Category */?>
-                <?php if ($level2Categories = $level1Category->getLiveChildren($this->data(['region']))) :?>
-                    <ul>
-                        <?php foreach ($level2Categories as  $level2Category) :?>
-                            <li class="categories__link"><a href="<?=$level2Category->generateUrl($this->data['region'])?>">
-                                    <?=$level2Category->getTitle()?>
-                                </a></li>
-                        <?php endforeach;?>
-                    </ul>
-                <?php endif;?>
-            </ul>
+            <?php /** @var $level2Category \Palto\Category */?>
+            <?php $level2Categories = $level1Category->getLiveChildren($this->data(['region']))?>
+            <?php if ($level2Categories) :?>
+                <ul class="categories__list">
+                    <span class="categories__headline-link">
+                        <?php if ($level1Category->getEmoji()) :?>
+                            <?=$level1Category->getEmoji()?>
+                        <?php elseif ($level1Category->getIconUrl()) :?>
+                            <img src="<?=$level1Category->getIconUrl()?>"
+                                 title="<?=$level1Category->getIconText()?>"
+                                 class="icm"
+                                 alt="list"
+                                 onerror="this.src='/img/no-photo.png'"
+                            />
+                        <?php endif?>
+                        <a href="<?=$level1Category->generateUrl($this->data['region'])?>"><?=$level1Category->getTitle()?></a>
+                    </span>
+                    <?php foreach ($level2Categories as  $level2Category) :?>
+                        <li class="categories__link">
+                            <a href="<?=$level2Category->generateUrl($this->data['region'])?>">
+                                <?=$level2Category->getTitle()?>
+                            </a>
+                        </li>
+                    <?php endforeach;?>
+                </ul>
+            <?php endif;?>
         <?php endforeach;?>
     </div>
 </div>

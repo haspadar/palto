@@ -4,10 +4,10 @@
             <?php if ($this->data['ad']->getImages()) : ?>
                 <img src="<?= $this->data['ad']->getImages()[0]['small'] ?>"
                      alt="<?=$this->data['ad']->getTitle()?>"
-                     onerror="this.src='<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ob.jpg")?>'"
+                     onerror="this.src='<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/no-pets.png")?>'"
                 />
             <?php else :?>
-                <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/mini-ob.jpg")?>">
+                <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/no-pets.png")?>">
             <?php endif; ?>
 
         </a>

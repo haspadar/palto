@@ -298,7 +298,7 @@ class Ads
         (new \Palto\Model\Ads)->update($updates, $id);
     }
 
-    public static function cleanUp(): void
+    public static function cleanUp(string $modifier): void
     {
         $executionTime = new ExecutionTime();
         $executionTime->start();
@@ -307,7 +307,7 @@ class Ads
         $limit = 1000;
         $offset = 0;
         $model = new \Palto\Model\Ads();
-        while ($ads = \Palto\Model\Ads::getOldAll($limit, $offset)) {
+        while ($ads = \Palto\Model\Ads::getOldAll($modifier, $limit, $offset)) {
             Logger::info('Removing ' . ($offset + count($ads)) . '/' . $oldCount . ' ads from "' . $ads['create_time'] . '" to "' . $ads[count($ads) - 1]['create_time'] . '"');
             foreach ($ads as $adKey => $ad) {
                 $model->remove($ad['id']);

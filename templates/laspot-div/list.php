@@ -6,9 +6,6 @@
 
 <?php if ($categories = Categories::getLiveCategories($this->data['category'], $this->data['region'])) : ?>
     <div class="categories">
-<!--        <div class="categories__headline headline">-->
-<!--            <h2>For Sale in New York from Craigslist</h2>-->
-<!--        </div>-->
         <div class="categories__content">
             <ul class="categories__list categories__sub-list">
                 <?php foreach ($categories as $childCategory) : ?>

@@ -7,6 +7,8 @@ use DateTime;
 
 class Categories
 {
+    const REBUILD_SCRIPT = 'bin/rebuild.php';
+
     public static function findByTitle(string $title, ?Category $parent): ?Category
     {
         $category = (new Model\Categories)->findByTitle($title, $parent ? $parent->getId() : 0);

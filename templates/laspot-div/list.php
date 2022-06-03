@@ -30,6 +30,7 @@
 <?php endif;?>
 
 <?php if ($regions = \Palto\Regions::getLiveRegions($this->data['region'])) : ?>
+    <h2><?=$this->translate('Города')?></h2>
     <div class="categories">
         <div class="categories__content">
             <ul class="categories__list categories__sub-list">
@@ -45,6 +46,7 @@
         </div>
     </div>
 <?php endif;?>
+
 
 <div class="city">
     <div class="city__content">

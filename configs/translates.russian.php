@@ -49,6 +49,7 @@ return [
     'list_description' => 'Агрегатор частных бесплатных объявлений: :CATEGORIES :REGION',
     'list_h1' => ':CATEGORY_IN_REGION: объявления с olx',
     'в' => 'в',
+    'Города' => 'Города',
 //registration.php
     'registration_title' => 'Регистрация',
     'registration_description' => 'Регистрация нового пользователя',

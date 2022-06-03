@@ -49,6 +49,7 @@ return [
     'list_description' => 'Aggregator of all classifieds boards: :CATEGORIES :REGION',
     'list_h1' => ':CATEGORY_IN_REGION: ads from craigslist',
     'в' => 'in',
+    'Города' => 'Cities',
 //registration.php
     'registration_title' => 'Registration',
     'registration_description' => 'Registration',

@@ -43,7 +43,7 @@ class NestedSet extends Tree
     protected function updateAdsCounts(int $adsCount, array $node)
     {
         while ($node) {
-            self::getDb()->query("UPDATE " . $this->name . " SET ads_count = ads_count + (%d) WHERE id = %d", $adsCount, $node['id']);
+            self::getDb()->query("UPDATE " . $this->name . " SET ads_count = ads_count + (%d) WHERE id = %d AND ads_count > 0", $adsCount, $node['id']);
             $node = $node['parent_id']
                 ? self::getDb()->queryFirstRow("SELECT id,title,parent_id FROM " . $this->name . " WHERE id=%d", $node['parent_id'])
                 : [];

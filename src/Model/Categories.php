@@ -65,6 +65,7 @@ class Categories extends NestedSet
             $query .= " AND c.parent_id IS NULL";
         }
 
+        $query .= " ORDER BY ads_count DESC";
         if ($limit) {
             $query .= ' LIMIT %d_limit';
             $values['limit'] = $limit;

@@ -51,6 +51,8 @@
                             </a>
                         </li>
                     <?php endforeach;?>
+
+                    <li><a href="<?=$level1Category->generateUrl($this->data['region'])?>">Other...</a></li>
                 </ul>
             <?php endif;?>
         <?php endforeach;?>

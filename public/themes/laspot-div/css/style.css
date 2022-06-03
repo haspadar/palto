@@ -302,7 +302,7 @@ img {
 	color: #b6b4b4;
 }
 
-.search__btn {
+.gsc-search-button {
 	height: 40px;
 	width: 80px;
 	background-color: #4d90fe;
@@ -314,11 +314,11 @@ img {
 	transition: all 0.3s ease 0s;
 }
 
-.search__btn:hover {
+.gsc-search-button:hover {
 	background-color: #045ef1;
 }
 
-.search__btn::before {
+.gsc-search-button::before {
 	content: "";
 	position: absolute;
 	width: 24px;

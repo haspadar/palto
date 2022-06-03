@@ -29,6 +29,23 @@
     </div>
 <?php endif;?>
 
+<?php if ($regions = \Palto\Regions::getLiveRegions($this->data['region'])) : ?>
+    <div class="categories">
+        <div class="categories__content">
+            <ul class="categories__list categories__sub-list">
+                <?php foreach ($regions as $childRegion) : ?>
+                    <?php /** @var $childRegion \Palto\Region */ ?>
+                    <li class="categories__link categories__sub-link">
+                        <a href="<?= $childRegion->generateUrl() ?>">
+                            <?= $childRegion->getTitle() ?>
+                        </a>
+                    </li>
+                <?php endforeach;?>
+            </ul>
+        </div>
+    </div>
+<?php endif;?>
+
 <div class="city">
     <div class="city__content">
         <span class="city__region"><?= $this->translate('Регион') ?>:</span>

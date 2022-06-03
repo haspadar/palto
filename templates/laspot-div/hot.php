@@ -52,7 +52,11 @@
                         </li>
                     <?php endforeach;?>
 
-                    <li><a href="<?=$level1Category->generateUrl($this->data['region'])?>">Other...</a></li>
+                    <li class="categories__link">
+                        <a href="<?=$level1Category->generateUrl($this->data['region'])?>">
+                            Other...
+                        </a>
+                    </li>
                 </ul>
             <?php endif;?>
         <?php endforeach;?>

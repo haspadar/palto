@@ -33,7 +33,7 @@ use Palto\Categories; ?>
     <div class="youtube__content youtube"
          data-url="<?= \Palto\Config::getDomainUrl() . '/youtube.php?query=' . urlencode($ad->getTitle()) ?>"
     >
-        <img src="/img/loading.gif" alt="loading">
+        <img src="<?=\Palto\Directory::getThemePublicDirectory()?>/img/loading.gif" alt="loading">
     </div>
 <?php endif; ?>
 

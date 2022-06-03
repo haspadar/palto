@@ -14,13 +14,14 @@ use Palto\Categories; ?>
 <?php if ($ad->getImages()) : ?>
     <div class="image-slider swiper-container">
         <div class="image-slider__wrapper swiper-wrapper">
-            <?php foreach ($ad->getImages() as $key => $image) : ?>
+            <?php foreach ($ad->getImages() as $image) : ?>
                 <div class="image-slider__slide swiper-slide">
                     <div class="image-slider__image">
                         <img src="<?=$image['big'] ?: $image['small']?>" alt="photo" loading="lazy">
                     </div>
                 </div>
             <?php endforeach; ?>
+
             <div class="swiper-button-prev"></div>
             <div class="swiper-button-next"></div>
             <div class="swiper-pagination"></div>
@@ -29,12 +30,6 @@ use Palto\Categories; ?>
 <?php endif;?>
 
 <?php if (\Palto\Config::get('YOUTUBE_URL') == 1) : ?>
-    <div class="youtube myvideo"
-         data-url="<?= \Palto\Config::getDomainUrl() . '/youtube.php?query=' . urlencode($ad->getTitle()) ?>"
-         style="text-align: center">
-        <img src="/img/loading.gif" alt="loading">
-    </div>
-
     <div class="youtube__content youtube"
          data-url="<?= \Palto\Config::getDomainUrl() . '/youtube.php?query=' . urlencode($ad->getTitle()) ?>"
     >

@@ -58,7 +58,8 @@ class Client
             'regions' => !is_numeric($limit) || intval($limit) > 0
                 ? Regions::getLiveRegions(null, intval($limit))
                 : [],
-            'live_categories' => \Palto\Categories::getLiveCategories(null, $this->region)
+            'live_categories' => \Palto\Categories::getLiveCategories(null, $this->region),
+            'breadcrumbs' => []
         ]);
         echo $this->templatesEngine->make($isHot ? 'hot' : 'index');
     }

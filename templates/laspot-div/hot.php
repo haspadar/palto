@@ -23,9 +23,12 @@
     </div>
     <div class="categories__content">
         <?php /** @var $level1Category \Palto\Category */?>
-        <?php foreach ($this->data['live_categories'] as $level1Category) :?>
+        <?php foreach (\Palto\Categories::getLiveCategoriesWithChildren(
+            \Palto\Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1'),
+            \Palto\Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
+        ) as $level1Category) :?>
             <?php /** @var $level2Category \Palto\Category */?>
-            <?php $level2Categories = $level1Category->getLiveChildren($this->data(['region']))?>
+            <?php $level2Categories = $level1Category->getLiveChildren($this->data['region'], \Palto\Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'));?>
             <?php if ($level2Categories) :?>
                 <ul class="categories__list">
                     <span class="categories__headline-link">

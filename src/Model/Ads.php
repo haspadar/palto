@@ -11,11 +11,11 @@ class Ads extends Model
 {
     protected string $name = 'ads';
 
-    public static function getOldCount(): int
+    public static function getOldCount(string $modifier): int
     {
         return self::getDb()->queryFirstField(
             'SELECT COUNT(*) FROM ads WHERE create_time < %s OR create_time IS NULL',
-            (new \DateTime())->modify('-1 YEAR')->format('Y-m-d H:i:s')
+            (new \DateTime())->modify($modifier)->format('Y-m-d H:i:s')
         ) ?: 0;
     }
 

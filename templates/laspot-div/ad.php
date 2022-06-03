@@ -6,6 +6,7 @@ use Palto\Categories; ?>
 <?php /** @var $ad \Palto\Ad */ ?>
 <?php if ($ad->getCoordinates()) : ?>
     <?php $this->push('styles') ?>
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
     <link rel="stylesheet" href="<?= $this->asset('/css/leaflet.css') ?>">
     <?php $this->end() ?>
 <?php endif; ?>

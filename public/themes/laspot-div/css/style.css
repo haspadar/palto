@@ -245,7 +245,7 @@ img {
 }
 
 .search form {
-	padding: 40px 30px;
+	padding: 10px 10px;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
@@ -256,11 +256,11 @@ img {
 
 @media screen and (max-width: 425px) {
 	.search form {
-		padding: 40px 15px;
+		padding: 10px 10px;
 	}
 }
 
-.search__input {
+.gsc-input {
 	height: 40px;
 	width: 100%;
 	border: 1px solid #d2cfcf;
@@ -274,28 +274,28 @@ img {
 	border-bottom-left-radius: 8px;
 }
 
-.search__input::-webkit-input-placeholder {
+.gsc-input::-webkit-input-placeholder {
 	font-size: 15px;
 	line-height: 130%;
 	letter-spacing: 0.5px;
 	color: #b6b4b4;
 }
 
-.search__input:-ms-input-placeholder {
+.gsc-input:-ms-input-placeholder {
 	font-size: 15px;
 	line-height: 130%;
 	letter-spacing: 0.5px;
 	color: #b6b4b4;
 }
 
-.search__input::-ms-input-placeholder {
+.gsc-input::-ms-input-placeholder {
 	font-size: 15px;
 	line-height: 130%;
 	letter-spacing: 0.5px;
 	color: #b6b4b4;
 }
 
-.search__input::placeholder {
+.gsc-input::placeholder {
 	font-size: 15px;
 	line-height: 130%;
 	letter-spacing: 0.5px;

@@ -25,7 +25,6 @@ class Synonyms
     {
         $level2Synonyms = array_filter($synonyms, fn(Synonym $synonym) => $synonym->getCategory()->getLevel() == 2);
         $level1Synonyms = array_filter($synonyms, fn(Synonym $synonym) => $synonym->getCategory()->getLevel() == 1);
-        Debug::dump(array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms), '$level2Synonyms');
         foreach ([$level2Synonyms, $level1Synonyms] as $levelSynonyms) {
             foreach ([$ad->getTitle(), $ad->getText(200)] as $key => $text) {
                 foreach ($levelSynonyms as $synonym) {

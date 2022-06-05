@@ -34,7 +34,7 @@
             <?php if ($region = $this->data['ad']->getRegion()) :?>
                 <div class="ob__block">
                     <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/icon-block.png")?>" alt="location">
-                    <a href="<?= $region->generateUrl() ?>">
+                    <a href="<?= $this->data['ad']->getCategory()->generateUrl($this->data['ad']->getRegion()) ?>">
                         <?=$this->data['ad']->getCategory()->getTitle()?> <?=$this->translate('в')?> <?= $region->getTitle() ?>
                     </a>
                 </div>

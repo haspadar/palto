@@ -12,6 +12,13 @@
                 </a>
             </div>
         <?php endforeach;?>
+
+        <div class="region">
+            <a href="/regions">
+                <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/img/icon-block.png') ?>" alt="block">
+                View All
+            </a>
+        </div>
     <?php endif;?>
 </div>
 

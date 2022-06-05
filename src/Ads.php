@@ -316,9 +316,8 @@ class Ads
         while ($ads = \Palto\Model\Ads::getOldAll($modifier, $limit, $offset)) {
             Logger::info('Removing ' . ($offset + count($ads)) . '/' . $oldCount . ' ads from "' . $ads['create_time'] . '" to "' . $ads[count($ads) - 1]['create_time'] . '"');
             foreach ($ads as $adKey => $ad) {
+                Logger::debug('Removing ad ' . $ad['id'] . ' (' . ($offset + $adKey + 1) . '/' . $oldCount . ') with create_time="' . $ad['create_time'] . '"') ;
                 Ads::delete($ad['id']);
-
-                Logger::debug('Deleted ad ' . $ad['id'] . ' (' . ($offset + $adKey + 1) . '/' . $oldCount . ') with create_time="' . $ad['create_time'] . '"') ;
             }
 
             $offset += $limit;

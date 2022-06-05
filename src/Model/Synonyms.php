@@ -22,10 +22,10 @@ class Synonyms extends Model
     public function getAll(int $categoryId = 0): array
     {
         return self::getDb()->query(
-            "SELECT s.*, s.category_id, c.level FROM " . $this->name . " AS s "
+            "SELECT s.*, s.category_id, c.level, SUM(LENGTH(s.title) - LENGTH(REPLACE(s.title, ' ', ''))) as spaces_count FROM " . $this->name . " AS s "
                 . " INNER JOIN categories AS c ON s.category_id = c.id"
                 . ($categoryId ? ' WHERE category_id=' . $categoryId : '')
-                . " GROUP BY s.id ORDER BY c.level DESC"
+                . " GROUP BY s.id ORDER BY c.level DESC, spaces_count DESC"
         );
     }
 

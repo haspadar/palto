@@ -393,6 +393,7 @@ $(function () {
                 type: 'GET',
                 data: {},
                 success: function (response) {
+                    let ids = getLogsIds($logs);
                     $logs.html('');
                     $.each(response.logs, function (i, log) {
                         let className = '';
@@ -413,7 +414,11 @@ $(function () {
                         let logParts = log.text.replace('[', '').split(']');
                         let date = new Date(logParts.shift());
                         let logText = logParts.join(']');
+                        console.log(log.line.toString(), 'log.line')
+                        console.log(ids, 'ids')
+                        console.log($.inArray(log.line.toString(), ids))
                         $logs.append('<li class="ms-5 '
+                            + ($.inArray(log.line.toString(), ids) !== -1 ? 'text-opacity-75 ' : '')
                             + className
                             + '" value="'
                             + log.line
@@ -431,7 +436,17 @@ $(function () {
                 }
             });
         }
+
         loadLogs($logs.data('directory'), $logs.data('type'));
+
+        function getLogsIds($logs) {
+            let ids = [];
+            $.each($logs.find('li'), function (i, li) {
+                ids.push($(li).attr('value'));
+            })
+
+            return ids;
+        }
     }
 
     function addLinks(inputText) {

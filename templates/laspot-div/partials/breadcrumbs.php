@@ -1,5 +1,5 @@
-<div class="city" itemscope itemtype="http://schema.org/BreadcrumbList">
-    <div class="city__content">
+<div class="city">
+    <div class="city__content" itemscope itemtype="http://schema.org/BreadcrumbList">
         <?php foreach ($this->data['breadcrumbs'] as $breadcrumbKey => $breadcrumbItem) :?>
             <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                 <?php if ($breadcrumbItem['url']) :?>

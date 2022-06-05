@@ -21,7 +21,7 @@ final class CategorySynonymAndField extends AbstractMigration
         $this->execute("ALTER TABLE `ads`
 ADD `synonym_id` int(10) unsigned NULL AFTER `deleted_time`,
 ADD `field` enum('title','text') COLLATE 'utf8mb4_general_ci' NULL AFTER `synonym_id`,
-ADD FOREIGN KEY (`synonym_id`) REFERENCES `synonyms` (`id`) ON DELETE SET NULL
+ADD FOREIGN KEY (`synonym_id`) REFERENCES `synonyms` (`id`) ON DELETE SET NULL,
 ADD INDEX `field` (`field`);");
         \Palto\Logger::info('Refind and move started');
 

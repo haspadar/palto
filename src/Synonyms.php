@@ -161,7 +161,7 @@ class Synonyms
             . $ad->getId()
             . ' "'
             . $ad->getTitle()
-            . ' from "'
+            . '" from "'
             . $ad->getCategoryPath()
             . '" to "'
             . $synonym->getCategory()->getPath()

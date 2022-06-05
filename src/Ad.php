@@ -26,15 +26,7 @@ class Ad
     public function getCategoriesTitle(): string
     {
         if ($this->getCategory()) {
-            $parents = array_merge($this->getCategory()->getParents(), [$this->getCategory()]);
-
-            return implode(
-                '/',
-                array_map(
-                    fn(Category $category) => $category->getTitle(),
-                    $parents
-                )
-            );
+            return implode('/',$this->getCategory()->getWithParentsTitles());
         }
 
         return '';

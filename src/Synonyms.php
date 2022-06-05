@@ -153,9 +153,10 @@ class Synonyms
                 . $ad->getId()
                 . ' "'
                 . $ad->getTitle()
-                . '" to category "'
+                . ' from "'
                 . $ad->getCategoriesTitle()
-                . $category->getTitle()
+                . '" to "'
+                . implode('/', $category->getWithParentsTitles())
                 . '"'
             );
             Ads::update([

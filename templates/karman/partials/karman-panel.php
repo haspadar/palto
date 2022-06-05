@@ -13,7 +13,7 @@ if (Panel::isPanelEnabled()) :?>
             <input class="apple-switch cache-checkbox"  type="checkbox" <?php if (Panel::isCacheEnabled()) :?>checked<?php endif;?>>
         </div>
 
-        <div class="karman-item">
+        <div class="karman-item d-sm-none">
             <a href="/karman/complaints?cache=0">
                 <?php $complaintsCount = Panel::getComplaintsCount()?>
                 <?php if ($complaintsCount) :?>
@@ -28,7 +28,7 @@ if (Panel::isPanelEnabled()) :?>
             </a>
         </div>
 
-        <div class="karman-item">
+        <div class="karman-item d-sm-none">
             <a href="/karman/status?cache=0">
                 <?php $percent = Panel::getBusySpace()?>
                 <span class="badge <?php if ($percent > 90) :?>badge-danger<?php elseif ($percent > 75) :?>badge-warning<?php else :?>badge-secondary<?php endif;?>">

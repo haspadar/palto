@@ -120,3 +120,9 @@ input.apple-switch:checked:after {
     color: #fff;
     text-decoration: underline;
 }
+
+@media (max-width: 600px) {
+    .d-sm-none {
+        display: none !important;
+    }
+}

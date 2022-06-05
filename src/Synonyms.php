@@ -46,12 +46,12 @@ class Synonyms
      * @param Category[] $categories
      * @return int
      */
-    public static function findAndMoveAds(array $categories): int
+    public static function findAndMoveAds(array $categories = []): int
     {
         $executionTime = new ExecutionTime();
         $executionTime->start();
         $synonyms = Synonyms::getAll();
-        $movedAdsCount = self::moveCategoryAds($synonyms, $categories);
+        $movedAdsCount = $synonyms ? self::moveCategoryAds($synonyms, $categories) : 0;
         $executionTime->end();
         Logger::info('Moved ' . $movedAdsCount . ' ads for ' . $executionTime->get());
         
@@ -86,27 +86,26 @@ class Synonyms
      */
     public static function moveCategoryAds(array $synonyms, array $categories): int
     {
+        $limit = 1000;
+        $offset = 0;
+        $adsCount = Ads::getAdsCount(array_map(fn(Category $category)=> $category->getId(), $categories));
         $movedAdsCount = 0;
-        if ($synonyms) {
-            $limit = 1000;
-            $offset = 0;
-            $adsCount = Ads::getAdsCount(array_map(fn(Category $category)=> $category->getId(), $categories));
-            while ($ads = Ads::getFields($categories, ['id', 'title', 'text', 'category_id', 'region_id', 'deleted_time'], $limit, $offset)) {
-                foreach ($ads as $key => $adFields) {
-                    $ad = new Ad($adFields, [], []);
-                    $found = self::find($ad, $synonyms);
-                    $progress = $offset + count($ads) + $key . '/' . $adsCount;
-                    if ($found['synonym'] && $ad->getCategory()->getId() != $found['synonym']->getCategory()->getId()) {
-                        self::moveAd($ad, $found['field'], $found['synonym'], $progress);
-                        $movedAdsCount++;
-                    } else {
-                        Logger::debug('Skipped ad ' . $progress);
-                    }
+        while ($ads = Ads::getFields($categories, ['id', 'title', 'text', 'category_id', 'region_id', 'deleted_time'], $limit, $offset)) {
+            foreach ($ads as $key => $adFields) {
+                $ad = new Ad($adFields, [], []);
+                $found = self::find($ad, $synonyms);
+                $progress = $offset + count($ads) + $key . '/' . $adsCount;
+//                if ($found['synonym'] && $ad->getCategory()->getId() != $found['synonym']->getCategory()->getId()) {
+                if ($found['synonym']) {
+                    self::moveAd($ad, $found['field'], $found['synonym'], $progress);
+                    $movedAdsCount++;
+                } else {
+                    Logger::debug('Skipped ad ' . $progress);
                 }
-
-                $offset += $limit;
             }
-        }
+
+            $offset += $limit;
+            }
 
         return $movedAdsCount;
     }

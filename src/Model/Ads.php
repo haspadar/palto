@@ -140,16 +140,25 @@ class Ads extends Model
 
     public function getFields(array $categoriesIds, array $fields, int $limit, int $offset): array
     {
-        return self::getDb()->query(
-            "SELECT "
-                . implode(',', $fields)
-                . " FROM "
-                . $this->name
-                . " WHERE category_id IN %ld LIMIT %d OFFSET %d",
-                $categoriesIds,
-            $limit,
-            $offset
-        );
+        return $categoriesIds
+            ? self::getDb()->query(
+                "SELECT "
+                    . implode(',', $fields)
+                    . " FROM "
+                    . $this->name
+                    . " WHERE category_id IN %ld LIMIT %d OFFSET %d",
+                    $categoriesIds,
+                $limit,
+                $offset
+            ) : self::getDb()->query(
+                "SELECT "
+                    . implode(',', $fields)
+                    . " FROM "
+                    . $this->name
+                    . " LIMIT %d OFFSET %d",
+                $limit,
+                $offset
+            );
     }
 
     public function getPairsCount(): int

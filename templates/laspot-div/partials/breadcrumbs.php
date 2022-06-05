@@ -15,6 +15,7 @@
             <?php if (!$isLast) :?>
                 <span>»</span>
             <?php endif;?>
+
+            </span>
         <?php endforeach;?>
-    </span>
 </div>

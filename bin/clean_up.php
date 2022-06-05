@@ -9,4 +9,4 @@ use Palto\Update;
 require_once __DIR__ . '/autoload_require_composer.php';
 
 \Palto\Logger::info('Ads clean up started');
-\Palto\Ads::cleanUp('-11 MONTH');
+\Palto\Ads::cleanUp('-10 MONTH');

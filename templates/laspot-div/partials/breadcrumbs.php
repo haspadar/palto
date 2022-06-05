@@ -18,4 +18,5 @@
 
             </span>
         <?php endforeach;?>
+    </div>
 </div>

@@ -47,9 +47,16 @@ class Ad
         return $this->ad['price'];
     }
 
-    public function getText(): string
+    public function getText(int $length = 0): string
     {
-        return !$this->isDeleted() ? html_entity_decode($this->ad['text']) : 'Deleted';
+        $text = html_entity_decode($this->ad['text']);
+        if (!$this->isDeleted() && !$length) {
+            return $text;
+        } elseif (!$this->isDeleted() && $length) {
+            return mb_substr($text, 0, $length);
+        }
+
+        return 'Deleted';
     }
 
     public function getCategory(): Category

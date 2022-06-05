@@ -21,8 +21,10 @@ class Synonyms
         $synonyms = self::getAll();
         foreach ($synonyms as $synonym) {
             for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
-                if (self::hasAdSynonym($ad, $synonym)) {
-                    return $synonym->getCategory();
+                foreach ([$ad->getTitle(), $ad->getText(200)] as $text) {
+                    if (self::hasSynonym($text, $synonym)) {
+                        return $synonym->getCategory();
+                    }
                 }
             }
         }
@@ -84,9 +86,11 @@ class Synonyms
                 foreach ($ads as $adFields) {
                     $ad = new Ad($adFields, [], []);
                     foreach ($synonyms as $synonym) {
-                        if (self::hasAdSynonym($ad, $synonym)) {
-                            self::moveAd($ad, $synonym->getCategory());
-                            $movedAdsCount++;
+                        foreach ([$ad->getTitle(), $ad->getText(200)] as $key => $text) {
+                            if (self::hasSynonym($text, $synonym)) {
+                                self::moveAd($ad, $synonym->getCategory(), $key ? 'text': 'title', $synonym);
+                                $movedAdsCount++;
+                            }
                         }
                     }
                 }
@@ -125,14 +129,14 @@ class Synonyms
     }
 
     /**
-     * @param Ad $ad
+     * @param string $text
      * @param Synonym $synonym
      * @return bool
      */
-    private static function hasAdSynonym(Ad $ad, Synonym $synonym): bool
+    private static function hasSynonym(string $text, Synonym $synonym): bool
     {
         for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
-            foreach ([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)] as $text) {
+//            foreach ([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)] as $text) {
                 if ($wordsCombinations = self::getWordsCombinations($text, $length)) {
                     foreach ($wordsCombinations as $combination) {
                         if (mb_strtolower($combination) == mb_strtolower($synonym->getTitle())) {
@@ -140,13 +144,13 @@ class Synonyms
                         }
                     }
                 }
-            }
+//            }
         }
 
         return false;
     }
 
-    private static function moveAd(Ad $ad, Category $category): void
+    private static function moveAd(Ad $ad, Category $category, string $field, Synonym $synonym): void
     {
         if ($ad->getCategory()->getId() != $category->getId()) {
             Logger::notice('Moved ad '
@@ -157,7 +161,10 @@ class Synonyms
                 . $ad->getCategoriesTitle()
                 . '" to "'
                 . implode('/', $category->getWithParentsTitles())
-                . '"'
+                . '" (found synonym "'
+                . $synonym->getTitle()
+                . '" in field "'
+                . $field . '")'
             );
             Ads::update([
                 'category_id' => $category->getId(),

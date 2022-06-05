@@ -110,7 +110,6 @@ class Ads
 
     public static function delete(int $adId)
     {
-        $ad = self::getById($adId);
         (new Model\Ads)->remove($adId);
 //        Categories::removeAd(Categories::getById($ad->getCategory()->getId()));
 //        Regions::removeAd(Regions::getById($ad->getRegion()->getId()));

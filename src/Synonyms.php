@@ -88,13 +88,15 @@ class Synonyms
             $offset = 0;
             $adsCount = Ads::getAdsCount(array_map(fn(Category $category)=> $category->getId(), $categories));
             while ($ads = Ads::getFields($categories, ['id', 'title', 'text', 'category_id', 'region_id', 'deleted_time'], $limit, $offset)) {
-                Logger::info('Search in ' . ($offset + count($ads)) . '/' . $adsCount . ' ads...');
-                foreach ($ads as $adFields) {
+                foreach ($ads as $key => $adFields) {
                     $ad = new Ad($adFields, [], []);
                     $found = self::find($ad, $synonyms);
-                    if ($found['synonym']) {
-                        self::moveAd($ad, $found['field'], $found['synonym']);
+                    $progress = $offset + count($ads) + $key . '/' . $adsCount;
+                    if ($found['synonym'] && $ad->getCategory()->getId() != $found['synonym']->getCategory()->getId()) {
+                        self::moveAd($ad, $found['field'], $found['synonym'], $progress);
                         $movedAdsCount++;
+                    } else {
+                        Logger::debug('Skipped ad ' . $progress);
                     }
                 }
 
@@ -149,34 +151,33 @@ class Synonyms
         return false;
     }
 
-    private static function moveAd(Ad $ad, string $field, Synonym $synonym): void
+    private static function moveAd(Ad $ad, string $field, Synonym $synonym, $progress): void
     {
-        if ($ad->getCategory()->getId() != $synonym->getCategory()->getId()) {
-            Logger::notice('Moved ad '
-                . $ad->getId()
-                . ' "'
-                . $ad->getTitle()
-                . ' from "'
-                . $ad->getCategoryPath()
-                . '" to "'
-                . $synonym->getCategory()->getPath()
-                . '" (found synonym "'
-                . $synonym->getTitle()
-                . '" in field "'
-                . $field . '")'
-            );
-            Ads::update([
-                'category_id' => $synonym->getCategory()->getId(),
-                'category_level_1_id' => $synonym->getCategory()->getLevel() == 1
-                    ? $synonym->getCategory()->getId()
-                    : $synonym->getCategory()->getParentId(),
-                'category_level_2_id' => $synonym->getCategory()->getLevel() == 2
-                    ? $synonym->getCategory()->getId()
-                    : null,
-                'synonym_id' => $synonym->getId(),
-                'field' => $field
-            ], $ad->getId());
-        }
+        Logger::notice('Moved ad '
+            . $ad->getId()
+            . ' "'
+            . $ad->getTitle()
+            . ' from "'
+            . $ad->getCategoryPath()
+            . '" to "'
+            . $synonym->getCategory()->getPath()
+            . '" (found synonym "'
+            . $synonym->getTitle()
+            . '" in field "'
+            . $field . '"), '
+            . $progress
+        );
+        Ads::update([
+            'category_id' => $synonym->getCategory()->getId(),
+            'category_level_1_id' => $synonym->getCategory()->getLevel() == 1
+                ? $synonym->getCategory()->getId()
+                : $synonym->getCategory()->getParentId(),
+            'category_level_2_id' => $synonym->getCategory()->getLevel() == 2
+                ? $synonym->getCategory()->getId()
+                : null,
+            'synonym_id' => $synonym->getId(),
+            'field' => $field
+        ], $ad->getId());
     }
 
     private static function getCombinations(string $text, int $combinationsWordsLimit): array

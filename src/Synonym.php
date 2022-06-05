@@ -20,12 +20,7 @@ class Synonym
 
     public function getWordsCount(): int
     {
-        return $this->getSpacesCount() + 1;
-    }
-
-    public function getSpacesCount(): int
-    {
-        return $this->synonym['spaces_count'];
+        return count(explode(' ', $this->synonym['title']));
     }
 
     public function getTitle(): string

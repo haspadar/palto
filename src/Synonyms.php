@@ -23,14 +23,18 @@ class Synonyms
      */
     public static function find(Ad $ad, array $synonyms): array
     {
-        foreach ([$ad->getTitle(), $ad->getText(200)] as $key => $text) {
-            foreach ($synonyms as $synonym) {
-                if (self::hasSynonym($text, $synonym)) {
-                    return [
-                        'category' => $synonym->getCategory(),
-                        'field' => $key ? 'text' : 'title',
-                        'synonym' => $synonym
-                    ];
+        $level2Synonyms = array_filter($synonyms, fn(Synonym $synonym) => $synonym->getCategory()->getLevel() == 2);
+        $level1Synonyms = array_filter($synonyms, fn(Synonym $synonym) => $synonym->getCategory()->getLevel() == 1);
+        foreach ([$level2Synonyms, $level1Synonyms] as $levelSynonyms) {
+            foreach ([$ad->getTitle(), $ad->getText(200)] as $key => $text) {
+                foreach ($levelSynonyms as $synonym) {
+                    if (self::hasSynonym($text, $synonym)) {
+                        return [
+                            'category' => $synonym->getCategory(),
+                            'field' => $key ? 'text' : 'title',
+                            'synonym' => $synonym
+                        ];
+                    }
                 }
             }
         }

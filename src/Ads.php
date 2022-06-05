@@ -112,8 +112,8 @@ class Ads
     {
         $ad = self::getById($adId);
         (new Model\Ads)->remove($adId);
-        Categories::removeAd(Categories::getById($ad->getCategory()->getId()));
-        Regions::removeAd(Regions::getById($ad->getRegion()->getId()));
+//        Categories::removeAd(Categories::getById($ad->getCategory()->getId()));
+//        Regions::removeAd(Regions::getById($ad->getRegion()->getId()));
     }
 
     public static function markAsDelete(int $adId)

@@ -414,9 +414,6 @@ $(function () {
                         let logParts = log.text.replace('[', '').split(']');
                         let date = new Date(logParts.shift());
                         let logText = logParts.join(']');
-                        console.log(log.line.toString(), 'log.line')
-                        console.log(ids, 'ids')
-                        console.log($.inArray(log.line.toString(), ids))
                         $logs.append('<li class="ms-5 '
                             + ($.inArray(log.line.toString(), ids) !== -1 ? 'text-opacity-75 ' : '')
                             + className

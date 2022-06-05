@@ -36,6 +36,14 @@
             </p>
         <?php endif;?>
     </dd>
+    <dt class="col-sm-3">Найденный синоним</dt>
+    <dd class="col-sm-9">
+        <?php if ($this->data['ad']->getSynonym()) :?>
+            <i>"<?=$this->data['ad']->getSynonym()->getTitle()?>"</i> в поле <i>"<?=$this->data['ad']->getField()?>"</i>
+        <?php else :?>
+            Не указан
+        <?php endif;?>
+    </dd>
 </dl>
 
 <?php $this->insert('partials/karman-move-ad-modal')?>

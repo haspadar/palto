@@ -18,12 +18,13 @@ class Ads
         $adsModel = new \Palto\Model\Ads();
         $row = $adsModel->getById($adId);
 
-        $adsImagesModel = new AdsImages();
-        $adsDetailsModel = new AdsDetails();
-
         return $row
-            ? new Ad($row, $adsImagesModel->getAdsImages([$adId]), $adsDetailsModel->getAdsDetails([$adId]))
-            : null;
+            ? new Ad(
+                $row,
+                (new AdsImages())->getAdsImages([$adId]),
+                (new AdsDetails())->getAdsDetails([$adId]),
+                Synonyms::getById($row['synonym_id'])
+            ) : null;
     }
 
     public static function getLastTime(): string
@@ -37,7 +38,6 @@ class Ads
     {
         $adsModel = new \Palto\Model\Ads();
         $row = $adsModel->getByUrl($adUrl);
-
         $adsImagesModel = new AdsImages();
         $adsDetailsModel = new AdsDetails();
 

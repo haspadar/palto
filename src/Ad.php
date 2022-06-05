@@ -9,8 +9,9 @@ class Ad
     private array $details;
     private Category $category;
     private Region $region;
+    private ?Synonym $synonym;
 
-    public function __construct(array $ad, array $images, array $details)
+    public function __construct(array $ad, array $images, array $details, ?Synonym $synonym = null)
     {
         $this->ad = $ad;
         $this->images = $images;
@@ -21,6 +22,8 @@ class Ad
         if ($this->getCategoryId()) {
             $this->category = Categories::getById($this->getCategoryId());
         }
+
+        $this->synonym = $synonym;
     }
 
     public function getCategoryPath(): string
@@ -62,6 +65,16 @@ class Ad
     public function getCategory(): Category
     {
         return $this->category;
+    }
+
+    public function getField(): string
+    {
+        return $this->ad['field'] ?? '';
+    }
+
+    public function getSynonym(): ?Synonym
+    {
+        return $this->synonym;
     }
 
     public function getRegion(): Region

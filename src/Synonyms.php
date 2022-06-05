@@ -219,4 +219,9 @@ class Synonyms
 
         return $combinations;
     }
+
+    public static function getById(?int $id): ?Synonym
+    {
+        return $id ? new Synonym((new \Palto\Model\Synonyms())->getById($id)) : null;
+    }
 }

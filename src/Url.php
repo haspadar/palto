@@ -73,6 +73,18 @@ class Url
         return count($this->getCategoriesUrls());
     }
 
+    public function generate(array $replaces): self
+    {
+        $parameters = $this->getQueryParameters();
+        foreach ($replaces as $key => $value) {
+            $parameters[$key] = $value;
+        }
+
+        $url = $this->getPath() . ($parameters ? '?' . http_build_query($parameters) : '');
+
+        return new self($url);
+    }
+
     public function getQueryParameters(): array
     {
         $path = parse_url($this->url);

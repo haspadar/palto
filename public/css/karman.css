@@ -108,3 +108,15 @@ input.apple-switch:checked:after {
 .find-and-move-ad-report {
     margin-top: 10px;
 }
+
+.karman-hide {
+    position: fixed;
+    bottom: 14px;
+    right: 20px;
+}
+
+.karman-hide a {
+    font-size: 14px;
+    color: #fff;
+    text-decoration: underline;
+}

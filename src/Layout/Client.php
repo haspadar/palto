@@ -124,14 +124,14 @@ class Client extends Layout
                 . implode(
                     ' - ',
                     array_filter(array_merge(
-                        $this->getAd()->getCategory()->getWithParentsTitles(),
+                        $this->getAd()->getCategory()->getTitles(),
                         [$this->getAd()->getAddress()],
                         [$prefix . $this->getRegion()->getTitle()],
                     ))
                 );
         } else {
             $categoriesTitle = $this->getCategory()
-                ? implode(' - ', $this->getCategory()->getWithParentsTitles())
+                ? implode(' - ', $this->getCategory()->getTitles())
                 : '';
 
             return ($categoriesTitle ? $categoriesTitle . ' - ' : $categoriesTitle)
@@ -146,7 +146,7 @@ class Client extends Layout
             . implode(
                 ' - ',
                 array_filter(array_merge(
-                    ($this->getCategory() ? $this->getCategory()->getWithParentsTitles() : []),
+                    ($this->getCategory() ? $this->getCategory()->getTitles() : []),
                     [$this->getRegion()->getTitle()]
                 ))
             );

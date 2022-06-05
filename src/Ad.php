@@ -23,10 +23,10 @@ class Ad
         }
     }
 
-    public function getCategoriesTitle(): string
+    public function getCategoryPath(): string
     {
         if ($this->getCategory()) {
-            return implode('/',$this->getCategory()->getWithParentsTitles());
+            return $this->getCategory()->getPath();
         }
 
         return '';

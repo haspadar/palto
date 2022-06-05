@@ -143,7 +143,12 @@ class Category
         return $this->childrenIds;
     }
 
-    public function getWithParentsTitles(array $addTitles = []): array
+    public function getPath(array $addTitles = []): string
+    {
+        return implode('/', array_reverse($this->getTitles()));
+    }
+
+    public function getTitles(array $addTitles = []): array
     {
         $parentsTitles = array_reverse(
             array_map(

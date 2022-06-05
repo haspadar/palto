@@ -45,12 +45,18 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
             $images = $this->getImages($adDocument);
             $details = $this->getDetails($adDocument);
             $adId = Ads::add($ad, $images, $details);
-            $category = \Palto\Synonyms::findCategory(Ads::getById($adId));
-            if ($category) {
+            $found = \Palto\Synonyms::find(Ads::getById($adId), \Palto\Synonyms::getAll());
+            if ($found['synonym']) {
                 Ads::update([
-                    'category_id' => $category->getId(),
-                    'category_level_1_id' => $category->getLevel() == 1 ? $category->getId() : $category->getParentId(),
-                    'category_level_2_id' => $category->getLevel() == 1 ? null : $category->getId()
+                    'category_id' => $found['category']->getId(),
+                    'category_level_1_id' => $found['category']->getLevel() == 1
+                        ? $found['category']->getId()
+                        : $found['category']->getParentId(),
+                    'category_level_2_id' => $found['category']->getLevel() == 1
+                        ? null
+                        : $found['category']->getId(),
+                    'synonym_id' => $found['synonym']->getId(),
+                    'field' => $found['field']
                 ], $adId);
             }
         } else {

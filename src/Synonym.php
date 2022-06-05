@@ -13,6 +13,16 @@ class Synonym
         $this->category = Categories::getById($synonym['category_id']);
     }
 
+    public function getId(): int
+    {
+        return $this->synonym['id'];
+    }
+
+    public function getWordsCount(): int
+    {
+        return $this->getSpacesCount() + 1;
+    }
+
     public function getSpacesCount(): int
     {
         return $this->synonym['spaces_count'];

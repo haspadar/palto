@@ -16,20 +16,26 @@ class Synonyms
         return array_map(fn(array $synonym) => new Synonym($synonym), (new Model\Synonyms)->getAll());
     }
 
-    public static function findCategory(Ad $ad): Category
+    /**
+     * @param Ad $ad
+     * @param Synonym[] $synonyms
+     * @return array
+     */
+    public static function find(Ad $ad, array $synonyms): array
     {
-        $synonyms = self::getAll();
-        foreach ($synonyms as $synonym) {
-            for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
-                foreach ([$ad->getTitle(), $ad->getText(200)] as $text) {
-                    if (self::hasSynonym($text, $synonym)) {
-                        return $synonym->getCategory();
-                    }
+        foreach ([$ad->getTitle(), $ad->getText(200)] as $key => $text) {
+            foreach ($synonyms as $synonym) {
+                if (self::hasSynonym($text, $synonym)) {
+                    return [
+                        'category' => $synonym->getCategory(),
+                        'field' => $key ? 'text' : 'title',
+                        'synonym' => $synonym
+                    ];
                 }
             }
         }
 
-        return Categories::createUndefined();
+        return ['category' => Categories::createUndefined(), 'field' => '', 'synonym' => null];
     }
 
     /**
@@ -85,13 +91,10 @@ class Synonyms
                 Logger::info('Search in ' . ($offset + count($ads)) . '/' . $adsCount . ' ads...');
                 foreach ($ads as $adFields) {
                     $ad = new Ad($adFields, [], []);
-                    foreach ($synonyms as $synonym) {
-                        foreach ([$ad->getTitle(), $ad->getText(200)] as $key => $text) {
-                            if (self::hasSynonym($text, $synonym)) {
-                                self::moveAd($ad, $synonym->getCategory(), $key ? 'text': 'title', $synonym);
-                                $movedAdsCount++;
-                            }
-                        }
+                    $found = self::find($ad, $synonyms);
+                    if ($found['synonym']) {
+                        self::moveAd($ad, $found['field'], $found['synonym']);
+                        $movedAdsCount++;
                     }
                 }
 
@@ -135,50 +138,48 @@ class Synonyms
      */
     private static function hasSynonym(string $text, Synonym $synonym): bool
     {
-        for ($length = $synonym->getSpacesCount() + 1; $length >= 1; $length--) {
-//            foreach ([$ad->getTitle(), mb_substr($ad->getText(), 0, 200)] as $text) {
-                if ($wordsCombinations = self::getWordsCombinations($text, $length)) {
-                    foreach ($wordsCombinations as $combination) {
-                        if (mb_strtolower($combination) == mb_strtolower($synonym->getTitle())) {
-                            return true;
-                        }
-                    }
+        if ($combinations = self::getCombinations($text, $synonym->getWordsCount())) {
+            foreach ($combinations as $combination) {
+                if (mb_strtolower($combination) == mb_strtolower($synonym->getTitle())) {
+                    return true;
                 }
-//            }
+            }
         }
 
         return false;
     }
 
-    private static function moveAd(Ad $ad, Category $category, string $field, Synonym $synonym): void
+    private static function moveAd(Ad $ad, string $field, Synonym $synonym): void
     {
-        if ($ad->getCategory()->getId() != $category->getId()) {
+        if ($ad->getCategory()->getId() != $synonym->getCategory()->getId()) {
             Logger::notice('Moved ad '
                 . $ad->getId()
                 . ' "'
                 . $ad->getTitle()
                 . ' from "'
-                . $ad->getCategoriesTitle()
+                . $ad->getCategoryPath()
                 . '" to "'
-                . implode('/', $category->getWithParentsTitles())
+                . $synonym->getCategory()->getPath()
                 . '" (found synonym "'
                 . $synonym->getTitle()
                 . '" in field "'
                 . $field . '")'
             );
             Ads::update([
-                'category_id' => $category->getId(),
-                'category_level_1_id' => $category->getLevel() == 1
-                    ? $category->getId()
-                    : $category->getParentId(),
-                'category_level_2_id' => $category->getLevel() == 2
-                    ? $category->getId()
-                    : null
+                'category_id' => $synonym->getCategory()->getId(),
+                'category_level_1_id' => $synonym->getCategory()->getLevel() == 1
+                    ? $synonym->getCategory()->getId()
+                    : $synonym->getCategory()->getParentId(),
+                'category_level_2_id' => $synonym->getCategory()->getLevel() == 2
+                    ? $synonym->getCategory()->getId()
+                    : null,
+                'synonym_id' => $synonym->getId(),
+                'field' => $field
             ], $ad->getId());
         }
     }
 
-    private static function getWordsCombinations(string $text, int $length): array
+    private static function getCombinations(string $text, int $combinationsWordsLimit): array
     {
         $combinations = [];
         $text = mb_strtolower(Filter::removeEmoji($text));
@@ -198,8 +199,18 @@ class Synonyms
             '(' => ' ',
             ')' => ' '
         ]))));
-        for ($offset = 0; $offset <= count($words) - $length; $offset++) {
-            $combinations[] = trim(implode(' ', array_slice($words, $offset, $length)));
+        if ($combinationsWordsLimit > count($words)) {
+            $combinationsWordsLimit = count($words);
+        }
+
+        for ($lengthIterator = $combinationsWordsLimit; $lengthIterator >= 1; $lengthIterator--) {
+            for ($offset = 0; $offset <= count($words) - $lengthIterator; $offset++) {
+                $combinationWords = array_slice($words, $offset, $lengthIterator);
+                $combination = trim(implode(' ', $combinationWords));
+                if (count($combinationWords) == $lengthIterator && !in_array($combination, $combinations)) {
+                    $combinations[] = $combination;
+                }
+            }
         }
 
         return $combinations;

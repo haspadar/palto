@@ -2,6 +2,7 @@
 
 namespace Palto\Model;
 
+use Palto\Debug;
 use Palto\Synonym;
 
 class Synonyms extends Model
@@ -21,7 +22,7 @@ class Synonyms extends Model
     public function getAll(int $categoryId = 0): array
     {
         return self::getDb()->query(
-            "SELECT s.*, s.category_id, SUM(LENGTH(s.title) - LENGTH(REPLACE(s.title, ' ', '')) + 1) as spaces_count FROM " . $this->name . " AS s "
+            "SELECT s.*, s.category_id, SUM(LENGTH(s.title) - LENGTH(REPLACE(s.title, ' ', ''))) as spaces_count FROM " . $this->name . " AS s "
                 . " INNER JOIN categories AS c ON s.category_id = c.id "
                 . ($categoryId ? 'WHERE category_id=' . $categoryId : '')
                 . " GROUP BY s.id ORDER BY IF(c.url like 'undefined%', 1, 0), spaces_count DESC"

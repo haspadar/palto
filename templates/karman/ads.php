@@ -16,7 +16,7 @@
     </thead>
     <tbody>
     <?php foreach ($this->data['ads'] as $ad) :?>
-        <?php $categoriesTitle = $ad->getCategoriesTitle();?>
+        <?php $categoriesTitle = $ad->getCategoryPath();?>
         <tr class="<?php if ($ad->getCategory()->isUndefined()) :?>
                 table-secondary
             <?php endif;?>"

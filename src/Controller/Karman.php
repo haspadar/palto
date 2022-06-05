@@ -208,17 +208,18 @@ class Karman
     public function findAdCategory(int $id)
     {
         $ad = Ads::getById($id);
-        if ($category = \Palto\Synonyms::findCategory($ad)) {
-            $synonyms = $category->getSynonyms();
+        $found = \Palto\Synonyms::find($ad, \Palto\Synonyms::getAll());
+        if ($found['synonym']) {
             $response = 'Нашлась категория <span class="fw-bolder">"'
-                . implode('/', array_reverse($category->getWithParentsTitles()))
+                . $found['category']->getPath()
                 . '"</span>'
-                . ($synonyms
-                    ? ' с синонимами: <ul class="fst-italic mt-2">' . implode('', array_map(fn(Synonym $synonym) => '<li>' . $synonym->getTitle() . '</li>', $synonyms)) . '</ul>'
-                    : ' без синонимов'
-                );
+                . ' по синониму "'
+                . $found['synonym']->getTitle()
+                . '" в поле "'
+                . $found['field']
+                . '"';
         } else {
-            $response = 'Категория не нашлась';
+            $response = 'Категория не нашлась (<span class="fw-bolder">"' . $found['category']->getPath() . '"</span>)';
         }
 
         $this->showJsonResponse(['report' => $response]);

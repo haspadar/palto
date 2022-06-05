@@ -217,7 +217,7 @@ class Translates
                 ? $ad->getAddress()
                 : '',
             ':CATEGORIES' => $category
-                ? implode(' - ', $category->getWithParentsTitles())
+                ? implode(' - ', $category->getTitles())
                 : '',
             ':REGION' => $regionTitle,
             ':REGION_PREPOSITIONAL' => $region ? Russian::regionPrepositional($region->getTitle()) : '',

@@ -70,7 +70,7 @@
 
                     <li class="categories__link">
                         <a href="<?=$level1Category->generateUrl($this->data['region'])?>">
-                            Other...
+                            View All...
                         </a>
                     </li>
                 </ul>

@@ -9,7 +9,7 @@ use Palto\Logger;
 
 require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
-updateRegionIds();
+//updateRegionIds();
 updateRegionsAbbreviationUrls();
 
 $donorUrl = 'https://www.craigslist.org/about/sites#US';
@@ -91,9 +91,6 @@ function updateRegionIds() {
 
         $offset += $limit;
     }
-
-
-    echo 'updated';exit;
 }
 
 function findUrlRegion(\Palto\Url $url) {

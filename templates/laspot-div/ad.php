@@ -3,6 +3,12 @@
 use Palto\Categories; ?>
 <?php $this->layout('layout'); ?>
 
+<?php if ($this->data['h1']) :?>
+    <div class="card-headline headline">
+        <h1><?= $this->data['h1'] ?></h1>
+    </div>
+<?php endif;?>
+
 <?php /** @var $ad \Palto\Ad */ ?>
 <?php if ($ad->getCoordinates()) : ?>
     <?php $this->push('styles') ?>
@@ -13,19 +19,21 @@ use Palto\Categories; ?>
 
 <?= \Palto\Counters::get('google') ?: \Palto\Counters::receive('adx') ?>
 <?php if ($ad->getImages()) : ?>
-    <div class="image-slider swiper-container">
-        <div class="image-slider__wrapper swiper-wrapper">
-            <?php foreach ($ad->getImages() as $image) : ?>
-                <div class="image-slider__slide swiper-slide">
-                    <div class="image-slider__image">
-                        <img src="<?=$image['big'] ?: $image['small']?>" alt="photo" loading="lazy">
+    <div class="slider">
+        <div class="image-slider swiper-container">
+            <div class="image-slider__wrapper swiper-wrapper">
+                <?php foreach ($ad->getImages() as $image) : ?>
+                    <div class="image-slider__slide swiper-slide">
+                        <div class="image-slider__image">
+                            <img src="<?=$image['big'] ?: $image['small']?>" alt="photo" loading="lazy">
+                        </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
 
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
+            </div>
         </div>
     </div>
 <?php endif;?>

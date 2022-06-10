@@ -4,6 +4,14 @@ use Palto\Regions; ?>
 
 <?php $this->layout('layout');?>
 
+<div class="blocks">
+    <?php if ($this->data['h1']) :?>
+        <div class="blocks__headline headline">
+            <h1><?= $this->data['h1'] ?></h1>
+        </div>
+    <?php endif;?>
+</div>
+
 <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 
 <div class="categories">

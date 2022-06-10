@@ -83,12 +83,15 @@ abstract class Model
 
     public function getFieldNames(string $name): array
     {
-        return array_column(self::getDb()->query("SELECT COLUMN_NAME 
-            FROM INFORMATION_SCHEMA.COLUMNS 
-            WHERE 
-                TABLE_SCHEMA = Database()
-                AND TABLE_NAME = '$name'"
-        ), 'COLUMN_NAME');
+        return array_column(
+            self::getDb()->query("SELECT COLUMN_NAME 
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE 
+                    TABLE_SCHEMA = Database()
+                    AND TABLE_NAME = '$name'"
+            ),
+            'COLUMN_NAME'
+        );
     }
 
     protected function groupByField(array $unGrouped, string $field): array

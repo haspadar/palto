@@ -78,17 +78,10 @@ use Palto\Categories;
                     <?= $this->insert('partials/breadcrumbs'); ?>
                 <?php endif; ?>
 
-                <div class="blocks">
-                    <?php if ($this->data['h1']) :?>
-                        <div class="blocks__headline headline">
-                            <h1><?= $this->data['h1'] ?></h1>
-                        </div>
-                    <?php endif;?>
+                <?php if ($this->data['flash']) : ?>
+                    <div class="alert"><?= $this->data['flash'] ?></div>
+                <?php endif; ?>
 
-                    <?php if ($this->data['flash']) : ?>
-                        <div class="alert"><?= $this->data['flash'] ?></div>
-                    <?php endif; ?>
-                </div>
                 <?= $this->section('content') ?>
             </main>
             <footer class="footer">

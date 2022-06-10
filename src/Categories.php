@@ -117,9 +117,9 @@ class Categories
      * @param int $count
      * @return Category[]
      */
-    public static function getLiveCategories(?Category $parentCategory = null, ?Region $region = null, int $count = 0): array
+    public static function getLiveCategories(?Category $parentCategory = null, ?Region $region = null, int $count = 0, string $orderBy = 'ads_count DESC'): array
     {
-        $categories = (new Model\Categories)->getLiveCategories($parentCategory, $region, $count);
+        $categories = (new Model\Categories)->getLiveCategories($parentCategory, $region, $count, $orderBy);
 
         return array_map(fn($category) => new Category($category), $categories);
     }

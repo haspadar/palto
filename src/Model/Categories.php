@@ -48,7 +48,7 @@ class Categories extends NestedSet
         return self::getDb()->query($query, $values);
     }
 
-    public function getLiveCategories(?Category $category, ?Region $region, int $limit = 0): array
+    public function getLiveCategories(?Category $category, ?Region $region, int $limit = 0, string $orderBy = 'ads_count DESC'): array
     {
         $query = 'SELECT * FROM ' . $this->name . ' AS c';
         $values = [];
@@ -65,7 +65,10 @@ class Categories extends NestedSet
             $query .= " AND c.parent_id IS NULL";
         }
 
-        $query .= " ORDER BY ads_count DESC";
+        if ($orderBy) {
+            $query .= " ORDER BY $orderBy";
+        }
+
         if ($limit) {
             $query .= ' LIMIT %d_limit';
             $values['limit'] = $limit;

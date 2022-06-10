@@ -13,7 +13,7 @@
 
 <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 
-<?php if ($categories = Categories::getLiveCategories($this->data['category'], $this->data['region'])) : ?>
+<?php if ($categories = Categories::getLiveCategories($this->data['category'], $this->data['region'], 0, 'c.title')) : ?>
     <div class="categories">
         <div class="categories__content">
             <ul class="categories__list categories__sub-list">

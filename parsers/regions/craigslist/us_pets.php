@@ -72,7 +72,7 @@ function updateRegionsAbbreviationUrls() {
 function updateRegionIds() {
     $limit = 1000;
     $offset = 0;
-    $count = \Palto\Ads::getAdsCount(null);
+    $count = \Palto\Ads::getAdsCount([]);
     while ($ads = \Palto\Ads::getAds(null, null, $limit, $offset)) {
         /**
          * @var \Palto\Ad $ad

@@ -58,17 +58,18 @@
                                  onerror="this.src='/img/no-photo.png'"
                             />
                         <?php endif?>
+
                         <a href="<?=$level1Category->generateUrl($this->data['region'])?>"><?=$level1Category->getTitle()?></a>
                     </span>
                     <?php foreach ($level2Categories as  $level2Category) :?>
-                        <li class="categories__link">
+                        <li class="categories__link main__link">
                             <a href="<?=$level2Category->generateUrl($this->data['region'])?>">
                                 <?=$level2Category->getTitle()?>
                             </a>
                         </li>
                     <?php endforeach;?>
 
-                    <li class="categories__link">
+                    <li class="categories__link main__link">
                         <a href="<?=$level1Category->generateUrl($this->data['region'])?>">
                             View All...
                         </a>

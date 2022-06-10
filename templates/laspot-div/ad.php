@@ -12,8 +12,8 @@ use Palto\Categories; ?>
 <?php /** @var $ad \Palto\Ad */ ?>
 <?php if ($ad->getCoordinates()) : ?>
     <?php $this->push('styles') ?>
-    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
-    <link rel="stylesheet" href="<?= $this->asset('/css/leaflet.css') ?>">
+        <link rel="stylesheet" href="<?= $this->asset('/css/swiper-bundle.min.css')?>">
+        <link rel="stylesheet" href="<?= $this->asset('/css/leaflet.css') ?>">
     <?php $this->end() ?>
 <?php endif; ?>
 
@@ -29,11 +29,10 @@ use Palto\Categories; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
-
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-pagination"></div>
             </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
         </div>
     </div>
 <?php endif;?>
@@ -151,6 +150,7 @@ use Palto\Categories; ?>
             <span class="close">&times;</span>
             <div><?= $this->translate('Пожаловаться на объявление') ?></div>
         </div>
+
         <form class="form">
             <table class="tbl_report">
                 <tr>
@@ -163,7 +163,7 @@ use Palto\Categories; ?>
                     <td class="td_report"><input type="hidden" name="ad_id"
                                                  value="<?= $ad->getId() ?>"><label><?= $this->translate('Жалоба') ?>
                             :</label></td>
-                    <td><textarea name="message" rows="3" width="200px"></textarea></td>
+                    <td><textarea name="message" rows="3"></textarea></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -171,6 +171,7 @@ use Palto\Categories; ?>
                 </tr>
             </table>
         </form>
+
         <p class="success" style="display: none">
             <?= $this->translate('Ваша жалоба успешно отправлена.') ?>
         </p>

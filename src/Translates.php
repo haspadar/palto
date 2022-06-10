@@ -219,8 +219,9 @@ class Translates
             ':CATEGORIES' => $category
                 ? implode(' - ', $category->getTitles())
                 : '',
-            ':REGION' => $regionTitle,
+            ':REGION_ABBREVIATION' => $region ? $region->getAbbreviation() : '',
             ':REGION_PREPOSITIONAL' => $region ? Russian::regionPrepositional($region->getTitle()) : '',
+            ':REGION' => $regionTitle,
             ':CATEGORY_IN_REGION' => $category
                 ? $category->getTitle()
                     . ' '

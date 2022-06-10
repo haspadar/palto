@@ -36,6 +36,11 @@ class Region
         return $this->region['title'] ?? '';
     }
 
+    public function getAbbreviation(): string
+    {
+        return $this->region['abbreviation'] ?? '';
+    }
+
     public function generateUrl(): string
     {
         return '/' . $this->getUrl();

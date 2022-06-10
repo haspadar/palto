@@ -45,6 +45,8 @@ return [
     'regions_description' => 'Regions',
     'regions_h1' => 'Regions',
 //list.php
+    'region_title' => 'Classified Ads in :REGION',
+    'region_description' => 'Aggregator of all classifieds boards: :REGION',
     'list_title' => 'Classified Ads in :CATEGORIES - :REGION',
     'list_description' => 'Aggregator of all classifieds boards: :CATEGORIES :REGION',
     'list_h1' => ':CATEGORY_IN_REGION: ads from craigslist',

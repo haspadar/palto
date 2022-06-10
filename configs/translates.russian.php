@@ -45,6 +45,8 @@ return [
     'regions_description' => 'Частные бесплатные объявления в регионах Украины',
     'regions_h1' => 'Регионы',
 //list.php
+    'region_title' => 'Classified Ads in :REGION',
+    'region_description' => 'Aggregator of all classifieds boards: :REGION',
     'list_title' => 'Бесплатные объявления в :CATEGORIES - :REGION',
     'list_description' => 'Агрегатор частных бесплатных объявлений: :CATEGORIES :REGION',
     'list_h1' => ':CATEGORY_IN_REGION: объявления с olx',

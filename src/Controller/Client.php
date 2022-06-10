@@ -98,8 +98,8 @@ class Client
     {
         if ($this->region) {
             $this->templatesEngine->addData([
-                'title' => $this->translate('list_title'),
-                'description' => $this->translate('list_description'),
+                'title' => $this->translate('region_title') ?: $this->translate('list_title'),
+                'description' => $this->translate('region_description') ?: $this->translate('list_description'),
                 'h1' => $this->translate('list_h1'),
                 'ads' => Ads::getAds(
                     $this->region,

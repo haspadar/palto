@@ -21,6 +21,8 @@ use Palto\Categories;
     <?= $this->section('styles') ?>
 
     <title><?= $this->translate($this->data['title']) ?></title>
+    <meta name="description" content="<?= $this->translate($this->data['description']) ?>">
+
     <?php if (isset($pager) && $pager instanceof \Palto\Pager) : ?>
         <?php /** @var $pager \Palto\Pager */ ?>
         <?php if ($pager->getPreviousPageUrl()) : ?>

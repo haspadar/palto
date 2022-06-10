@@ -70,22 +70,45 @@ function updateRegionsAbbreviationUrls() {
 }
 
 function updateRegionIds() {
-    /**
-     * @var \Palto\Ad $ad
-     */
-    foreach (\Palto\Ads::getAds(null, null) as $ad) {
-        $url = $ad->getUrl();
-        if (($region = Regions::getByUrl($url->getParts()[0]))
-            || ($region = Regions::getByUrl($url->getSubDomains()[0]))
-            || ($region = Regions::getByDonorUrl('https://' . $url->getSubDomains()[0] . '.craigslist.org/search/pet'))
-            || ($region = Regions::getByTitle(ucfirst($url->getSubDomains()[0])))
-        ) {
-            if ($region->getId() != $ad->getRegion()->getId()) {
-//                \Palto\Ads::update([
-//                    'region_id' => $region->getId()
-//                ], $ad->getId());
-                Logger::warning('Updated ad ' . $ad->getId() . ': region_id=' . $region->getId() . ' instead region_id=' . $ad->getRegion()->getId());
+    $limit = 1000;
+    $offset = 0;
+    $count = \Palto\Ads::getAdsCount(null);
+    while ($ads = \Palto\Ads::getAds(null, null, $limit, $offset)) {
+        /**
+         * @var \Palto\Ad $ad
+         */
+        foreach ($ads as $key => $ad) {
+            Logger::debug('Ad ' . ($offset + $key + 1) . '/' . $count);
+            if ($region = findUrlRegion($ad->getUrl())) {
+                if ($region->getId() != $ad->getRegion()->getId()) {
+                    \Palto\Ads::update([
+                        'region_id' => $region->getId()
+                    ], $ad->getId());
+                    Logger::warning('Updated ad ' . $ad->getId() . ': region_id=' . $region->getId() . ' instead region_id=' . $ad->getRegion()->getId());
+                }
             }
         }
+
+        $offset += $limit;
     }
+
+
+    echo 'updated';exit;
+}
+
+function findUrlRegion(\Palto\Url $url) {
+    $region = Regions::getByUrl($url->getParts()[0]);
+    if (!$region) {
+        $region = Regions::getByUrl($url->getSubDomains()[0]);
+    }
+
+    if (!$region) {
+        $region = Regions::getByDonorUrl('https://' . $url->getSubDomains()[0] . '.craigslist.org/search/pet');
+    }
+
+    if (!$region) {
+        $region = Regions::getByTitle(ucfirst($url->getSubDomains()[0]));
+    }
+
+    return $region;
 }

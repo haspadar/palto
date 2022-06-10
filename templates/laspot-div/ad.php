@@ -180,7 +180,7 @@ use Palto\Categories; ?>
 <?php if ($ad->getCoordinates()) : ?>
     <?php $this->push('scripts') ?>
     <script src="<?= $this->asset('/js/leaflet.js') ?>"></script>
-    <script src="https://unpkg.com/swiper@8.2.2/swiper-bundle.min.js"></script>
+    <script src="<?= $this->asset('/js/swiper-bundle.min.js')?>"></script>
     <script src="<?=\Palto\Directory::getThemePublicDirectory()?>/js/js.js"></script>
     <?php $this->end() ?>
 <?php endif;

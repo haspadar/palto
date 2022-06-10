@@ -79,10 +79,13 @@ class Regions
             $region['tree_id'] = $parent->getTreeId();
         }
 
-        $region['url'] = self::generateUrl($region['title']);
+        $fieldForUrl = ($region['abbreviation'] ?? '') ?: $region['title'];
+        $region['url'] = self::generateUrl($fieldForUrl);
         $found = self::getByUrl($region['url']);
-        if ($found && $found->getId()) {
+        if ($found && $found->getId() && $found->getLevel() == $region['level']) {
             return $found;
+        } elseif ($found && $found->getId() && $found->getLevel() != $region['level']) {
+            $region['url'] = self::generateUrl($fieldForUrl, true);
         }
 
         $id = (new Model\Regions)->add($region);

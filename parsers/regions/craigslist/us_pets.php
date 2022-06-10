@@ -39,6 +39,7 @@ for ($columnId = 1; $columnId <= 4; $columnId++) {
                             Regions::safeAdd(
                                 [
                                     'title' => ucwords($subLink->attr('title')),
+                                    'abbreviation' => $subLink->text(),
                                     'parent_id' => $level2->getId(),
                                     'donor_url' => '/search' . $subLink->attr('href') . 'pet'
                                 ]

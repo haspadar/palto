@@ -7,6 +7,10 @@
     <a href="<?=$pager->getPreviousPageUrl()?>" class="new-obs__previous">« <?=$this->translate('Предыдущая')?></a>
 <?php endif;?>
 
+<?php if ($pager->getPreviousPageUrl() && $pager->getNextPageUrl()) : ?>
+ |
+<?php endif;?>
+
 <?php if ($pager->getNextPageUrl()) :?>
     <a href="<?=$pager->getNextPageUrl()?>" class="new-obs__next"> <?=$this->translate('Следующая')?> »</a>
 <?php endif;

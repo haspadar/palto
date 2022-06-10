@@ -9,6 +9,7 @@ use Palto\Logger;
 
 require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
+updateRegionsAbbreviationUrls();
 $donorUrl = 'https://www.craigslist.org/about/sites#US';
 $level1Response = PylesosService::get($donorUrl, [], Config::getEnv());
 $regionsDocument = new Crawler($level1Response->getResponse());
@@ -51,4 +52,17 @@ for ($columnId = 1; $columnId <= 4; $columnId++) {
             });
         }
     );
+}
+
+function updateRegionsAbbreviationUrls() {
+    /**
+     * @var \Palto\Region $region
+     */
+    foreach (Regions::getAll() as $region) {
+        if ($region->getAbbreviation() && Regions::generateUrl($region->getAbbreviation()) != $region->getUrl()) {
+            $url = Regions::generateUrl($region->getAbbreviation());
+            (new \Palto\Model\Regions())->update(['url' => $url], $region->getId());
+            Logger::warning('Updated region "' . $region->getTitle() . '" url from ' . $region->getUrl() . ' to ' . $url);
+        }
+    }
 }

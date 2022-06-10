@@ -7,6 +7,13 @@ use DateTime;
 
 class Regions
 {
+    public static function getAll(): array
+    {
+        $regions = (new Model\Regions)->getAll();
+
+        return array_map(fn($region) => new Region($region), $regions);
+    }
+
     public static function getLiveRegions(?Region $parentRegion = null, $limit = 0): array
     {
         $regions = (new Model\Regions)->getLiveRegions($parentRegion, $limit);
@@ -41,9 +48,7 @@ class Regions
     public static function getRegionsByIds(array $ids): array
     {
         if ($ids) {
-            $regions = (new Model\Regions)->getByIds($ids);
-
-            return $regions;
+            return (new Model\Regions)->getByIds($ids);
         }
 
         return [];
@@ -54,6 +59,13 @@ class Regions
         $region = (new Model\Regions)->getById($regionId);
 
         return new Region($region);
+    }
+
+    public static function getByLevelTitle(string $title, int $level): ?Region
+    {
+        $region = (new Model\Regions)->getByLevelTitle($title, $level);
+
+        return $region ? new Region($region) : null;
     }
 
     public static function getByUrl(string $regionUrl): ?Region
@@ -79,15 +91,11 @@ class Regions
             $region['tree_id'] = $parent->getTreeId();
         }
 
-        $fieldForUrl = ($region['abbreviation'] ?? '') ?: $region['title'];
-        $region['url'] = self::generateUrl($fieldForUrl);
-        $found = self::getByUrl($region['url']);
-        if ($found && $found->getId() && $found->getLevel() == $region['level']) {
+        if ($found = self::getByLevelTitle($region['title'], $region['level'])) {
             return $found;
-        } elseif ($found && $found->getId() && $found->getLevel() != $region['level']) {
-            $region['url'] = self::generateUrl($fieldForUrl, true);
         }
 
+        $region['url'] = self::generateUrl(($region['abbreviation'] ?? '') ?: $region['title'], true);
         $id = (new Model\Regions)->add($region);
         self::rebuildTree();
         Levels::checkRegionsFields();

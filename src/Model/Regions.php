@@ -18,6 +18,11 @@ class Regions extends NestedSet
         );
     }
 
+    public function getAll(): array
+    {
+        return self::getDb()->query('SELECT * FROM ' . $this->name);
+    }
+
     public function getLiveRegions(?Region $parentRegion, int $limit = 0, $offset = 0, $orderBy = ''): array
     {
         $query = 'SELECT * FROM ' . $this->name;
@@ -62,5 +67,10 @@ class Regions extends NestedSet
 
             $offset += $limit;
         }
+    }
+
+    public function getByLevelTitle(string $title, int $level)
+    {
+        return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE title = %s AND level = %d', $title, $level) ?: [];
     }
 }

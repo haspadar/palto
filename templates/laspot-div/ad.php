@@ -103,16 +103,17 @@ use Palto\Categories; ?>
             </div>
         <?php endif; ?>
 
-        <?php if (\Palto\Config::get('DONOR_URL') == 1) :?>
-            <a class="info__reply"
-               href="<?= $ad->getUrl() ?>"
-               target="_blank"
-               rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
-        <?php else :?>
-            <a class="info__reply"
-               href="/registration"
-               rel="nofollow">🤙 <?= $this->translate('Связаться') ?></a>
-        <?php endif;?>
+        <a class="info__reply"
+            <?php if (\Palto\Config::get('DONOR_URL') == 1) :?>
+                href="<?= $ad->getUrl() ?>"
+                target="_blank"
+            <?php else :?>
+                href="/registration"
+            <?php endif;?>
+           rel="nofollow"
+        >
+            <?= $this->translate('Связаться') ?>
+        </a>
 
         <span class="info__time"><?= $this->translate('Время публикации') ?>: <?= $ad->getCreateTime()->format('d.m.Y') ?></span>
         <a href="javascript:void(0);" class="info__report" id="send-abuse">

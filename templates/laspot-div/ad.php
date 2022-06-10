@@ -122,12 +122,12 @@ use Palto\Categories; ?>
     </div>
 </div>
 
-<div class="new-ads">
-    <div class="new-ads__content">
+<div class="new-obs">
+    <div class="new-obs__content">
         <div class="card-headline headline">
-            <h2>Similar Ads</h2>
+            <h2><?= $this->translate('Похожие объявления') ?></h2>
         </div>
-        <div class="new-ads__items">
+        <div class="new-obs__items">
             <?= \Palto\Counters::get('google') ?: \Palto\Counters::receive('adx') ?>
             <?php foreach (Ads::getAds(
                 $this->data['region'],

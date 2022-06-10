@@ -55,7 +55,7 @@ abstract class Tree extends Model
 
     public function getLeafs(int $limit): array
     {
-        $query = "SELECT * FROM " . $this->name . " WHERE id NOT IN (SELECT parent_id FROM categories WHERE parent_id IS NOT NULL)";
+        $query = "SELECT * FROM " . $this->name . " WHERE id NOT IN (SELECT parent_id FROM " . $this->name . " WHERE parent_id IS NOT NULL)";
         if ($limit) {
             $query .= " LIMIT $limit";
         }

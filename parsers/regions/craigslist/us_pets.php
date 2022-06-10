@@ -9,7 +9,9 @@ use Palto\Logger;
 
 require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
 
+updateRegionIds();
 updateRegionsAbbreviationUrls();
+
 $donorUrl = 'https://www.craigslist.org/about/sites#US';
 $level1Response = PylesosService::get($donorUrl, [], Config::getEnv());
 $regionsDocument = new Crawler($level1Response->getResponse());
@@ -58,11 +60,32 @@ function updateRegionsAbbreviationUrls() {
     /**
      * @var \Palto\Region $region
      */
-    foreach (Regions::getAll() as $region) {
+    foreach (Regions::getRegions() as $region) {
         if ($region->getAbbreviation() && Regions::generateUrl($region->getAbbreviation()) != $region->getUrl()) {
             $url = Regions::generateUrl($region->getAbbreviation());
             (new \Palto\Model\Regions())->update(['url' => $url], $region->getId());
             Logger::warning('Updated region "' . $region->getTitle() . '" url from ' . $region->getUrl() . ' to ' . $url);
+        }
+    }
+}
+
+function updateRegionIds() {
+    /**
+     * @var \Palto\Ad $ad
+     */
+    foreach (\Palto\Ads::getAds(null, null) as $ad) {
+        $url = $ad->getUrl();
+        if (($region = Regions::getByUrl($url->getParts()[0]))
+            || ($region = Regions::getByUrl($url->getSubDomains()[0]))
+            || ($region = Regions::getByDonorUrl('https://' . $url->getSubDomains()[0] . '.craigslist.org/search/pet'))
+            || ($region = Regions::getByTitle(ucfirst($url->getSubDomains()[0])))
+        ) {
+            if ($region->getId() != $ad->getRegion()->getId()) {
+//                \Palto\Ads::update([
+//                    'region_id' => $region->getId()
+//                ], $ad->getId());
+                Logger::warning('Updated ad ' . $ad->getId() . ': region_id=' . $region->getId() . ' instead region_id=' . $ad->getRegion()->getId());
+            }
         }
     }
 }

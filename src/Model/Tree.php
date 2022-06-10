@@ -63,13 +63,19 @@ abstract class Tree extends Model
         return self::getDb()->query($query);
     }
 
-    public function getByDonorUrl(string $donorUrl, int $level): array
+    public function getByDonorUrl(string $donorUrl, int $level = 0): array
     {
         if ($donorUrl) {
-            return self::getDb()->queryFirstRow(
-                'SELECT * FROM ' . $this->name . ' WHERE donor_url = %s AND level = %d',
-                $donorUrl,
+            return (
                 $level
+                    ? self::getDb()->queryFirstRow(
+                        'SELECT * FROM ' . $this->name . ' WHERE donor_url = %s AND level = %d',
+                        $donorUrl,
+                        $level
+                    ) : self::getDb()->queryFirstRow(
+                        'SELECT * FROM ' . $this->name . ' WHERE donor_url = %s',
+                        $donorUrl
+                    )
             ) ?: [];
         }
 

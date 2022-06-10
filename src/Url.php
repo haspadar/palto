@@ -23,6 +23,11 @@ class Url
         return $this->url;
     }
 
+    public function getSubDomains(): array
+    {
+        return explode('.', explode('//', $this->getDomain())[1]);
+    }
+
     public function getDomain(): string
     {
         $parsed = parse_url($this->url);

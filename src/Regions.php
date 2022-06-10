@@ -7,9 +7,9 @@ use DateTime;
 
 class Regions
 {
-    public static function getAll(): array
+    public static function getRegions(): array
     {
-        $regions = (new Model\Regions)->getAll();
+        $regions = (new Model\Regions)->getRegions();
 
         return array_map(fn($region) => new Region($region), $regions);
     }
@@ -61,11 +61,18 @@ class Regions
         return new Region($region);
     }
 
-    public static function getByLevelTitle(string $title, int $level): ?Region
+    public static function getByTitle(string $title, int $level = 0): ?Region
     {
-        $region = (new Model\Regions)->getByLevelTitle($title, $level);
+        $region = (new Model\Regions)->getByTitleLevel($title, $level);
 
         return $region ? new Region($region) : null;
+    }
+
+    public static function getByDonorUrl(string $url, int $level = 0): ?Region
+    {
+        $found = (new Model\Regions)->getByDonorUrl($url, $level);
+
+        return $found ? new Region($found) : null;
     }
 
     public static function getByUrl(string $regionUrl): ?Region
@@ -91,7 +98,7 @@ class Regions
             $region['tree_id'] = $parent->getTreeId();
         }
 
-        if ($found = self::getByLevelTitle($region['title'], $region['level'])) {
+        if ($found = self::getByTitle($region['title'], $region['level'])) {
             return $found;
         }
 

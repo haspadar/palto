@@ -125,9 +125,9 @@ class Ad
         return $parsed;
     }
 
-    public function getUrl(): string
+    public function getUrl(): Url
     {
-        return $this->ad['url'];
+        return new Url($this->ad['url']);
     }
 
     public function getSellerPhone(): string

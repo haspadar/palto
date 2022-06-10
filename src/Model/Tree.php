@@ -35,9 +35,9 @@ abstract class Tree extends Model
             );
     }
 
-    public function getChildrenIds(array $categoriesIds, int $level): array
+    public function getChildrenIds(array $ids, int $level): array
     {
-        return array_column(self::getChildren($categoriesIds, $level), 'id');
+        return array_column(self::getChildren($ids, $level), 'id');
     }
 
     public function getByTitle(string $title, int $parentId = 0): array
@@ -104,11 +104,11 @@ abstract class Tree extends Model
 
     public function getParents(int $id): array
     {
-        $category = $this->getById($id);
+        $node = $this->getById($id);
         $parents = [];
-        while ($category['parent_id']) {
-            $category = $this->getById($category['parent_id']);
-            $parents[] = $category;
+        while ($node['parent_id']) {
+            $node = $this->getById($node['parent_id']);
+            $parents[] = $node;
         }
 
         return $parents;

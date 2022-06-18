@@ -51,5 +51,7 @@ ADD INDEX `priority` (`priority`);");
         $this->execute("UPDATE `pages` SET`priority` = '170' WHERE `name` = 'ad';");
         $this->execute("UPDATE `pages` SET`priority` = '180' WHERE `name` = '404_ad';");
         $this->execute("UPDATE `pages` SET`priority` = '190' WHERE `name` = '404_default';");
+
+        $this->execute("update pages set url='/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?(/\d+)?' WHERE function='showCategory'");
     }
 }

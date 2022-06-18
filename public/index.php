@@ -74,6 +74,12 @@ try {
         }
     }
 
+
+    $router->get("/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?/ad(\d+)", '\Palto\Controller\Client@showAd');
+    $router->get("/([a-zA-Z0-9_-]+)(/\d+)?", '\Palto\Controller\Client@showRegion');
+    $router->get("/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?(/\d+)?", '\Palto\Controller\Client@showCategory');
+    $router->set404('\Palto\Controller\Client@showNotFound');
+
     $router->run();
 
 } catch (Exception $e) {

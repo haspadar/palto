@@ -56,6 +56,11 @@ $page = $this->data['page'];
     </div>
 
     <div class="mb-3">
+        <label class="form-label">Приоритет</label>
+        <input type="text" class="form-control" name="priority" value="<?=$page->getPriority()?>">
+    </div>
+
+    <div class="mb-3">
         <label class="form-label">Тэг "title"</label>
         <input type="text" class="form-control" name="title" value="<?=$page->getTitle()?>">
     </div>

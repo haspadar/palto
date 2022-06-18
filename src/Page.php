@@ -77,4 +77,9 @@ class Page
     {
         return $this->page['h2'];
     }
+
+    public function getPriority(): int
+    {
+        return $this->page['priority'];
+    }
 }

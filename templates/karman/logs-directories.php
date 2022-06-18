@@ -1,14 +1,34 @@
-<?php /** @var $this League\Plates\Template\Template */?>
+<?php /** @var $this League\Plates\Template\Template */
+
+use Palto\Logs; ?>
 
 <?php $this->layout('layout');?>
 
-<ol class="list-group list-group">
-
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Лог</th>
+        <th>Время</th>
+    </tr>
+    </thead>
+    <tbody>
     <?php foreach ($this->data['directories'] as $directory) :?>
-        <li class="list-group-item">
+    <tr>
+        <td>
             <a href="/karman/<?=$this->data['type']?>-logs/<?=$directory?>?cache=0">
+                <?php if (\Palto\Status::hasPhpProcess('bin/' . $directory . '.php')) :?>
+                    <span class="badge rounded-circle bg-success bulb">&nbsp;</span>
+                <?php endif;?>
+
                 <?=$directory?>
             </a>
-        </li>
+        </td>
+        <td>
+            <?php if ($time = Logs::getLogLastTime($directory, $this->data['type'])) :?>
+                <div class="text-muted"><?=$time->format('d.m.Y H:i:s')?></div>
+            <?php endif;?>
+        </td>
+    </tr>
     <?php endforeach;?>
-</ol>
+    </tbody>
+</table>

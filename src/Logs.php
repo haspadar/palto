@@ -4,6 +4,19 @@ namespace Palto;
 
 class Logs
 {
+    public static function getLogLastTime(string $directory, string $type): ?\DateTime
+    {
+        $logs = self::getLogs($directory, $type, 1);
+        if ($logs) {
+            $logText = $logs[0]['text'];
+            $timeFragment = str_replace('[', '', explode(']', $logs[0]['text'])[0]);
+
+            return new \DateTime($timeFragment);
+        }
+
+        return null;
+    }
+
     public static function getLogs(string $directory, string $type, int $limit = 30): array
     {
         $lastLogFile = self::getLastLogFile($directory, $type);

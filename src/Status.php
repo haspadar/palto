@@ -20,6 +20,17 @@ class Status
         return '';
     }
 
+    public static function hasPhpProcess(string $name): bool
+    {
+        foreach (self::getPhpProcesses() as $process) {
+            if ($process['name'] == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function getPhpProcesses(): array
     {
         $processes = Cli::getPsGrepProcesses('/usr/bin/php');

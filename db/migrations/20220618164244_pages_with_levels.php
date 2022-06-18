@@ -19,36 +19,39 @@ final class PagesWithLevels extends AbstractMigration
     public function change(): void
     {
         $this->execute("UPDATE `pages` SET
-`name` = 'region_1',
-`comment` = 'Регион 1-го уровня'
+`name` = 'region_0_category_1',
+`comment` = 'Регион 0-го уровня, категория 1-го уровня'
 WHERE `name` = 'region';");
+        $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
+SELECT 'region_0_category_2', 'Регион 0-го уровня, категория 2-го уровня',`template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
+FROM `pages`
+WHERE ((`name` = 'region_0_category_1'));");
+        $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
+SELECT 'region_1_category_1', 'Регион 1-го уровня, категория 1-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
+FROM `pages`
+WHERE ((`name` = 'region_0_category_2'));");
+        $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
+SELECT 'region_1_category_2', 'Регион 1-го уровня, категория 2-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
+FROM `pages`
+WHERE ((`name` = 'region_1_category_1'));");
+
 
         $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
-SELECT 'region_2', 'Регион 2-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
+SELECT 'region_2_category_1', 'Регион 2-го уровня, категория 1-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
 FROM `pages`
-WHERE ((`name` = 'region_1'));");
+WHERE ((`name` = 'region_1_category_2'));");
+        $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
+SELECT 'region_2_category_2', 'Регион 2-го уровня, категория 2-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
+FROM `pages`
+WHERE ((`name` = 'region_2_category_1'));");
 
         $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
-SELECT 'region_3', 'Регион 3-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
+SELECT 'region_3_category_1', 'Регион 3-го уровня, категория 1-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
 FROM `pages`
-WHERE ((`name` = 'region_1'));");
-
+WHERE ((`name` = 'region_2_category_2'));");
         $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
-SELECT 'region_4', 'Регион 4-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
+SELECT 'region_3_category_2', 'Регион 3-го уровня, категория 2-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
 FROM `pages`
-WHERE ((`name` = 'region_1'));");
-
-        $this->execute("UPDATE `pages` SET
-`name` = 'category_1',
-`comment` = 'Категория 1-го уровня'
-WHERE `name` = 'category';");
-
-        $this->execute("INSERT INTO `pages` (`name`, `comment`, `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`)
-SELECT 'category_2', 'Категория 2-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
-FROM `pages`
-WHERE ((`name` = 'category_1'));");
-
-        $this->execute("ALTER TABLE `pages`
-ADD UNIQUE `name` (`name`);");
+WHERE ((`name` = 'region_3_category_1'));");
     }
 }

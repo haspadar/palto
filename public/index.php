@@ -66,19 +66,15 @@ try {
     /**
      * @var \Palto\Page $page
      */
-    foreach (Pages::getPages() as $page) {
+    foreach (Pages::getUniqueUrls() as $page) {
         if ($page->is404()) {
+            echo '$router->set404(\'\Palto\Controller\Client@' . $page->getFunction() . ')' . nl2br(PHP_EOL);
             $router->set404('\Palto\Controller\Client@' . $page->getFunction());
         } else {
+            echo '$router->get(' . $page->getUrl() . ', \'\Palto\Controller\Client@' . $page->getFunction() . ')' . nl2br(PHP_EOL);
             $router->get($page->getUrl(), '\Palto\Controller\Client@' . $page->getFunction());
         }
     }
-
-
-    $router->get("/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?/ad(\d+)", '\Palto\Controller\Client@showAd');
-    $router->get("/([a-zA-Z0-9_-]+)(/\d+)?", '\Palto\Controller\Client@showRegion');
-    $router->get("/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?(/\d+)?", '\Palto\Controller\Client@showCategory');
-    $router->set404('\Palto\Controller\Client@showNotFound');
 
     $router->run();
 

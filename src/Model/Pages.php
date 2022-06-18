@@ -11,6 +11,15 @@ class Pages extends Model
 {
     protected string $name = 'pages';
 
+    public function getUniqueUrls(): array
+    {
+        return self::getDb()->query(
+            'SELECT * FROM '
+            . $this->name
+            . ' WHERE router_priority > 0 GROUP BY url ORDER BY router_priority'
+        );
+    }
+
     public function getPages(int $templateId = 0, string $orderBy = ''): array
     {
         return self::getDb()->query(

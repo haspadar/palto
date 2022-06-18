@@ -47,5 +47,8 @@ WHERE `name` = 'category';");
 SELECT 'category_2', 'Категория 2-го уровня', `template_id`, `url`, `function`, `is_enabled`, `title`, `description`, `h1`, `h2`
 FROM `pages`
 WHERE ((`name` = 'category_1'));");
+
+        $this->execute("ALTER TABLE `pages`
+ADD UNIQUE `name` (`name`);");
     }
 }

@@ -65,13 +65,14 @@ $page = $this->data['page'];
         <input type="text" class="form-control" name="title" value="<?=$page->getTitle()?>">
     </div>
     <div class="mb-3">
-        <label class="form-label">Тэг "h1"</label>
-        <input type="text" class="form-control" name="h1" value="<?=$page->getH1()?>">
-    </div>
-    <div class="mb-3">
         <label class="form-label">Тэг "description"</label>
         <textarea class="form-control" rows="3" name="description"><?=$page->getDescription()?></textarea>
     </div>
+    <div class="mb-3">
+        <label class="form-label">Тэг "h1"</label>
+        <input type="text" class="form-control" name="h1" value="<?=$page->getH1()?>">
+    </div>
+
 
     <button type="submit" class="btn btn-primary" data-id="<?= $page->getId() ?>">Сохранить</button>
 </form>

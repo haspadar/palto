@@ -136,7 +136,7 @@ class Karman
         $this->templatesEngine->addData([
             'title' => 'Шаблоны',
             'templates' => Templates::getTemplates(),
-            'pages' => Pages::getPages()
+            'pages' => Pages::getPages(0, 'priority ASC')
         ]);
         echo $this->templatesEngine->make('templates');
     }

@@ -58,7 +58,6 @@ class Karman
     {
         $this->templatesEngine->addData([
             'title' => 'Настройки',
-//            'themes' => Templates::getThemes(),
             'settings' => Settings::getValues()
         ]);
         echo $this->templatesEngine->make('settings');
@@ -87,6 +86,7 @@ class Karman
         $this->templatesEngine->addData([
             'title' => 'Настройка "' . $setting['name'] . '"' ,
             'setting' => $setting,
+            'themes' => Templates::getThemes(),
         ]);
         echo $this->templatesEngine->make('setting');
     }
@@ -128,6 +128,28 @@ class Karman
             'type' => 'success'
         ]));
         $this->showJsonResponse(['success' => true]);
+    }
+
+    public function showTemplates()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Шаблоны',
+            'templates' => Templates::getTemplates(),
+            'pages' => Pages::getPages()
+        ]);
+        echo $this->templatesEngine->make('templates');
+    }
+
+    public function showTemplate(int $id)
+    {
+//        $page = Pages::getById($id);
+//        $this->templatesEngine->addData([
+//            'title' => 'Страница "' . $page['name'] . '"' ,
+//            'page' => $page,
+//            'templates' => Templates::getTemplates(),
+//            'functions' => Templates::getFunctions()
+//        ]);
+        echo $this->templatesEngine->make('template');
     }
 
     public function showKarmanIndex()

@@ -11,7 +11,11 @@
         </dd>
 
         <dt class="col-sm-3">Группа</dt>
-        <dd class="col-sm-9 text-muted"><?=$this->data['setting']['group']?></dd>
+        <dd class="col-sm-9">
+            <span class="badge badge-secondary">
+                <?=$this->data['setting']['group']?>
+            </span>
+        </dd>
 
 
         <dt class="col-sm-3">Описание</dt>
@@ -27,9 +31,9 @@
                     <label class="form-check-label" for="setting[<?=$this->data['setting']['id']?>]">Да</label>
                 </div>
             <?php elseif ($this->data['setting']['type'] == 'theme'):?>
-                <select name="value">
+                <select class="form-select-sm" aria-label="Theme" name="value">
                     <?php foreach ($this->data['themes'] as $theme) :?>
-                        <option value="<?=$theme?>">
+                        <option value="<?=$theme?>" <?php if ($theme == $this->data['setting']['value']) :?>selected<?php endif;?>>
                             <?=$theme?>
                         </option>
                     <?php endforeach;?>

@@ -37,7 +37,7 @@ ADD `type` varchar(50) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT 'text';
 CHANGE `category` `group` varchar(50) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '' AFTER `value`;
 ");
         $this->execute("INSERT INTO `settings` (`id`, `name`, `comment`, `value`, `group`, `type`) VALUES
-(1,	'template_theme',	'Тема для шаблонов',	'laspot',	'Шаблоны',	'input');");
+(1,	'template_theme',	'Тема для шаблонов',	'laspot',	'Шаблоны',	'theme');");
 
         $this->execute("INSERT INTO `settings` (`name`, `comment`, `value`, `group`, `type`)
 VALUES ('categories_parser', 'Парсер категорий', NULL, 'Парсеры', 'categories_parser');");
@@ -86,6 +86,11 @@ INSERT INTO `templates` (`id`, `name`) VALUES
 (8, 'region', 'Регион', 3, '/([a-zA-Z0-9_-]+)(/\\d+)?', 'showRegion', 1),
 (10, 'category', 'Категория', 3, '/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?(/\\d+)?', 'showCategory', 1),
 (11, '404', '404', 8, '', 'showNotFound', 1);");
+
+
+        $this->execute("UPDATE settings SET value='" . \Palto\Config::get('PARSE_ADS_SCRIPT') . "' WHERE name='ads_parser'");
+        $this->execute("UPDATE settings SET value='" . \Palto\Config::get('PARSE_CATEGORIES_SCRIPT') . "' WHERE name='categories_parser'");
+        $this->execute("UPDATE settings SET value='" . \Palto\Config::get('KARMAN_PANEL') . "' WHERE name='is_karman_panel_enabled'");
 
     }
 }

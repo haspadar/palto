@@ -59,6 +59,9 @@ try {
         $router->get("/pages", '\Palto\Controller\Karman@showPages');
         $router->get("/pages/{id}", '\Palto\Controller\Karman@showPage');
         $router->put('/update-page/{id}', '\Palto\Controller\Karman@updatePage');
+
+        $router->get("/templates", '\Palto\Controller\Karman@showTemplates');
+        $router->get("/templates/{id}", '\Palto\Controller\Karman@showTemplate');
     });
     foreach (Pages::getPages() as $page) {
         if ($page['name'] == '404') {

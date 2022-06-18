@@ -28,7 +28,12 @@
                 </td>
                 <td>
                     <small class="text-muted">
-                        <?=$page['template_name']?>
+                        <a href="/karman/pages/<?=$page['id']?>?cache=0">
+                            <span class="badge badge-secondary">
+                                <?=$page['template_name']?>
+                            </span>
+                        </a>
+
                     </small>
                 </td>
             </tr>

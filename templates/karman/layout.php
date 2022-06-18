@@ -43,6 +43,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="/karman/templates?cache=0">
+                            <h6 class="<?php if ($this->data['url']->getPath() == '/karman/templates') : ?>fw-bold<?php endif; ?>">
+                                Шаблоны
+                            </h6>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/karman/complaints?cache=0">
                             <h6 class="<?php if ($this->data['url']->getPath() == '/karman/complaints') : ?>fw-bold<?php endif; ?>">
                                 Жалобы

@@ -9,7 +9,7 @@ class Settings extends Model
 
     public function getAll(): array
     {
-        return self::getDb()->query("SELECT * FROM settings ORDER BY `group`, `template`") ?: [];
+        return self::getDb()->query("SELECT * FROM settings ORDER BY `group`") ?: [];
     }
 
     public function getByName(string $name)

@@ -18,11 +18,8 @@
         <tr>
                 <td>
                     <a href="<?=$url?>" class="text-decoration-none">
+                        <span class="badge badge-secondary"><?=$setting['group']?></span>
                         <?=$setting['name']?>
-                        <span class="badge badge-dark"><?=$setting['group']?></span>
-                        <?php if ($setting['template']) :?>
-                            <span class="badge badge-secondary"><?=$setting['template']?></span>
-                        <?php endif; ?>
                     </a>
                 </td>
                 <td>
@@ -31,9 +28,13 @@
                     </small>
                 </td>
                 <td>
-                    <a href="<?=$url?>" class="text-decoration-none">
+                    <?php if ($setting['type'] == 'bool' && $setting['value'] == 1) :?>
+                        <span class="text-success">Да</span>
+                    <?php elseif ($setting['type'] == 'bool') : ?>
+                        <span class="text-danger">Нет</span>
+                    <?php else : ?>
                         <?=$setting['value']?>
-                    </a>
+                    <?php endif;?>
                 </td>
 
             </tr>

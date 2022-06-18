@@ -7,10 +7,9 @@ class Logs
     public static function getLogLastTime(string $directory, string $type): ?\DateTime
     {
         $logs = self::getLogs($directory, $type, 1);
-        Debug::dump($logs);
         if ($logs) {
             $timeFragment = str_replace('[', '', explode(']', $logs[0]['text'])[0]);
-Debug::dump(new \DateTime($timeFragment));exit;
+
             return new \DateTime($timeFragment);
         }
 

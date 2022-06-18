@@ -10,7 +10,7 @@ class Logs
         Debug::dump($logs);exit;
         if ($logs) {
             $timeFragment = str_replace('[', '', explode(']', $logs[0]['text'])[0]);
-
+Debug::dump(new \DateTime($timeFragment));exit;
             return new \DateTime($timeFragment);
         }
 

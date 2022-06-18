@@ -18,9 +18,6 @@ final class SettingsTable extends AbstractMigration
      */
     public function change(): void
     {
-        $isHot = \Palto\Config::get('HOT_LAYOUT') == 1;
-        $hotTemplateId = $this->fetchRow("SELECT id FROM templates WHERE name='" . ($isHot ? 'hot.php' : 'index.php	') . "'")['id'];
-
         $this->execute("CREATE TABLE `settings` (
   `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(100) NOT NULL DEFAULT '',
@@ -80,6 +77,9 @@ INSERT INTO `templates` (`id`, `name`) VALUES
   KEY `template_id` (`template_id`),
   CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;");
+        $isHot = \Palto\Config::get('HOT_LAYOUT') == 1;
+        $hotTemplateId = $this->fetchRow("SELECT id FROM templates WHERE name='" . ($isHot ? 'hot.php' : 'index.php	') . "'")['id'];
+        
         $this->execute("INSERT INTO `pages` (`id`, `name`, `comment`, `template_id`, `url`, `function`, `is_enabled`) VALUES
 (1, 'main', 'Главная', " . $hotTemplateId . ", '/', 'showIndex', 1),
 (2, 'registration', 'Регистрация', 7, '/registration', 'showRegistration', 1),

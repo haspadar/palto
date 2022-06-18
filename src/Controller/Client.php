@@ -149,7 +149,6 @@ class Client
 
     public function showAd()
     {
-        echo 'ddd';exit;
         $page = Pages::getAdPage();
         if ($this->category && $this->ad) {
             $this->templatesEngine->addData([

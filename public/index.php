@@ -68,10 +68,8 @@ try {
      */
     foreach (Pages::getUniqueUrls() as $page) {
         if ($page->is404()) {
-            echo '$router->set404(\'\Palto\Controller\Client@' . $page->getFunction() . ')' . nl2br(PHP_EOL);
             $router->set404('\Palto\Controller\Client@' . $page->getFunction());
         } else {
-            echo '$router->get(' . $page->getUrl() . ', \'\Palto\Controller\Client@' . $page->getFunction() . ')' . nl2br(PHP_EOL);
             $router->get($page->getUrl(), '\Palto\Controller\Client@' . $page->getFunction());
         }
     }

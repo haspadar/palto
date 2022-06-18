@@ -59,14 +59,14 @@ class Pages
         return new Page((new \Palto\Model\Pages())->getByName('ad'));
     }
 
-    public static function getRegionPage(): Page
+    public static function getRegionPage(int $level): Page
     {
-        return new Page((new \Palto\Model\Pages())->getByName('region'));
+        return new Page((new \Palto\Model\Pages())->getByName('region_' . $level));
     }
 
-    public static function getCategoryPage(): Page
+    public static function getCategoryPage(int $level): Page
     {
-        return new Page((new \Palto\Model\Pages())->getByName('category'));
+        return new Page((new \Palto\Model\Pages())->getByName('category_' . $level));
     }
 
     public static function get404AdPage(): Page

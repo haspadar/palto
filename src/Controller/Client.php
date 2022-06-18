@@ -102,8 +102,8 @@ class Client
 
     public function showRegion($regionUrl, $pageNumber)
     {
-        $page = Pages::getRegionPage();
         if ($this->region) {
+            $page = Pages::getRegionPage($this->region->getLevel());
             $this->templatesEngine->addData([
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => $this->replaceHtml($page->getDescription()),
@@ -124,10 +124,10 @@ class Client
 
     public function showCategory()
     {
-        $page = Pages::getCategoryPage();
         $parentUrls = $this->url->getCategoriesUrls();
         array_pop($parentUrls);
         if ($this->region && $this->category && $this->category->isParentsEquals($parentUrls)) {
+            $page = Pages::getCategoryPage($this->category->getLevel());
             $this->templatesEngine->addData([
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => $this->replaceHtml($page->getDescription()),

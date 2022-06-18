@@ -80,7 +80,7 @@ class Directory
     public static function getThemes(): array
     {
         return array_filter(
-            Directory::getDirectories(self::getLayoutsDirectory()),
+            Directory::getFilesWithDirectories(self::getLayoutsDirectory()),
             fn($directory) => substr($directory, -6) == '_theme'
         );
     }
@@ -139,7 +139,7 @@ class Directory
 
     public static function getLogsDirectories(): array
     {
-        $directories = self::getDirectories(self::getLogsDirectory());
+        $directories = self::getFilesWithDirectories(self::getLogsDirectory());
 
         return array_filter($directories, function (string $directory) {
             return is_dir(self::getLogsDirectory() . '/' . $directory);
@@ -174,12 +174,27 @@ class Directory
         return '/themes/' . Config::get('LAYOUT_THEME');
     }
 
-    public static function getDirectories(string $directory): array
+    public static function getFilesWithoutDirectories(string $directory): array
+    {
+        return array_values(array_filter(
+            self::getFilesWithDirectories($directory),
+            fn ($file) => !is_dir($directory . '/' . $file)
+        ));
+    }
+
+    public static function getFilesWithDirectories(string $directory): array
     {
         return array_values(array_filter(
             scandir($directory),
             fn($iterateDirectory) => !in_array($iterateDirectory, ['.', '..'])
         ));
+    }
+
+    public static function getDirectoryFiles(string $directory): array
+    {
+        $files = scandir($directory);
+
+
     }
 
     public static function getDirectoryFilesRecursive(string $directory): array

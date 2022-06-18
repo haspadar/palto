@@ -13,7 +13,7 @@ class Logs
 
     private static function getLastLogFile(string $directory, string $type): string
     {
-        $files = Directory::getDirectories(Directory::getLogsDirectory() . '/' . $directory);
+        $files = Directory::getFilesWithDirectories(Directory::getLogsDirectory() . '/' . $directory);
         $typeFiles = array_filter(
             $files,
             fn($file) => Validator::isDateValid(self::getFileDate($file, $type))

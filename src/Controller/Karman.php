@@ -17,10 +17,13 @@ use Palto\Filter;
 use Palto\Flash;
 use Palto\Logger;
 use Palto\Logs;
+use Palto\Pages;
 use Palto\Plural;
 use Palto\Regions;
 use Palto\Synonym;
 use Palto\Synonyms;
+use Palto\Settings;
+use Palto\Templates;
 use Palto\Url;
 use Palto\Validator;
 
@@ -49,6 +52,82 @@ class Karman
             'title' => 'Приборы'
         ]);
         echo $this->templatesEngine->make('status');
+    }
+
+    public function showSettings()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Настройки',
+//            'themes' => Templates::getThemes(),
+            'settings' => Settings::getValues()
+        ]);
+        echo $this->templatesEngine->make('settings');
+    }
+
+    public function updateSetting(int $id)
+    {
+        $putParams = $this->getPutParams();
+        $setting = Settings::getById($id);
+        $setting['value'] = Filter::get($putParams['value']);
+        Settings::update($setting, $id);
+        Flash::add(json_encode([
+            'message' => 'Настройка <a href="/karman/settings/'
+                . $setting['id']
+                . '">"'
+                . $setting['name']
+                . '"</a> обновлена.',
+            'type' => 'success'
+        ]));
+        $this->showJsonResponse(['success' => true]);
+    }
+
+    public function showSetting(int $id)
+    {
+        $setting = Settings::getById($id);
+        $this->templatesEngine->addData([
+            'title' => 'Настройка "' . $setting['name'] . '"' ,
+            'setting' => $setting,
+        ]);
+        echo $this->templatesEngine->make('setting');
+    }
+
+    public function showPages()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Страницы',
+            'pages' => Pages::getPages()
+        ]);
+        echo $this->templatesEngine->make('pages');
+    }
+
+    public function showPage(int $id)
+    {
+        $page = Pages::getById($id);
+        $this->templatesEngine->addData([
+            'title' => 'Страница "' . $page['name'] . '"' ,
+            'page' => $page,
+            'templates' => Templates::getTemplates(),
+            'functions' => Templates::getFunctions()
+        ]);
+        echo $this->templatesEngine->make('page');
+    }
+
+    public function updatePage(int $id)
+    {
+        $putParams = $this->getPutParams();
+        $page = Pages::getById($id);
+        $updates = Filter::getArray($putParams);
+        $updates['is_enabled'] = intval($updates['is_enabled'] ?? 0);
+        Pages::update($updates, $id);
+        Flash::add(json_encode([
+            'message' => 'Страница <a href="/karman/pages/'
+                . $page['id']
+                . '">"'
+                . $page['name']
+                . '"</a> обновлена.',
+            'type' => 'success'
+        ]));
+        $this->showJsonResponse(['success' => true]);
     }
 
     public function showKarmanIndex()

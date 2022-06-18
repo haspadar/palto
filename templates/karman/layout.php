@@ -23,49 +23,63 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link " aria-current="page" href="/karman/status?cache=0">
-                            <h7 class="<?php if ($this->data['url']->getPath() == '/karman/status') : ?>fw-bold<?php endif; ?>">
+                            <h6 class="<?php if ($this->data['url']->getPath() == '/karman/status') : ?>fw-bold<?php endif; ?>">
                                 Приборы
-                            </h7>
+                            </h6>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="/karman/settings?cache=0">
+                            <h6 class="<?php if ($this->data['url']->getPath() == '/karman/settings') : ?>fw-bold<?php endif; ?>">
+                                Настройки
+                            </h6>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " aria-current="page" href="/karman/pages?cache=0">
+                            <h6 class="<?php if ($this->data['url']->getPath() == '/karman/pages') : ?>fw-bold<?php endif; ?>">
+                                Страницы
+                            </h6>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/complaints?cache=0">
-                            <h7 class="<?php if ($this->data['url']->getPath() == '/karman/complaints') : ?>fw-bold<?php endif; ?>">
+                            <h6 class="<?php if ($this->data['url']->getPath() == '/karman/complaints') : ?>fw-bold<?php endif; ?>">
                                 Жалобы
                                 <?php if ($this->data['actual_complaints_count']) : ?>
                                     <span class="badge bg-warning"><?= $this->data['actual_complaints_count'] ?></span>
                                 <?php endif; ?>
-                            </h7>
+                            </h6>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/categories?cache=0">
-                            <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/categories', '/karman/category-ads'])) : ?>fw-bold<?php endif; ?>">
+                            <h6 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/categories', '/karman/category-ads'])) : ?>fw-bold<?php endif; ?>">
                                 Категории
-                            </h7>
+                            </h6>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/ads?cache=0">
-                            <h7 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/ads', '/karman/ad'])) : ?>fw-bold<?php endif; ?>">
+                            <h6 class="<?php if (in_array($this->data['url']->getPath(), ['/karman/ads', '/karman/ad'])) : ?>fw-bold<?php endif; ?>">
                                 Объявления
-                            </h7>
+                            </h6>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/info-logs-directories?cache=0">
-                            <h7 class="<?php if ($this->data['url']->isStartsAt(['/karman/info-logs-directories', '/karman/info-logs'])) : ?>fw-bold<?php endif; ?>">
+                            <h6 class="<?php if ($this->data['url']->isStartsAt(['/karman/info-logs-directories', '/karman/info-logs'])) : ?>fw-bold<?php endif; ?>">
                                 Логи
-                            </h7>
+                            </h6>
                         </a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="/karman/error-logs-directories?cache=0">
-                            <h7 class="<?php if ($this->data['url']->isStartsAt(['/karman/error-logs-directories', '/karman/error-logs'])) : ?>fw-bold<?php endif; ?>">
+                            <h6 class="<?php if ($this->data['url']->isStartsAt(['/karman/error-logs-directories', '/karman/error-logs'])) : ?>fw-bold<?php endif; ?>">
                                 Ошибки
-                            </h7>
+                            </h6>
                         </a>
                     </li>
                 </ul>

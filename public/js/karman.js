@@ -163,6 +163,38 @@ $(function () {
         return false;
     });
 
+    $('.setting').on('submit', function () {
+        let $form = $(this);
+        let id = $form.find('[type=submit]').data('id');
+        $.ajax({
+            url: '/karman/update-setting/' + id,
+            dataType: "json",
+            type: 'PUT',
+            data: $form.serialize(),
+            success: function () {
+                document.location = '/karman/settings';
+            }
+        });
+
+        return false;
+    });
+
+    $('.page').on('submit', function () {
+        let $form = $(this);
+        let id = $form.find('[type=submit]').data('id');
+        $.ajax({
+            url: '/karman/update-page/' + id,
+            dataType: "json",
+            type: 'PUT',
+            data: $form.serialize(),
+            success: function () {
+                document.location = '/karman/pages';
+            }
+        });
+
+        return false;
+    });
+
     const button = document.querySelector('#emoji-button');
     const picker = new EmojiButton();
     picker.on('emoji', emoji => {

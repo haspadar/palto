@@ -225,13 +225,13 @@ class Portnoy
             }
         }
 
-        $directories = Directory::getDirectories(Directory::getParsersDirectory() . '/ads');
+        $directories = Directory::getFilesWithDirectories(Directory::getParsersDirectory() . '/ads');
         $parsers = [];
         foreach ($directories as $directory) {
             $parsers = array_merge(
                 $parsers,
                 array_map(fn($parser) => $directory . '/' . $parser,
-                    Directory::getDirectories(Directory::getParsersDirectory() . '/ads/' . $directory)
+                    Directory::getFilesWithDirectories(Directory::getParsersDirectory() . '/ads/' . $directory)
                 )
             );
         }

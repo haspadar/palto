@@ -4,6 +4,8 @@ use Bramus\Router\Router;
 use Palto\Auth;
 use Palto\Config;
 use Palto\IP;
+use Palto\Logger;
+use Palto\Pages;
 use Palto\Plates\Extension\Translate;
 
 require_once '../vendor/autoload.php';
@@ -50,24 +52,26 @@ try {
         $router->get("/error-logs/{name}", '\Palto\Controller\Karman@showErrorLogs');
         $router->get("/get-logs/{name}/{type}", '\Palto\Controller\Karman@getLogs');
 
-//    $router->get("/log-directories", '\Palto\Controller\Karman@showLogDirectories');
-//    $router->get("/log-directories/{name}", '\Palto\Controller\Karman@showLogDirectory');
-//    $router->get("/log-types/{name}/{type}", '\Palto\Controller\Karman@showLogType');
-    });
+        $router->get("/settings", '\Palto\Controller\Karman@showSettings');
+        $router->get("/settings/{id}", '\Palto\Controller\Karman@showSetting');
+        $router->put('/update-setting/{id}', '\Palto\Controller\Karman@updateSetting');
 
-    $router->get('/', '\Palto\Controller\Client@showIndex');
-    $router->get('/registration', '\Palto\Controller\Client@showRegistration');
-    $router->get('/regions', '\Palto\Controller\Client@showRegionsList');
-    $router->get('/categories', '\Palto\Controller\Client@showCategoriesList');
-    $word = "[a-zA-Z0-9_-]";
-    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?/ad(\d+)", '\Palto\Controller\Client@showAd');
-    $router->get("/($word+)(/\d+)?", '\Palto\Controller\Client@showRegion');
-    $router->get("/($word+)/($word+)(/$word+)?(/$word+)?(/\d+)?", '\Palto\Controller\Client@showCategory');
-    $router->set404('\Palto\Controller\Client@showNotFound');
+        $router->get("/pages", '\Palto\Controller\Karman@showPages');
+        $router->get("/pages/{id}", '\Palto\Controller\Karman@showPage');
+        $router->put('/update-page/{id}', '\Palto\Controller\Karman@updatePage');
+    });
+    foreach (Pages::getPages() as $page) {
+        if ($page['name'] == '404') {
+            $router->set404('\Palto\Controller\Client@' . $page['function']);
+        } else {
+            $router->get($page['url'], '\Palto\Controller\Client@' . $page['function']);
+        }
+    }
+
     $router->run();
 
 } catch (Exception $e) {
-    \Palto\Logger::error($e->getMessage());
-    \Palto\Logger::error($e->getTrace());
+    Logger::error($e->getMessage());
+    Logger::error($e->getTrace());
     throw $e;
 }

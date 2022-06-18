@@ -12,21 +12,26 @@
     </thead>
     <tbody>
 
-    <?php foreach ($this->data['templates'] as $template) :?>
-        <?php $url = '/karman/pages/' . $template['id'] . '?cache=0';?>
+    <?php
+    /**
+     * @var \Palto\Template $template
+     */
+    foreach ($this->data['templates'] as $template) :?>
         <tr>
                 <td>
-                    <a href="<?=$url?>" class="text-decoration-none">
-                        <?=$template['name']?>
-                    </a>
+                    <?=$template->getName()?>
                 </td>
                 <td>
                     <small>
-                        <?php foreach ($this->data['pages'] as $page) :?>
-                            <?php if ($page['template_id'] == $template['id']) :?>
-                                <a href="/karman/pages/<?=$page['id']?>?cache=0">
-                                    <span class="badge badge-primary">
-                                        <?=$page['name']?>
+                        <?php
+                        /**
+                         * @var \Palto\Page $page
+                         */
+                        foreach ($this->data['pages'] as $page) :?>
+                            <?php if ($page->getTemplateId() == $template->getId()) :?>
+                                <a href="/karman/pages/<?=$page->getId()?>?cache=0">
+                                    <span class="badge badge-<?=($page->isEnabled() ? 'success' : 'secondary')?>">
+                                        <?=$page->getName()?>
                                     </span>
                                 </a>
                             <?php endif;?> 

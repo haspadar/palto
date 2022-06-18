@@ -104,7 +104,7 @@ class Karman
     {
         $page = Pages::getById($id);
         $this->templatesEngine->addData([
-            'title' => 'Страница "' . $page['name'] . '"' ,
+            'title' => 'Страница "' . $page->getName() . '"' ,
             'page' => $page,
             'templates' => Templates::getTemplates(),
             'functions' => Templates::getFunctions()
@@ -121,9 +121,9 @@ class Karman
         Pages::update($updates, $id);
         Flash::add(json_encode([
             'message' => 'Страница <a href="/karman/pages/'
-                . $page['id']
+                . $page->getId()
                 . '">"'
-                . $page['name']
+                . $page->getName()
                 . '"</a> обновлена.',
             'type' => 'success'
         ]));
@@ -132,24 +132,13 @@ class Karman
 
     public function showTemplates()
     {
+        $template = Templates::getTemplates();
         $this->templatesEngine->addData([
             'title' => 'Шаблоны',
             'templates' => Templates::getTemplates(),
             'pages' => Pages::getPages()
         ]);
         echo $this->templatesEngine->make('templates');
-    }
-
-    public function showTemplate(int $id)
-    {
-//        $page = Pages::getById($id);
-//        $this->templatesEngine->addData([
-//            'title' => 'Страница "' . $page['name'] . '"' ,
-//            'page' => $page,
-//            'templates' => Templates::getTemplates(),
-//            'functions' => Templates::getFunctions()
-//        ]);
-        echo $this->templatesEngine->make('template');
     }
 
     public function showKarmanIndex()

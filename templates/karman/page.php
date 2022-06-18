@@ -2,47 +2,71 @@
 
 <?php $this->layout('layout');?>
 
+<?php
+/**
+ * @var \Palto\Page $page
+ */
+$page = $this->data['page'];
+?>
 <form class="page">
     <div class="mb-3">
         <label class="form-label">Включена</label>
         <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" name="is_enabled" id="page[<?=$this->data['page']['id']?>]" <?php if ($this->data['page']['is_enabled'] == 1) :?>checked<?php endif;?> value="1">
-            <label class="form-check-label" for="page[<?=$this->data['page']['id']?>]"></label>
+            <input class="form-check-input" type="checkbox" role="switch" name="is_enabled" id="page[<?=$page->getId()?>]" <?php if ($page->isEnabled()) :?>checked<?php endif;?> value="1">
+            <label class="form-check-label" for="page[<?=$page->getId()?>]"></label>
         </div>
     </div>
     <div class="mb-3">
         <label class="form-label">Название</label>
-        <input type="text" class="form-control" disabled value="<?=$this->data['page']['name']?>">
+        <input type="text" class="form-control" disabled value="<?=$page->getName()?>">
     </div>
     <div class="mb-3">
         <label class="form-label">Описание</label>
-        <input type="text" class="form-control" name="comment" value="<?=$this->data['page']['comment']?>">
+        <input type="text" class="form-control" name="comment" value="<?=$page->getComment()?>">
     </div>
 
     <div class="mb-3">
         <label class="form-label">Шаблон</label>
         <select class="form-select" aria-label="Template" name="template_id">
-            <?php foreach ($this->data['templates'] as $template) :?>
-                <option value="<?=$template['id']?>" <?php if ($this->data['page']['template_id'] == $template['id']) :?>selected<?php endif;?>>
-                    <?=$template['name']?>
+            <?php
+            /**
+             * @var \Palto\Template $template
+             */
+            foreach ($this->data['templates'] as $template) :?>
+                <option value="<?=$template->getId()?>" <?php if ($page->getTemplateId() == $template->getId()) :?>selected<?php endif;?>>
+                    <?=$template->getName()?>
                 </option>
             <?php endforeach;?>
         </select>
     </div>
     <div class="mb-3">
         <label class="form-label">URL</label>
-        <input type="text" class="form-control" name="url" value="<?=$this->data['page']['url']?>">
+        <input type="text" class="form-control" name="url" value="<?=$page->getUrl()?>">
     </div>
 
     <div class="mb-3">
         <label class="form-label">Функция</label>
         <select class="form-select" aria-label="Template" name="function">
             <?php foreach ($this->data['functions'] as $function) :?>
-                <option value="<?=$function?>" <?php if ($this->data['page']['function'] == $function) :?>selected<?php endif;?>>
+                <option value="<?=$function?>" <?php if ($page->getFunction() == $function) :?>selected<?php endif;?>>
                     <?=$function?>
                 </option>
             <?php endforeach;?>
         </select>
     </div>
-    <button type="submit" class="btn btn-primary" data-id="<?= $this->data['page']['id'] ?>">Сохранить</button>
+
+    <div class="mb-3">
+        <label class="form-label">Тэг "title"</label>
+        <input type="text" class="form-control" name="title" value="<?=$page->getTitle()?>">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Тэг "h1"</label>
+        <input type="text" class="form-control" name="h1" value="<?=$page->getH1()?>">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Тэг "description"</label>
+        <textarea class="form-control" rows="3" name="description"><?=$page->getDescription()?></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" data-id="<?= $page->getId() ?>">Сохранить</button>
 </form>

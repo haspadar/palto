@@ -63,11 +63,14 @@ try {
         $router->get("/templates", '\Palto\Controller\Karman@showTemplates');
         $router->get("/templates/{id}", '\Palto\Controller\Karman@showTemplate');
     });
+    /**
+     * @var \Palto\Page $page
+     */
     foreach (Pages::getPages() as $page) {
-        if ($page['name'] == '404') {
-            $router->set404('\Palto\Controller\Client@' . $page['function']);
+        if ($page->is404()) {
+            $router->set404('\Palto\Controller\Client@' . $page->getFunction());
         } else {
-            $router->get($page['url'], '\Palto\Controller\Client@' . $page['function']);
+            $router->get($page->getUrl(), '\Palto\Controller\Client@' . $page->getFunction());
         }
     }
 

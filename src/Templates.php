@@ -25,6 +25,14 @@ class Templates
 
     public static function getTemplates(): array
     {
-        return (new Model\Templates())->getTemplates();
+        return array_map(
+            fn(array $template) => new Template($template),
+            (new Model\Templates())->getTemplates()
+        );
+    }
+
+    public static function getById(int $id): Template
+    {
+        return new Template((new Model\Templates())->getById($id));
     }
 }

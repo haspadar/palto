@@ -15,6 +15,7 @@ use Palto\Directory;
 use Palto\Filter;
 use Palto\Flash;
 use Palto\Pager;
+use Palto\Pages;
 use Palto\Plates\Extension\Translate;
 use Palto\Region;
 use Palto\Regions;
@@ -49,58 +50,64 @@ class Client
 
     public function showIndex()
     {
+        $page = Pages::getMainPage();
         $isHot = (bool)\Palto\Config::get('HOT_LAYOUT');
         $limit = $isHot ? \Palto\Config::get('HOT_LAYOUT_REGIONS') : Config::get('INDEX_LAYOUT_REGIONS');
         $this->templatesEngine->addData([
-            'title' => $this->translate('index_title'),
-            'description' => $this->translate('index_description'),
-            'h1' => $isHot ? $this->translate('hot_h1') : $this->translate('index_h1'),
+            'title' => $this->replaceHtml($page->getTitle()),
+            'description' => $this->replaceHtml($page->getDescription()),
+            'h1' => $this->replaceHtml($page->getH1()),
             'regions' => !is_numeric($limit) || intval($limit) > 0
                 ? Regions::getLiveRegions(null, intval($limit))
                 : [],
             'live_categories' => \Palto\Categories::getLiveCategories(null, $this->region),
-            'breadcrumbs' => []
+            'breadcrumbs' => [],
+            'page' => $page
         ]);
-        echo $this->templatesEngine->make($isHot ? 'hot' : 'index');
+        echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
 
     public function showRegistration()
     {
+        $page = Pages::getRegistrationsPage();
         $this->templatesEngine->addData([
-            'title' => $this->translate('registration_title'),
-            'description' => $this->translate('registration_description'),
-            'h1' => $this->translate('index_h1'),
+            'title' => $this->replaceHtml($page->getTitle()),
+            'description' => $this->replaceHtml($page->getDescription()),
+            'h1' => $this->replaceHtml($page->getH1()),
         ]);
-        echo $this->templatesEngine->make('registration');
+        echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
 
     public function showRegionsList()
     {
+        $page = Pages::getRegionsPage();
         $this->templatesEngine->addData([
-            'title' => $this->translate('regions_title'),
-            'description' => $this->translate('regions_description'),
-            'h1' => $this->translate('regions_h1'),
+            'title' => $this->replaceHtml($page->getTitle()),
+            'description' => $this->replaceHtml($page->getDescription()),
+            'h1' => $this->replaceHtml($page->getH1()),
         ]);
-        echo $this->templatesEngine->make('regions-list');
+        echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
 
     public function showCategoriesList()
     {
+        $page = Pages::getCategoriesPage();
         $this->templatesEngine->addData([
-            'title' => $this->translate('categories_title'),
-            'description' => $this->translate('categories_description'),
-            'h1' => $this->translate('categories_h1'),
+            'title' => $this->replaceHtml($page->getTitle()),
+            'description' => $this->replaceHtml($page->getDescription()),
+            'h1' => $this->replaceHtml($page->getH1()),
         ]);
-        echo $this->templatesEngine->make('categories-list');
+        echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
 
     public function showRegion($regionUrl, $pageNumber)
     {
+        $page = Pages::getRegionPage();
         if ($this->region) {
             $this->templatesEngine->addData([
-                'title' => $this->translate('region_title') ?: $this->translate('list_title'),
-                'description' => $this->translate('region_description') ?: $this->translate('list_description'),
-                'h1' => $this->translate('list_h1'),
+                'title' => $this->replaceHtml($page->getTitle()),
+                'description' => $this->replaceHtml($page->getDescription()),
+                'h1' => $this->replaceHtml($page->getH1()),
                 'ads' => Ads::getAds(
                     $this->region,
                     null,
@@ -109,7 +116,7 @@ class Client
                 ),
                 'pager' => new Pager($this->region, null, max($pageNumber, 1)),
             ]);
-            echo $this->templatesEngine->make('list');
+            echo $this->templatesEngine->make($page->getTemplate()->getShortName());
         } else {
             $this->showNotFound();
         }
@@ -117,13 +124,14 @@ class Client
 
     public function showCategory()
     {
+        $page = Pages::getCategoryPage();
         $parentUrls = $this->url->getCategoriesUrls();
         array_pop($parentUrls);
         if ($this->region && $this->category && $this->category->isParentsEquals($parentUrls)) {
             $this->templatesEngine->addData([
-                'title' => $this->translate('list_title'),
-                'description' => $this->translate('list_description'),
-                'h1' => $this->translate('list_h1'),
+                'title' => $this->replaceHtml($page->getTitle()),
+                'description' => $this->replaceHtml($page->getDescription()),
+                'h1' => $this->replaceHtml($page->getH1()),
                 'ads' => Ads::getAds(
                     $this->region,
                     $this->category,
@@ -133,7 +141,7 @@ class Client
                 'pager' => new Pager($this->region, $this->category, max($this->url->getPageNumber(), 1)),
                 'breadcrumbs' => Breadcrumbs::getUrls($this->region, $this->category)
             ]);
-            echo $this->templatesEngine->make('list');
+            echo $this->templatesEngine->make($page->getTemplate()->getShortName());
         } else {
             $this->showNotFound();
         }
@@ -141,15 +149,16 @@ class Client
 
     public function showAd()
     {
+        $page = Pages::getAdPage();
         if ($this->category && $this->ad) {
             $this->templatesEngine->addData([
-                'title' => $this->translate('ad_title'),
-                'description' => Filter::shortText($this->ad->getText()),
-                'h1' => $this->translate('ad_h1'),
+                'title' => $this->replaceHtml($page->getTitle()),
+                'description' => $this->replaceHtml($page->getDescription()),
+                'h1' => $this->replaceHtml($page->getH1()),
                 'ad' => $this->ad,
                 'breadcrumbs' => Breadcrumbs::getUrls($this->region, $this->category)
             ]);
-            echo $this->templatesEngine->make('ad');
+            echo $this->templatesEngine->make($page->getTemplate()->getShortName());
         } else {
             $this->showNotFound();
         }
@@ -157,16 +166,34 @@ class Client
 
     public function showNotFound()
     {
+        if ($this->url->isAdPage()) {
+            $page = Pages::get404AdPage();
+        } else {
+            $page = Pages::get404DefaultPage();
+        }
+
         header('HTTP/1.1 404 Not Found');
         $this->templatesEngine->addData([
-            'title' => '404',
-            'description' => '404',
-            'h1' => $this->url->isAdPage() ? $this->translate('404_h1_ad') : $this->translate('404_h1_list'),
-            'h2' => $this->translate('404_h2'),
+            'title' => $this->replaceHtml($page->getTitle()),
+            'description' => $this->replaceHtml($page->getDescription()),
+            'h1' => $this->replaceHtml($page->getH1()),
+            'h2' => $this->replaceHtml($page->getH2()),
         ]);
-        echo $this->templatesEngine->make('404');
+        echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
     
+    private function replaceHtml(string $value): string
+    {
+        return Translates::removeExtra(
+            Translates::replacePlaceholders(
+                $value,
+                $this->region,
+                $this->category,
+                $this->ad,
+            )
+        );
+    }
+
     private function translate(string $translate): string
     {
         return Translates::removeExtra(

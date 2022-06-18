@@ -95,7 +95,7 @@ class Karman
     {
         $this->templatesEngine->addData([
             'title' => 'Страницы',
-            'pages' => Pages::getPages()
+            'pages' => Pages::getPages(0, 'name ASC')
         ]);
         echo $this->templatesEngine->make('pages');
     }

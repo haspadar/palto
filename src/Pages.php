@@ -16,11 +16,11 @@ class Pages
         return self::$currentPage;
     }
 
-    public static function getPages(int $templateId = 0): array
+    public static function getPages(int $templateId = 0, string $orderBy = ''): array
     {
         return array_map(
             fn(array $page) => new Page($page),
-            (new \Palto\Model\Pages())->getPages($templateId)
+            (new \Palto\Model\Pages())->getPages($templateId, $orderBy)
         );
     }
 
@@ -64,9 +64,9 @@ class Pages
         return new Page((new \Palto\Model\Pages())->getByName('region_' . $level));
     }
 
-    public static function getCategoryPage(int $level): Page
+    public static function getCategoryPage(int $regionLevel, int $categoryLevel): Page
     {
-        return new Page((new \Palto\Model\Pages())->getByName('category_' . $level));
+        return new Page((new \Palto\Model\Pages())->getByName('region_' . $regionLevel . '_category_' . $categoryLevel));
     }
 
     public static function get404AdPage(): Page

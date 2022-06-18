@@ -17,7 +17,7 @@ class Region
     {
         $this->region = $region ?: [
             'title' => Config::get('DEFAULT_REGION_TITLE'),
-            'url' => Config::get('DEFAULT_REGION_URL')
+            'url' => Config::get('DEFAULT_REGION_URL'),
         ];
     }
 
@@ -74,7 +74,7 @@ class Region
 
     public function getLevel(): int
     {
-        return $this->region['level'] ?? 1;
+        return $this->region['level'] ?? 0;
     }
 
     public function getId(): int

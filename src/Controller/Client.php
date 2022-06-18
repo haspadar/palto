@@ -127,7 +127,7 @@ class Client
         $parentUrls = $this->url->getCategoriesUrls();
         array_pop($parentUrls);
         if ($this->region && $this->category && $this->category->isParentsEquals($parentUrls)) {
-            $page = Pages::getCategoryPage($this->category->getLevel());
+            $page = Pages::getCategoryPage($this->region->getLevel(), $this->category->getLevel());
             $this->templatesEngine->addData([
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => $this->replaceHtml($page->getDescription()),

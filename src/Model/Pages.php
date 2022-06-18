@@ -11,9 +11,17 @@ class Pages extends Model
 {
     protected string $name = 'pages';
 
-    public function getPages(int $templateId = 0): array
+    public function getPages(int $templateId = 0, string $orderBy = ''): array
     {
-        return self::getDb()->query('SELECT p.*, t.name AS template_name FROM ' . $this->name . ' AS p LEFT JOIN ' . (new Templates)->getName() . ' AS t ON p.template_id=t.id');
+        return self::getDb()->query(
+            'SELECT p.*, t.name AS template_name FROM '
+                . $this->name
+                . ' AS p LEFT JOIN '
+                . (new Templates)->getName()
+                . ' AS t ON p.template_id=t.id'
+                . ($templateId ? ' WHERE p.template_id=' . $templateId : '')
+                . ($orderBy ? ' ORDER BY ' . $orderBy : '')
+        );
     }
 
     public function getById(int $id): array

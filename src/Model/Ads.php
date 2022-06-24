@@ -58,8 +58,10 @@ class Ads extends Model
         $query .= ' ORDER BY ' . $orderBy . ' LIMIT %d_limit OFFSET %d_offset';
         $values['limit'] = $limit;
         $values['offset'] = $offset;
-
-        return self::getDb()->query($query, $values);
+        self::getDb()->debugMode(true);
+        $result = self::getDb()->query($query, $values);
+        self::getDb()->debugMode(false);
+        return $result;
     }
 
     public function getRegionsAdsCount(array $regionsIds): int

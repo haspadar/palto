@@ -104,7 +104,6 @@ class Client
     {
         if ($this->region) {
             $page = Pages::getRegionPage($this->region->getLevel());
-            Debug::dump($page->getH1(), '$page->getH1()');
             $this->templatesEngine->addData([
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => $this->replaceHtml($page->getDescription()),

@@ -10,7 +10,10 @@
 
 </div>
 
-<h2><?=$this->translate('Авторизация')?></h2>
+<div class="headline">
+    <h2><?=$this->translate('Авторизация')?></h2>
+</div>
+
 <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 
 <div class="registration">

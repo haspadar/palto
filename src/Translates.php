@@ -205,7 +205,8 @@ class Translates
     {
         $regionTitle = $region ? $region->getTitle() : '';
         $translates = self::getTranslates();
-
+Debug::dump(self::getLevelCategoryTitle($category, 1), 'category1');
+Debug::dump(self::getLevelCategoryTitle($category, 2), 'category2');
         return trim(strtr($translate, [
             ':AD' => $ad ? $ad->getTitle() : '',
             ':ADDRESS_WITH_REGION' => (

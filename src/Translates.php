@@ -328,7 +328,7 @@ class Translates
 
         foreach ($region->getParents() as $parent) {
             if ($parent->getLevel() == $level) {
-                return $region->getAbbreviation();
+                return $parent->getAbbreviation();
             }
         }
 
@@ -347,7 +347,7 @@ class Translates
 
         foreach ($region->getParents() as $parent) {
             if ($parent->getLevel() == $level) {
-                return $region->getTitle();
+                return $parent->getTitle();
             }
         }
 

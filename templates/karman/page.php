@@ -70,7 +70,7 @@ $page = $this->data['page'];
     </div>
     <div class="mb-3">
         <label class="form-label">Тэг "h1"</label>
-        <input type="text" class="form-control" name="h1" value="<?=$page->getH1()?>">
+        <input type="text" class="form-control" name="h1" value="<?=htmlentities($page->getH1())?>">
     </div>
 
 

@@ -219,7 +219,6 @@ class Translates
             ':CATEGORIES' => $category
                 ? implode(' - ', $category->getTitles())
                 : '',
-            ':CATEGORY' => $category ? $category->getTitle() : '',
             ':CATEGORY_1' => self::getLevelCategoryTitle($category, 1),
             ':CATEGORY_2' => self::getLevelCategoryTitle($category, 2),
             ':CATEGORY_3' => self::getLevelCategoryTitle($category, 3),
@@ -238,6 +237,7 @@ class Translates
                     . ' '
                     . ($region ? Russian::regionPrepositional($region->getTitle()) : '')
                 : $regionTitle,
+            ':CATEGORY' => $category ? $category->getTitle() : '',
         ]));
     }
 

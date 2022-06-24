@@ -70,6 +70,7 @@ class Page
 
     public function getH1(): string
     {
+        Debug::dump($this->page['h1'], 'h1');
         return $this->page['h1'];
     }
 

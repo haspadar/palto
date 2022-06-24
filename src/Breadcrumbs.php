@@ -12,6 +12,13 @@ class Breadcrumbs
             'url' => $defaultRegion->generateUrl(),
         ]];
         if ($region && $region->generateUrl() != $defaultRegion->generateUrl()) {
+            foreach ($region->getParents() as $parentRegion) {
+                $urls[] = [
+                    'title' => $parentRegion->getTitle(),
+                    'url' => $parentRegion->generateUrl($region)
+                ];
+            }
+
             $urls[] = [
                 'title' => $region->getTitle(),
                 'url' => $region->generateUrl()

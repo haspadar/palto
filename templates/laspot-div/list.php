@@ -38,11 +38,17 @@
     </div>
 <?php endif;?>
 
-<?php \Palto\Debug::dump($this->data['region'], '$this->data[region]');?>
-<?php \Palto\Debug::dump(\Palto\Regions::getLiveRegions($this->data['region']), 'regions');?>
 <?php if ($regions = \Palto\Regions::getLiveRegions($this->data['region'])) : ?>
     <div class="headline">
-        <h2><?=$this->translate('Города')?></h2>
+        <h2>
+            <?php if ($this->data['region']->getLevel() == 0) :?>
+                <?=$this->translate('Штаты')?>
+            <?php elseif ($this->data['region']->getLevel() == 1) :?>
+                <?=$this->translate('Города')?>
+            <?php elseif ($this->data['region']->getLevel() == 2) :?>
+                <?=$this->translate('Районы')?>
+            <?php endif;?>
+        </h2>
     </div>
     <div class="categories">
         <div class="categories__content">

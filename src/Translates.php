@@ -224,9 +224,9 @@ class Translates
             ':CATEGORY_3' => self::getLevelCategoryTitle($category, 3),
             ':CATEGORY_4' => self::getLevelCategoryTitle($category, 4),
 
-            'REGION_1_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 1),
-            'REGION_2_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 2),
-            'REGION_3_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 3),
+            ':REGION_1_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 1),
+            ':REGION_2_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 2),
+            ':REGION_3_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 3),
 
             ':REGION_0' => self::getLevelRegionTitle($region, 0),
             ':REGION_1' => self::getLevelRegionTitle($region, 1),

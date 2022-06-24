@@ -164,7 +164,7 @@ class Translates
 
         $translates['list.php']['list_description'] = ($translates['list.php']['list_description'] ? $translates['list.php']['list_description'] . ' ' : '') . ':CATEGORIES - :REGION';
         $translates['list.php']['list_h1'] = ':CATEGORY_IN_REGION' . ($translates['list.php']['list_h1'] ? ': ' . $translates['list.php']['list_h1'] . ' ' : '');
-        $translates['ad.php']['ad_h1'] = ':AD <span style="color:#999"> ' . $translates['list.php']['в'] . '  :REGION_PREPOSITIONAL ' . $fromDonorTranslate . '</span>';
+        $translates['ad.php']['ad_h1'] = ':AD ' . $translates['list.php']['в'] . '  :REGION_PREPOSITIONAL ' . $fromDonorTranslate;
         $translatesValues = [];
         foreach ($translates as $file => $fileTranslates) {
             foreach ($fileTranslates as $translateKey => $translate) {

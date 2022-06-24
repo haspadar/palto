@@ -18,7 +18,7 @@
 
 <div class="registration">
     <form action="#" class="registration__log">
-        <p class="registration__title"><?=$this->translate('Регистрация')?></p>
+        <p class="registration__title"><?=$this->translate('Войти')?></p>
         <input type="text" placeholder="email">
         <input type="text" placeholder="password">
         <button type="submit"><?=$this->translate('Войти')?></button>

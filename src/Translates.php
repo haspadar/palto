@@ -205,8 +205,7 @@ class Translates
     {
         $regionTitle = $region ? $region->getTitle() : '';
         $translates = self::getTranslates();
-Debug::dump(self::getLevelCategoryTitle($category, 1), 'category1');
-exit;
+
         return trim(strtr($translate, [
             ':AD' => $ad ? $ad->getTitle() : '',
             ':ADDRESS_WITH_REGION' => (
@@ -299,14 +298,12 @@ exit;
         }
 
         if ($category->getLevel() == $level) {
-            Debug::dump($category, '$category level ' . $level);
             return $category->getTitle();
         }
 
         foreach ($category->getParents() as $parent) {
             if ($parent->getLevel() == $level) {
-                Debug::dump($category, '$category level next ' . $level);
-                return $category->getTitle();
+                return $parent->getTitle();
             }
         }
 

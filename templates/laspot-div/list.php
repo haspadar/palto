@@ -38,6 +38,8 @@
     </div>
 <?php endif;?>
 
+<?php \Palto\Debug::dump($this->data['region'], '$this->data[region]');?>
+<?php \Palto\Debug::dump(\Palto\Regions::getLiveRegions($this->data['region']), 'regions');?>
 <?php if ($regions = \Palto\Regions::getLiveRegions($this->data['region'])) : ?>
     <div class="headline">
         <h2><?=$this->translate('Города')?></h2>

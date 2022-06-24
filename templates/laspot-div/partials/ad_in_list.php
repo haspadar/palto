@@ -19,13 +19,13 @@
                 <?= \Palto\Filter::shortText($this->data['ad']->getText()) ?>
             </p>
 
-            <?php foreach ($this->data['breadcrumbs'] as $breadcrumbKey => $breadcrumbItem) :?>
-                <?php if ($breadcrumbKey) :?>
+            <?php /*foreach ($this->data['breadcrumbs'] as $breadcrumbKey => $breadcrumbItem) :*/?><!--
+                <?php /*if ($breadcrumbKey) :*/?>
                     <span class="">»</span>
-                <?php endif;?>
+                <?php /*endif;*/?>
 
-                <a href="<?= $breadcrumbItem['url'] ?>" class="ob__city"><?= $breadcrumbItem['title'] ?></a>
-            <?php endforeach;?>
+                <a href="<?/*= $breadcrumbItem['url'] */?>" class="ob__city"><?/*= $breadcrumbItem['title'] */?></a>
+            --><?php /*endforeach;*/?>
 
             <?php if ($this->data['ad']->getPrice() > 0) :?>
                 <div class="">🏷 <?= number_format($this->data['ad']->getPrice()) ?> <?= $this->data['ad']->getCurrency() ?></div>

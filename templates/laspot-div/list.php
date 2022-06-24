@@ -56,7 +56,7 @@
                 <?php foreach ($regions as $childRegion) : ?>
                     <?php /** @var $childRegion \Palto\Region */ ?>
                     <li class="categories__link categories__sub-link">
-                        <a href="<?= $childRegion->generateUrl() ?>">
+                        <a href="<?= $this->data['category'] ? $this->data['category']->generateUrl($childRegion) : $childRegion->generateUrl() ?>">
                             <?= $childRegion->getTitle() ?>
                         </a>
                     </li>

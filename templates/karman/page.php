@@ -62,11 +62,11 @@ $page = $this->data['page'];
 
     <div class="mb-3">
         <label class="form-label">Тэг "title"</label>
-        <input type="text" class="form-control" name="title" value="<?=$page->getTitle()?>">
+        <input type="text" class="form-control" name="title" value="<?=htmlentities($page->getTitle())?>">
     </div>
     <div class="mb-3">
         <label class="form-label">Тэг "description"</label>
-        <textarea class="form-control" rows="3" name="description"><?=$page->getDescription()?></textarea>
+        <textarea class="form-control" rows="3" name="description"><?=htmlentities($page->getDescription())?></textarea>
     </div>
     <div class="mb-3">
         <label class="form-label">Тэг "h1"</label>

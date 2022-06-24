@@ -115,6 +115,7 @@ class Client
                     ($this->url->getPageNumber() - 1) * Ads::LIMIT
                 ),
                 'pager' => new Pager($this->region, null, max($pageNumber, 1)),
+                'breadcrumbs' => []
             ]);
             echo $this->templatesEngine->make($page->getTemplate()->getShortName());
         } else {
@@ -140,6 +141,7 @@ class Client
                 ),
                 'pager' => new Pager($this->region, $this->category, max($this->url->getPageNumber(), 1)),
 //                'breadcrumbs' => Breadcrumbs::getUrls($this->region, $this->category)
+                'breadcrumbs' => []
             ]);
             echo $this->templatesEngine->make($page->getTemplate()->getShortName());
         } else {

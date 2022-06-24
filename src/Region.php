@@ -115,7 +115,7 @@ class Region
             $this->children = (new Categories)->getByIds($childrenIds);
         }
 
-        return $this->children;
+        return array_map(fn(array $region) => new Region($region), $this->children);
     }
 
     public function getTreeId(): int

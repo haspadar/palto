@@ -40,7 +40,7 @@ class Client
         $this->category = \Palto\Categories::getByUrl($this->url->getCategoryUrl(), $this->url->getCategoryLevel());
         $this->ad = Ads::getById($this->url->getAdId());
         $this->templatesEngine->addData([
-            'region' => $this->region,
+            'region' => $this->region ?: new Region(),
             'category' => $this->category,
             'ad' => $this->ad,
             'flash' => Flash::receive(),

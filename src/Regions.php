@@ -45,7 +45,7 @@ class Regions
         );
     }
 
-    public static function getRegionsByIds(array $ids): array
+    public static function getByIds(array $ids): array
     {
         if ($ids) {
             return (new Model\Regions)->getByIds($ids);

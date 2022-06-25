@@ -106,13 +106,13 @@ class Region
     }
 
     /**
-     * @return Category[]
+     * @return Region[]
      */
     public function getChildren(): array
     {
         if (!isset($this->children)) {
             $childrenIds = $this->getChildrenIds();
-            $this->children = (new Categories)->getByIds($childrenIds);
+            $this->children = (new \Palto\Regions())->getByIds($childrenIds);
         }
 
         return array_map(fn(array $region) => new Region($region), $this->children);

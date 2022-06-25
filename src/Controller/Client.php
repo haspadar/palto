@@ -153,7 +153,7 @@ class Client
         if ($this->category && $this->ad) {
             $this->templatesEngine->addData([
                 'title' => $this->replaceHtml($page->getTitle()),
-                'description' => $this->replaceHtml($page->getDescription()),
+                'description' => Filter::shortText($this->ad->getText()),
                 'h1' => $this->replaceHtml($page->getH1()),
                 'ad' => $this->ad,
                 'breadcrumbs' => Breadcrumbs::getUrls($this->region, $this->category)

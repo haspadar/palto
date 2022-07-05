@@ -80,16 +80,17 @@ INSERT INTO `templates` (`id`, `name`) VALUES
         $isHot = \Palto\Config::get('HOT_LAYOUT') == 1;
         $hotTemplateId = $this->fetchRow("SELECT id FROM templates WHERE name='" . ($isHot ? 'hot.php' : 'index.php	') . "'")['id'];
 
-        $this->execute("INSERT INTO `pages` (`id`, `name`, `comment`, `template_id`, `url`, `function`, `is_enabled`) VALUES
-(1, 'main', 'Главная', " . $hotTemplateId . ", '/', 'showIndex', 1),
+        $pagesSql = "INSERT INTO `pages` (`id`, `name`, `comment`, `template_id`, `url`, `function`, `is_enabled`) VALUES
+(1, 'main', 'Главная', $hotTemplateId, '/', 'showIndex', 1),
 (2, 'registration', 'Регистрация', 7, '/registration', 'showRegistration', 1),
 (4, 'regions', 'Все регионы', 6, '/regions', 'showRegionsList', 1),
 (5, 'categories', 'Все категории', 5, '/categories', 'showCategoriesList', 1),
 (6, 'ad', 'Карточка', 4, '/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?/ad(\\d+)', 'showAd', 1),
 (8, 'region', 'Регион', 3, '/([a-zA-Z0-9_-]+)(/\\d+)?', 'showRegion', 1),
 (10, 'category', 'Категория', 3, '/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?(/\\d+)?', 'showCategory', 1),
-(11, '404', '404', 8, '', 'showNotFound', 1);");
-
+(11, '404', '404', 8, '', 'showNotFound', 1);";
+        echo  $pagesSql . PHP_EOL;
+        $this->execute($pagesSql);
 
         $this->execute("UPDATE settings SET value='" . \Palto\Config::get('PARSE_ADS_SCRIPT') . "' WHERE name='ads_parser'");
         $this->execute("UPDATE settings SET value='" . \Palto\Config::get('PARSE_CATEGORIES_SCRIPT') . "' WHERE name='categories_parser'");

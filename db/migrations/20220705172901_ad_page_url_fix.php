@@ -18,7 +18,9 @@ final class AdPageUrlFix extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute('UPDATE pages SET url=\'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?/ad(\d+)\' WHERE name=\'ad\'');
+        $sql = 'UPDATE pages SET url=\'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?/ad(\d+)\' WHERE name=\'ad\'';
+        echo $sql . PHP_EOL;
+        $this->execute($sql);
         $this->execute('UPDATE pages SET url=\'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?(\d+)?\' WHERE url=\'/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)(/[a-zA-Z0-9_-]+)?(/[a-zA-Z0-9_-]+)?(/d+)?\'');
         $this->execute('UPDATE pages SET url=\'/([a-zA-Z0-9_-]+)(\d+)?\' WHERE url=\'/([a-zA-Z0-9_-]+)(/d+)?\'');
     }

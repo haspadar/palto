@@ -17,7 +17,7 @@ class Region
     {
         $this->region = $region ?: [
             'title' => Config::get('DEFAULT_REGION_TITLE'),
-            'url' => Config::get('DEFAULT_REGION_URL')
+            'url' => Config::get('DEFAULT_REGION_URL'),
         ];
     }
 
@@ -74,7 +74,7 @@ class Region
 
     public function getLevel(): int
     {
-        return $this->region['level'] ?? 1;
+        return $this->region['level'] ?? 0;
     }
 
     public function getId(): int
@@ -106,16 +106,16 @@ class Region
     }
 
     /**
-     * @return Category[]
+     * @return Region[]
      */
     public function getChildren(): array
     {
         if (!isset($this->children)) {
             $childrenIds = $this->getChildrenIds();
-            $this->children = (new Categories)->getByIds($childrenIds);
+            $this->children = (new \Palto\Regions())->getByIds($childrenIds);
         }
 
-        return $this->children;
+        return array_map(fn(array $region) => new Region($region), $this->children);
     }
 
     public function getTreeId(): int

@@ -56,6 +56,13 @@ class Category
         return implode(', ', array_map(fn(Synonym $synonym) => $synonym->getTitle(), $synonyms));
     }
 
+    public function getParent(): ?Category
+    {
+        $parents = $this->getParents();
+
+        return $parents ? $parents[0] : null;
+    }
+
     public function getParents(): array
     {
         if (!isset($this->parents)) {

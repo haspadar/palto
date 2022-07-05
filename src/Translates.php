@@ -164,7 +164,7 @@ class Translates
 
         $translates['list.php']['list_description'] = ($translates['list.php']['list_description'] ? $translates['list.php']['list_description'] . ' ' : '') . ':CATEGORIES - :REGION';
         $translates['list.php']['list_h1'] = ':CATEGORY_IN_REGION' . ($translates['list.php']['list_h1'] ? ': ' . $translates['list.php']['list_h1'] . ' ' : '');
-        $translates['ad.php']['ad_h1'] = ':AD <span style="color:#999"> ' . $translates['list.php']['в'] . '  :REGION_PREPOSITIONAL ' . $fromDonorTranslate . '</span>';
+        $translates['ad.php']['ad_h1'] = ':AD ' . $translates['list.php']['в'] . '  :REGION_PREPOSITIONAL ' . $fromDonorTranslate;
         $translatesValues = [];
         foreach ($translates as $file => $fileTranslates) {
             foreach ($fileTranslates as $translateKey => $translate) {
@@ -219,6 +219,20 @@ class Translates
             ':CATEGORIES' => $category
                 ? implode(' - ', $category->getTitles())
                 : '',
+            ':CATEGORY_1' => self::getLevelCategoryTitle($category, 1),
+            ':CATEGORY_2' => self::getLevelCategoryTitle($category, 2),
+            ':CATEGORY_3' => self::getLevelCategoryTitle($category, 3),
+            ':CATEGORY_4' => self::getLevelCategoryTitle($category, 4),
+
+            ':REGION_1_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 1),
+            ':REGION_2_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 2),
+            ':REGION_3_ABBREVIATION' => self::getLevelRegionAbbreviation($region, 3),
+
+            ':REGION_0' => self::getLevelRegionTitle($region, 0),
+            ':REGION_1' => self::getLevelRegionTitle($region, 1),
+            ':REGION_2' => self::getLevelRegionTitle($region, 2),
+            ':REGION_3' => self::getLevelRegionTitle($region, 3),
+
             ':REGION_ABBREVIATION' => $region ? $region->getAbbreviation() : '',
             ':REGION_PREPOSITIONAL' => $region ? Russian::regionPrepositional($region->getTitle()) : '',
             ':REGION' => $regionTitle,
@@ -229,6 +243,7 @@ class Translates
                     . ' '
                     . ($region ? Russian::regionPrepositional($region->getTitle()) : '')
                 : $regionTitle,
+            ':CATEGORY' => $category ? $category->getTitle() : '',
         ]));
     }
 
@@ -280,5 +295,62 @@ class Translates
     private static function getLayoutsDirectory(): string
     {
         return Directory::getRootDirectory() . '/layouts';
+    }
+
+    private static function getLevelCategoryTitle(?Category $category, int $level): string
+    {
+        if (!$category || $category->getLevel() < $level) {
+            return '';
+        }
+
+        if ($category->getLevel() == $level) {
+            return $category->getTitle();
+        }
+
+        foreach ($category->getParents() as $parent) {
+            if ($parent->getLevel() == $level) {
+                return $parent->getTitle();
+            }
+        }
+
+        return '';
+    }
+
+    private static function getLevelRegionAbbreviation(?Region $region, int $level): string
+    {
+        if (!$region || $region->getLevel() < $level) {
+            return '';
+        }
+
+        if ($region->getLevel() == $level) {
+            return $region->getAbbreviation();
+        }
+
+        foreach ($region->getParents() as $parent) {
+            if ($parent->getLevel() == $level) {
+                return $parent->getAbbreviation();
+            }
+        }
+
+        return '';
+    }
+
+    private static function getLevelRegionTitle(?Region $region, int $level): string
+    {
+        if (!$region || $region->getLevel() < $level) {
+            return '';
+        }
+
+        if ($region->getLevel() == $level) {
+            return $region->getTitle();
+        }
+
+        foreach ($region->getParents() as $parent) {
+            if ($parent->getLevel() == $level) {
+                return $parent->getTitle();
+            }
+        }
+
+        return '';
     }
 }

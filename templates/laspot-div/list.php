@@ -13,7 +13,7 @@
 
 <?=\Palto\Counters::get('google') ?: \Palto\Counters::receive('adx')?>
 
-<?php if ($categories = Categories::getLiveCategories($this->data['category'], $this->data['region'])) : ?>
+<?php if ($categories = Categories::getLiveCategories($this->data['category'], $this->data['region'], 0, 'title ASC')) : ?>
     <div class="categories">
         <div class="categories__content">
             <ul class="categories__list categories__sub-list">
@@ -40,7 +40,15 @@
 
 <?php if ($regions = \Palto\Regions::getLiveRegions($this->data['region'])) : ?>
     <div class="headline">
-        <h2><?=$this->translate('Города')?></h2>
+        <h2>
+            <?php if ($this->data['region']->getLevel() == 0) :?>
+                <?=$this->translate('Штаты')?>
+            <?php elseif ($this->data['region']->getLevel() == 1) :?>
+                <?=$this->translate('Города')?>
+            <?php elseif ($this->data['region']->getLevel() == 2) :?>
+                <?=$this->translate('Районы')?>
+            <?php endif;?>
+        </h2>
     </div>
     <div class="categories">
         <div class="categories__content">
@@ -48,7 +56,7 @@
                 <?php foreach ($regions as $childRegion) : ?>
                     <?php /** @var $childRegion \Palto\Region */ ?>
                     <li class="categories__link categories__sub-link">
-                        <a href="<?= $childRegion->generateUrl() ?>">
+                        <a href="<?= $this->data['category'] ? $this->data['category']->generateUrl($childRegion) : $childRegion->generateUrl() ?>">
                             <?= $childRegion->getTitle() ?>
                         </a>
                     </li>

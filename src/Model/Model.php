@@ -41,6 +41,11 @@ abstract class Model
         return self::$db;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function getById(int $id): array
     {
         return self::getDb()->queryFirstRow('SELECT * FROM ' . $this->name . ' WHERE id = %d', $id) ?: [];

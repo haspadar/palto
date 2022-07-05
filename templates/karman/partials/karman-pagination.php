@@ -1,6 +1,7 @@
 <nav aria-label="Pagination">
     <ul class="pagination">
-        <?php if ($this->data['page'] > 1) :?>
+        <?php
+        if ($this->data['page'] > 1) :?>
             <li class="page-item">
                 <a class="page-link" href="<?=sprintf($this->data['url'], $this->data['page'] - 1)?>" aria-label="Предыдущая">
                     <span aria-hidden="true">&laquo;</span>

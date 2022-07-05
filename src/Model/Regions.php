@@ -27,12 +27,14 @@ class Regions extends NestedSet
     {
         $query = 'SELECT * FROM ' . $this->name;
         $values = [];
-        $level = $parentRegion && $parentRegion->getId() ? $parentRegion->getLevel() + 1 : 1;
+        $level = $parentRegion ? $parentRegion->getLevel() + 1 : 1;
         $adsFieldRegion = "region_level_{$level}_id";
         $query .= " WHERE level=$level AND id IN (SELECT DISTINCT $adsFieldRegion FROM ads)";
-        if ($parentRegion) {
+        if ($parentRegion && $parentRegion->getId()) {
             $query .= ' AND parent_id = %d_parent_id';
             $values['parent_id'] = $parentRegion->getId();
+        } elseif ($parentRegion) {
+            $query .= ' AND parent_id IS NULL';
         }
 
         if ($orderBy) {

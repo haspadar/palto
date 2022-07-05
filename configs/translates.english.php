@@ -51,7 +51,9 @@ return [
     'list_description' => 'Aggregator of all classifieds boards: :CATEGORIES :REGION',
     'list_h1' => ':CATEGORY_IN_REGION: ads from craigslist',
     'в' => 'in',
+    'Штаты' => 'States',
     'Города' => 'Cities',
+    'Районы' => 'Regions',
 //registration.php
     'registration_title' => 'Registration',
     'registration_description' => 'Registration',
@@ -68,8 +70,23 @@ return [
  * :ADDRESS_WITH_REGION - адрес, регион (через запятую)
  * :ADDRESS – адрес
  * :CATEGORIES – категории через запятую
+ * :CATEGORY => текущая категория,
+ * :CATEGORY_1 => категория 1-го уровня,
+ * :CATEGORY_2 => категория 2-го уровня,
+ * :CATEGORY_3 => категория 3-го уровня,
+ * :CATEGORY_4 => категория 4-го уровня,
+ * :REGION_0 => регион 0-го уровня,
+ * :REGION_1 => регион 1-го уровня,
+ * :REGION_2 => регион 2-го уровня,
+ * :REGION_3 => регион 3-го уровня,
+ *
+ * :REGION_1_ABBREVIATION => аббревиатура региона 1-го уровня,
+ * :REGION_2_ABBREVIATION => аббревиатура региона 2-го уровня,
+ * :REGION_3_ABBREVIATION => аббревиатура региона 3-го уровня,
+ *
  * :REGION – название региона
  * :REGION_PREPOSITIONAL – название региона в предложном падеже
+ * :REGION_ABBREVIATION – аббревиатура региона
  * :CATEGORY_IN_REGION – категория в регионе в предложном падеже или просто регион в именительном, если категории нет
  */
 

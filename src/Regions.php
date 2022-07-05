@@ -45,7 +45,7 @@ class Regions
         );
     }
 
-    public static function getRegionsByIds(array $ids): array
+    public static function getByIds(array $ids): array
     {
         if ($ids) {
             return (new Model\Regions)->getByIds($ids);
@@ -88,6 +88,10 @@ class Regions
 
     public static function safeAdd(array $region): Region
     {
+        if (($region['donor_url'] ?? '') && $foundByDonor = self::getByDonorUrl($region['donor_url'] ?? '')) {
+            return $foundByDonor;
+        }
+
         $region['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         if (!isset($region['parent_id']) || !$region['parent_id']) {
             $region['level'] = 1;

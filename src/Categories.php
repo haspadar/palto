@@ -146,6 +146,10 @@ class Categories
 
     public static function safeAdd(array $category): Category
     {
+        if (($category['donor_url'] ?? '') && $foundByDonor = self::getByDonorUrl($category['donor_url'] ?? '')) {
+            return $foundByDonor;
+        }
+
         $category['create_time'] = (new DateTime())->format('Y-m-d H:i:s');
         if (!isset($category['parent_id']) || !$category['parent_id']) {
             $category['level'] = 1;

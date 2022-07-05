@@ -7,6 +7,7 @@ use League\Plates\Extension\Asset;
 use Palto\Ad;
 use Palto\Ads;
 use Palto\Breadcrumbs;
+use Palto\Cli;
 use Palto\Live;
 use Palto\Category;
 use Palto\Config;
@@ -128,7 +129,8 @@ class Client
         array_pop($parentUrls);
         if ($this->region && $this->category && $this->category->isParentsEquals($parentUrls)) {
             $page = Pages::getCategoryPage($this->region->getLevel(), $this->category->getLevel());
-            $this->templatesEngine->addData([
+            $this->addTemplateData([
+                'page_title' => $page->getTitle(),
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => $this->replaceHtml($page->getDescription()),
                 'h1' => $this->replaceHtml($page->getH1()),
@@ -204,5 +206,13 @@ class Client
                 $this->ad,
             )
         );
+    }
+
+    private function addTemplateData(array $data)
+    {
+        $this->templatesEngine->addData($data);
+        if (Config::isDebug() && !Cli::isCli()) {
+            Debug::dump($data, 'template data');
+        }
     }
 }

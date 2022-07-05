@@ -39,6 +39,9 @@ class Sitemap
              * @var Category[] $categories
              */
             foreach ($groupedCategories as $categories) {
+                if ($regions[0]->getUrl() == 'all') {
+                    Debug::dump($regions[0], 'all-region');exit;
+                }
                 $this->generateCategoriesFiles(
                     '/' . $regions[0]->getUrl() . '-' . $categories[0]->getUrl(),
                     $regions,

@@ -206,7 +206,7 @@ class Translates
         $regionTitle = $region ? $region->getTitle() : '';
         $translates = self::getTranslates();
 
-        return trim(strtr($translate, [
+        return trim(strtr(html_entity_decode($translate), [
             ':AD' => $ad ? $ad->getTitle() : '',
             ':ADDRESS_WITH_REGION' => (
                 $ad && $ad->getAddress()

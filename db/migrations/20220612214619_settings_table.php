@@ -18,65 +18,66 @@ final class SettingsTable extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute("CREATE TABLE `settings` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `value` text NULL,
-  `category` varchar(100) NOT NULL DEFAULT ''
-);");
-        $this->execute("ALTER TABLE `settings`
-ADD UNIQUE `name` (`name`),
-ADD INDEX `category` (`category`);");
-        $this->execute("ALTER TABLE `settings`
-ADD `comment` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '' AFTER `name`;
-");
-        $this->execute("ALTER TABLE `settings`
-ADD `type` varchar(50) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT 'text';
-");
-        $this->execute("ALTER TABLE `settings`
-CHANGE `category` `group` varchar(50) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '' AFTER `value`;
-");
-        $this->execute("INSERT INTO `settings` (`id`, `name`, `comment`, `value`, `group`, `type`) VALUES
-(1,	'template_theme',	'Тема для шаблонов',	'laspot',	'Шаблоны',	'theme');");
-
-        $this->execute("INSERT INTO `settings` (`name`, `comment`, `value`, `group`, `type`)
-VALUES ('categories_parser', 'Парсер категорий', NULL, 'Парсеры', 'categories_parser');");
-
-        $this->execute("INSERT INTO `settings` (`name`, `comment`, `value`, `group`, `type`)
-VALUES ('ads_parser', 'Парсер объявлений', '', 'Парсеры', 'ads_parser');");
-
-        $this->execute("INSERT INTO `settings` (`name`, `comment`, `value`, `group`, `type`)
-VALUES ('is_karman_panel_enabled', 'Показывать панель', NULL, 'Карман', 'bool');");
-
-        $this->execute("CREATE TABLE `templates` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `templates` (`id`, `name`) VALUES
-(8,	'404.php'),
-(4,	'ad.php'),
-(5,	'categories-list.php'),
-(2,	'hot.php'),
-(1,	'index.php'),
-(3,	'list.php'),
-(6,	'regions-list.php'),
-(7,	'registration.php');
-");
-        $this->execute("CREATE TABLE `pages` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `comment` varchar(255) NOT NULL DEFAULT '',
-  `template_id` int(10) unsigned DEFAULT NULL,
-  `url` varchar(255) NOT NULL DEFAULT '',
-  `function` varchar(255) NOT NULL,
-  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`),
-  KEY `template_id` (`template_id`),
-  CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;");
+//        $this->execute("CREATE TABLE `settings` (
+//  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+//  `name` varchar(100) NOT NULL DEFAULT '',
+//  `value` text NULL,
+//  `category` varchar(100) NOT NULL DEFAULT ''
+//);");
+//        $this->execute("ALTER TABLE `settings`
+//ADD UNIQUE `name` (`name`),
+//ADD INDEX `category` (`category`);");
+//        $this->execute("ALTER TABLE `settings`
+//ADD `comment` varchar(255) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '' AFTER `name`;
+//");
+//        $this->execute("ALTER TABLE `settings`
+//ADD `type` varchar(50) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT 'text';
+//");
+//        $this->execute("ALTER TABLE `settings`
+//CHANGE `category` `group` varchar(50) COLLATE 'utf8mb4_general_ci' NOT NULL DEFAULT '' AFTER `value`;
+//");
+//        $this->execute("INSERT INTO `settings` (`id`, `name`, `comment`, `value`, `group`, `type`) VALUES
+//(1,	'template_theme',	'Тема для шаблонов',	'laspot',	'Шаблоны',	'theme');");
+//
+//        $this->execute("INSERT INTO `settings` (`name`, `comment`, `value`, `group`, `type`)
+//VALUES ('categories_parser', 'Парсер категорий', NULL, 'Парсеры', 'categories_parser');");
+//
+//        $this->execute("INSERT INTO `settings` (`name`, `comment`, `value`, `group`, `type`)
+//VALUES ('ads_parser', 'Парсер объявлений', '', 'Парсеры', 'ads_parser');");
+//
+//        $this->execute("INSERT INTO `settings` (`name`, `comment`, `value`, `group`, `type`)
+//VALUES ('is_karman_panel_enabled', 'Показывать панель', NULL, 'Карман', 'bool');");
+//
+//        $this->execute("CREATE TABLE `templates` (
+//  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+//  `name` varchar(50) NOT NULL DEFAULT '',
+//  PRIMARY KEY (`id`),
+//  UNIQUE KEY `name` (`name`)
+//) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+//
+//INSERT INTO `templates` (`id`, `name`) VALUES
+//(8,	'404.php'),
+//(4,	'ad.php'),
+//(5,	'categories-list.php'),
+//(2,	'hot.php'),
+//(1,	'index.php'),
+//(3,	'list.php'),
+//(6,	'regions-list.php'),
+//(7,	'registration.php');
+//");
+//        $this->execute("CREATE TABLE `pages` (
+//  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+//  `name` varchar(255) NOT NULL DEFAULT '',
+//  `comment` varchar(255) NOT NULL DEFAULT '',
+//  `template_id` int(10) unsigned DEFAULT NULL,
+//  `url` varchar(255) NOT NULL DEFAULT '',
+//  `function` varchar(255) NOT NULL,
+//  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
+//  PRIMARY KEY (`id`),
+//  KEY `template_id` (`template_id`),
+//  CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE SET NULL
+//) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;");
+        
         $isHot = \Palto\Config::get('HOT_LAYOUT') == 1;
         $hotTemplateId = $this->fetchRow("SELECT id FROM templates WHERE name='" . ($isHot ? 'hot.php' : 'index.php	') . "'")['id'];
 

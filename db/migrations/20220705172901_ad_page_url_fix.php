@@ -18,6 +18,6 @@ final class AdPageUrlFix extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute('update pages set url=REPLACE(url, \'(d+)\', \'(\d+)\');');
+        $this->execute('update pages set url=REPLACE(url, \'(d+)\', \'(\\d+)\');');
     }
 }

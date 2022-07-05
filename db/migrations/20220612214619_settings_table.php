@@ -77,9 +77,11 @@ final class SettingsTable extends AbstractMigration
 //  KEY `template_id` (`template_id`),
 //  CONSTRAINT `pages_ibfk_1` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE SET NULL
 //) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;");
-        
+
         $isHot = \Palto\Config::get('HOT_LAYOUT') == 1;
-        $hotTemplateId = $this->fetchRow("SELECT id FROM templates WHERE name='" . ($isHot ? 'hot.php' : 'index.php	') . "'")['id'];
+        $template = $this->fetchRow("SELECT id FROM templates WHERE name='" . ($isHot ? 'hot.php' : 'index.php	') . "'");
+        var_dump($template);
+        $hotTemplateId = $template['id'];
 
         $pagesSql = "INSERT INTO `pages` (`id`, `name`, `comment`, `template_id`, `url`, `function`, `is_enabled`) VALUES
 (1, 'main', 'Главная', $hotTemplateId, '/', 'showIndex', 1),

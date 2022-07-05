@@ -18,7 +18,7 @@ final class AdPageUrlFix extends AbstractMigration
      */
     public function change(): void
     {
-        $sql = 'update pages set url=REPLACE(url, \'(d+)\', \'(\\d+)\');';
+        $sql = 'update pages set url=REPLACE(url, \'(d+)\', \'(\\\\d+)\');';
         echo $sql . PHP_EOL;
         $this->execute($sql);
     }

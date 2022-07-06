@@ -24,8 +24,7 @@ final class TranslatesFromFile extends AbstractMigration
 //  `name` varchar(600) NOT NULL DEFAULT '',
 //  `value` text NULL
 //);");
-        $this->execute("ALTER TABLE `translates`
-ADD UNIQUE `name` (`name`);");
+//        $this->execute("ALTER TABLE `translates` ADD UNIQUE `name` (`name`);");
 
         $translates = require_once Directory::getConfigsDirectory() . '/translates.php';
         foreach ($translates as $name => $value) {

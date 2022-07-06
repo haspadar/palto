@@ -26,7 +26,7 @@ final class TranslatesFromFile extends AbstractMigration
 //);");
 //        $this->execute("ALTER TABLE `translates` ADD UNIQUE `name` (`name`);");
 
-        $translates = require_once Directory::getConfigsDirectory() . '/translates.php';
+        $translates = require_once \Palto\Directory::getConfigsDirectory() . '/translates.php';
         foreach ($translates as $name => $value) {
             $this->execute("INSERT INTO `translates` (`name`, `value`) VALUES ('$name', '" . strtr($value, ['\'' => '\\\'', '"' => '\\"']) . "');");
         }

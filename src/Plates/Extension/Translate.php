@@ -3,6 +3,7 @@ namespace Palto\Plates\Extension;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
+use Palto\Debug;
 use Palto\Russian;
 use Palto\Translates;
 

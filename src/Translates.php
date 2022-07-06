@@ -277,10 +277,10 @@ class Translates
         return $replaced;
     }
 
-    private static function getTranslates(): array
+    public static function getTranslates(): array
     {
         if (!isset(self::$translates)) {
-            self::$translates = require_once Directory::getConfigsDirectory() . '/translates.php';
+            self::$translates = array_column((new Model\Translates())->getTranslates(), 'value', 'name');
         }
 
         return self::$translates;
@@ -352,5 +352,15 @@ class Translates
         }
 
         return '';
+    }
+
+    public static function update(array $updates, int $id)
+    {
+        (new \Palto\Model\Translates())->update($updates, $id);
+    }
+
+    public static function getById(int $id): Translate
+    {
+        return new Translate((new \Palto\Model\Translates())->getById($id));
     }
 }

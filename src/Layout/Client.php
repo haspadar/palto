@@ -11,6 +11,7 @@ use Palto\Debug;
 use Palto\Directory;
 use Palto\Region;
 use Palto\Regions;
+use Palto\Settings;
 use Palto\Translates;
 
 class Client extends Layout
@@ -100,7 +101,7 @@ class Client extends Layout
     {
         return Ads::getAds(
             $this->getRegion(),
-            Categories::getById(Config::get('HOT_LAYOUT_HOT_CATEGORY')),
+            Categories::getById(Settings::getByName('hot_layout_hot_category')),
             $limit,
             ($this->getDispatcher()->getRouter()->getPageNumber() - 1) * $limit
         );

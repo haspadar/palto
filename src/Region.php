@@ -2,6 +2,7 @@
 
 namespace Palto;
 
+use Cassandra\Set;
 use Palto\Model\Categories;
 use Palto\Model\Regions;
 use Palto\Router\Router;
@@ -16,8 +17,8 @@ class Region
     public function __construct(array $region = [])
     {
         $this->region = $region ?: [
-            'title' => Config::get('DEFAULT_REGION_TITLE'),
-            'url' => Config::get('DEFAULT_REGION_URL'),
+            'title' => Settings::getByName('default_region_title'),
+            'url' => Settings::getByName('default_region_url'),
         ];
     }
 

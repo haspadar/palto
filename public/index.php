@@ -11,7 +11,7 @@ use Palto\Plates\Extension\Translate;
 require_once '../vendor/autoload.php';
 
 try {
-    if (Config::get('AUTH') && !IP::isLocal()) {
+    if (\Palto\Settings::isAuthEnabled()) {
         Auth::check();
     }
 
@@ -62,6 +62,10 @@ try {
 
         $router->get("/templates", '\Palto\Controller\Karman@showTemplates');
         $router->get("/templates/{id}", '\Palto\Controller\Karman@showTemplate');
+
+        $router->get("/translates", '\Palto\Controller\Karman@showTranslates');
+        $router->get("/translates/{id}", '\Palto\Controller\Karman@showTranslate');
+        $router->put('/update-translate/{id}', '\Palto\Controller\Karman@updateTranslate');
     });
     /**
      * @var \Palto\Page $page

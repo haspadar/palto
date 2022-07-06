@@ -14,7 +14,7 @@ use Palto\Categories;
     <link rel="icon" type="image/png" href="/img/favicon.ico">
     <link rel="stylesheet" href="<?= $this->asset(\Palto\Directory::getThemePublicDirectory() . '/css/style.css') ?>">
     <link rel="stylesheet" href="<?= $this->asset('/css/styles.css') ?>">
-    <?php if (\Palto\Auth::isLogged() &&  \Palto\Config::get('KARMAN_PANEL') == 1) : ?>
+    <?php if (\Palto\Settings::isKarmanPanelEnabled()) : ?>
         <link rel="stylesheet" href="<?= $this->asset('/css/karman.css') ?>">
     <?php endif; ?>
 
@@ -101,13 +101,13 @@ use Palto\Categories;
             <script src="<?=$this->asset('/js/moderation.js')?>"></script>
             <script src="<?=$this->asset('/js/script.js')?>"></script>
             <script src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/js/cookies.js')?>"></script>
-            <?php if (\Palto\Config::get('KARMAN_PANEL') == 1) :?>
+            <?php if (\Palto\Settings::isKarmanPanelEnabled()) :?>
                 <script src="<?=$this->asset('/js/karman-panel.js')?>"></script>
             <?php endif;?>
 
             <?= $this->section('scripts') ?>
 
-            <?php if (\Palto\Config::get('KARMAN_PANEL') == 1) :?>
+            <?php if (\Palto\Settings::isKarmanPanelEnabled()) :?>
                 <?= $this->insert('../karman/partials/karman-panel'); ?>
             <?php endif;?>
 

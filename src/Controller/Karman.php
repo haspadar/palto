@@ -37,6 +37,7 @@ class Karman
 
     public function __construct()
     {
+        Auth::check();
         $this->templatesEngine = new Engine(Directory::getKarmanTemplatesDirectory());
         $this->templatesEngine->loadExtension(new Asset(Directory::getPublicDirectory(), false));
         $this->url = new Url();

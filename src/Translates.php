@@ -240,7 +240,7 @@ class Translates
             ':CATEGORY_IN_REGION' => $category
                 ? $category->getTitle()
                     . ' '
-                    . ($translates['в'] ?? 'in')
+                    . ($translates['в']->getValue() ?? 'in')
                     . ' '
                     . ($region ? Russian::regionPrepositional($region->getTitle()) : '')
                 : $regionTitle,

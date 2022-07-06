@@ -20,7 +20,7 @@ try {
 
     $router = new Router();
     $router->mount('/karman', function() use ($router) {
-//        Auth::check();
+        Auth::check();
         $router->get('/', '\Palto\Controller\Karman@showKarmanIndex');
         $router->get('/complaints/{id}', '\Palto\Controller\Karman@showComplaint');
         $router->get('/complaints', '\Palto\Controller\Karman@showComplaints');

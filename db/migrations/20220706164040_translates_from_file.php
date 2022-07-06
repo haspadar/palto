@@ -18,7 +18,7 @@ final class TranslatesFromFile extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute("RENAME TABLE `uspets`.`translates` TO `yandex_translates`;");
+        $this->execute("RENAME TABLE `translates` TO `yandex_translates`;");
         $this->execute("CREATE TABLE `translates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(600) NOT NULL DEFAULT '',

@@ -188,7 +188,7 @@ class Client
     {
         return Translates::removeExtra(
             Translates::replacePlaceholders(
-                $value,
+                html_entity_decode($value),
                 $this->region,
                 $this->category,
                 $this->ad,

@@ -3,6 +3,7 @@ namespace Palto\Plates\Extension;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
+use Palto\Debug;
 use Palto\Russian;
 use Palto\Translates;
 
@@ -18,6 +19,7 @@ class Translate implements ExtensionInterface
 
     public function get(string $name): string
     {
+        Debug::dump(Translates::get($name), '$name');
         return Translates::removeExtra(
             Translates::replacePlaceholders(
                 Translates::get($name),

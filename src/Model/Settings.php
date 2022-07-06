@@ -19,6 +19,6 @@ class Settings extends Model
 
     public function getByGroup(string $group)
     {
-        return self::getDb()->query("SELECT * FROM settings WHERE group = %s", $group) ?: [];
+        return self::getDb()->query("SELECT * FROM settings WHERE `group` = %s", $group) ?: [];
     }
 }

@@ -22,13 +22,12 @@ class Counters
     {
         $counters = self::getCounters();
         if (isset($counters[$name])) {
-            $counter = is_array($counters[$name]) && $counters[$name]
-                ? array_shift($counters[$name])
+            $counter = is_array($counters[$name]['value']) && $counters[$name]['value']
+                ? array_shift($counters[$name]['value'])
                 : '';
             self::$counters[$name] = $counters[$name] ?? [];
-            $value = $counter['value'] ?: '';
 
-            return $counter['type'] == 'codes' ? explode(PHP_EOL, $value) : $value;
+            return $counter;
         }
 
         return '';

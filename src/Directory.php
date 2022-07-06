@@ -166,12 +166,12 @@ class Directory
 
     public static function getThemeTemplatesDirectory(): string
     {
-        return self::getTemplatesDirectory() . '/' . Settings::get('template_theme');
+        return self::getTemplatesDirectory() . '/' . Settings::getByName('template_theme');
     }
 
     public static function getThemePublicDirectory(): string
     {
-        return '/themes/' . Settings::get('template_theme');
+        return '/themes/' . Settings::getByName('template_theme');
     }
 
     public static function getFilesWithoutDirectories(string $directory): array

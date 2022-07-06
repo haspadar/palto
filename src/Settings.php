@@ -16,7 +16,7 @@ class Settings
 
     public static function getByName(string $name)
     {
-        return (new \Palto\Model\Settings())->getByName($name);
+        return (new \Palto\Model\Settings())->getByName($name)['value'];
     }
 
     public static function getById(int $id)

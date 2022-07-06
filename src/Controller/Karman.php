@@ -24,6 +24,7 @@ use Palto\Synonym;
 use Palto\Synonyms;
 use Palto\Settings;
 use Palto\Templates;
+use Palto\Translate;
 use Palto\Translates;
 use Palto\Url;
 use Palto\Validator;
@@ -80,6 +81,21 @@ class Karman
         $this->showJsonResponse(['success' => true]);
     }
 
+    public function updateTranslate(int $id)
+    {
+        $putParams = $this->getPutParams();
+        Translates::update(['value' => Filter::get($putParams['value'])], $id);
+        Flash::add(json_encode([
+            'message' => 'Перевод <a href="/karman/translates/'
+                . $id
+                . '">"'
+                . (Translates::getById($id))->getName()
+                . '"</a> обновлен.',
+            'type' => 'success'
+        ]));
+        $this->showJsonResponse(['success' => true]);
+    }
+
     public function showSetting(int $id)
     {
         $setting = Settings::getById($id);
@@ -89,6 +105,16 @@ class Karman
             'themes' => Templates::getThemes(),
         ]);
         echo $this->templatesEngine->make('setting');
+    }
+
+    public function showTranslate(int $id)
+    {
+        $translate = Translates::getById($id);
+        $this->templatesEngine->addData([
+            'title' => 'Перевод "' . $translate->getName() . '"' ,
+            'translate' => $translate,
+        ]);
+        echo $this->templatesEngine->make('translate');
     }
 
     public function showPages()
@@ -146,7 +172,7 @@ class Karman
             'title' => 'Переводы',
             'translates' => Translates::getTranslates(),
         ]);
-        echo $this->templatesEngine->make('templates');
+        echo $this->templatesEngine->make('translates');
     }
 
     public function showKarmanIndex()

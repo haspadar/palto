@@ -179,6 +179,22 @@ $(function () {
         return false;
     });
 
+    $('.translate').on('submit', function () {
+        let $form = $(this);
+        let id = $form.find('[type=submit]').data('id');
+        $.ajax({
+            url: '/karman/update-translate/' + id,
+            dataType: "json",
+            type: 'PUT',
+            data: $form.serialize(),
+            success: function () {
+                document.location = '/karman/translates';
+            }
+        });
+
+        return false;
+    });
+
     $('.page').on('submit', function () {
         let $form = $(this);
         let id = $form.find('[type=submit]').data('id');

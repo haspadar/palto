@@ -11,8 +11,18 @@ class Translate
         $this->translate = $translate;
     }
 
-    public function get()
+    public function getName()
+    {
+        return $this->translate['name'];
+    }
+
+    public function getValue()
     {
         return $this->translate['value'];
+    }
+
+    public function getId()
+    {
+        return $this->translate['id'];
     }
 }

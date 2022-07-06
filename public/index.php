@@ -66,6 +66,7 @@ try {
 
         $router->get("/translates", '\Palto\Controller\Karman@showTranslates');
         $router->get("/translates/{id}", '\Palto\Controller\Karman@showTranslate');
+        $router->put('/update-translate/{id}', '\Palto\Controller\Karman@updateTranslate');
     });
     /**
      * @var \Palto\Page $page

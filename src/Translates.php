@@ -356,4 +356,14 @@ class Translates
 
         return '';
     }
+
+    public static function update(array $updates, int $id)
+    {
+        (new \Palto\Model\Translates())->update($updates, $id);
+    }
+
+    public static function getById(int $id): Translate
+    {
+        return new Translate((new \Palto\Model\Translates())->getById($id));
+    }
 }

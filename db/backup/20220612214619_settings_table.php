@@ -117,61 +117,61 @@ VALUES ('404_default', '404 по умолчанию', '8', '', 'showNotFound', '
 
     private function updateHtml()
     {
-        $indexH1 = \Palto\Config::get('HOT_LAYOUT') == 1 ? \Palto\Translates::get('hot_h1') : \Palto\Translates::get('index_h1');
+        $indexH1 = \Palto\Config::get('HOT_LAYOUT') == 1 ? \Palto\Translates::getValue('hot_h1') : \Palto\Translates::getValue('index_h1');
         $this->execute("UPDATE `pages` SET
-`title` = '" . \Palto\Translates::get('index_title') . "',
-`description` = '" . \Palto\Translates::get('index_description') . "',
+`title` = '" . \Palto\Translates::getValue('index_title') . "',
+`description` = '" . \Palto\Translates::getValue('index_description') . "',
 `h1` = '" . $indexH1 . "'
 WHERE `name` = 'main';");
 
         $this->execute("UPDATE `pages` SET
-`title` = '" . \Palto\Translates::get('registration_title') . "',
-`description` = '" . \Palto\Translates::get('registration_description') . "',
-`h1` = '" . \Palto\Translates::get('index_h1') . "'
+`title` = '" . \Palto\Translates::getValue('registration_title') . "',
+`description` = '" . \Palto\Translates::getValue('registration_description') . "',
+`h1` = '" . \Palto\Translates::getValue('index_h1') . "'
 WHERE `name` = 'registration';");
 
         $this->execute("UPDATE `pages` SET
-`title` = '" . \Palto\Translates::get('regions_title') . "',
-`description` = '" . \Palto\Translates::get('regions_description') . "',
-`h1` = '" . \Palto\Translates::get('regions_h1') . "'
+`title` = '" . \Palto\Translates::getValue('regions_title') . "',
+`description` = '" . \Palto\Translates::getValue('regions_description') . "',
+`h1` = '" . \Palto\Translates::getValue('regions_h1') . "'
 WHERE `name` = 'regions';");
 
         $this->execute("UPDATE `pages` SET
-`title` = '" . \Palto\Translates::get('categories_title') . "',
-`description` = '" . \Palto\Translates::get('categories_description') . "',
-`h1` = '" . \Palto\Translates::get('categories_h1') . "'
+`title` = '" . \Palto\Translates::getValue('categories_title') . "',
+`description` = '" . \Palto\Translates::getValue('categories_description') . "',
+`h1` = '" . \Palto\Translates::getValue('categories_h1') . "'
 WHERE `name` = 'categories';");
 
         $this->execute("UPDATE `pages` SET
-`title` = '" . \Palto\Translates::get('ad_title') . "',
-`description` = '" . \Palto\Translates::get('categories_description') . "',
-`h1` = '" . \Palto\Translates::get('ad_h1') . "'
+`title` = '" . \Palto\Translates::getValue('ad_title') . "',
+`description` = '" . \Palto\Translates::getValue('categories_description') . "',
+`h1` = '" . \Palto\Translates::getValue('ad_h1') . "'
 WHERE `name` = 'ad';");
 
         $this->execute("UPDATE `pages` SET
-`title` = '" . (\Palto\Translates::get('region_title') ?: \Palto\Translates::get('list_title')) . "',
-`description` = '" . (\Palto\Translates::get('categories_description') ?: \Palto\Translates::get('list_description')) . "',
-`h1` = '" . \Palto\Translates::get('list_h1') . "'
+`title` = '" . (\Palto\Translates::getValue('region_title') ?: \Palto\Translates::getValue('list_title')) . "',
+`description` = '" . (\Palto\Translates::getValue('categories_description') ?: \Palto\Translates::getValue('list_description')) . "',
+`h1` = '" . \Palto\Translates::getValue('list_h1') . "'
 WHERE `name` = 'region';");
 
         $this->execute("UPDATE `pages` SET
-`title` = '" . (\Palto\Translates::get('list_title')) . "',
-`description` = '" . (\Palto\Translates::get('list_description')) . "',
-`h1` = '" . \Palto\Translates::get('list_h1') . "'
+`title` = '" . (\Palto\Translates::getValue('list_title')) . "',
+`description` = '" . (\Palto\Translates::getValue('list_description')) . "',
+`h1` = '" . \Palto\Translates::getValue('list_h1') . "'
 WHERE `name` = 'category';");
 
         $this->execute("UPDATE `pages` SET
 `title` = '404',
 `description` = '404',
-`h1` = '" . \Palto\Translates::get('404_h1_ad') . "',
-`h2` = '" . \Palto\Translates::get('404_h2') . "'
+`h1` = '" . \Palto\Translates::getValue('404_h1_ad') . "',
+`h2` = '" . \Palto\Translates::getValue('404_h2') . "'
 WHERE `name` = '404_ad';");
 
         $this->execute("UPDATE `pages` SET
 `title` = '404',
 `description` = '404',
-`h1` = '" . \Palto\Translates::get('404_h1_list') . "',
-`h2` = '" . \Palto\Translates::get('404_h2') . "'
+`h1` = '" . \Palto\Translates::getValue('404_h1_list') . "',
+`h2` = '" . \Palto\Translates::getValue('404_h2') . "'
 WHERE `name` = '404_default';");
     }
 }

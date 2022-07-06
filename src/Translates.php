@@ -6,28 +6,29 @@ use Palto\Layout\Client;
 
 class Translates
 {
-    /**
-     * @var null[]|string[]
-     */
-    private static array $translates;
+    private static array $translates = [];
 
-    public static function get(string $name): string
+    public static function getValue(string $name): string
     {
         $translates = self::getTranslates();
-        $translate = $translates[$name] ?? '';
+        if (isset($translates[$name]) && $translates[$name]) {
+            return $translates[$name]->getValue();
+        }
 
-        return $translate ?: $name;
+        return $name;
     }
 
     public static function getYandexTranslates(string $languageCode): array
     {
-        $existsTranslates = self::getTranslates();
-        $translates = [];
-        foreach ($existsTranslates as $key => $value) {
-            $translates[$key] = Yandex::translate(self::isRussianSymbol($key) ? $key : $value, 'ru', $languageCode);
-        }
+//        $existsTranslates = (new Model\Translates())->getTranslates();
+//        $translates = [];
+//        foreach ($existsTranslates as $key => $value) {
+//            $translates[$key] = Yandex::translate(self::isRussianSymbol($key) ? $key : $value, 'ru', $languageCode);
+//        }
+//
+//        return $translates;
 
-        return $translates;
+        return [];
     }
 
     public static function saveTranslates(array $extractedTranslates, mixed $defaultTranslates, string $fileName)
@@ -277,10 +278,16 @@ class Translates
         return $replaced;
     }
 
+    /**
+     * @return Translate[]
+     */
     public static function getTranslates(): array
     {
-        if (!isset(self::$translates)) {
-            self::$translates = array_column((new Model\Translates())->getTranslates(), 'value', 'name');
+        if (!self::$translates) {
+            self::$translates = [];
+            foreach ((new Model\Translates())->getTranslates() as $translate) {
+                self::$translates[$translate['name']] = new Translate($translate);
+            }
         }
 
         return self::$translates;

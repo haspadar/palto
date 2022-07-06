@@ -30,7 +30,7 @@ class Client extends Layout
 
     public function translate(string $from): string
     {
-        return Translates::get($from, $this);
+        return Translates::getValue($from, $this);
     }
 
     public function getSearchQuery(): string

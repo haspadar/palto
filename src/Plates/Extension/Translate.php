@@ -21,7 +21,7 @@ class Translate implements ExtensionInterface
     {
         return Translates::removeExtra(
             Translates::replacePlaceholders(
-                Translates::get($name),
+                Translates::getValue($name),
                 $this->engine->getData()['region'],
                 $this->engine->getData()['category'],
                 $this->engine->getData()['ad'],

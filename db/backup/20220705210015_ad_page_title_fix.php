@@ -19,7 +19,7 @@ final class AdPageTitleFix extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute("UPDATE `pages` SET title='" . Translates::get('list_title') . "' WHERE title='region_title'");
-        $this->execute("UPDATE `pages` SET description='" . Translates::get('list_description') . "' WHERE description='Categories'");
+        $this->execute("UPDATE `pages` SET title='" . Translates::getValue('list_title') . "' WHERE title='region_title'");
+        $this->execute("UPDATE `pages` SET description='" . Translates::getValue('list_description') . "' WHERE description='Categories'");
     }
 }

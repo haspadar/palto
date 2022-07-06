@@ -200,7 +200,7 @@ class Client
     {
         return Translates::removeExtra(
             Translates::replacePlaceholders(
-                Translates::get($translate),
+                Translates::getValue($translate),
                 $this->region,
                 $this->category,
                 $this->ad,

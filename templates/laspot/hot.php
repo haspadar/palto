@@ -19,8 +19,8 @@ use Palto\Config; ?>
 
 <?php /** @var $level1Category \Palto\Category */?>
 <?php foreach (\Palto\Categories::getLiveCategoriesWithChildren(
-    Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1'),
-    Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
+    \Palto\Settings::getByName('hot_layout_categories_level_1'),
+    \Palto\Settings::getByName('hot_layout_categories_level_2')
 ) as $level1Category) :?>
     <div class="span-d">
         <p><a href="<?=$level1Category->generateUrl($this->data['region'])?>">
@@ -37,7 +37,7 @@ use Palto\Config; ?>
                 <strong> <?=$level1Category->getTitle()?></strong>
             </a>
         </p>
-        <?php if ($level2Categories = $level1Category->getLiveChildren($this->data['region'], Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) :?>
+        <?php if ($level2Categories = $level1Category->getLiveChildren($this->data['region'], \Palto\Settings::getByName('hot_layout_categories_level_2'))) :?>
             <ul>
                 <?php foreach ($level2Categories as  $level2Category) :?>
                     <li><a href="<?=$level2Category->generateUrl($this->data['region'])?>"><?=$level2Category->getTitle()?></a></li>
@@ -62,7 +62,7 @@ use Palto\Config; ?>
 <br style="clear: both">
 <h2>🔔 <?=$this->translate('Новые объявления')?></h2>
 <table class="serp">
-    <?php foreach (Ads::getAds($this->data['region'], $this->data['category'], \Palto\Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>
+    <?php foreach (Ads::getAds($this->data['region'], $this->data['category'], \Palto\Settings::getByName('hot_layout_new_ads')) as $ad) :?>
         <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
     <?php endforeach;?>
 </table>

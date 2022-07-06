@@ -89,7 +89,7 @@ class Status
 
     public static function isSiteEnabled(): bool
     {
-        return \Palto\Config::get('AUTH') == 0;
+        return Settings::isAuthEnabled();
     }
 
     public static function isCacheEnabled(): bool

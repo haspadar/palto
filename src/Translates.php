@@ -277,10 +277,13 @@ class Translates
         return $replaced;
     }
 
-    private static function getTranslates(): array
+    public static function getTranslates(): array
     {
         if (!isset(self::$translates)) {
-            self::$translates = require_once Directory::getConfigsDirectory() . '/translates.php';
+            self::$translates = array_map(
+                fn(array $template) => new Translate($template),
+                (new Model\Translates())->getTranslates()
+            );
         }
 
         return self::$translates;

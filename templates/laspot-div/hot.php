@@ -40,11 +40,11 @@
     <div class="categories__content">
         <?php /** @var $level1Category \Palto\Category */?>
         <?php foreach (\Palto\Categories::getLiveCategoriesWithChildren(
-            \Palto\Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1'),
-            \Palto\Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
+            \Palto\Settings::getByName('hot_layout_categories_level_1'),
+            \Palto\Settings::getByName('hot_layout_categories_level_2')
         ) as $level1Category) :?>
             <?php /** @var $level2Category \Palto\Category */?>
-            <?php $level2Categories = $level1Category->getLiveChildren($this->data['region'], \Palto\Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'));?>
+            <?php $level2Categories = $level1Category->getLiveChildren($this->data['region'], \Palto\Settings::getByName('hot_layout_categories_level_2'));?>
             <?php if ($level2Categories) :?>
                 <ul class="categories__list">
                     <span class="categories__headline-link">
@@ -97,7 +97,7 @@
             <h2><?=$this->translate('Новые объявления')?></h2>
         </div>
         <div class="new-obs__items">
-            <?php foreach (\Palto\Ads::getAds($this->data['region'], $this->data['category'], \Palto\Config::get('HOT_LAYOUT_NEW_ADS')) as $ad) :?>
+            <?php foreach (\Palto\Ads::getAds($this->data['region'], $this->data['category'], \Palto\Settings::getByName('hot_layout_new_ads')) as $ad) :?>
                 <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
             <?php endforeach;?>
 

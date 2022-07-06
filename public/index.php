@@ -11,7 +11,7 @@ use Palto\Plates\Extension\Translate;
 require_once '../vendor/autoload.php';
 
 try {
-    if (Config::get('AUTH') && !IP::isLocal()) {
+    if (\Palto\Settings::isAuthEnabled()) {
         Auth::check();
     }
 
@@ -20,6 +20,7 @@ try {
 
     $router = new Router();
     $router->mount('/karman', function() use ($router) {
+//        Auth::check();
         $router->get('/', '\Palto\Controller\Karman@showKarmanIndex');
         $router->get('/complaints/{id}', '\Palto\Controller\Karman@showComplaint');
         $router->get('/complaints', '\Palto\Controller\Karman@showComplaints');
@@ -62,6 +63,9 @@ try {
 
         $router->get("/templates", '\Palto\Controller\Karman@showTemplates');
         $router->get("/templates/{id}", '\Palto\Controller\Karman@showTemplate');
+
+        $router->get("/translates", '\Palto\Controller\Karman@showTranslates');
+        $router->get("/translates/{id}", '\Palto\Controller\Karman@showTranslate');
     });
     /**
      * @var \Palto\Page $page

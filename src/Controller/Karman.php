@@ -24,6 +24,7 @@ use Palto\Synonym;
 use Palto\Synonyms;
 use Palto\Settings;
 use Palto\Templates;
+use Palto\Translates;
 use Palto\Url;
 use Palto\Validator;
 
@@ -35,7 +36,6 @@ class Karman
 
     public function __construct()
     {
-        Auth::check();
         $this->templatesEngine = new Engine(Directory::getKarmanTemplatesDirectory());
         $this->templatesEngine->loadExtension(new Asset(Directory::getPublicDirectory(), false));
         $this->url = new Url();
@@ -132,11 +132,19 @@ class Karman
 
     public function showTemplates()
     {
-        $template = Templates::getTemplates();
         $this->templatesEngine->addData([
             'title' => 'Шаблоны',
             'templates' => Templates::getTemplates(),
             'pages' => Pages::getPages(0, 'priority ASC')
+        ]);
+        echo $this->templatesEngine->make('templates');
+    }
+
+    public function showTranslates()
+    {
+        $this->templatesEngine->addData([
+            'title' => 'Переводы',
+            'translates' => Translates::getTranslates(),
         ]);
         echo $this->templatesEngine->make('templates');
     }

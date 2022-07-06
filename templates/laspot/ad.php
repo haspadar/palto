@@ -38,7 +38,7 @@ use Palto\Categories; ?>
 <?php endif; ?>
 
     <br>
-<?php if (\Palto\Config::get('YOUTUBE_URL') == 1) : ?>
+<?php if (\Palto\Settings::isYoutubeUrlEnabled()) : ?>
     <div class="youtube myvideo"
          data-url="<?= \Palto\Config::getDomainUrl() . '/youtube.php?query=' . urlencode($ad->getTitle()) ?>"
          style="text-align: center">
@@ -96,7 +96,7 @@ use Palto\Categories; ?>
 <?php endif; ?>
 
     <div class="reply">
-        <?php if (\Palto\Config::get('DONOR_URL') == 1) :?>
+        <?php if (\Palto\Settings::isDonorUrlEnabled()) :?>
             <a class="reply_link"
               href="<?= $ad->getUrl() ?>"
               target="_blank"

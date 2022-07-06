@@ -16,8 +16,8 @@ class Auth
         } else {
             $login = $_SERVER['PHP_AUTH_USER'];
             $password = $_SERVER['PHP_AUTH_PW'];
-            if ($login != Config::get('AUTH_LOGIN')
-                || $password != Config::get('AUTH_PASSWORD')
+            if ($login != Settings::getByName('auth_login')
+                || $password != Settings::getByName('auth_password')
             ) {
                 self::showAuthForm();
             }

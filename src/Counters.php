@@ -9,15 +9,16 @@ class Counters
      */
     private static array $counters;
 
-    public static function get(string $name): string
+    public static function get(string $name)
     {
         $counters = self::getCounters();
         $counter = $counters[$name] ?? '';
+        $value = $counter['value'] ?: '';
 
-        return $counter ?: '';
+        return $counter['type'] == 'codes' ? explode(PHP_EOL, $value) : $value;
     }
 
-    public static function receive(string $name): string
+    public static function receive(string $name)
     {
         $counters = self::getCounters();
         if (isset($counters[$name])) {
@@ -25,8 +26,9 @@ class Counters
                 ? array_shift($counters[$name])
                 : '';
             self::$counters[$name] = $counters[$name] ?? [];
+            $value = $counter['value'] ?: '';
 
-            return $counter ?: '';
+            return $counter['type'] == 'codes' ? explode(PHP_EOL, $value) : $value;
         }
 
         return '';
@@ -89,7 +91,7 @@ return [
     private static function getCounters(): array
     {
         if (!isset(self::$counters)) {
-            self::$counters = require_once Directory::getConfigsDirectory() . '/counters.php';
+            self::$counters = Settings::getCounters();
         }
 
         return self::$counters;

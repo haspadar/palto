@@ -16,4 +16,9 @@ class Settings extends Model
     {
         return self::getDb()->queryFirstRow("SELECT * FROM settings WHERE name=%s", $name) ?: [];
     }
+
+    public function getByGroup(string $group)
+    {
+        return self::getDb()->query("SELECT * FROM settings WHERE group = %s", $group) ?: [];
+    }
 }

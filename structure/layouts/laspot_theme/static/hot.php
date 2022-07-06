@@ -16,7 +16,7 @@ $this->partial('header.inc', [
 ?>
 <h1><?=$this->translate('hot_h1')?></h1>
 
-<?php $regionsLimit = \Palto\Config::get('HOT_LAYOUT_REGIONS');?>
+<?php $regionsLimit = \Palto\Settings::getByName('hot_layout_regions');?>
 <?php $regions = Regions::getLiveRegions(null, intval($regionsLimit));?>
 <?php $hasRegions = $regions && !is_numeric($regionsLimit) || intval($regionsLimit) > 0;?>
 <?php if ($hasRegions) :?>
@@ -35,8 +35,8 @@ $this->partial('header.inc', [
 
 <?php
 $level1Categories = array_filter(
-    $this->getWithAdsCategories(null, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_1')),
-    fn(Category $category) => count($this->getWithAdsCategories($category, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) == Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2')
+    $this->getWithAdsCategories(null, \Palto\Settings::getByName('hot_layout_categories_level_1')),
+    fn(Category $category) => count($this->getWithAdsCategories($category, \Palto\Settings::getByName('hot_layout_categories_level_2'))) == \Palto\Settings::getByName('hot_layout_categories_level_2')
 );
 foreach ($level1Categories as $level1Category) :?>
     <div class="span-d">
@@ -52,7 +52,7 @@ foreach ($level1Categories as $level1Category) :?>
                 <strong> <?=$level1Category->getTitle()?></strong>
             </a>
         </p>
-        <?php if ($level2Categories = $this->getWithAdsCategories($level1Category, Config::get('HOT_LAYOUT_CATEGORIES_LEVEL_2'))) :?>
+        <?php if ($level2Categories = $this->getWithAdsCategories($level1Category, \Palto\Settings::getByName('hot_layout_categories_level_2'))) :?>
             <ul>
                 <?php foreach ($level2Categories as  $level2Category) :?>
                     <li><a href="<?=$this->generateCategoryUrl($level2Category)?>"><?=$level2Category->getTitle()?></a></li>
@@ -68,7 +68,7 @@ foreach ($level1Categories as $level1Category) :?>
 <br style="clear: both">
 <h2 style="color: #d91b39;">🔥 <?=$this->translate('Горячие объявления')?> 🔥</h2>
 <table class="serp">
-<?php foreach ($this->getHotAds(Config::get('HOT_LAYOUT_HOT_ADS')) as $ad) :?>
+<?php foreach ($this->getHotAds(\Palto\Settings::getByName('hot_layout_hot_ads')) as $ad) :?>
     <?php $this->partial('ad_in_list.inc', ['ad' => $ad])?>
 <?php endforeach;?>
 </table>

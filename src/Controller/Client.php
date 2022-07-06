@@ -52,8 +52,8 @@ class Client
     public function showIndex()
     {
         $page = Pages::getMainPage();
-        $isHot = (bool)\Palto\Config::get('HOT_LAYOUT');
-        $limit = $isHot ? \Palto\Config::get('HOT_LAYOUT_REGIONS') : Config::get('INDEX_LAYOUT_REGIONS');
+        $isHot = (bool)\Palto\Settings::isHotTemplateEnabled();
+        $limit = $isHot ? \Palto\Settings::getByName('hot_layout_regions') : Config::get('INDEX_LAYOUT_REGIONS');
         $this->templatesEngine->addData([
             'title' => $this->replaceHtml($page->getTitle()),
             'description' => $this->replaceHtml($page->getDescription()),

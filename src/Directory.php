@@ -34,12 +34,12 @@ class Directory
 
     public static function getParseCategoriesScript(): string
     {
-        return self::getParsersDirectory() . '/categories/' . Config::get('PARSE_CATEGORIES_SCRIPT');
+        return self::getParsersDirectory() . '/categories/' . Settings::getByName('categories_parser');
     }
 
     public static function getParseAdsScript(): string
     {
-        return self::getParsersDirectory() . '/ads/' . Config::get('PARSE_ADS_SCRIPT');
+        return self::getParsersDirectory() . '/ads/' . Settings::getByName('ads_parser');
     }
 
     public static function getProjectShortName(): string
@@ -166,12 +166,12 @@ class Directory
 
     public static function getThemeTemplatesDirectory(): string
     {
-        return self::getTemplatesDirectory() . '/' . Config::get('LAYOUT_THEME');
+        return self::getTemplatesDirectory() . '/' . Settings::get('template_theme');
     }
 
     public static function getThemePublicDirectory(): string
     {
-        return '/themes/' . Config::get('LAYOUT_THEME');
+        return '/themes/' . Settings::get('template_theme');
     }
 
     public static function getFilesWithoutDirectories(string $directory): array

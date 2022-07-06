@@ -69,7 +69,7 @@ class Ads
     {
         return self::getAds(
             $region,
-            Categories::getById(Config::get('HOT_LAYOUT_HOT_CATEGORY')),
+            Categories::getById(Settings::getByName('hot_layout_hot_category')),
             $limit
         );
     }

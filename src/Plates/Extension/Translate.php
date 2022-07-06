@@ -19,7 +19,6 @@ class Translate implements ExtensionInterface
 
     public function get(string $name): string
     {
-        Debug::dump(Translates::get($name), '$name');
         return Translates::removeExtra(
             Translates::replacePlaceholders(
                 Translates::get($name),

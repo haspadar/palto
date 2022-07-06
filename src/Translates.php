@@ -280,7 +280,7 @@ class Translates
     public static function getTranslates(): array
     {
         if (!isset(self::$translates)) {
-            self::$translates = (new Model\Translates())->getTranslates();
+            self::$translates = array_column((new Model\Translates())->getTranslates(), 'value', 'name');
         }
 
         return self::$translates;

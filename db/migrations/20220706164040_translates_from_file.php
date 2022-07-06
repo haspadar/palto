@@ -18,13 +18,13 @@ final class TranslatesFromFile extends AbstractMigration
      */
     public function change(): void
     {
-//        $this->execute("RENAME TABLE `uspets`.`translates` TO `yandex_translates`;");
-//        $this->execute("CREATE TABLE `translates` (
-//  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-//  `name` varchar(600) NOT NULL DEFAULT '',
-//  `value` text NULL
-//);");
-//        $this->execute("ALTER TABLE `translates` ADD UNIQUE `name` (`name`);");
+        $this->execute("RENAME TABLE `uspets`.`translates` TO `yandex_translates`;");
+        $this->execute("CREATE TABLE `translates` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name` varchar(600) NOT NULL DEFAULT '',
+  `value` text NULL
+);");
+        $this->execute("ALTER TABLE `translates` ADD UNIQUE `name` (`name`);");
 
         $translates = require_once \Palto\Directory::getConfigsDirectory() . '/translates.php';
         foreach ($translates as $name => $value) {

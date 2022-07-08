@@ -195,7 +195,7 @@ class Karman
         $complaint = \Palto\Complaints::getComplaint($id);
         $this->templatesEngine->addData([
             'complaint' => $complaint,
-            'ad' => Ads::getById($complaint['id']),
+            'ad' => Ads::getById($complaint['ad_id']),
             'title' => 'Жалоба #' . $complaint['id'],
             'breadcrumbs' => [[
                 'title' => 'Жалобы',

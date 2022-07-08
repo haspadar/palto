@@ -61,14 +61,14 @@ class Complaints
 
     public static function addComplaint(array $complaint)
     {
-        $subject = 'Пришла жалоба';
-        $body = 'Текст жалобы: "'. $complaint['message'] . '"<br><a target="_blank" href="'
-            . $complaint['domain']
-            . '/karman/complaints?cache=0'
-            . '">Зайти в админку</a>';
-
-        Email::send(Config::get('SMTP_EMAIL'), $subject, $body);
         (new Model\Complaints)->add($complaint);
+//        $subject = 'Пришла жалоба';
+//        $body = 'Текст жалобы: "'. $complaint['message'] . '"<br><a target="_blank" href="'
+//            . $complaint['domain']
+//            . '/karman/complaints?cache=0'
+//            . '">Зайти в админку</a>';
+//
+//        Email::send(Config::get('SMTP_EMAIL'), $subject, $body);
     }
 
     private static function sendUserMail(int $id)

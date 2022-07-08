@@ -4,7 +4,6 @@
  * @var $this \Palto\Layout\Karman
  */
 $complaint = \Palto\Complaints::getComplaint($this->getId());
-$ad = \Palto\Ads::getById($complaint['id']);
 $this->partial('header.inc', [
     'title' => 'Жалоба #' . $complaint['id'],
     'breadcrumbUrls' => [[
@@ -21,8 +20,8 @@ $this->partial('header.inc', [
         <dd><?=$complaint['message']?></dd>
         <dt>Объяление:</dt>
         <dd>
-            <a href="<?=$ad->generateUrl()?>" target="_blank" class="text-decoration-none">
-                <?=\Palto\Filter::shortText($ad->getTitle(), 100)?>
+            <a href="<?=$this->data['ad']->generateUrl()?>" target="_blank" class="text-decoration-none">
+                <?=\Palto\Filter::shortText($this->data['ad']->getTitle(), 100)?>
             </a>
         </dd>
         <dt>Почта:</dt>
@@ -40,8 +39,8 @@ $this->partial('header.inc', [
         <dd><?=$complaint['ip']?></dd>
     </dl>
 
-    <button type="button" class="btn btn-warning ignore-complaint">Игнорировать жалобу</button>
-    <button type="button" class="btn btn-danger remove-ad">Удалить объявление</button>
+    <button type="button" class="btn btn-warning ignore-complaint" data-id="<?=$complaint['id']?>">Игнорировать жалобу</button>
+    <button type="button" class="btn btn-danger remove-ad" data-id="<?=$complaint['id']?>">Удалить объявление</button>
 
     <div class="alert alert-danger mt-2 fade" role="alert">
 

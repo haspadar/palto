@@ -23,7 +23,7 @@ class Ads
                 $row,
                 (new AdsImages())->getAdsImages([$adId]),
                 (new AdsDetails())->getAdsDetails([$adId]),
-                Synonyms::getById($row['synonym_id'])
+                Synonyms::getById($row['synonym_id'] ?? 0)
             ) : null;
     }
 

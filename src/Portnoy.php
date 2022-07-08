@@ -279,6 +279,8 @@ class Portnoy
                 return $response;
             }
         }
+
+        return '';
     }
 
     private static function extractEnvValue(string $name, string $content): string

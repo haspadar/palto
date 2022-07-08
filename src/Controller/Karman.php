@@ -241,9 +241,9 @@ class Karman
     {
         if ($id) {
             try {
-                \Palto\Complaints::removeAd($id);
                 $complaint = \Palto\Complaints::getComplaint($id);
                 $ad = Ads::getById($complaint['ad_id']);
+                \Palto\Complaints::removeAd($id);
                 Flash::add(json_encode([
                     'message' => '<a href="' . $ad->generateUrl() . '" target="_blank">Объявление</a> с жалобой #' . $id . ' удалено',
                     'type' => 'success'

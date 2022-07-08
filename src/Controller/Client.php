@@ -151,8 +151,11 @@ class Client
 
     public function showAd()
     {
-        $page = Pages::getAdPage();
-        if ($this->category && $this->ad) {
+        if ($this->category && $this->ad && $this->ad->isDeleted()) {
+            Flash::add('Ad was deleted');
+            $this->redirect($this->category->generateUrl($this->region));
+        } elseif ($this->category && $this->ad) {
+            $page = Pages::getAdPage();
             $this->templatesEngine->addData([
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => Filter::shortText($this->ad->getText()),
@@ -214,5 +217,10 @@ class Client
         if (Config::isDebug() && !Cli::isCli()) {
             Debug::dump($data, 'template data');
         }
+    }
+
+    private function redirect(string $url)
+    {
+        header('Location: ' . $url, true, 301);
     }
 }

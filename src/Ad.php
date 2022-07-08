@@ -37,7 +37,7 @@ class Ad
 
     public function getTitle(): string
     {
-        return !$this->isDeleted() ? html_entity_decode($this->ad['title']) : '[DELETED]';
+        return html_entity_decode($this->ad['title']);
     }
 
     public function getCurrency(): string

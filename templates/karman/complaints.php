@@ -25,7 +25,7 @@
                     </a>
                 </td>
                 <td>
-                    <?php $ad = Ads::getById($actualComplaint['ad_id']);?>
+                    <?php $ad = \Palto\Ads::getById($actualComplaint['ad_id']);?>
                     <a href="<?=$ad->generateUrl()?>" target="_blank" class="text-decoration-none">
                         <?=\Palto\Filter::shortText($ad->getTitle(), 100)?>
                     </a>

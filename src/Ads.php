@@ -311,12 +311,15 @@ class Ads
         $oldCount = \Palto\Model\Ads::getOldCount($modifier);
         Logger::info('Found ' . $oldCount . ' old ads');
         $limit = 1000;
+        $offset = 0;
         while ($ads = \Palto\Model\Ads::getOldAll($modifier, $limit)) {
-            Logger::info('Removing ' . count($ads) . '/' . $oldCount . ' ads from "' . $ads[0]['create_time'] . '" to "' . $ads[count($ads) - 1]['create_time'] . '"');
+            Logger::info('Removing ' . ($offset + count($ads)) . '/' . $oldCount . ' ads from "' . $ads[0]['create_time'] . '" to "' . $ads[count($ads) - 1]['create_time'] . '"');
             foreach ($ads as $adKey => $ad) {
-                Logger::debug('Removing ad ' . $ad['id'] . ' (' . ($adKey + 1) . '/' . $oldCount . ') with create_time="' . $ad['create_time'] . '"');
+                Logger::debug('Removing ad ' . $ad['id'] . ' (' . ($offset + $adKey + 1) . '/' . $oldCount . ') with create_time="' . $ad['create_time'] . '"');
                 Ads::delete($ad['id']);
             }
+
+            $offset += $limit;
         }
 
         $executionTime->end();

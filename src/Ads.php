@@ -110,16 +110,18 @@ class Ads
 
     public static function delete(int $adId)
     {
+        $ad = self::getById($adId);
         (new Model\Ads)->remove($adId);
-        Categories::removeAd(Categories::getById($adId));
-        Regions::removeAd(Regions::getById($adId));
+        Categories::removeAd($ad->getCategory());
+        Regions::removeAd($ad->getRegion());
     }
 
     public static function markAsDelete(int $adId)
     {
+        $ad = self::getById($adId);
         (new Model\Ads)->markAsDeleted($adId);
-        Categories::removeAd(Categories::getById($adId));
-        Regions::removeAd(Regions::getById($adId));
+        Categories::removeAd($ad->getCategory());
+        Regions::removeAd($ad->getRegion());
     }
 
     public static function add(array $ad, array $images = [], array $details = []): int

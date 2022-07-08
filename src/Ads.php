@@ -171,8 +171,13 @@ class Ads
                 }
             }
 
-            Categories::addAd(Categories::getById($ad['category_id']));
-            Regions::addAd(Regions::getById($ad['category_id']));
+            if ($ad['category_id']) {
+                Categories::addAd(Categories::getById($ad['category_id']));
+            }
+
+            if ($ad['region_id']) {
+                Regions::addAd(Regions::getById($ad['region_id']));
+            }
 
             return $adId;
         } else {

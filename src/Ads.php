@@ -108,7 +108,7 @@ class Ads
         );
     }
 
-    public static function delete(int $adId)
+    public static function deleteWithCountDecrease(int $adId)
     {
         $ad = self::getById($adId);
         (new Model\Ads)->remove($adId);
@@ -116,12 +116,9 @@ class Ads
         Regions::removeAd($ad->getRegion());
     }
 
-    public static function markAsDelete(int $adId)
+    public static function delete(int $adId)
     {
-        $ad = self::getById($adId);
-        (new Model\Ads)->markAsDeleted($adId);
-        Categories::removeAd($ad->getCategory());
-        Regions::removeAd($ad->getRegion());
+        (new Model\Ads)->remove($adId);
     }
 
     public static function add(array $ad, array $images = [], array $details = []): int

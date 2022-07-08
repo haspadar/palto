@@ -24,7 +24,7 @@ class Complaints
     {
         $complaint = self::getComplaint($id);
         if ($complaint && $complaint['ad_id']) {
-            Ads::delete($complaint['ad_id']);
+            Ads::deleteWithCountDecrease($complaint['ad_id']);
             self::sendUserMail($id);
         }
 
@@ -36,7 +36,7 @@ class Complaints
         foreach ($ids as $id) {
             $complaint = self::getComplaint($id);
             if ($complaint && $complaint['ad_id']) {
-                Ads::delete($complaint['ad_id']);
+                Ads::deleteWithCountDecrease($complaint['ad_id']);
                 self::sendUserMail($id);
             }
         }

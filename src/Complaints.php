@@ -64,7 +64,7 @@ class Complaints
         $subject = 'Пришла жалоба';
         $body = 'Текст жалобы: "'. $complaint['message'] . '"<br><a target="_blank" href="'
             . $complaint['domain']
-            . '/moderate/'
+            . '/karman/complaints?cache=0'
             . '">Зайти в админку</a>';
 
         Email::send(Config::get('SMTP_EMAIL'), $subject, $body);

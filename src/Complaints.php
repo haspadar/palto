@@ -23,7 +23,7 @@ class Complaints
     public static function removeAd($id)
     {
         $complaint = self::getComplaint($id);
-        if ($complaint['ad_id']) {
+        if ($complaint && $complaint['ad_id']) {
             Ads::delete($complaint['ad_id']);
             self::sendUserMail($id);
         }
@@ -35,7 +35,7 @@ class Complaints
     {
         foreach ($ids as $id) {
             $complaint = self::getComplaint($id);
-            if ($complaint['ad_id']) {
+            if ($complaint && $complaint['ad_id']) {
                 Ads::delete($complaint['ad_id']);
                 self::sendUserMail($id);
             }
@@ -73,13 +73,14 @@ class Complaints
 
     private static function sendUserMail(int $id)
     {
-        $complaint = self::getComplaint($id);
-        $subject = 'Your ad was removed';
-        $body = sprintf(
-            'Your <a target="_blank" href="%s">ad</a> was removed.<br><br>Your report: \"%s\".',
-            $complaint['domain'] . $complaint['page'],
-            $complaint['message']
-        );
-        Email::send($complaint['email'], $subject, $body);
+        if (($complaint = self::getComplaint($id)) && $complaint['email']) {
+            $subject = 'Your ad was removed';
+            $body = sprintf(
+                'Your <a target="_blank" href="%s">ad</a> was removed.<br><br>Your report: \"%s\".',
+                $complaint['domain'] . $complaint['page'],
+                $complaint['message']
+            );
+            Email::send($complaint['email'], $subject, $body);
+        }
     }
 }

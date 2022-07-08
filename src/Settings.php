@@ -24,6 +24,11 @@ class Settings
         return (new \Palto\Model\Settings())->getById($id);
     }
 
+    public static function updateByName(string $name, string $value)
+    {
+        (new \Palto\Model\Settings())->updateByName($name, $value);
+    }
+
     public static function update(array $setting, int $id)
     {
         (new \Palto\Model\Settings())->update($setting, $id);

@@ -15,4 +15,9 @@ class Translates extends Model
     {
         return self::getDb()->query('SELECT * FROM translates');
     }
+
+    public function updateByName(string $name, string $value)
+    {
+        self::getDb()->update($this->name, ['value' => $value], 'name = %s', $name);
+    }
 }

@@ -15,12 +15,10 @@ class Portnoy
 
     private static function prompt(): array
     {
-//        $databaseProject = self::getDatabaseProject('/Users/haspadar/Projects');
-        $databaseProject = self::getDatabaseProject('/var/www');
-        $copyEnvContent = $databaseProject ? file_get_contents($databaseProject . '/configs/.env') : '';
+//        $copyDatabaseProject = self::getDatabaseProject('/Users/haspadar/Projects');
+        $copyDatabaseProject = self::getDatabaseProject('/var/www');
         $regionTitle = self::getRegionTitle();
         $htmlLang = self::getHtmlLang();
-        $translateFile = self::getTranslateFile($htmlLang);
         $helpLogin = self::getHelpLogin();
         $helpPassword = self::getHelpPassword();
         while (!self::isHelpCredentialsValid($helpLogin, $helpPassword)) {
@@ -29,19 +27,20 @@ class Portnoy
             $helpPassword = self::getHelpPassword();
         }
 
-        $parserProjectPath = self::getParser($copyEnvContent);
-        $layoutTheme = self::getLayoutTheme();
+        $copyEnvContent = $copyDatabaseProject ? file_get_contents($copyDatabaseProject . '/configs/.env') : '';
+        $copyDatabaseConnection = self::getCopyDatabaseConnection($copyEnvContent);
+        $adsParserProjectPath = self::getAdsParser($copyDatabaseConnection);
+        $templateTheme = self::getTemplateTheme();
 
         return [
             'html_lang' => $htmlLang,
             'region_title' => $regionTitle,
-            'translate_file' => $translateFile,
             'help_login' => $helpLogin,
             'help_password' => $helpPassword,
-            'parser' => $parserProjectPath,
+            'ads_parser' => $adsParserProjectPath,
             'database_username' => $copyEnvContent ? self::extractEnvValue('DB_USER', $copyEnvContent) : '',
             'database_password' => $copyEnvContent ? self::extractEnvValue('DB_PASSWORD', $copyEnvContent) : '',
-            'layout_theme' => $layoutTheme
+            'template_theme' => $templateTheme
         ];
     }
 
@@ -62,7 +61,7 @@ class Portnoy
     private static function getHtmlLang(): string
     {
         $climate = new CLImate();
-        $defaultLang = 'ru-RU';
+        $defaultLang = 'en-US';
         $input = $climate->cyan()->input("Язык сайта, например, $defaultLang?");
         $input->defaultTo($defaultLang);
         $response = $input->prompt();
@@ -81,26 +80,6 @@ class Portnoy
         $parts = explode('-', $htmlLang);
 
         return count($parts) == 2 && strlen($parts[0]) == 2 && strlen($parts[1]) == 2;
-    }
-
-    private static function getTranslateFile(string $htmlLang): string
-    {
-        $parts = explode('_', $htmlLang);
-        $isRussianDefault = mb_strtolower($parts[0]) == 'ru';
-        $climate = new CLImate();
-        $defaultLang = $isRussianDefault ? 'RU' : 'EN';
-        $defaultLangMessage = 'RU/EN';
-        $input = $climate->cyan()->input("Переводы по умолчанию [$defaultLangMessage]? ");
-        $input->defaultTo($defaultLang);
-        $response = $input->prompt();
-        $isValid = self::isTranslateLangValid($response);
-        while (!$isValid) {
-            $input = $climate->cyan()->input("Переводы по умолчанию [$defaultLangMessage]? ");
-            $response = $input->prompt();
-            $isValid = self::isTranslateLangValid($response);
-        }
-
-        return 'translates.' . ($response == 'RU' ? 'russian' : 'english') . '.php';
     }
 
     private static function getRotatorUrl(): string
@@ -216,10 +195,10 @@ class Portnoy
         $climate->red()->out("Логин и пароль не подошли");
     }
 
-    private static function getParser(string $copyEnvContent = ''): string
+    private static function getAdsParser(?\MeekroDB $copyDatabaseConnection): string
     {
-        if ($copyEnvContent) {
-            $defaultValue = self::extractEnvValue('PARSE_ADS_SCRIPT', $copyEnvContent);
+        if ($copyDatabaseConnection) {
+            $defaultValue = Settings::getByName('ads_parser');
             if ($defaultValue) {
                 return $defaultValue;
             }
@@ -248,40 +227,29 @@ class Portnoy
 
     private static function setOptions(array $options)
     {
-        self::setParser($options['parser']);
-        self::setTranslateFile($options['translate_file']);
+        self::setAdsParser($options['ads_parser']);
         self::setHtmlLang($options['html_lang']);
         self::setHelpOptions($options['help_login'], $options['help_password']);
-        self::setLayoutTheme($options['layout_theme']);
+        self::setTemplateTheme($options['template_theme']);
     }
 
-    private static function setParser(string $parser)
+    private static function setAdsParser(string $parser)
     {
         if ($parser) {
-            Logger::debug('Set parser ' . $parser);
-            Config::replace('PARSE_ADS_SCRIPT', $parser, Directory::getConfigsDirectory() . '/.env');
-            Config::replace('PARSE_CATEGORIES_SCRIPT', $parser, Directory::getConfigsDirectory() . '/.env');
+            Logger::debug('Set ads parser ' . $parser);
+            Settings::updateByName('ads_parser', $parser);
         }
-    }
-
-    private static function setTranslateFile(string $translateFile)
-    {
-        Logger::debug('Set translate file ' . $translateFile);
-        file_put_contents(
-            Directory::getConfigsDirectory() . '/translates.php',
-            file_get_contents(Directory::getConfigsDirectory() . '/' . $translateFile)
-        );
     }
 
     private static function setHtmlLang(string $htmlLang)
     {
         Logger::debug('Set Html Lang to ' . $htmlLang);
-        Translates::replace('html_lang', $htmlLang);
+        Translates::updateByName('html_lang', $htmlLang);
     }
 
-    private static function setLayoutTheme(string $layoutTheme)
+    private static function setTemplateTheme(string $templateTheme)
     {
-        Config::replace('LAYOUT_THEME', $layoutTheme, Directory::getConfigsDirectory() . '/.layouts');
+        Settings::updateByName('template_theme', $templateTheme);
     }
 
     private static function setHelpOptions(string $helpLogin, string $helpPassword)
@@ -289,11 +257,11 @@ class Portnoy
         $helpKeys = self::getHelpKeys($helpLogin, $helpPassword);
         Logger::debug('Set help keys');
         Config::replace('ROTATOR_URL', $helpKeys['rotator_url'], Directory::getConfigsDirectory() . '/.pylesos');
-        Config::replace('SUNDUK_URL', $helpKeys['sunduk_url'], Directory::getConfigsDirectory() . '/.env');
-        Config::replace('YANDEX_TRANSLATE_API_KEY', $helpKeys['yandex_translate_api_key'], Directory::getConfigsDirectory() . '/.env');
-        Config::replace('SMTP_EMAIL', $helpKeys['smtp_email'], Directory::getConfigsDirectory() . '/.env');
-        Config::replace('SMTP_PASSWORD', $helpKeys['smtp_password'], Directory::getConfigsDirectory() . '/.env');
-        Config::replace('SMTP_FROM', $helpKeys['smtp_from'], Directory::getConfigsDirectory() . '/.env');
+        Settings::updateByName('sunduk_url', $helpKeys['sunduk_url']);
+        Settings::updateByName('yandex_translate_api_key', $helpKeys['yandex_translate_api_key']);
+        Settings::updateByName('smtp_email', $helpKeys['smtp_email']);
+        Settings::updateByName('smtp_password', $helpKeys['smtp_password']);
+        Settings::updateByName('smtp_from', $helpKeys['smtp_from']);
     }
 
     private static function getDatabaseProject(string $path): string
@@ -310,7 +278,7 @@ class Portnoy
         return '';
     }
 
-    private static function extractEnvValue(string $name, string $content)
+    private static function extractEnvValue(string $name, string $content): string
     {
         $defaultValueStart = mb_strpos($content, $name . '=');
         $defaultValueFinish = mb_strpos($content, PHP_EOL, $defaultValueStart);
@@ -323,13 +291,28 @@ class Portnoy
                 mb_substr($content, $defaultValueStart + $skipLength, $defaultValueFinish - $defaultValueStart - $skipLength)
             );
         }
+
+        return '';
     }
 
-    private static function getLayoutTheme()
+    private static function getTemplateTheme()
     {
         $climate = new CLImate();
-        $input = $climate->cyan()->radio('Какую тему используем? ', ['laspot', 'bootstrap']);
+        $input = $climate->cyan()->radio('Какую тему используем? ', ['laspot', 'laspot-div']);
 
         return $input->prompt();
+    }
+
+    private static function getCopyDatabaseConnection(string $copyEnvContent): ?\MeekroDB
+    {
+        return $copyEnvContent
+            ? new \MeekroDB(
+                self::extractEnvValue('DB_HOST', $copyEnvContent) ?? '127.0.0.1',
+                self::extractEnvValue('DB_USER', $copyEnvContent),
+                self::extractEnvValue('DB_PASSWORD', $copyEnvContent),
+                self::extractEnvValue('DB_NAME', $copyEnvContent),
+                self::extractEnvValue('DB_PORT', $copyEnvContent) ?? 3306,
+                'utf8mb4'
+            ) : null;
     }
 }

@@ -248,6 +248,11 @@ class Translates
         ]));
     }
 
+    public static function updateByName(string $name, string $value)
+    {
+        (new \Palto\Model\Translates())->updateByName($name, $value);
+    }
+
     public static function replace(string $key, string $value)
     {
         $translates = file_get_contents(Directory::getConfigsDirectory() . '/translates.php');

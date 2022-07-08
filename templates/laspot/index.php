@@ -23,7 +23,7 @@
                     <img src="<?=$level1Category->getIconUrl()?>"
                          title="<?=$level1Category->getIconText()?>"
                          class="icm"
-                         onerror="this.src='/img/no-photo.png'"
+                         onerror="this.src='/img/themes/laspot/img/no-photo.png'"
                     />
                 <?php endif?>
 

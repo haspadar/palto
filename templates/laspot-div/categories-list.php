@@ -28,7 +28,7 @@
                                  title="<?=$level1Category->getIconText()?>"
                                  class="icm"
                                  alt="list"
-                                 onerror="this.src='/img/no-photo.png'"
+                                 onerror="this.src='/img/themes/laspot-div/img/no-photo.png'"
                             />
                         <?php endif?>
                         <a href="<?=$level1Category->generateUrl($this->data['region'])?>"><?=$level1Category->getTitle()?></a>

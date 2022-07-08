@@ -322,6 +322,9 @@ class Ads
             $offset += $limit;
         }
 
+        Logger::info('Altering table for space decrease');
+        $response = \Palto\Model\Ads::getDb()->query('ALTER TABLE ads ENGINE=\'InnoDB\'');
+        Logger::info($response);
         $executionTime->end();
         Logger::info('Cleaned up links for ' . $executionTime->get());
     }

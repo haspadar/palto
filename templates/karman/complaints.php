@@ -36,8 +36,8 @@
                     <small class="text-muted"><?=$createTime->format('H:i')?></small>
                 </td>
                 <td>
-                    <a href="javascript:void(0);" class="text-danger remove-ad" data-id="<?=$actualComplaint['id']?>">Удалить</a><br>
-                    <a href="javascript:void(0);" class="text-muted ignore-complaint" data-id="<?=$actualComplaint['id']?>">Игнорировать</a>
+                    <a href="javascript:void(0);" class="text-danger remove-ad" data-id="<?=$actualComplaint['id']?>"><small>Удалить</small></a><br>
+                    <a href="javascript:void(0);" class="text-muted ignore-complaint" data-id="<?=$actualComplaint['id']?>"><small>Игнорировать</small></a>
                 </td>
             </tr>
         <?php endforeach;?>

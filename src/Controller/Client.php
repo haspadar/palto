@@ -151,7 +151,7 @@ class Client
 
     public function showAd()
     {
-        if ($this->category && $this->ad && $this->ad->isDeleted()) {
+        if ($this->category && (!$this->ad || $this->ad->isDeleted())) {
             Flash::add('Ad was deleted');
             $this->redirect($this->category->generateUrl($this->region));
         } elseif ($this->category && $this->ad) {

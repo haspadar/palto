@@ -22,7 +22,7 @@ class Ads extends Model
     public static function getOldAll(string $modifier, int $limit): array
     {
         return self::getDb()->query(
-            'SELECT * FROM ads WHERE create_time < %s OR create_time IS NULL LIMIT',
+            'SELECT * FROM ads WHERE create_time < %s OR create_time IS NULL LIMIT %d',
             (new \DateTime())->modify($modifier)->format('Y-m-d H:i:s'),
             $limit,
         ) ?: [];

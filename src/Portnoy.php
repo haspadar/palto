@@ -9,14 +9,14 @@ class Portnoy
     public static function run()
     {
         $options = self::prompt();
-        Install::run($options['database_username'], $options['database_password']);
+        Install::run($options);
         self::setOptions($options);
     }
 
     private static function prompt(): array
     {
-//        $copyDatabaseProject = self::getDatabaseProject('/Users/haspadar/Projects');
-        $copyDatabaseProject = self::getDatabaseProject('/var/www');
+//        $donorDatabaseProject = self::getDatabaseProject('/Users/haspadar/Projects');
+        $donorDatabaseProject = self::getDatabaseProject('/var/www');
         $regionTitle = self::getRegionTitle();
         $htmlLang = self::getHtmlLang();
         $helpLogin = self::getHelpLogin();
@@ -27,9 +27,7 @@ class Portnoy
             $helpPassword = self::getHelpPassword();
         }
 
-        $copyEnvContent = $copyDatabaseProject ? file_get_contents($copyDatabaseProject . '/configs/.env') : '';
-        $copyDatabaseConnection = self::getCopyDatabaseConnection($copyEnvContent);
-        $adsParserProjectPath = self::getAdsParser($copyDatabaseConnection);
+        $adsParserProjectPath = self::getAdsParser();
         $templateTheme = self::getTemplateTheme();
 
         return [
@@ -38,8 +36,12 @@ class Portnoy
             'help_login' => $helpLogin,
             'help_password' => $helpPassword,
             'ads_parser' => $adsParserProjectPath,
-            'database_username' => $copyEnvContent ? self::extractEnvValue('DB_USER', $copyEnvContent) : '',
-            'database_password' => $copyEnvContent ? self::extractEnvValue('DB_PASSWORD', $copyEnvContent) : '',
+            'database_username' => $donorDatabaseProject
+                ? self::extractEnvValue('DB_USER', file_get_contents($donorDatabaseProject . '/configs/.env'))
+                : '',
+            'database_password' => $donorDatabaseProject
+                ? self::extractEnvValue('DB_PASSWORD', file_get_contents($donorDatabaseProject . '/configs/.env'))
+                : '',
             'template_theme' => $templateTheme
         ];
     }
@@ -195,15 +197,8 @@ class Portnoy
         $climate->red()->out("Логин и пароль не подошли");
     }
 
-    private static function getAdsParser(?\MeekroDB $copyDatabaseConnection): string
+    private static function getAdsParser(): string
     {
-        if ($copyDatabaseConnection) {
-            $defaultValue = Settings::getByName('ads_parser');
-            if ($defaultValue) {
-                return $defaultValue;
-            }
-        }
-
         $directories = Directory::getFilesWithDirectories(Directory::getParsersDirectory() . '/ads');
         $parsers = [];
         foreach ($directories as $directory) {
@@ -269,13 +264,21 @@ class Portnoy
         $projects = Directory::getPaltoDirectories($path);
         if ($projects) {
             $climate = new CLImate();
-            $input = $climate->cyan()->radio('Какую базу данных подключить? ', array_merge(['Новую'], $projects));
+            $new = 'Новую, отдельную';
+            $old = 'Старую, общую';
+            $input = $climate->cyan()->radio('Какую базу данных подключить?', [$new, $old]);
             $response = $input->prompt();
+            if ($response == $new) {
+                return '';
+            } else {
+                do {
+                    $input = $climate->cyan()->radio('Выберите общую базу', $projects);
+                    $response = $input->prompt();
+                } while (!$response);
 
-            return $response == 'Новую' ? '' : $path . '/' . $response;
+                return $response;
+            }
         }
-
-        return '';
     }
 
     private static function extractEnvValue(string $name, string $content): string

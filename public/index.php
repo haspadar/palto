@@ -15,7 +15,7 @@ try {
         Auth::check();
     }
 
-    $templatesEngine = new League\Plates\Engine(\Palto\Directory::getRootDirectory() . '/templates');
+    $templatesEngine = new League\Plates\Engine(\Palto\Directory::getTemplatesDirectory());
     $templatesEngine->loadExtension(new Translate());
 
     $router = new Router();

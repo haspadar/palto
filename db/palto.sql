@@ -297,7 +297,7 @@ INSERT INTO `settings` (`id`, `name`, `comment`, `value`, `group`, `type`) VALUE
                                                                                (78,	'smtp_encryption',	'Шифрование для исходящей почты',	'ssl',	'Реквизиты',	'string'),
                                                                                (79,	'yandex_translate_api_key',	'Ключ для Yandex Translate API',	'',	'Реквизиты',	'string'),
                                                                                (80,	'is_auth_enabled',	'Аутентификация включена',	'0',	'Реквизиты',	'bool'),
-                                                                               (81,	'auth_login',	'Логин для аутентификации',	'palto',	'Реквизиты',	'string'),
+                                                                               (81,	'auth_login',	'Логин для авторизации',	'palto',	'Реквизиты',	'string'),
                                                                                (82,	'auth_password',	'Пароль для аутентификации',	'palto25',	'Реквизиты',	'password'),
                                                                                (83,	'default_region_title',	'Название региона по умолчанию',	'USA',	'Шаблоны',	'string'),
                                                                                (84,	'default_region_url',	'Урл региона по умолчанию',	'us',	'Шаблоны',	'string'),

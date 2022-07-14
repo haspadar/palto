@@ -19,9 +19,7 @@ class Ad
         $this->region = $this->getRegionId()
             ? Regions::getById($this->getRegionId())
             : new Region([]);
-        if ($this->getCategoryId()) {
-            $this->category = Categories::getById($this->getCategoryId());
-        }
+        $this->category = $this->getCategoryId() ? Categories::getById($this->getCategoryId()) : null;
 
         $this->synonym = $synonym;
     }

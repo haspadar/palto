@@ -19,7 +19,9 @@ class Ad
         $this->region = $this->getRegionId()
             ? Regions::getById($this->getRegionId())
             : new Region([]);
-        $this->category = $this->getCategoryId() ? Categories::getById($this->getCategoryId()) : null;
+        if ($this->getCategoryId()) {
+            $this->category = Categories::getById($this->getCategoryId());
+        }
 
         $this->synonym = $synonym;
     }
@@ -60,9 +62,9 @@ class Ad
         return 'Deleted';
     }
 
-    public function getCategory(): Category
+    public function getCategory(): ?Category
     {
-        return $this->category;
+        return $this->category ?? null;
     }
 
     public function getField(): string

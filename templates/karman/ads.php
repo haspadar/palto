@@ -17,7 +17,7 @@
     <tbody>
     <?php foreach ($this->data['ads'] as $ad) :?>
         <?php $categoriesTitle = $ad->getCategoryPath();?>
-        <tr class="<?php if ($ad->getCategory()->isUndefined()) :?>
+        <tr class="<?php if ($ad->getCategory()?->isUndefined()) :?>
                 table-secondary
             <?php endif;?>"
         >
@@ -48,8 +48,8 @@
                 <button class="btn btn-secondary btn-sm float-end move-ad"
                         type="button"
                         data-ad-id="<?=$ad->getId()?>"
-                        data-category-id="<?=$ad->getCategory()->getId()?>"
-                        data-category-parent-id="<?=$ad->getCategory()->getParentId()?>"
+                        data-category-id="<?=$ad->getCategory()?->getId()?>"
+                        data-category-parent-id="<?=$ad->getCategory()?->getParentId()?>"
                 >
                     Перенести
                 </button>

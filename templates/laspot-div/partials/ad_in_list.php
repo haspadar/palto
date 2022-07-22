@@ -31,14 +31,13 @@
                 <div class="">🏷 <?= number_format($this->data['ad']->getPrice()) ?> <?= $this->data['ad']->getCurrency() ?></div>
             <?php endif;?>
 
-            <?php if ($region = $this->data['ad']->getRegion()) :?>
+            <?php if ($region = $this->data['ad']->getRegion() && $this->data['ad']->getCategory()) :?>
                 <div class="ob__block">
                     <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/icon-block.png")?>" alt="location">
                     <a href="<?= $this->data['ad']->getCategory()->generateUrl($this->data['ad']->getRegion()) ?>">
                         <?=$this->data['ad']->getCategory()->getTitle()?> <?=$this->translate('в')?> <?= $region->getTitle() ?>
                     </a>
                 </div>
-
             <?php endif;?>
         </div>
     </div>

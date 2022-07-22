@@ -42,7 +42,7 @@
                 <ul class="categories__list">
                     <span class="categories__headline-link">
                         <?php if ($level1Category->getEmoji()) :?>
-                            <?=$level1Category->getEmoji()?>
+                            <span class="category-emoji"><?=$level1Category->getEmoji()?></span>
                         <?php elseif ($level1Category->getIconUrl()) :?>
                             <img src="<?=$level1Category->getIconUrl()?>"
                                  title="<?=$level1Category->getIconText()?>"

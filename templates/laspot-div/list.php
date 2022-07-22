@@ -22,7 +22,7 @@
                     <li class="categories__link categories__sub-link">
                         <a href="<?= $childCategory->generateUrl($this->data['region']) ?>">
                             <?php if ($childCategory->getEmoji()) :?>
-                                <?=$childCategory->getEmoji()?>
+                                <span class="category-emoji"><?=$childCategory->getEmoji()?></span>
                             <?php elseif ($childCategory->getIconUrl()) :?>
                                 <img src="<?=$childCategory->getIconUrl()?>"
                                      title="<?=$childCategory->getIconText()?>"

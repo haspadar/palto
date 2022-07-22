@@ -10,7 +10,7 @@
                 <li class="categories__link categories__sub-link">
                     <a href="<?= $level1Category->generateUrl($this->data['region']) ?>">
                         <?php if ($level1Category->getEmoji()) :?>
-                            <?=$level1Category->getEmoji()?>
+                            <span class="category-emoji"><?=$level1Category->getEmoji()?></span>
                         <?php elseif ($level1Category->getIconUrl()) :?>
                             <img src="<?=$level1Category->getIconUrl()?>"
                                  title="<?=$level1Category->getIconText()?>"

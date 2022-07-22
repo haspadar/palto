@@ -19,14 +19,6 @@
                 <?= \Palto\Filter::shortText($this->data['ad']->getText()) ?>
             </p>
 
-            <?php /*foreach ($this->data['breadcrumbs'] as $breadcrumbKey => $breadcrumbItem) :*/?><!--
-                <?php /*if ($breadcrumbKey) :*/?>
-                    <span class="">»</span>
-                <?php /*endif;*/?>
-
-                <a href="<?/*= $breadcrumbItem['url'] */?>" class="ob__city"><?/*= $breadcrumbItem['title'] */?></a>
-            --><?php /*endforeach;*/?>
-
             <?php if ($this->data['ad']->getPrice() > 0) :?>
                 <div class="">🏷 <?= number_format($this->data['ad']->getPrice()) ?> <?= $this->data['ad']->getCurrency() ?></div>
             <?php endif;?>
@@ -37,6 +29,11 @@
                     <a href="<?= $this->data['ad']->getCategory()->generateUrl($this->data['ad']->getRegion()) ?>">
                         <?=$this->data['ad']->getCategory()->getTitle()?> <?=$this->translate('в')?> <?= $region->getTitle() ?>
                     </a>
+                </div>
+            <?php elseif (($region = $this->data['ad']->getRegion()) && !$this->data['ad']->getCategory()) :?>
+                <div class="ob__block">
+                    <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/icon-block.png")?>" alt="location">
+                    <?=$this->translate('в')?> <?= $region->getTitle() ?>
                 </div>
             <?php endif;?>
         </div>

@@ -43,7 +43,7 @@ use Palto\Config; ?>
                     <li><a href="<?=$level2Category->generateUrl($this->data['region'])?>"><?=$level2Category->getTitle()?></a></li>
                 <?php endforeach;?>
 
-                <li><a href="<?=$level1Category->generateUrl($this->data['region'])?>"><?=$this->translate('Other')?>...</a></li>
+                <li><a href="<?=$level1Category->generateUrl($this->data['region'])?>"><?=$this->translate('Другие')?>...</a></li>
             </ul>
         <?php endif;?>
     </div>

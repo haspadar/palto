@@ -25,12 +25,7 @@
 
         <dt class="col-sm-3">Значение</dt>
         <dd class="col-sm-9">
-            <?php if ($this->data['setting']['type'] == 'bool') :?>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="setting[<?=$this->data['setting']['id']?>]" <?php if ($this->data['setting']['value'] == 1) :?>checked<?php endif;?>>
-                    <label class="form-check-label" for="setting[<?=$this->data['setting']['id']?>]">Да</label>
-                </div>
-            <?php elseif ($this->data['setting']['type'] == 'theme'):?>
+            <?php if ($this->data['setting']['type'] == 'theme'):?>
                 <select class="form-select-sm" aria-label="Theme" name="value">
                     <?php foreach ($this->data['themes'] as $theme) :?>
                         <option value="<?=$theme?>" <?php if ($theme == $this->data['setting']['value']) :?>selected<?php endif;?>>
@@ -38,7 +33,7 @@
                         </option>
                     <?php endforeach;?>
                 </select>
-            <?php elseif ($this->data['setting']['type'] == 'input'):?>
+            <?php elseif (in_array($this->data['setting']['type'], ['input', 'bool'])):?>
                 <input type="text" name="value" value="<?=$this->data['setting']['value']?>">
             <?php else: ?>
                 <textarea name="value" cols="30" rows="5"><?=$this->data['setting']['value']?></textarea>

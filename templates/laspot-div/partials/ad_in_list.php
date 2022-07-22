@@ -33,7 +33,10 @@
             <?php elseif (($region = $this->data['ad']->getRegion()) && !$this->data['ad']->getCategory()) :?>
                 <div class="ob__block">
                     <img src="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . "/img/icon-block.png")?>" alt="location">
-                    <?=$this->translate('в')?> <?= $region->getTitle() ?>
+
+                    <a href="<?= $region->generateUrl() ?>">
+                        <?=$this->translate('в')?> <?= $region->getTitle() ?>
+                    </a>
                 </div>
             <?php endif;?>
         </div>

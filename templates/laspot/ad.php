@@ -148,7 +148,7 @@ use Palto\Categories; ?>
     <h2><?= $this->translate('Похожие объявления') ?></h2>
 <?= \Palto\Counters::get('google') ?: \Palto\Counters::receive('adx') ?>
     <table class="serp">
-        <?php foreach (Ads::getAds(
+        <?php foreach (Ads::getWithCategoryAds(
             $this->data['region'],
             $this->data['category'],
             5,

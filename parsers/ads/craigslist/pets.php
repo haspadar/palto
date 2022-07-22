@@ -38,7 +38,7 @@ require realpath(dirname(__DIR__) . '/../../') . '/vendor/autoload.php';
                 'post_time' => $postTimeElement
                     ? (new DateTime($postTimeElement->attr('datetime')))->format('Y-m-d H:i:s')
                     : null,
-                'region_id' => isset($region) ? $region->getId() : null,
+                'region_id' => $region?->getId(),
                 'price' => $price,
                 'currency' => $currency,
             ];

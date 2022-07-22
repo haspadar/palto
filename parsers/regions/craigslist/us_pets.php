@@ -73,7 +73,7 @@ function updateRegionIds() {
     $limit = 1000;
     $offset = 0;
     $count = \Palto\Ads::getAdsCount([]);
-    while ($ads = \Palto\Ads::getAds(null, null, $limit, $offset)) {
+    while ($ads = \Palto\Ads::getWithCategoryAds(null, null, $limit, $offset)) {
         /**
          * @var \Palto\Ad $ad
          */

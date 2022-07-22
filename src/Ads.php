@@ -67,7 +67,7 @@ class Ads
 
     public static function getHotAds(?Region $region, int $limit): array
     {
-        return self::getAds(
+        return self::getWithCategoryAds(
             $region,
             Categories::getById(Settings::getByName('hot_layout_hot_category')),
             $limit
@@ -79,6 +79,33 @@ class Ads
         $categoriesIds = array_map(fn(Category $category) => $category->getId(), $categories);
 
         return (new Model\Ads)->getFields($categoriesIds, $fields, $limit, $offset);
+    }
+
+    public static function getWithCategoryAds(
+        ?Region $region,
+        ?Category $category,
+        int $limit = self::LIMIT,
+        int $offset = 0,
+        int $excludeId = 0,
+        string $orderBy = 'id DESC'
+    ): array
+    {
+        $ads = (new Model\Ads)->getWithCategoryAds(
+            $region,
+            $category,
+            $limit,
+            $offset,
+            $excludeId,
+            $orderBy
+        );
+        $adIds = array_column($ads, 'id');
+        $images = self::getAdsImages($adIds);
+        $details = self::getAdsDetails($adIds);
+
+        return array_map(
+            fn(array $ad) => new Ad($ad, $images[$ad['id']] ?? [], $details[$ad['id']] ?? []),
+            $ads
+        );
     }
 
     public static function getAds(

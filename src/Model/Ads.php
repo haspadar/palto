@@ -61,6 +61,25 @@ class Ads extends Model
         return self::getDb()->query($query, $values);
     }
 
+    public function getWithCategoryAds(
+        ?Region $region,
+        ?Category $category,
+        int $limit,
+        int $offset,
+        int $excludeId,
+        string $orderBy
+    ): array
+    {
+        $query = $this->getAdsQuery();
+        [$where, $values] = $this->getAdsWhere($region, $category, $excludeId);
+        $query .= $where . ' AND a.category_id IS NOT NULL';
+        $query .= ' ORDER BY ' . $orderBy . ' LIMIT %d_limit OFFSET %d_offset';
+        $values['limit'] = $limit;
+        $values['offset'] = $offset;
+
+        return self::getDb()->query($query, $values);
+    }
+
     public function getRegionsAdsCount(array $regionsIds): int
     {
         return self::getDb()->queryFirstField('SELECT COUNT(*) FROM ' . $this->name . ' WHERE region_id IN %ld', $regionsIds);

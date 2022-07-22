@@ -97,7 +97,7 @@
             <h2><?=$this->translate('Новые объявления')?></h2>
         </div>
         <div class="new-obs__items">
-            <?php foreach (\Palto\Ads::getAds($this->data['region'], $this->data['category'], \Palto\Settings::getByName('hot_layout_new_ads')) as $ad) :?>
+            <?php foreach (\Palto\Ads::getWithCategoryAds($this->data['region'], $this->data['category'], \Palto\Settings::getByName('hot_layout_new_ads')) as $ad) :?>
                 <?php $this->insert('partials/ad_in_list', ['ad' => $ad])?>
             <?php endforeach;?>
 

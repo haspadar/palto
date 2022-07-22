@@ -89,7 +89,7 @@ class Client extends Layout
 
     public function getSimilarAds(int $count = 5): array
     {
-        return Ads::getAds(
+        return Ads::getWithCategoryAds(
             $this->getRegion(),
             $this->getCategory(),
             $count,
@@ -99,7 +99,7 @@ class Client extends Layout
 
     public function getHotAds(int $limit): array
     {
-        return Ads::getAds(
+        return Ads::getWithCategoryAds(
             $this->getRegion(),
             Categories::getById(Settings::getByName('hot_layout_hot_category')),
             $limit,
@@ -109,7 +109,7 @@ class Client extends Layout
 
     public function getAds(int $limit = Ads::LIMIT): array
     {
-        return Ads::getAds(
+        return Ads::getWithCategoryAds(
             $this->getRegion(),
             $this->getCategory(),
             $limit,

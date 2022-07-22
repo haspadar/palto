@@ -109,7 +109,7 @@ class Client
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => $this->replaceHtml($page->getDescription()),
                 'h1' => $this->replaceHtml($page->getH1()),
-                'ads' => Ads::getAds(
+                'ads' => Ads::getWithCategoryAds(
                     $this->region,
                     null,
                     Ads::LIMIT,
@@ -134,7 +134,7 @@ class Client
                 'title' => $this->replaceHtml($page->getTitle()),
                 'description' => $this->replaceHtml($page->getDescription()),
                 'h1' => $this->replaceHtml($page->getH1()),
-                'ads' => Ads::getAds(
+                'ads' => Ads::getWithCategoryAds(
                     $this->region,
                     $this->category,
                     Ads::LIMIT,

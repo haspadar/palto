@@ -14,7 +14,7 @@ class Pager
     {
         $this->url = new Url();
         $offset = $pageNumber * Ads::LIMIT;
-        $nextPageAds =  \Palto\Ads::getAds(
+        $nextPageAds =  \Palto\Ads::getWithCategoryAds(
             $region,
             $category,
             1,

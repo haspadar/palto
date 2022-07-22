@@ -129,7 +129,7 @@ use Palto\Categories; ?>
         </div>
         <div class="new-obs__items">
             <?= \Palto\Counters::get('google') ?: \Palto\Counters::receive('adx') ?>
-            <?php foreach (Ads::getAds(
+            <?php foreach (Ads::getWithCategoryAds(
                 $this->data['region'],
                 $this->data['category'],
                 5,

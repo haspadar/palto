@@ -10,7 +10,7 @@ class Page
     public function __construct(array $page)
     {
         $this->page = $page;
-        $this->template = $page['template_id'] ? Templates::getById($page['template_id']) : nul;
+        $this->template = $page['template_id'] ? Templates::getById($page['template_id']) : null;
     }
 
     public function getTemplateId(): int

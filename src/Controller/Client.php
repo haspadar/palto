@@ -65,7 +65,6 @@ class Client
             'breadcrumbs' => [],
             'page' => $page
         ]);
-        Debug::dump($page->getTemplate(), '$page->getTemplate()');
         echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
 

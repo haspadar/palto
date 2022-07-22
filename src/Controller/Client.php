@@ -53,6 +53,7 @@ class Client
     {
         $page = Pages::getMainPage();
         $isHot = (bool)\Palto\Settings::isHotTemplateEnabled();
+        Debug::dump($isHot, '$isHot');
         $limit = $isHot ? \Palto\Settings::getByName('hot_layout_regions') : Config::get('INDEX_LAYOUT_REGIONS');
         $this->templatesEngine->addData([
             'title' => $this->replaceHtml($page->getTitle()),
@@ -65,6 +66,7 @@ class Client
             'breadcrumbs' => [],
             'page' => $page
         ]);
+        Debug::dump($page->getTemplate()->getShortName(), '$page->getTemplate()->getShortName()');
         echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
 

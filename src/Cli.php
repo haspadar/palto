@@ -115,16 +115,11 @@ class Cli
 
     public static function generateGeneralEnv(string $databaseName, string $databaseUser, string $databasePassword): string
     {
-        $replaces = [
-            'DB_USER=' => 'DB_USER=' . $databaseUser,
-            'DB_PASSWORD=' => 'DB_PASSWORD=' . $databasePassword,
-            'DB_NAME=' => 'DB_NAME=' . $databaseName,
-            'DOMAIN_URL=' => 'DOMAIN_URL=https://www.' . Directory::getProjectName()
-        ];
-        $content = strtr(
-            file_get_contents(Directory::getStructureConfigsDirectory() . '/.env'),
-            $replaces
-        );
+        $content = "DB_USER=petsus_net=$databaseUser" . PHP_EOL
+            . "DB_PASSWORD=$databasePassword" . PHP_EOL
+            . "DB_NAME=$databaseName" . PHP_EOL
+            . "DB_HOST=127.0.0.1" . PHP_EOL
+            . "DB_PORT=3306";
         $tmp = '/tmp/install_' . md5(time());
         file_put_contents($tmp, $content);
 
@@ -133,7 +128,7 @@ class Cli
 
     public static function updatePhinx(string $databaseName, string $databaseUser, string $databasePassword): string
     {
-        $content = strtr(file_get_contents(Directory::getStructureConfigsDirectory(). '/phinx.php'), [
+        $content = strtr(file_get_contents(Directory::getRootDirectory(). '/phinx.php.example'), [
             'production_db' => $databaseName,
             'production_user' => $databaseUser,
             'production_pass' => $databasePassword,
@@ -205,10 +200,9 @@ class Cli
     public static function updateHtpasswd(): string
     {
         if (self::isLinux()) {
-            $configsPath = Directory::getStructureConfigsDirectory();
             $rootPath = Directory::getRootDirectory();
 
-            return "cp -R $configsPath/.htpasswd $rootPath/";
+            return "cp -R $rootPath/.htpasswd.example $rootPath/";
         }
 
         return self::ignoreMac();
@@ -302,10 +296,9 @@ class Cli
 
     public static function safeCopyPylesosEnv(): string
     {
-        $structureConfigDirectory = Directory::getStructureConfigsDirectory();
         $configDirectory = Directory::getConfigsDirectory();
 
-        return self::asUser("cp -n $structureConfigDirectory/.pylesos" . " $configDirectory/");
+        return self::asUser("cp -n $configDirectory/.pylesos.example" . " $configDirectory/");
     }
 
 //    public static function safeCopyParseScripts(): string

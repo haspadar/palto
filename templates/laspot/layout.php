@@ -17,7 +17,7 @@ use Palto\Categories;
     <?php if (!isset($pager) || $pager->getPageNumber() == 1) : ?>
         <link rel="canonical" href="<?=(new \Palto\Url())->getFull()?>">
     <?php endif;?>
-    
+
     <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>">
     <?php if (\Palto\Auth::isLogged()) :?>
         <link rel="stylesheet" href="<?=$this->asset('/css/karman.css')?>">

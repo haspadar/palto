@@ -14,6 +14,10 @@ use Palto\Categories;
     <link rel="icon" type="image/png" href="/img/favicon.ico">
     <link rel="stylesheet" href="<?= $this->asset(\Palto\Directory::getThemePublicDirectory() . '/css/style.css') ?>">
     <link rel="stylesheet" href="<?= $this->asset('/css/styles.css') ?>">
+    <?php if (!isset($pager) || $pager->getPageNumber() == 1) : ?>
+        <link rel="canonical" href="<?=(new \Palto\Url())->getFull()?>">
+    <?php endif;?>
+
     <?php if (\Palto\Settings::isKarmanPanelEnabled()) : ?>
         <link rel="stylesheet" href="<?= $this->asset('/css/karman.css') ?>">
     <?php endif; ?>

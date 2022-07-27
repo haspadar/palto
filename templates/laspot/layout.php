@@ -14,6 +14,10 @@ use Palto\Categories;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/img/favicon.ico">
     <link rel="stylesheet" href="<?=$this->asset(\Palto\Directory::getThemePublicDirectory() . '/css/styles.css')?>">
+    <?php if (!isset($pager) || $pager->getPageNumber() == 1) : ?>
+        <link rel="canonical" href="<?=(new \Palto\Url())->getFull()?>">
+    <?php endif;?>
+    
     <link rel="stylesheet" href="<?=$this->asset('/css/styles.css')?>">
     <?php if (\Palto\Auth::isLogged()) :?>
         <link rel="stylesheet" href="<?=$this->asset('/css/karman.css')?>">

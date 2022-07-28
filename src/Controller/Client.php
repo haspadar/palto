@@ -79,6 +79,17 @@ class Client
         echo $this->templatesEngine->make($page->getTemplate()->getShortName());
     }
 
+    public function showAdd()
+    {
+        $page = Pages::getAddPage();
+        $this->templatesEngine->addData([
+            'title' => $this->replaceHtml($page->getTitle()),
+            'description' => $this->replaceHtml($page->getDescription()),
+            'h1' => $this->replaceHtml($page->getH1()),
+        ]);
+        echo $this->templatesEngine->make($page->getTemplate()->getShortName());
+    }
+
     public function showRegionsList()
     {
         $page = Pages::getRegionsPage();

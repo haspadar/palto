@@ -47,6 +47,11 @@ class Pages
         return new Page((new Model\Pages())->getByName('main'));
     }
 
+    public static function getAddPage(): Page
+    {
+        return new Page((new Model\Pages())->getByName('add'));
+    }
+
     public static function getRegistrationsPage(): Page
     {
         return new Page((new Model\Pages())->getByName('registration'));

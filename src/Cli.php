@@ -202,7 +202,7 @@ class Cli
         if (self::isLinux()) {
             $rootPath = Directory::getRootDirectory();
 
-            return "cp -R $rootPath/.htpasswd.example $rootPath/";
+            return "cp -R $rootPath/.htpasswd.example $rootPath/.htpasswd";
         }
 
         return self::ignoreMac();
@@ -298,7 +298,7 @@ class Cli
     {
         $configDirectory = Directory::getConfigsDirectory();
 
-        return self::asUser("cp -n $configDirectory/.pylesos.example" . " $configDirectory/");
+        return self::asUser("cp -n $configDirectory/.pylesos.example" . " $configDirectory/.pylesos");
     }
 
 //    public static function safeCopyParseScripts(): string

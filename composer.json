@@ -6,19 +6,21 @@
     "license": "proprietary",
     "require": {
         "php": ">=8.0",
-        "haspadar/pylesos": "9999999-dev",
-        "monolog/monolog": "2.x-dev",
-        "sergeytsalkov/meekrodb": "9999999-dev",
-        "symfony/dom-crawler": "5.4.x-dev",
-        "symfony/css-selector": "5.3.x-dev",
-        "robmorgan/phinx": "dev-master",
-        "cocur/slugify": "dev-master",
-        "lavary/crunz": "3.1.x-dev",
-        "bramus/monolog-colored-line-formatter": "dev-master",
-        "wapmorgan/morphos": "dev-master",
-        "bramus/router": "dev-master",
-        "league/plates": "v3.x-dev",
-        "icanboogie/inflector": "dev-master"
+        "haspadar/pylesos": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "pestphp/pest": "^1.21",
+        "sergeytsalkov/meekrodb": "^2.4",
+        "monolog/monolog": "^3.2",
+        "symfony/dom-crawler": "^6.1",
+        "symfony/css-selector": "^6.1",
+        "robmorgan/phinx": "^0.12.12",
+        "cocur/slugify": "^4.1",
+        "lavary/crunz": "^3.2",
+        "bramus/monolog-colored-line-formatter": "^3.0",
+        "wapmorgan/morphos": "^3.2",
+        "bramus/router": "^1.6",
+        "league/plates": "^3.4",
+        "icanboogie/inflector": "^2.2"
     },
     "autoload": {
         "psr-4": {
@@ -26,8 +28,5 @@
             "Test\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
-    "require-dev": {
-        "phpunit/phpunit": "10.0.x-dev"
-    }
+    "minimum-stability": "stable"
 }

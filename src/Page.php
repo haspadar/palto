@@ -50,7 +50,7 @@ class Page
 
     public function getDescription(): string
     {
-        return $this->page['description'];
+        return $this->page['description'] ?? '';
     }
 
     public function isEnabled(): bool

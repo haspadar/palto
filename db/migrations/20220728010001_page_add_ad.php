@@ -18,7 +18,7 @@ final class PageAddAd extends AbstractMigration
      */
     public function change(): void
     {
-        $this->execute("INSERT INTO `uspets`.`templates` (`id`, `name`) VALUES (8, 'add.php');");
+        $this->execute("INSERT INTO `templates` (`id`, `name`) VALUES (9, 'add.php');");
         $this->execute("INSERT INTO `pages` (`name`, `comment`, `url`, `function`, `is_enabled`, `priority`, `router_priority`,`template_id`) VALUES ('add', 'Добавление объявления', '/add', 'showAdd', 0, 31, 31, 9);");
 
     }

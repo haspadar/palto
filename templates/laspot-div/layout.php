@@ -15,7 +15,7 @@ use Palto\Categories;
     <link rel="stylesheet" href="<?= $this->asset(\Palto\Directory::getThemePublicDirectory() . '/css/style.css') ?>">
     <link rel="stylesheet" href="<?= $this->asset('/css/styles.css') ?>">
     <?php if (!isset($pager) || $pager->getPageNumber() == 1) : ?>
-        <link rel="canonical" href="<?=(new \Palto\Url())->getFull()?>">
+        <link rel="canonical" href="<?=\Palto\Url::getCurrentUrl()?>">
     <?php endif;?>
 
     <?php if (\Palto\Settings::isKarmanPanelEnabled()) : ?>

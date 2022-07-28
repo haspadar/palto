@@ -18,6 +18,16 @@ class Url
         $this->path = $this->initPath();
     }
 
+    public static function getCurrentUrl(): string
+    {
+        return sprintf(
+            '%s://%s%s',
+            isset($_SERVER['HTTPS']) ? 'https' : 'http',
+            $_SERVER['HTTP_HOST'],
+            $_SERVER['REQUEST_URI']
+        );
+    }
+
     public function __toString(): string
     {
         return $this->url;

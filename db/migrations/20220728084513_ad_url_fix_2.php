@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class AdUrlFix extends AbstractMigration
+final class AdUrlFix2 extends AbstractMigration
 {
     /**
      * Change Method.
